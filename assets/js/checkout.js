@@ -143,12 +143,16 @@ jQuery(document).ready(function ($) {
         if (!isValid && firstError && firstError.length) {
             // Small delay to allow accordion to open
             setTimeout(function () {
-                $('html, body').animate({
-                    scrollTop: firstError.offset().top - 100
-                }, 400, function () {
-                    firstError.focus();
+                firstError[0].scrollIntoView({
+                    behavior: 'smooth',
+                    block: 'center'
                 });
-            }, 100);
+                
+                // Focus after scroll
+                setTimeout(function() {
+                    firstError.focus();
+                }, 500);
+            }, 300); // 300ms matches accordion animation time + buffer
         }
 
         return isValid;
