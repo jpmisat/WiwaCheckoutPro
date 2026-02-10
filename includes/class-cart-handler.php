@@ -9,8 +9,8 @@ class Wiwa_Cart_Handler
 
     public function __construct()
     {
-        // Override empty cart template
-        add_filter('wc_get_template', [$this, 'override_empty_cart_template'], 10, 5);
+        // Override empty cart template with high priority
+        add_filter('wc_get_template', [$this, 'override_empty_cart_template'], 999, 5);
         
         // Enqueue side cart script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_side_cart_script']);
