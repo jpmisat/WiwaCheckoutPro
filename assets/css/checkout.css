@@ -419,35 +419,34 @@
 
 .tour-accordion-header {
     display: grid;
-    grid-template-columns: 1fr auto;
-    gap: 16px;
+    grid-template-columns: 100px 1fr auto; /* Desktop: Image - Content - Toggle */
+    gap: 20px;
     align-items: center;
     padding: 20px;
     cursor: pointer;
-    transition: background-color 0.2s ease;
-    background: var(--wiwa-gray-50);
+    transition: all 0.2s ease;
+    background: white;
+    position: relative;
+    border-radius: 16px;
 }
 
 .tour-accordion-header:hover {
-    background: var(--wiwa-gray-100);
+    background: var(--wiwa-gray-50);
 }
 
+/* Remove the nested grid/flex wrapper to make the main header the grid parent */
 .tour-accordion-header-left {
-    display: grid;
-    grid-template-columns: 80px 1fr;
-    align-items: center;
-    gap: 16px;
-    width: 100%;
+    display: contents; 
 }
 
 .tour-thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 12px;
     overflow: hidden;
     position: relative;
-    /* Prevent shrinking */
-    flex-shrink: 0; 
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .tour-thumbnail img {
@@ -455,6 +454,11 @@
     height: 100%;
     object-fit: cover;
     display: block;
+    transition: transform 0.3s ease;
+}
+
+.tour-accordion-item:hover .tour-thumbnail img {
+    transform: scale(1.05); /* Sutil zoom effect */
 }
 
 .tour-info {
@@ -1192,7 +1196,132 @@
 .tour-accordion-item.has-error .accordion-error-badge {
     display: inline-flex !important;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    background: #e11d48; /* Premium Red */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
+    z-index: 2;
+}
+
+/* --- MOBILE CARD LAYOUT (<768px) --- */
+@media (max-width: 768px) {
+    .tour-accordion-header {
+        grid-template-columns: 1fr; /* Stacked layout */
+        grid-template-areas: 
+            "image"
+            "content"
+            "actions";
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .tour-thumbnail {
+        grid-area: image;
+        width: 100%;
+        height: 140px; /* Portada style */
+        border-radius: 12px;
+    }
+
+    .tour-thumbnail img {
+        object-position: center;
+    }
+
+    .tour-info {
+        grid-area: content;
+    }
+
+    .tour-name {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    /* Container for Badge + Toggle */
+    .tour-accordion-header::after {
+        content: ''; 
+        /* Helper to create a flex container for actions if needed, 
+           but we might need to rely on the natural flow or JS injection.
+           For now, let's use the grid items we have. */
+    }
+
+    /* We need to position the toggle and badge */
+    .tour-accordion-toggle {
+        grid-area: actions;
+        justify-self: end; /* Align to right */
+        margin-top: 4px;
+        background: var(--wiwa-gray-100);
+    }
+    
+    .tour-accordion-item.has-error .accordion-error-badge {
+        grid-area: actions;
+        justify-self: start; /* Align to left */
+        margin-top: 4px;
+        /* Ensure it shares the row with the toggle */
+        align-self: center;
+    }
+    
+    /* If both exist, we need them on the same row. 
+       Since they are separate DOM elements mixed in, CSS Grid areas might be tricky if they aren't direct children wrapper in a container.
+       Assuming standard DOM order: Thumbnail, Info, Badge, Toggle. 
+       Let's try a different approach for Action Row */
+       
+    .tour-accordion-header {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .tour-accordion-header-left {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    
+    .tour-thumbnail {
+        width: 100%;
+        height: 150px;
+    }
+    
+    /* Create an action row effect using Flexbox order/alignment manually isn't perfect without a container.
+       But we can use absolute positioning for the toggle or badge if needed, 
+       OR just let them stack naturally at the bottom. */
+       
+    .tour-info {
+        width: 100%;
+    }
+    
+    .tour-accordion-toggle {
+        align-self: flex-end; /* Right align */
+        width: 36px;
+        height: 36px;
+        margin-top: -36px; /* Pull it up next to badge if possible, or just below */
+    }
+    
+    .tour-accordion-item.has-error .tour-accordion-toggle {
+         margin-top: 0; /* Reset if stacking */
+    }
+    
+    /* Better approach for Actions Row simulation: */
+    .accordion-error-badge {
+        order: 3;
+        align-self: flex-start;
+        margin-right: auto;
+    }
+    
+    .tour-accordion-toggle {
+        order: 4;
+        align-self: flex-end;
+    }
+    
+    /* Layout correction:
+       .tour-accordion-header (Grid/Flex)
+          -> .tour-accordion-header-left (Content) -> [Thumb, Info]
+          -> .accordion-error-badge (if exists)
+          -> .tour-accordion-toggle
+    */
 }
 
 /* Clear error state when accordion is opened */
