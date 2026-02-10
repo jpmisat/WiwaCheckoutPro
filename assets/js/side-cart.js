@@ -83,9 +83,6 @@ jQuery(document).ready(function($) {
         }
     };
 
-    // Update config to use explicit URL
-    config.homeUrl = '/tours/'; 
-
     // Start observing
     observeCart();
 

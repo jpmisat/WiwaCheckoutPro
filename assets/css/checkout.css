@@ -2615,13 +2615,14 @@ ul.order_details li strong {
 
 /* Checkout Button (Primary) */
 .elementor-menu-cart__footer-buttons .elementor-button--checkout {
-    background: var(--wiwa-green) !important;
+    background: var(--wiwa-green, #1E3A2B) !important;
     color: white !important;
     border: none !important;
 }
 
 .elementor-menu-cart__footer-buttons .elementor-button--checkout:hover {
-    background: var(--wiwa-green-dark) !important;
+    background: #162c20 !important; /* Explicit hex for safety */
+    color: white !important;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2);
 }
