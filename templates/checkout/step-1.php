@@ -250,9 +250,7 @@ endforeach; ?>
     endif; ?>
                         <div class="tour-info">
                             <h4 class="tour-name">
-                                <a href="<?php echo esc_url(get_permalink($tour['product_id'])); ?>" class="tour-name-link" target="_blank">
-                                    <?php echo esc_html($tour['name']); ?>
-                                </a>
+                                <?php echo esc_html($tour['name']); ?>
                             </h4>
                             <div class="tour-meta">
                                 <span class="meta-item">

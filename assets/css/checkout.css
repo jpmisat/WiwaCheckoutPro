@@ -465,22 +465,20 @@
     flex: 1
 }
 
+.tour-name a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+    pointer-events: none; /* Just in case */
+}
+
 .tour-name {
     font-size: 17px;
     font-weight: 600;
     color: var(--wiwa-gray-900);
     margin-bottom: 8px;
-    line-height: 1.4
-}
-
-.tour-name a {
-    text-decoration: none;
-    color: inherit;
-    border-bottom: none;
-}
-
-.tour-name a:hover {
-    color: var(--wiwa-green);
+    line-height: 1.4;
+    cursor: default;
 }
 
 .tour-meta {

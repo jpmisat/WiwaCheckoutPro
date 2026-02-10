@@ -104,7 +104,6 @@ endif; ?>
     $tour_time = Wiwa_Tour_Booking_Integration::get_tour_time($cart_item);
     $guest_breakdown = Wiwa_Tour_Booking_Integration::get_guest_breakdown($cart_item, $product);
 ?>
-            <a href="<?php echo esc_url(get_permalink($product_id)); ?>" class="summary-product-link" target="_blank">
             <div class="summary-product-item">
                 <?php if ($thumbnail): ?>
                 <div class="summary-product-image"><?php echo $thumbnail; ?></div>
@@ -162,7 +161,6 @@ endif; ?>
                     </div>
                 </div>
             </div>
-            </a>
             <?php
 endforeach; ?>
         </div>
