@@ -17,16 +17,25 @@ class Wiwa_Cart_Handler
     }
 
     /**
-     * Override default WooCommerce empty cart template
+     * Override default WooCommerce cart templates
      */
     public function override_empty_cart_template($located, $template_name, $args, $template_path, $default_path)
     {
+        // Nullify other template searches if we match
         if ($template_name === 'cart/cart-empty.php') {
             $custom_template = WIWA_CHECKOUT_PATH . 'templates/cart/empty-cart.php';
             if (file_exists($custom_template)) {
                 return $custom_template;
             }
         }
+        
+        if ($template_name === 'cart/cart.php') {
+            $custom_template = WIWA_CHECKOUT_PATH . 'templates/cart/cart.php';
+            if (file_exists($custom_template)) {
+                return $custom_template;
+            }
+        }
+
         return $located;
     }
 

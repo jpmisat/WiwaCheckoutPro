@@ -2629,5 +2629,357 @@ ul.order_details li strong {
 
 /* Hide Default Empty Message aggressively */
 .woocommerce-mini-cart__empty-message {
-    display: none !important;
+
+/* 
+ * =========================================
+ * Main Cart Page Redesign (v2.8.0)
+ * =========================================
+ */
+
+.wiwa-cart-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Outfit', sans-serif; /* Ensure font consistency */
+}
+
+.wiwa-cart-title {
+    font-size: 2.5rem;
+    color: var(--wiwa-brand);
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* 
+ * Layout Grid 
+ * Desktop: Table (2/3) + Totals (1/3)
+ */
+.wiwa-cart-wrapper .woocommerce-cart-form {
+    display: block;
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .wiwa-cart-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .wiwa-cart-title {
+        grid-column: 1 / -1;
+    }
+}
+
+/* 
+ * Cart Table Styling 
+ */
+.wiwa-cart-table table.shop_table {
+    border: none !important;
+    border-radius: var(--wiwa-radius);
+    overflow: hidden;
+    background: white;
+    box-shadow: var(--wiwa-shadow);
+    border-collapse: separate !important;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 0; 
+}
+
+.wiwa-cart-table th {
+    background: var(--wiwa-gray-100);
+    color: var(--wiwa-gray-700);
+    font-weight: 600;
+    padding: 15px 20px !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--wiwa-gray-200) !important;
+}
+
+.wiwa-cart-table td {
+    padding: 20px !important;
+    vertical-align: middle !important;
+    border-top: 1px solid var(--wiwa-gray-100) !important;
+}
+
+.wiwa-cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Product Info */
+.wiwa-cart-table .product-thumbnail img {
+    width: 80px !important;
+    height: 80px !important;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.wiwa-cart-table .product-name a {
+    color: var(--wiwa-brand);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.wiwa-cart-table .product-name a:hover {
+    color: var(--wiwa-accent);
+}
+
+.wiwa-cart-table .product-price,
+.wiwa-cart-table .product-subtotal {
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+    font-size: 1rem;
+}
+
+/* Remove Button */
+.wiwa-cart-table .product-remove .remove {
+    color: var(--wiwa-gray-400) !important;
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    transition: color 0.2s !important;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    border-radius: 50%;
+    display: block;
+    text-align: center;
+}
+
+.wiwa-cart-table .product-remove .remove:hover {
+    color: var(--wiwa-error) !important;
+    background: var(--wiwa-error-light);
+}
+
+/* 
+ * Quantity / Pax Input 
+ */
+.wiwa-quantity-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+    gap: 5px;
+}
+
+.wiwa-pax-label {
+    font-size: 0.8rem;
+    color: var(--wiwa-gray-500);
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+.wiwa-cart-table .quantity {
+    display: inline-flex;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 6px;
+    overflow: hidden;
+}
+
+.wiwa-cart-table .quantity input.qty {
+    width: 60px;
+    text-align: center;
+    border: none;
+    padding: 8px;
+    font-weight: 600;
+    color: var(--wiwa-brand);
+    appearance: textfield; /* Remove spinner */
+    -moz-appearance: textfield;
+}
+
+.wiwa-cart-table .quantity input.qty::-webkit-outer-spin-button,
+.wiwa-cart-table .quantity input.qty::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 
+ * Actions Row (Update Cart)
+ */
+.wiwa-cart-table td.actions {
+    background: var(--wiwa-gray-50);
+    padding: 15px 20px !important;
+    text-align: right;
+}
+
+.wiwa-update-cart-btn {
+    background: white !important;
+    color: var(--wiwa-brand) !important;
+    border: 1px solid var(--wiwa-brand) !important;
+    border-radius: var(--wiwa-radius) !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+    cursor: pointer;
+}
+
+.wiwa-update-cart-btn:hover {
+    background: var(--wiwa-brand) !important;
+    color: white !important;
+}
+
+.coupon {
+    display: none !important; /* Hide coupon field in cart based on premium design preference, or style if requested */
+}
+
+/* 
+ * Cart Totals (Sidebar)
+ */
+.wiwa-cart-collaterals .cart_totals {
+    width: 100% !important;
+    float: none !important;
+    background: white;
+    padding: 30px;
+    border-radius: var(--wiwa-radius);
+    box-shadow: var(--wiwa-shadow-md);
+    border: 1px solid var(--wiwa-gray-200);
+}
+
+.wiwa-cart-collaterals h2 {
+    font-size: 1.5rem;
+    color: var(--wiwa-brand);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--wiwa-gray-200);
+    padding-bottom: 10px;
+}
+
+.wiwa-cart-collaterals table.shop_table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.wiwa-cart-collaterals th {
+    text-align: left;
+    padding: 15px 0;
+    color: var(--wiwa-gray-600);
+    font-weight: 500;
+}
+
+.wiwa-cart-collaterals td {
+    text-align: right;
+    padding: 15px 0;
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+}
+
+.wiwa-cart-collaterals .order-total th,
+.wiwa-cart-collaterals .order-total td {
+    border-top: 1px solid var(--wiwa-gray-200);
+    color: var(--wiwa-brand);
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding-top: 20px;
+}
+
+/* Checkout Button */
+.wiwa-cart-collaterals .wc-proceed-to-checkout a.checkout-button {
+    display: block;
+    width: 100%;
+    background: var(--wiwa-accent) !important;
+    color: white !important;
+    text-align: center;
+    padding: 15px !important;
+    border-radius: var(--wiwa-radius) !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border: none;
+}
+
+.wiwa-cart-collaterals .wc-proceed-to-checkout a.checkout-button:hover {
+    background: var(--wiwa-brand) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(232, 166, 58, 0.4);
+}
+
+/* 
+ * Mobile Responsive (Card Layout)
+ */
+@media (max-width: 768px) {
+    .wiwa-cart-table thead {
+        display: none; /* Hide table headers */
+    }
+
+    .wiwa-cart-table, 
+    .wiwa-cart-table tbody, 
+    .wiwa-cart-table tr, 
+    .wiwa-cart-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .wiwa-cart-table tr {
+        margin-bottom: 20px;
+        background: white;
+        border: 1px solid var(--wiwa-gray-200);
+        border-radius: var(--wiwa-radius);
+        padding: 15px;
+        position: relative;
+        box-shadow: var(--wiwa-shadow);
+    }
+    
+    .wiwa-cart-table td {
+        border: none !important;
+        padding: 5px 0 !important;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Product Image & Name centering */
+    .wiwa-cart-table .product-thumbnail {
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .wiwa-cart-table .product-thumbnail img {
+        width: 100% !important;
+        max-width: 120px;
+        height: auto !important;
+    }
+
+    .wiwa-cart-table .product-name {
+        font-size: 1.2rem;
+        text-align: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    /* Labels for mobile */
+    .wiwa-cart-table td:before {
+        content: attr(data-title);
+        font-weight: 600;
+        color: var(--wiwa-gray-500);
+        display: block;
+        margin-right: 10px;
+    }
+
+    .wiwa-cart-table td.product-thumbnail:before,
+    .wiwa-cart-table td.product-name:before,
+    .wiwa-cart-table td.product-remove:before {
+        display: none;
+    }
+
+    /* Remove button absolute top right */
+    .wiwa-cart-table .product-remove {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: auto !important;
+        padding: 0 !important;
+    }
+    
+    .wiwa-cart-table .quantity {
+        margin-left: auto;
+    }
+    
+    .wiwa-update-cart-btn {
+        width: 100%;
+    }
 }
