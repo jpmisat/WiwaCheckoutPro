@@ -60,7 +60,8 @@ foreach ($cart_items as $cart_item_key => $cart_item) {
 }
 
 if (empty($tours)) {
-    echo '<div class="woocommerce-info">' . __('No hay tours en el carrito.', 'wiwa-checkout') . ' <a href="' . esc_url(home_url('/')) . '">' . __('Continuar comprando', 'wiwa-checkout') . '</a></div>';
+    // Show branded empty cart template
+    include dirname(__DIR__) . '/cart/empty-cart.php';
     return;
 }
 
