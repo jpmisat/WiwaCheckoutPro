@@ -1,0 +1,129 @@
+/**
+ * Tour Booking Form Override CSS
+ * Hides the guest information section that is collected in our custom checkout
+ * Also overrides popup styles
+ */
+
+/* Hide the ENTIRE guest info section - multiple selector variations */
+/* Note: Some elements have inline style='display:block' so we use maximum specificity */
+html body .ovatb-guest-info,
+html body .guest-info-heading,
+html body .guest-info-accordion,
+html body .ovatb-form .ovatb-guest-info,
+html body .ovatb-booking-form .ovatb-guest-info,
+html body #booking-form .ovatb-guest-info,
+html body .ovatb-guests-field .ovatb-guest-info,
+.ovabrw_booking_form .ovatb-guest-info,
+.ovabrw_popup_booking .ovatb-guest-info,
+#ovabrw_popup_booking .ovatb-guest-info,
+.ovabrw_booking_form .ovabrw-guest-info,
+.ovabrw_booking_form .ovabrw_guest_info,
+.ovabrw_booking_form .guest_info,
+.ovabrw_booking_form .travel-guest-info,
+.ovabrw_booking_form [class*="guest_"],
+.ovabrw_booking_form [class*="guest-"],
+.ovabrw_popup_booking .ovabrw-guest-info,
+.ovabrw_popup_booking .ovabrw_guest_info,
+.ovabrw_popup_booking .guest_info,
+.ovabrw_popup_booking [class*="guest_"],
+.ovabrw_popup_booking [class*="guest-"],
+#ovabrw_popup_booking .ovabrw-guest-info,
+.ovabrw-booking-form .ovabrw-guest-info,
+.ova-booking-form .guest-info-wrap,
+.product .ovabrw_guest_info,
+.single-product .ovabrw_guest_info,
+.single-rental .ovabrw_guest_info,
+.single-product .ovabrw-guest-info,
+.single-rental .ovabrw-guest-info,
+.single-product .ovatb-guest-info,
+.single-rental .ovatb-guest-info {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+    pointer-events: none !important;
+}
+
+/* Specific targeting for Tour Booking Pro */
+.ovatb-guests-wrap .ovatb-guest-info,
+.ovatb-guests-field .ovatb-guest-info,
+.ovatb-guests-wrap .guest-info-heading,
+.ovatb-guests-wrap .guest-info-accordion {
+    display: none !important;
+    visibility: hidden !important;
+    height: 0 !important;
+    max-height: 0 !important;
+    overflow: hidden !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    opacity: 0 !important;
+}
+
+/* Hide guest info in the popup */
+.ovatb-form .guest-info-heading,
+.ovatb-form .guest-info-accordion,
+.ovatb-form .guest-info-item,
+.ovatb-form .guest-info-body,
+.ovatb-form .guest-info-field,
+.ovatb-booking-form .guest-info-heading,
+.ovatb-booking-form .guest-info-accordion {
+    display: none !important;
+    visibility: hidden !important;
+}
+
+/* =========================================
+   Hide individual guest input fields
+   ========================================= */
+
+/* First/Last Name fields */
+.ovabrw_booking_form .ovabrw-first-name,
+.ovabrw_booking_form .ovabrw-last-name,
+.ovabrw_booking_form [id*="first_name"],
+.ovabrw_booking_form [id*="last_name"],
+.ovabrw_popup_booking [id*="first_name"],
+.ovabrw_popup_booking [id*="last_name"] {
+    display: none !important;
+}
+
+/* Email field */
+.ovabrw_booking_form .ovabrw-email,
+.ovabrw_booking_form .ovabrw_email,
+.ovabrw_booking_form [id*="email"],
+.ovabrw_popup_booking [id*="email"] {
+    display: none !important;
+}
+
+/* Phone field */
+.ovabrw_booking_form .ovabrw-phone,
+.ovabrw_booking_form .ovabrw_phone,
+.ovabrw_booking_form [id*="phone"],
+.ovabrw_popup_booking [id*="phone"] {
+    display: none !important;
+}
+
+/* Address fields */
+.ovabrw_booking_form .ovabrw-address,
+.ovabrw_booking_form [id*="address"],
+.ovabrw_popup_booking [id*="address"] {
+    display: none !important;
+}
+
+/* Passport/ID fields */
+.ovabrw_booking_form [id*="passport"],
+.ovabrw_popup_booking [id*="passport"] {
+    display: none !important;
+}
+
+/* =========================================
+   Important: Hide the container too
+   ========================================= */
+
+/* Container elements */
+.ovatb-guest-info:not(.keep-visible),
+.guest-info-wrap:not(.keep-visible) {
+    display: none !important;
+}

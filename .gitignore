@@ -1,0 +1,17 @@
+# User Specified Ignores
+*.zip
+ova-tour-booking-2026/
+woocommerce-currency-switcher/
+_original_backup/
+Wiwa tr - Manual de marca.pdf
+force-reload.ps1
+
+# Standard WordPress & OS Ignores
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+*.bak
+*.log
+node_modules/
+vendor/

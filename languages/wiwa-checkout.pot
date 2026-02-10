@@ -1,0 +1,310 @@
+# Wiwa Tour Checkout Pro i18n
+# Copyright (C) 2024 Wiwa Tour
+# This file is distributed under the same license as the Wiwa Tour Checkout Pro plugin.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Tour Checkout Pro 2.0.1\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2024-01-01 00:00+0000\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Language-Team: \n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#: templates/checkout/step-1.php
+msgid "Nombre"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Apellido"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Correo electrónico"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Nacionalidad"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Ciudad"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Documento"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Cédula"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Pasaporte"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "NIT"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Céd. Extranjería"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Otro"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Teléfono de contacto"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Seleccionar"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Este campo es requerido"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Ingresa un email válido"
+msgstr ""
+
+#: templates/checkout/step-1.php
+msgid "Selecciona tu nacionalidad"
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "Selecciona tu medio de pago"
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "Moneda"
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "No hay métodos de pago disponibles."
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "Los pagos en %s están encriptados y protegidos."
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "Confirmar y pagar"
+msgstr ""
+
+#: templates/checkout/step-2.php
+msgid "Volver"
+msgstr ""
+
+#: templates/checkout/wrapper.php
+msgid "Información"
+msgstr ""
+
+#: templates/checkout/wrapper.php
+msgid "Pago"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Resumen"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Subtotal (%d tour%s)"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Descuento"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Impuestos"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Total"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Código de descuento"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "Aplicar"
+msgstr ""
+
+#: templates/checkout/sidebar-summary.php
+msgid "%d Viajero"
+msgid_plural "%d Viajeros"
+msgstr[0] ""
+msgstr[1] ""
+
+#: templates/thankyou/order-received.php
+msgid "¡Gracias por tu reserva!"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Estado de tu pedido"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Pedido #%s"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Resumen de tu reserva"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Subtotal"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Datos de contacto"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Método de pago"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Hemos enviado un correo de confirmación a"
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Si tienes alguna pregunta, contáctanos a través de nuestro WhatsApp o email."
+msgstr ""
+
+#: templates/thankyou/order-received.php
+msgid "Explorar más tours"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Tu carrito está vacío"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Parece que aún no has agregado ningún tour a tu carrito. ¡Explora nuestros increíbles destinos y vive una aventura única!"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Explorar Tours"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Destinos únicos"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Tours de aventura"
+msgstr ""
+
+#: templates/cart/empty-cart.php
+msgid "Experiencias 5 estrellas"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Configuración General"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Activar Checkout Personalizado"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Habilitar checkout personalizado de Wiwa Tours"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Sobrescribir Checkout WooCommerce"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Sobrescribir Carrito WooCommerce"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Shortcode"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Página de Checkout"
+msgstr ""
+
+#: admin/views/tab-general.php
+msgid "Guardar Cambios"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Gestor de Campos"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Campos de Facturación / Contacto"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Campos de Pasajeros"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Agregar Campo"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Campo"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Etiqueta"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Tipo"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Requerido"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Activo"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Acciones"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Guardar Campos"
+msgstr ""
+
+#: admin/views/tab-fields.php
+msgid "Agregar Nuevo Campo"
+msgstr ""
+
+#: includes/class-ajax-handler.php
+msgid "Moneda no válida"
+msgstr ""
+
+#: includes/class-ajax-handler.php
+msgid "¡Cupón aplicado!"
+msgstr ""
+
+#: includes/class-ajax-handler.php
+msgid "Cupón no válido"
+msgstr ""
+
+#: includes/class-ajax-handler.php
+msgid "Configuración guardada"
+msgstr ""
+
+#: includes/class-ajax-handler.php
+msgid "Campos guardados"
+msgstr ""

@@ -1,0 +1,2334 @@
+/**
+ * Wiwa Tour Checkout Styles v2.5.0
+ * @author Juan Pablo Misat - Connexis
+ */
+:root {
+    /* Wiwa Brand Colors */
+    --wiwa-brand: #1E3A2B;
+    --wiwa-brand-hover: #152A1F;
+    --wiwa-brand-light: #F5F7F4;
+    --wiwa-accent: #E8A63A;
+    --wiwa-accent-light: #FDF6E9;
+
+    /* Legacy aliases */
+    --wiwa-green: #1E3A2B;
+    --wiwa-green-hover: #152A1F;
+    --wiwa-green-light: #F5F7F4;
+
+    /* Neutrals */
+    --wiwa-gray-50: #FAFAFA;
+    --wiwa-gray-100: #F5F5F5;
+    --wiwa-gray-200: #EEEEEE;
+    --wiwa-gray-300: #E0E0E0;
+    --wiwa-gray-400: #BDBDBD;
+    --wiwa-gray-500: #9E9E9E;
+    --wiwa-gray-600: #757575;
+    --wiwa-gray-700: #424242;
+    --wiwa-gray-900: #212121;
+
+    /* Semantic */
+    --wiwa-error: #D32F2F;
+    --wiwa-error-light: #FFEBEE;
+    --wiwa-success: #2E7D32;
+    --wiwa-success-light: #E8F5E9;
+    --wiwa-info: #1976D2;
+    --wiwa-info-light: #E3F2FD;
+
+    /* UI */
+    --wiwa-radius: 10px;
+    --wiwa-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    --wiwa-shadow-md: 0 4px 16px rgba(0, 0, 0, 0.12);
+
+    /* Legacy */
+    --wiwa-purple: #8B5CF6;
+    --wiwa-red: #D32F2F
+}
+
+.wiwa-checkout-container {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 20px
+}
+
+.wiwa-checkout-steps {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 80px;
+    margin-bottom: 60px;
+    position: relative
+}
+
+.step-connector {
+    position: absolute;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 200px;
+    height: 2px;
+    background: var(--wiwa-gray-200);
+    z-index: 0
+}
+
+.step {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+    position: relative;
+    z-index: 1
+}
+
+.step-circle {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--wiwa-gray-100);
+    color: var(--wiwa-gray-400);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 700;
+    font-size: 16px;
+    transition: all .3s;
+    border: 3px solid transparent
+}
+
+.step.active .step-circle {
+    background: var(--wiwa-green);
+    color: white;
+    box-shadow: 0 4px 12px rgba(30, 58, 43, .25)
+}
+
+.step.completed .step-circle {
+    background: #10B981;
+    color: white
+}
+
+.step-label {
+    font-size: 15px;
+    font-weight: 500;
+    color: var(--wiwa-gray-500);
+    transition: all .3s
+}
+
+.step.active .step-label {
+    color: var(--wiwa-green);
+    font-weight: 600
+}
+
+.wiwa-checkout-content {
+    display: grid;
+    grid-template-columns: 1fr 420px;
+    gap: 48px;
+    align-items: start
+}
+
+.wiwa-checkout-form {
+    background: white;
+    padding: 48px;
+    border-radius: 16px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 1px 2px rgba(0, 0, 0, .06)
+}
+
+.wiwa-checkout-form h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin-bottom: 32px;
+    color: var(--wiwa-gray-900)
+}
+
+.section-header {
+    margin-bottom: 28px
+}
+
+.section-header h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+    margin-bottom: 8px;
+    line-height: 1.4
+}
+
+.section-header .description {
+    font-size: 14px;
+    color: var(--wiwa-gray-500);
+    line-height: 1.6
+}
+
+.form-grid {
+    display: grid;
+    gap: 24px;
+    margin-bottom: 36px
+}
+
+.form-grid-2 {
+    grid-template-columns: repeat(2, 1fr);
+    grid-auto-flow: dense;
+}
+
+.form-field {
+    display: flex;
+    flex-direction: column
+}
+
+/* Field Position Classes */
+.form-field.field-full {
+    grid-column: 1 / -1 !important;
+}
+
+.form-field.field-left {
+    grid-column: 1 !important;
+    width: 100%;
+}
+
+.form-field.field-right {
+    grid-column: 2 !important;
+    width: 100%;
+}
+
+/* Fixed Label Styles */
+.form-field label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--wiwa-gray-700);
+    margin-bottom: 8px;
+    padding-left: 2px;
+}
+
+.required {
+    color: var(--wiwa-red);
+    margin-left: 2px
+}
+
+.wiwa-input,
+.wiwa-select {
+    width: 100%;
+    padding: 16px 18px;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: var(--wiwa-radius);
+    font-size: 15px;
+    font-family: inherit;
+    transition: all .2s ease;
+    background: white;
+    color: var(--wiwa-gray-900)
+}
+
+.wiwa-input:hover,
+.wiwa-select:hover {
+    border-color: var(--wiwa-gray-400)
+}
+
+.wiwa-input:focus,
+.wiwa-select:focus {
+    outline: none;
+    border-color: var(--wiwa-brand);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, .1)
+}
+
+.wiwa-input.error,
+.wiwa-select.error {
+    border-color: var(--wiwa-error);
+    background: var(--wiwa-error-light)
+}
+
+.wiwa-input::placeholder {
+    color: var(--wiwa-gray-400)
+}
+
+/* Error messages hidden by default, shown only when field has error class */
+.error-message {
+    display: none;
+    color: var(--wiwa-error);
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 500
+}
+
+.form-field.has-error .error-message {
+    display: block
+}
+
+.form-field.has-error .wiwa-input,
+.form-field.has-error .wiwa-select {
+    border-color: var(--wiwa-error);
+    background: var(--wiwa-error-light)
+}
+
+/* Unified Input Groups (Phone & Document) */
+.phone-input,
+.document-input,
+.combined-input-group {
+    display: flex;
+    align-items: stretch;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: var(--wiwa-radius);
+    overflow: hidden;
+    background: white;
+    transition: all .2s ease;
+}
+
+.phone-input:focus-within,
+.document-input:focus-within,
+.combined-input-group:focus-within {
+    border-color: var(--wiwa-brand);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, .1);
+}
+
+.combined-input-group select,
+.combined-input-group input,
+.phone-code,
+.document-type {
+    border: none !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    background: transparent;
+}
+
+.combined-input-group select {
+    background-color: var(--wiwa-gray-50);
+    border-right: 1px solid var(--wiwa-gray-200) !important;
+    flex-shrink: 0;
+    width: auto;
+    min-width: 100px;
+    max-width: 140px;
+}
+
+/* Select2 Integration for Combined Groups */
+.combined-input-group .select2-container {
+    border: none !important;
+    flex-shrink: 0;
+    width: auto !important;
+    min-width: 100px;
+    margin: 0 !important;
+}
+
+.combined-input-group .select2-container .select2-selection {
+    border: none !important;
+    border-right: 1px solid var(--wiwa-gray-200) !important;
+    border-radius: 0 !important;
+    background-color: var(--wiwa-gray-50) !important;
+    /* Gray bg for the select part */
+    height: 100% !important;
+    display: flex;
+    align-items: center;
+    box-shadow: none !important;
+}
+
+.combined-input-group .select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100% !important;
+    right: 5px !important;
+}
+
+.combined-input-group .select2-container--default .select2-selection--single .select2-selection__rendered {
+    line-height: normal !important;
+    padding-top: 0 !important;
+    padding-bottom: 0 !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* Fix Focus State for Select2 inside Group */
+.combined-input-group .select2-container--focus .select2-selection {
+    border-color: transparent !important;
+    outline: none !important;
+}
+
+/* Ensure Input fills remaining space */
+.combined-input-group input {
+    flex-grow: 1;
+    border: none !important;
+    border-radius: 0 !important;
+    margin: 0 !important;
+    width: auto;
+    /* Fix for some themes forcing width 100% */
+}
+
+.combined-input-group input {
+    flex-grow: 1;
+}
+
+.phone-code,
+.document-type {
+    padding: 14px 12px;
+    font-size: 13px
+}
+
+/* Country select with search */
+.wiwa-country-select {
+    max-height: 300px
+}
+
+.section-divider {
+    border: none;
+    border-top: 1px solid var(--wiwa-gray-200);
+    margin: 40px 0
+}
+
+.section-divider-text {
+    position: relative;
+    text-align: center;
+    margin: 48px 0 32px
+}
+
+.section-divider-text::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    right: 0;
+    height: 1px;
+    background: var(--wiwa-gray-300);
+    z-index: 0
+}
+
+.section-divider-text span {
+    position: relative;
+    background: white;
+    padding: 0 20px;
+    color: var(--wiwa-gray-600);
+    font-size: 14px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: .5px;
+    z-index: 1
+}
+
+.tours-accordion {
+    display: flex;
+    flex-direction: column;
+    gap: 20px
+}
+
+.tour-accordion-item {
+    border: 2px solid var(--wiwa-gray-200);
+    border-radius: 16px;
+    overflow: hidden;
+    transition: all .3s;
+    background: white
+}
+
+.tour-accordion-item:hover {
+    border-color: var(--wiwa-green);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, .08)
+}
+
+.tour-accordion-item.active {
+    border-color: var(--wiwa-green)
+}
+
+.tour-accordion-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    cursor: pointer;
+    transition: background .2s;
+    background: var(--wiwa-gray-50)
+}
+
+.tour-accordion-header:hover {
+    background: var(--wiwa-green-light)
+}
+
+.tour-accordion-header-left {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1
+}
+
+.tour-thumbnail {
+    width: 80px;
+    height: 80px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0
+}
+
+.tour-thumbnail img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.tour-info {
+    flex: 1
+}
+
+.tour-name {
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+    margin-bottom: 8px;
+    line-height: 1.4
+}
+
+.tour-name a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+}
+
+.tour-name a:hover {
+    color: var(--wiwa-green);
+}
+
+.tour-meta {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap
+}
+
+.meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--wiwa-gray-600)
+}
+
+.meta-item svg {
+    flex-shrink: 0;
+    color: var(--wiwa-gray-500)
+}
+
+.tour-accordion-toggle {
+    background: transparent;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 50%;
+    /* Circle shape */
+    padding: 10px;
+    /* Larger touch target */
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--wiwa-gray-600);
+    transition: all .3s;
+    flex-shrink: 0;
+}
+
+.tour-accordion-toggle:hover {
+    background: white;
+    color: var(--wiwa-green);
+    border-color: var(--wiwa-green);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+.tour-accordion-toggle .chevron {
+    transition: transform .3s cubic-bezier(.4, 0, .2, 1)
+}
+
+.tour-accordion-item.active .chevron {
+    transform: rotate(180deg)
+}
+
+.tour-accordion-body {
+    max-height: 0;
+    overflow: hidden;
+    transition: max-height .4s cubic-bezier(.4, 0, .2, 1);
+    padding: 0 24px
+}
+
+.tour-accordion-item.active .tour-accordion-body {
+    max-height: 5000px;
+    padding: 24px
+}
+
+.passenger-block.compact {
+    background: var(--wiwa-gray-50);
+    padding: 20px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    border: 1px solid var(--wiwa-gray-200)
+}
+
+.passenger-block.compact:last-child {
+    margin-bottom: 0
+}
+
+.passenger-block.compact .passenger-header {
+    margin-bottom: 16px
+}
+
+.passenger-block.compact .passenger-header h5 {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wiwa-gray-900)
+}
+
+.passenger-header {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.passenger-icon {
+    color: var(--wiwa-green);
+    display: flex;
+    align-items: center
+}
+
+.pax-type {
+    font-weight: 400;
+    color: var(--wiwa-gray-500);
+    font-size: 14px
+}
+
+.date-input-group {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px
+}
+
+.currency-selector-section h3,
+.payment-methods-section h3 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-bottom: 20px;
+    color: var(--wiwa-gray-900)
+}
+
+.currency-options {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px
+}
+
+.currency-option {
+    position: relative;
+    cursor: pointer
+}
+
+.currency-option input[type=radio] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none
+}
+
+.currency-content {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 18px;
+    border: 2px solid var(--wiwa-gray-300);
+    border-radius: 12px;
+    transition: all .2s;
+    background: white
+}
+
+.currency-option:hover .currency-content {
+    border-color: var(--wiwa-green)
+}
+
+.currency-option input:checked~.currency-content {
+    border-color: var(--wiwa-green);
+    background: var(--wiwa-green-light)
+}
+
+.currency-flag {
+    font-size: 24px
+}
+
+.currency-code {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--wiwa-gray-700)
+}
+
+.payment-methods-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
+
+.payment-method-option {
+    cursor: pointer
+}
+
+.payment-method-option input[type=radio] {
+    position: absolute;
+    opacity: 0;
+    pointer-events: none
+}
+
+.payment-method-content {
+    padding: 20px;
+    border: 2px solid var(--wiwa-gray-300);
+    border-radius: 12px;
+    transition: all .2s;
+    background: white
+}
+
+.payment-method-option:hover .payment-method-content {
+    border-color: var(--wiwa-green)
+}
+
+.payment-method-option input:checked~.payment-method-content {
+    border-color: var(--wiwa-green);
+    background: var(--wiwa-green-light)
+}
+
+.payment-method-header {
+    display: flex;
+    align-items: center;
+    gap: 12px
+}
+
+.payment-method-icon {
+    color: var(--wiwa-gray-600);
+    display: flex
+}
+
+.payment-method-title {
+    font-weight: 600;
+    font-size: 16px;
+    color: var(--wiwa-gray-900)
+}
+
+.payment-method-description {
+    margin-top: 16px;
+    padding-top: 16px;
+    border-top: 1px solid var(--wiwa-gray-200)
+}
+
+.trust-badge {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    background: var(--wiwa-green-light);
+    border-radius: 10px;
+    color: #065F46;
+    font-size: 14px;
+    margin-top: 28px
+}
+
+.trust-badge svg {
+    flex-shrink: 0
+}
+
+.form-footer {
+    margin-top: 40px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px
+}
+
+.checkbox-label {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    font-size: 14px;
+    color: var(--wiwa-gray-700);
+    cursor: pointer;
+    line-height: 1.6
+}
+
+.checkbox-label input[type=checkbox] {
+    margin-top: 3px;
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    flex-shrink: 0
+}
+
+.checkbox-label a {
+    color: var(--wiwa-green);
+    text-decoration: underline
+}
+
+.btn-primary {
+    background: var(--wiwa-green);
+    color: white;
+    padding: 16px 32px;
+    border: none;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all .3s;
+    width: 100%
+}
+
+.btn-primary:hover {
+    background: var(--wiwa-green-hover);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 20px rgba(30, 58, 43, .2)
+}
+
+.btn-primary:active {
+    transform: translateY(0)
+}
+
+.btn-primary:disabled {
+    opacity: .6;
+    cursor: not-allowed;
+    transform: none
+}
+
+.btn-secondary {
+    background: white;
+    color: var(--wiwa-gray-700);
+    border: 2px solid var(--wiwa-gray-300);
+    padding: 14px 28px;
+    border-radius: 12px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: all .3s;
+    text-decoration: none;
+    justify-content: center
+}
+
+.btn-secondary:hover {
+    background: var(--wiwa-gray-50);
+    border-color: var(--wiwa-gray-400)
+}
+
+.order-summary-sticky {
+    position: sticky;
+    top: 120px
+}
+
+.order-summary-card {
+    background: var(--wiwa-gray-50);
+    padding: 32px;
+    border-radius: 16px;
+    border: 1.5px solid var(--wiwa-gray-200)
+}
+
+.summary-title {
+    font-size: 22px;
+    font-weight: 700;
+    margin-bottom: 24px;
+    color: var(--wiwa-gray-900)
+}
+
+.summary-products {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-bottom: 20px
+}
+
+.summary-product-item {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 16px;
+    padding: 16px;
+    background: white;
+    border-radius: 12px;
+    border: 1px solid var(--wiwa-gray-200)
+}
+
+.summary-product-image {
+    width: 80px;
+    height: 80px;
+    border-radius: 8px;
+    overflow: hidden
+}
+
+.summary-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover
+}
+
+.summary-product-name {
+    font-size: 17px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: var(--wiwa-gray-900);
+    line-height: 1.4
+}
+
+.summary-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px
+}
+
+.summary-meta-item {
+    font-size: 13px;
+    color: var(--wiwa-gray-600);
+    display: flex;
+    align-items: center;
+    gap: 8px
+}
+
+.summary-meta-item svg {
+    flex-shrink: 0;
+    color: var(--wiwa-gray-500)
+}
+
+.summary-product-price {
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--wiwa-green);
+    margin-top: 8px
+}
+
+.summary-divider {
+    border: none;
+    border-top: 1px solid var(--wiwa-gray-300);
+    margin: 20px 0
+}
+
+.summary-prices {
+    margin: 20px 0
+}
+
+.price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 14px;
+    font-size: 15px
+}
+
+.price-label {
+    color: var(--wiwa-gray-600)
+}
+
+.price-value {
+    font-weight: 600;
+    color: var(--wiwa-gray-900)
+}
+
+.discount-row .price-value {
+    color: #10B981
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    font-size: 18px;
+    font-weight: 700;
+    padding: 20px 0
+}
+
+.total-label {
+    color: var(--wiwa-gray-900)
+}
+
+.total-value {
+    font-size: 26px;
+    color: var(--wiwa-green)
+}
+
+.summary-coupon {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 10px;
+    margin-top: 24px
+}
+
+.coupon-input {
+    padding: 14px 16px;
+    border: 1.5px solid var(--wiwa-gray-300);
+    border-radius: 10px;
+    font-size: 14px
+}
+
+.coupon-input:focus {
+    outline: none;
+    border-color: var(--wiwa-purple)
+}
+
+.btn-apply-coupon {
+    padding: 14px 24px;
+    background: var(--wiwa-purple);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .3s;
+    white-space: nowrap
+}
+
+.btn-apply-coupon:hover {
+    background: #7C3AED
+}
+
+.coupon-message {
+    margin-top: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    font-size: 14px
+}
+
+.coupon-message.success {
+    background: #D1FAE5;
+    color: #065F46
+}
+
+.coupon-message.error {
+    background: #FEE2E2;
+    color: #991B1B
+}
+
+@media (max-width:1024px) {
+    .wiwa-checkout-content {
+        grid-template-columns: 1fr
+    }
+
+    .checkout-sidebar-column {
+        order: -1
+    }
+}
+
+@media (max-width:768px) {
+    .wiwa-checkout-container {
+        padding: 24px 16px
+    }
+
+    .wiwa-checkout-form {
+        padding: 28px 20px
+    }
+
+    .wiwa-checkout-steps {
+        gap: 40px
+    }
+
+    .step-connector {
+        width: 120px
+    }
+
+    .order-summary-card {
+        padding: 24px
+    }
+
+    .summary-product-item {
+        grid-template-columns: 80px 1fr;
+        gap: 16px
+    }
+
+    .tour-accordion-header-left {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 12px
+    }
+
+    .tour-thumbnail {
+        width: 100%;
+        height: 120px
+    }
+
+    .tour-meta {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px
+    }
+
+    .form-grid-2 {
+        grid-template-columns: 1fr
+    }
+}
+
+/* Currency Dropdown Styles */
+.currency-dropdown-wrapper {
+    margin-bottom: 20px
+}
+
+.currency-select {
+    padding: 16px 20px;
+    font-size: 16px;
+    border: 2px solid var(--wiwa-gray-300);
+    border-radius: 12px;
+    background: white url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%236B7280' viewBox='0 0 16 16'%3E%3Cpath d='M7.247 11.14 2.451 5.658C1.885 5.013 2.345 4 3.204 4h9.592a1 1 0 0 1 .753 1.659l-4.796 5.48a1 1 0 0 1-1.506 0z'/%3E%3C/svg%3E") no-repeat right 16px center;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    cursor: pointer;
+    transition: all .2s
+}
+
+.currency-select:hover,
+.currency-select:focus {
+    border-color: var(--wiwa-green);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, .08)
+}
+
+/* Step 2 Footer Reorder */
+.form-footer-step2 {
+    display: flex;
+    flex-direction: column;
+    gap: 16px
+}
+
+.form-footer-step2 .btn-primary {
+    order: 1
+}
+
+.form-footer-step2 .btn-secondary {
+    order: 2
+}
+
+/* Clickable Steps */
+.wiwa-checkout-steps .step {
+    text-decoration: none
+}
+
+.wiwa-checkout-steps a.step:hover .step-circle {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(30, 58, 43, .2)
+}
+
+/* Phone Input Wrapper */
+.phone-input-wrapper {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 10px
+}
+
+.phone-code-select {
+    padding: 14px 12px;
+    font-size: 14px
+}
+
+.phone-number-input {
+    flex: 1
+}
+
+/* Full Width Field */
+.form-field.full-width {
+    grid-column: 1 / -1
+}
+
+/* Select2 Integration */
+.select2-container--default .select2-selection--single {
+    height: auto;
+    padding: 10px 14px;
+    border: 1.5px solid var(--wiwa-gray-300);
+    border-radius: 10px
+}
+
+.select2-container--default .select2-selection--single .select2-selection__rendered {
+    padding: 0;
+    line-height: 1.5
+}
+
+.select2-container--default .select2-selection--single .select2-selection__arrow {
+    height: 100%;
+    top: 0;
+    right: 10px
+}
+
+.select2-container--default.select2-container--focus .select2-selection--single {
+    border-color: var(--wiwa-green);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, .08)
+}
+
+.select2-dropdown {
+    border: 1.5px solid var(--wiwa-gray-300);
+    border-radius: 10px;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, .1)
+}
+
+.select2-search--dropdown .select2-search__field {
+    padding: 10px 14px;
+    border: 1.5px solid var(--wiwa-gray-300);
+    border-radius: 8px
+}
+
+.select2-results__option--highlighted[aria-selected] {
+    background: var(--wiwa-green-light);
+    color: var(--wiwa-green)
+}
+
+.select2-results__option[aria-selected=true] {
+    background: var(--wiwa-green);
+    color: white
+}
+
+/* ========================================
+   Accordion Error States
+   ======================================== */
+/* ========================================
+   Accordion Error States
+   ======================================== */
+.tour-accordion-item.has-error {
+    border-color: #ef4444;
+}
+
+.tour-accordion-item.has-error .tour-accordion-header {
+    background: #FEF2F2;
+    /* Soft red bg */
+}
+
+.tour-accordion-item.has-error .passenger-name {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+/* Error Badge inside Accordion Header */
+.accordion-error-badge {
+    display: none;
+    background: #ef4444;
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 6px 12px;
+    border-radius: 20px;
+    margin-left: auto;
+    margin-right: 16px;
+    /* Space between badge and toggle */
+    box-shadow: 0 2px 4px rgba(239, 68, 68, 0.2);
+}
+
+.tour-accordion-item.has-error .accordion-error-badge {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 4px;
+}
+
+/* Clear error state when accordion is opened */
+.tour-accordion-item.active.has-error .tour-accordion-header {
+    border-color: var(--wiwa-green);
+    background: var(--wiwa-green-light);
+}
+
+/* Form Fields Error State */
+.form-field.has-error label {
+    color: #ef4444;
+    font-weight: 600;
+}
+
+.form-field.has-error input,
+.form-field.has-error select,
+.form-field.has-error .select2-selection,
+.form-field.has-error .combined-input-group {
+    border-color: #ef4444 !important;
+    background-color: #FEF2F2 !important;
+}
+
+.form-field.has-error .input-error-msg {
+    display: block;
+    color: #ef4444;
+    font-size: 12px;
+    margin-top: 6px;
+    font-weight: 500;
+}
+
+/* Currency Switcher Integration */
+.summary-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.summary-title {
+    margin-bottom: 0 !important;
+}
+
+.wiwa-currency-switcher.style-buttons .currency-buttons {
+    display: flex;
+    gap: 8px;
+}
+
+.currency-btn {
+    padding: 8px 14px;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 20px;
+    background: white;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--wiwa-gray-700);
+    cursor: pointer;
+    transition: all 0.2s;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.currency-btn .currency-flag {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.currency-btn:hover {
+    border-color: var(--wiwa-brand);
+    color: var(--wiwa-brand);
+}
+
+.currency-btn.active {
+    background: var(--wiwa-brand);
+    color: white;
+    border-color: var(--wiwa-brand);
+}
+
+.wiwa-currency-switcher.style-dropdown .currency-select {
+    padding: 8px 12px;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: var(--wiwa-radius);
+    font-size: 14px;
+    background: white;
+    color: var(--wiwa-gray-700);
+    cursor: pointer;
+    min-width: 120px;
+}
+
+.wiwa-currency-switcher.style-dropdown .currency-select:focus {
+    border-color: var(--wiwa-brand);
+    outline: none;
+}
+
+/* ========================================
+   Combined Input Fields (Tipo Doc + Número, Código + Tel)
+   ======================================== */
+.combined-input-group {
+    display: grid;
+    grid-template-columns: 120px 1fr;
+    gap: 0;
+}
+
+.combined-input-group .wiwa-select,
+.combined-input-group .wiwa-input {
+    border-radius: 0;
+}
+
+.combined-input-group .wiwa-select:first-child,
+.combined-input-group .wiwa-input:first-child {
+    border-radius: var(--wiwa-radius) 0 0 var(--wiwa-radius);
+    border-right: none;
+}
+
+.combined-input-group .wiwa-select:last-child,
+.combined-input-group .wiwa-input:last-child {
+    border-radius: 0 var(--wiwa-radius) var(--wiwa-radius) 0;
+}
+
+.combined-input-group:focus-within .wiwa-select,
+.combined-input-group:focus-within .wiwa-input {
+    border-color: var(--wiwa-brand);
+}
+
+/* ---- Mobile: Combined Input Groups ---- */
+@media (max-width: 600px) {
+    .combined-input-group {
+        grid-template-columns: 95px 1fr;
+    }
+
+    .combined-input-group .select2-container {
+        max-width: 95px !important;
+        width: 95px !important;
+    }
+
+    .combined-input-group .select2-container .select2-selection__rendered {
+        font-size: 12px !important;
+        padding-left: 6px !important;
+        padding-right: 18px !important;
+    }
+
+    .combined-input-group .select2-container .select2-selection__arrow {
+        right: 2px !important;
+    }
+
+    .combined-input-group select {
+        min-width: 85px;
+        max-width: 95px;
+        font-size: 12px;
+        padding: 10px 6px;
+    }
+
+    .combined-input-group input.wiwa-input {
+        font-size: 14px;
+        padding: 10px 8px;
+    }
+
+    /* Make form fields stack better on very small screens */
+    .form-grid-2 {
+        grid-template-columns: 1fr !important;
+    }
+
+    .form-field.field-left,
+    .form-field.field-right {
+        grid-column: span 1 !important;
+    }
+}
+
+/* Phone Code Select with Flag */
+.phone-code-select {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 14px 12px;
+    background: var(--wiwa-gray-50);
+}
+
+.phone-code-select .flag {
+    font-size: 18px;
+    line-height: 1;
+}
+
+/* ========================================
+   Accordion Scroll for Many Passengers
+   ======================================== */
+.tour-accordion-body-inner {
+    max-height: 500px;
+    overflow-y: auto;
+    padding-right: 8px;
+}
+
+.tour-accordion-body-inner::-webkit-scrollbar {
+    width: 6px;
+}
+
+.tour-accordion-body-inner::-webkit-scrollbar-track {
+    background: var(--wiwa-gray-100);
+    border-radius: 3px;
+}
+
+.tour-accordion-body-inner::-webkit-scrollbar-thumb {
+    background: var(--wiwa-gray-400);
+    border-radius: 3px;
+}
+
+.tour-accordion-body-inner::-webkit-scrollbar-thumb:hover {
+    background: var(--wiwa-gray-500);
+}
+
+/* ========================================
+   Improved Accordion Error State
+   ======================================== */
+.tour-accordion-item.has-error {
+    border-color: var(--wiwa-error);
+}
+
+.tour-accordion-item.has-error .tour-accordion-header {
+    background: var(--wiwa-error-light);
+}
+
+.accordion-error-badge {
+    display: none;
+    background: var(--wiwa-error);
+    color: white;
+    font-size: 11px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-left: auto;
+}
+
+.tour-accordion-item.has-error:not(.active) .accordion-error-badge {
+    display: inline-block;
+}
+
+/* ========================================
+   Tour Clickable Link
+   ======================================== */
+.tour-name-link {
+    color: inherit;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.tour-name-link:hover {
+    color: var(--wiwa-brand);
+    text-decoration: underline;
+}
+
+/* ========================================
+   Currency Section Styling (Summary)
+   ======================================== */
+.currency-section {
+    margin-bottom: 24px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--wiwa-gray-200);
+}
+
+.currency-section-title {
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wiwa-gray-600);
+    margin-bottom: 12px;
+}
+
+/* ========================================
+   Typeahead / Select2 Improvements
+   ======================================== */
+.typeahead-with-flag .select2-selection__rendered {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.typeahead-with-flag .country-flag {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.select2-results__option .country-flag {
+    margin-right: 8px;
+}
+
+/* ========================================
+   Passenger Block Improvements
+   ======================================== */
+.passenger-block.compact .form-grid {
+    margin-bottom: 0;
+}
+
+.passenger-block.compact .form-field {
+    margin-bottom: 16px;
+}
+
+.passenger-block.compact .form-field:last-child {
+    margin-bottom: 0;
+}
+
+/* ========================================
+   Summary Product Clickable
+   ======================================== */
+.summary-product-link {
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.summary-product-link:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--wiwa-shadow-md);
+}
+
+.summary-product-link .summary-product-name {
+    transition: color 0.2s;
+}
+
+.summary-product-link:hover .summary-product-name {
+    color: var(--wiwa-brand);
+}
+
+/* Remove icon from summary tour title */
+.summary-product-name svg,
+.summary-product-name .tour-icon {
+    display: none;
+}
+
+/* ========================================
+   Summary Title Styling
+   ======================================== */
+.summary-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wiwa-gray-900);
+    margin: 0 0 20px 0;
+    padding: 0 0 16px 0;
+    border-bottom: 1px solid var(--wiwa-gray-200);
+}
+
+/* ========================================
+   Summary Meta (Date/Passengers) Larger
+   ======================================== */
+.summary-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: var(--wiwa-gray-700);
+}
+
+.summary-meta-item svg {
+    color: var(--wiwa-brand);
+}
+
+.summary-meta-pax,
+.summary-meta-item:first-child {
+    font-weight: 600;
+    font-size: 15px;
+}
+
+/* Remove underlines from all summary links */
+.summary-product-link,
+.summary-product-link:hover,
+.summary-product-name,
+.summary-product-name a {
+    text-decoration: none !important;
+}
+
+/* ========================================
+   WOOCS Currency Buttons - Fixed Styling
+   ======================================== */
+.currency-section {
+    margin-bottom: 20px;
+    padding: 16px;
+    background: var(--wiwa-gray-50);
+    border-radius: var(--wiwa-radius);
+    border: 1px solid var(--wiwa-gray-200);
+}
+
+.currency-section-title {
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--wiwa-gray-600);
+    margin-bottom: 12px;
+    display: block;
+}
+
+.currency-buttons {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.currency-btn {
+    padding: 10px 16px;
+    border: 2px solid var(--wiwa-gray-300);
+    border-radius: 8px;
+    background: white;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--wiwa-gray-700);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.currency-btn .currency-flag {
+    font-size: 18px;
+    line-height: 1;
+}
+
+.currency-btn .currency-code {
+    font-weight: 700;
+}
+
+.currency-btn:hover {
+    border-color: var(--wiwa-brand);
+    background: var(--wiwa-brand-light);
+    color: var(--wiwa-brand);
+}
+
+.currency-btn.active {
+    background: var(--wiwa-brand);
+    border-color: var(--wiwa-brand);
+    color: white;
+}
+
+.currency-btn.active:hover {
+    background: var(--wiwa-brand-hover);
+    border-color: var(--wiwa-brand-hover);
+}
+
+/* Currency Select dropdown */
+.currency-select {
+    width: 100%;
+    padding: 12px 16px;
+    border: 2px solid var(--wiwa-gray-300);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 500;
+    background: white;
+    cursor: pointer;
+    transition: border-color 0.2s;
+}
+
+.currency-select:focus {
+    border-color: var(--wiwa-brand);
+    outline: none;
+}
+
+/* ========================================
+   Step 2 - Hide Currency in Sidebar
+   ======================================== */
+.wiwa-checkout-form[id*="step-2"]~.checkout-sidebar-column .currency-section,
+#wiwa-checkout-step-2~.checkout-sidebar-column .currency-section,
+.step-2-page .currency-section {
+    display: none !important;
+}
+
+/* Also hide via body class if step 2 */
+body.checkout-step-2 .order-summary-card .currency-section {
+    display: none !important;
+}
+
+/* ========================================
+   Pay Button - Prominent Brand Style
+   ======================================== */
+.btn-primary,
+button[type="submit"].btn-primary,
+.wiwa-checkout-form button[type="submit"] {
+    background: linear-gradient(135deg, var(--wiwa-accent) 0%, #D4942F 100%);
+    color: white;
+    border: none;
+    padding: 18px 32px;
+    border-radius: 12px;
+    font-size: 17px;
+    font-weight: 700;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 16px rgba(232, 166, 58, 0.35);
+    width: 100%;
+    text-transform: none;
+}
+
+.btn-primary:hover,
+button[type="submit"].btn-primary:hover,
+.wiwa-checkout-form button[type="submit"]:hover {
+    background: linear-gradient(135deg, #D4942F 0%, var(--wiwa-accent) 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 24px rgba(232, 166, 58, 0.45);
+}
+
+.btn-primary:active,
+.wiwa-checkout-form button[type="submit"]:active {
+    transform: translateY(0);
+}
+
+.btn-primary:disabled,
+.wiwa-checkout-form button[type="submit"]:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+}
+
+/* Step 2 specific pay button */
+#wiwa-checkout-step-2 button[type="submit"],
+.payment-submit-btn {
+    background: linear-gradient(135deg, var(--wiwa-accent) 0%, #D4942F 100%);
+    font-size: 18px;
+    padding: 20px 36px;
+    margin-top: 20px;
+}
+
+/* ========================================
+   Input Normalization - All Inputs Consistent
+   ======================================== */
+.wiwa-input,
+.wiwa-select,
+.wiwa-checkout-form input[type="text"],
+.wiwa-checkout-form input[type="email"],
+.wiwa-checkout-form input[type="tel"],
+.wiwa-checkout-form input[type="number"],
+.wiwa-checkout-form input[type="date"],
+.wiwa-checkout-form select,
+.tour-accordion-body input,
+.tour-accordion-body select,
+.passenger-block input,
+.passenger-block select {
+    width: 100%;
+    padding: 14px 16px;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 8px;
+    font-size: 15px;
+    font-family: inherit;
+    background: white;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    box-sizing: border-box;
+}
+
+.wiwa-input:focus,
+.wiwa-select:focus,
+.wiwa-checkout-form input:focus,
+.wiwa-checkout-form select:focus,
+.tour-accordion-body input:focus,
+.tour-accordion-body select:focus,
+.passenger-block input:focus,
+.passenger-block select:focus {
+    border-color: var(--wiwa-brand);
+    outline: none;
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.1);
+}
+
+/* Error state for inputs */
+.wiwa-input.error,
+.wiwa-checkout-form input.error,
+.wiwa-checkout-form select.error,
+.form-field.has-error input,
+.form-field.has-error select {
+    border-color: var(--wiwa-error);
+}
+
+
+.form-field.has-error select:focus {
+    box-shadow: 0 0 0 3px rgba(211, 47, 47, 0.1);
+}
+
+/* ========================================
+   Sidebar Summary Styles - Premium
+   ======================================== */
+.order-summary-card {
+    background: linear-gradient(145deg, #ffffff 0%, #f8faf9 100%);
+    padding: 28px;
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(30, 58, 43, 0.08);
+    margin-bottom: 24px;
+    overflow: hidden;
+    border: 1px solid rgba(30, 58, 43, 0.08);
+}
+
+.summary-products {
+    margin: 16px 0 0 0;
+    /* Add top margin to separate from title */
+    padding: 0;
+}
+
+.summary-product-item {
+    display: flex;
+    gap: 16px;
+    padding: 16px;
+    border: 2px solid var(--wiwa-gray-200);
+    border-radius: 14px;
+    background: #ffffff;
+    transition: all 0.25s ease;
+    align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.summary-product-item:hover {
+    border-color: var(--wiwa-brand);
+    box-shadow: 0 6px 20px rgba(30, 58, 43, 0.12);
+    transform: translateY(0px);
+}
+
+.summary-product-link {
+    text-decoration: none;
+    color: inherit;
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    border-radius: 14px;
+    /* Match child border-radius */
+    overflow: hidden;
+    /* Prevent child overflow */
+}
+
+.summary-product-image {
+    width: 85px;
+    height: 85px;
+    border-radius: 12px;
+    overflow: hidden;
+    flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.summary-product-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.summary-product-details {
+    flex-grow: 1;
+    min-width: 0;
+}
+
+.summary-product-name {
+    font-size: 16px;
+    font-weight: 700;
+    margin: 0 0 8px 0;
+    color: var(--wiwa-gray-900);
+    line-height: 1.3;
+}
+
+.summary-meta {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.summary-meta-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 13px;
+    color: var(--wiwa-gray-600);
+}
+
+.summary-meta-item svg {
+    color: var(--wiwa-brand);
+    opacity: 0.7;
+    flex-shrink: 0;
+}
+
+.summary-product-price {
+    font-weight: 800;
+    color: var(--wiwa-brand);
+    font-size: 18px;
+    margin-top: 10px;
+}
+
+.summary-divider {
+    margin: 24px 0;
+    border: 0;
+    border-top: 1px dashed var(--wiwa-gray-300);
+}
+
+.summary-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 20px;
+    color: var(--wiwa-gray-900);
+    letter-spacing: -0.02em;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.summary-title::before {
+    content: '';
+    width: 4px;
+    height: 24px;
+    background: var(--wiwa-brand);
+    border-radius: 2px;
+}
+
+.summary-prices {
+    background: var(--wiwa-gray-50);
+    border-radius: 12px;
+    padding: 16px;
+    margin-top: 16px;
+}
+
+.summary-prices .price-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    font-size: 14px;
+    color: var(--wiwa-gray-600);
+    align-items: center;
+}
+
+.summary-prices .price-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.summary-prices .price-label svg {
+    color: var(--wiwa-gray-400);
+    width: 16px;
+    height: 16px;
+}
+
+.summary-prices .price-value {
+    font-weight: 600;
+    color: var(--wiwa-gray-800);
+}
+
+.summary-prices .discount-row .price-value {
+    color: var(--wiwa-green);
+    font-weight: 700;
+}
+
+.summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 16px;
+    border-top: 2px solid var(--wiwa-gray-200);
+    margin-top: 16px;
+}
+
+.summary-total .total-label {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--wiwa-gray-700);
+}
+
+.summary-total .total-value {
+    font-size: 24px;
+    font-weight: 800;
+    color: var(--wiwa-brand);
+}
+
+/* ========================================
+   Step 2 Specific Styles
+   ======================================== */
+/* Hide Currency Selector in Sidebar ONLY on Step 2 */
+/* Using :has() to detect if we are on step 2 because body_class filter fires too late */
+.wiwa-checkout-content:has(#wiwa-checkout-step-2) .checkout-sidebar-column .currency-section,
+.checkout-main-column:has(#wiwa-checkout-step-2)+.checkout-sidebar-column .currency-section {
+    display: none !important;
+}
+
+/* Payment Methods Message - Branded */
+.payment-methods-wrapper .woocommerce-info {
+    border-top: 3px solid var(--wiwa-brand);
+    background-color: #f8faf9;
+    color: var(--wiwa-gray-700);
+    border-radius: 8px;
+    padding: 24px;
+    /* Increased padding */
+    font-weight: 500;
+    text-align: center;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    /* Soft shadow */
+    margin: 20px 0;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+}
+
+.payment-methods-wrapper .woocommerce-info::before {
+    content: '';
+    /* Remove default icon if any, or we can use a custom SVG */
+    display: block;
+    width: 24px;
+    height: 24px;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 24 24' stroke='%231E3A2B'%3E%3Cpath stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'/%3E%3C/svg%3E");
+    background-size: contain;
+    margin-bottom: 4px;
+    opacity: 0.8;
+}
+
+/* ========================================
+   Sticky Sidebar Logic
+   ======================================== */
+/* Ensure sidebar column stretches to allow sticky scrolling within it */
+.checkout-sidebar-column {
+    align-self: stretch;
+    height: 100%;
+    position: relative;
+    display: block;
+    /* Ensure it behaves as a block for sticky child */
+}
+
+.order-summary-sticky {
+    position: -webkit-sticky;
+    /* Safari */
+    position: sticky;
+    top: 40px;
+    /* Space from top */
+    z-index: 90;
+    /* Below modal overlay */
+    align-self: start;
+    /* Required for sticky to work */
+    transition: top 0.3s ease;
+    width: 100%;
+}
+
+/* Adjust for Admin Bar if present */
+body.admin-bar .order-summary-sticky {
+    top: 72px;
+}
+
+/* Disable sticky on mobile/tablet */
+@media (max-width: 991px) {
+    .order-summary-sticky {
+        position: static;
+        width: auto;
+    }
+
+    .checkout-sidebar-column {
+        height: auto;
+    }
+}
+
+/* ========================================
+   Order Received Page (Thank You)
+   ======================================= */
+.woocommerce-order-received .entry-content .woocommerce {
+    max-width: 900px;
+    margin: 40px auto;
+    font-family: 'DM Sans', sans-serif;
+}
+
+.woocommerce-order-received .woocommerce-notice--success,
+.woocommerce-order-received .woocommerce-thankyou-order-received {
+    background-color: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    color: #166534;
+    padding: 40px;
+    border-radius: 16px;
+    text-align: center;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 40px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.woocommerce-order-received .woocommerce-thankyou-order-received::before {
+    content: '✓';
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 64px;
+    height: 64px;
+    background-color: #166534;
+    color: white;
+    border-radius: 50%;
+    font-size: 32px;
+    margin-bottom: 10px;
+    box-shadow: 0 4px 6px -1px rgba(22, 101, 52, 0.3);
+}
+
+/* Order Details List (Order #, Date, Etc) */
+ul.order_details {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    list-style: none;
+    padding: 25px;
+    margin: 0 0 40px 0;
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    justify-content: space-between;
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+}
+
+ul.order_details li {
+    float: none;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-right: 1px solid #f3f4f6;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.05em;
+    color: #6b7280;
+    flex: 1;
+    min-width: 140px;
+    padding-right: 20px;
+}
+
+ul.order_details li:last-child {
+    border-right: none;
+}
+
+ul.order_details li strong {
+    display: block;
+    font-size: 1.1rem;
+    font-weight: 700;
+    color: #111827;
+    margin-top: 8px;
+    text-transform: none;
+    letter-spacing: normal;
+}
+
+/* Order Details Table Section */
+.woocommerce-order-details {
+    background: #fff;
+    border: 1px solid #e5e7eb;
+    border-radius: 16px;
+    padding: 40px;
+    margin-bottom: 40px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+}
+
+.woocommerce-order-details__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #111827;
+    padding-bottom: 20px;
+    border-bottom: 2px solid #f3f4f6;
+}
+
+.woocommerce-table--order-details {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: none;
+    margin: 0;
+}
+
+.woocommerce-table--order-details th,
+.woocommerce-table--order-details td {
+    border: none;
+    border-bottom: 1px solid #f3f4f6;
+    padding: 20px 15px;
+    text-align: left;
+    vertical-align: middle;
+}
+
+.woocommerce-table--order-details th {
+    font-weight: 600;
+    color: #6b7280;
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    background-color: #f9fafb;
+}
+
+.woocommerce-table--order-details thead th:first-child {
+    border-top-left-radius: 8px;
+    border-bottom-left-radius: 8px;
+}
+
+.woocommerce-table--order-details thead th:last-child {
+    border-top-right-radius: 8px;
+    border-bottom-right-radius: 8px;
+}
+
+.woocommerce-table--order-details td.product-name a {
+    color: #1A3C40;
+    font-weight: 700;
+    font-size: 1rem;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 5px;
+}
+
+.woocommerce-table--order-details .product-quantity {
+    font-weight: 400;
+    color: #6b7280;
+}
+
+.woocommerce-table--order-details dl.variation {
+    margin: 5px 0 0 0;
+    font-size: 0.9rem;
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 4px 10px;
+}
+
+.woocommerce-table--order-details dl.variation dt {
+    font-weight: 500;
+    color: #4b5563;
+    float: none;
+    margin: 0;
+}
+
+.woocommerce-table--order-details dl.variation dd {
+    margin: 0;
+    color: #6b7280;
+}
+
+.woocommerce-table--order-details dl.variation p {
+    margin: 0;
+}
+
+.woocommerce-table--order-details tfoot th {
+    text-align: right;
+    color: #4b5563;
+    font-weight: 500;
+    padding-right: 30px;
+    border-bottom: 1px solid #f3f4f6;
+}
+
+.woocommerce-table--order-details tfoot td {
+    font-weight: 600;
+    color: #111827;
+    text-align: right;
+}
+
+.woocommerce-table--order-details tfoot tr:last-child th,
+.woocommerce-table--order-details tfoot tr:last-child td {
+    border-bottom: none;
+    font-size: 1.25rem;
+    color: #1A3C40;
+    padding-top: 25px;
+}
+
+/* Customer Details */
+.woocommerce-customer-details {
+    background: white;
+    border-radius: 16px;
+    padding: 0;
+    margin-bottom: 40px;
+}
+
+.woocommerce-customer-details .woocommerce-column__title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 25px;
+    color: #111827;
+}
+
+.woocommerce-customer-details address {
+    border: 1px solid #e5e7eb;
+    background: #f9fafb;
+    padding: 25px;
+    border-radius: 12px;
+    font-style: normal;
+    color: #374151;
+    line-height: 1.6;
+    font-size: 1rem;
+}
+
+.woocommerce-customer-details address p {
+    margin-bottom: 10px;
+}
+
+@media (max-width: 768px) {
+    ul.order_details {
+        flex-direction: column;
+        gap: 0;
+        padding: 0;
+    }
+
+    ul.order_details li {
+        width: 100%;
+        border-right: none;
+        border-bottom: 1px solid #f3f4f6;
+        padding: 15px 20px;
+    }
+
+    ul.order_details li:last-child {
+        border-bottom: none;
+    }
+
+    .woocommerce-table--order-details thead {
+        display: none;
+    }
+
+    .woocommerce-table--order-details tr {
+        display: block;
+        margin-bottom: 20px;
+        border: 1px solid #e5e7eb;
+        border-radius: 8px;
+        padding: 15px;
+    }
+
+    .woocommerce-table--order-details td {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        border: none;
+        padding: 5px 0;
+        text-align: right;
+    }
+
+    .woocommerce-table--order-details td::before {
+        content: attr(data-title);
+        font-weight: 600;
+        float: left;
+        color: #6b7280;
+    }
+
+    .woocommerce-table--order-details td.product-name {
+        display: block;
+        text-align: left;
+        border-bottom: 1px solid #f3f4f6;
+        padding-bottom: 10px;
+        margin-bottom: 10px;
+    }
+
+    .woocommerce-table--order-details td.product-name::before {
+        content: none;
+    }
+}

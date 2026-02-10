@@ -1,0 +1,1029 @@
+/**
+ * Wiwa Admin Fields Manager CSS v1.0
+ * Premium field management interface
+ */
+
+/* ===== Variables ===== */
+:root {
+    --wiwa-admin-primary: #1E3A2B;
+    --wiwa-admin-primary-hover: #152A1F;
+    --wiwa-admin-accent: #E8A63A;
+    --wiwa-admin-success: #10B981;
+    --wiwa-admin-warning: #F59E0B;
+    --wiwa-admin-error: #EF4444;
+    --wiwa-admin-gray-50: #F9FAFB;
+    --wiwa-admin-gray-100: #F3F4F6;
+    --wiwa-admin-gray-200: #E5E7EB;
+    --wiwa-admin-gray-300: #D1D5DB;
+    --wiwa-admin-gray-400: #9CA3AF;
+    --wiwa-admin-gray-500: #6B7280;
+    --wiwa-admin-gray-600: #4B5563;
+    --wiwa-admin-gray-700: #374151;
+    --wiwa-admin-gray-800: #1F2937;
+    --wiwa-admin-gray-900: #111827;
+}
+
+/* ===== Fields Section ===== */
+.wiwa-fields-section {
+    background: #fff;
+    border: 1px solid var(--wiwa-admin-gray-200);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.wiwa-section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-200);
+}
+
+.wiwa-section-header h4 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--wiwa-admin-gray-900);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wiwa-section-header h4::before {
+    content: '';
+    width: 4px;
+    height: 20px;
+    background: var(--wiwa-admin-primary);
+    border-radius: 2px;
+}
+
+/* ===== Fields Table ===== */
+/* ===== Fields Table ===== */
+.wiwa-fields-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--wiwa-admin-gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    background: #fff;
+}
+
+.wiwa-fields-table thead th {
+    background: var(--wiwa-admin-gray-50);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--wiwa-admin-gray-600);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-200);
+    white-space: nowrap;
+    text-align: left;
+}
+
+.wiwa-fields-table tbody tr {
+    transition: background-color 0.15s ease;
+    border-bottom: 1px solid var(--wiwa-admin-gray-100);
+}
+
+.wiwa-fields-table tbody tr:hover {
+    background-color: var(--wiwa-admin-gray-50);
+}
+
+.wiwa-fields-table tbody td {
+    padding: 10px 12px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--wiwa-admin-gray-100);
+}
+
+.wiwa-fields-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Column widths */
+.wiwa-fields-table .col-handle {
+    width: 40px;
+    text-align: center;
+    cursor: move;
+    /* Explicit move cursor */
+}
+
+.wiwa-fields-table .col-key {
+    min-width: 140px;
+}
+
+.wiwa-fields-table .col-label {
+    min-width: 180px;
+}
+
+.wiwa-fields-table .col-placeholder {
+    min-width: 140px;
+}
+
+.wiwa-fields-table .col-type {
+    min-width: 140px;
+}
+
+.wiwa-fields-table .col-position {
+    width: 110px;
+}
+
+/* Handle icon */
+.col-handle .dashicons {
+    color: var(--wiwa-admin-gray-400);
+    cursor: move;
+    /* Explicit move cursor */
+    font-size: 18px;
+    height: 18px;
+    width: 18px;
+}
+
+.col-handle .dashicons:hover {
+    color: var(--wiwa-admin-gray-600);
+}
+
+/* Field key code */
+.wiwa-fields-table code {
+    background: var(--wiwa-admin-gray-100);
+    padding: 3px 6px;
+    border-radius: 4px;
+    font-size: 11px;
+    color: var(--wiwa-admin-gray-600);
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    display: inline-block;
+}
+
+/* ===== Form Inputs Homogeneity ===== */
+.wiwa-field-input,
+.wiwa-field-select {
+    width: 100%;
+    padding: 0 12px;
+    height: 38px;
+    /* Fixed height for consistency */
+    line-height: 36px;
+    border: 1px solid var(--wiwa-admin-gray-300);
+    border-radius: 6px;
+    font-size: 13px;
+    background: #fff;
+    transition: all 0.2s;
+    box-sizing: border-box;
+    color: var(--wiwa-admin-gray-700);
+}
+
+.wiwa-field-input:focus,
+.wiwa-field-select:focus {
+    outline: none;
+    border-color: var(--wiwa-admin-primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.1);
+}
+
+.wiwa-field-input::placeholder {
+    color: var(--wiwa-admin-gray-400);
+    font-style: italic;
+}
+
+/* ===== Type Badges ===== */
+.wiwa-type-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--wiwa-admin-gray-100);
+    color: var(--wiwa-admin-gray-700);
+    max-width: 200px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.wiwa-type-badge.type-country {
+    background: #DBEAFE;
+    color: #1E40AF;
+}
+
+.wiwa-type-badge.type-phone,
+.wiwa-type-badge.type-phone_code,
+.wiwa-type-badge.type-tel {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.wiwa-type-badge.type-document,
+.wiwa-type-badge.type-document_type {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.wiwa-type-badge.type-email {
+    background: #FCE7F3;
+    color: #9D174D;
+}
+
+.wiwa-type-badge.type-select {
+    background: #E0E7FF;
+    color: #3730A3;
+}
+
+/* ===== Toggle Switches ===== */
+.wiwa-toggle-small {
+    position: relative;
+    display: inline-block;
+    width: 40px;
+    height: 22px;
+}
+
+.wiwa-toggle-small input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wiwa-toggle-slider-small {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--wiwa-admin-gray-300);
+    transition: 0.3s;
+    border-radius: 22px;
+}
+
+.wiwa-toggle-slider-small:before {
+    position: absolute;
+    content: "";
+    height: 16px;
+    width: 16px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.wiwa-toggle-small input:checked+.wiwa-toggle-slider-small {
+    background-color: var(--wiwa-admin-success);
+}
+
+.wiwa-toggle-small input:checked+.wiwa-toggle-slider-small:before {
+    transform: translateX(18px);
+}
+
+/* ===== Action Buttons ===== */
+.wiwa-add-field-btn {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 6px;
+    padding: 8px 16px !important;
+    background: var(--wiwa-admin-primary) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 6px !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.wiwa-add-field-btn:hover {
+    background: var(--wiwa-admin-primary-hover) !important;
+}
+
+.wiwa-add-field-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+.wiwa-delete-field {
+    padding: 4px 8px !important;
+    border-radius: 4px !important;
+}
+
+.wiwa-delete-field:hover {
+    background: var(--wiwa-admin-error) !important;
+    color: #fff !important;
+    border-color: var(--wiwa-admin-error) !important;
+}
+
+.wiwa-core-field {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--wiwa-admin-gray-400);
+}
+
+/* ===== Position Select ===== */
+.wiwa-position-select {
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    min-width: 90px;
+}
+
+/* ===== Info Notice ===== */
+.wiwa-info-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 12px 16px;
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    color: #1E40AF;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.wiwa-info-notice .dashicons {
+    flex-shrink: 0;
+    margin-top: 2px;
+}
+
+.wiwa-info-notice a {
+    color: #1E40AF;
+    font-weight: 500;
+}
+
+/* ===== Save Button ===== */
+.wiwa-save-fields-btn {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 24px !important;
+    font-size: 14px !important;
+    font-weight: 500;
+}
+
+/* ===== Status Badge ===== */
+.wiwa-status-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.wiwa-status-badge.active {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.wiwa-status-badge.inactive {
+    background: var(--wiwa-admin-gray-100);
+    color: var(--wiwa-admin-gray-500);
+}
+
+/* ===== Field Type Badge ===== */
+.wiwa-field-type-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 11px;
+    font-weight: 500;
+    background: var(--wiwa-admin-gray-100);
+    color: var(--wiwa-admin-gray-600);
+    text-transform: capitalize;
+}
+
+/* ===== Empty Notice ===== */
+.wiwa-empty-notice {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 16px;
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    border-radius: 8px;
+    color: #92400E;
+    font-size: 13px;
+}
+
+.wiwa-empty-notice a {
+    color: #92400E;
+    font-weight: 600;
+}
+
+/* ===== Drag and Drop ===== */
+.ui-sortable-helper {
+    background: #fff;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+}
+
+.ui-sortable-placeholder {
+    background: var(--wiwa-admin-gray-100);
+    border: 2px dashed var(--wiwa-admin-gray-300);
+    visibility: visible !important;
+}
+
+/* ===== Modal for Add Field ===== */
+.wiwa-modal-overlay {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    background: rgba(0, 0, 0, 0.7) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 999999 !important;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s, visibility 0.2s;
+}
+
+.wiwa-modal-overlay.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.wiwa-modal {
+    background: #fff;
+    border-radius: 12px;
+    width: 500px;
+    max-width: 90vw;
+    max-height: 80vh;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.2);
+    transform: scale(0.95);
+    transition: transform 0.2s;
+}
+
+.wiwa-modal-overlay.active .wiwa-modal {
+    transform: scale(1);
+}
+
+.wiwa-modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-200);
+    background: #fff;
+}
+
+.wiwa-modal-header h3 {
+    margin: 0;
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--wiwa-admin-gray-900);
+}
+
+/* Prevent ::before pseudo-element on modal h3 */
+.wiwa-modal-header h3::before {
+    display: none !important;
+    content: none !important;
+}
+
+.wiwa-modal-close {
+    background: none;
+    border: none;
+    padding: 8px;
+    cursor: pointer;
+    color: var(--wiwa-admin-gray-400);
+    transition: color 0.15s;
+    border-radius: 4px;
+}
+
+.wiwa-modal-close:hover {
+    color: var(--wiwa-admin-gray-600);
+    background: var(--wiwa-admin-gray-100);
+}
+
+.wiwa-modal-body {
+    padding: 24px;
+    overflow-y: auto;
+    max-height: calc(80vh - 140px);
+    background: #fff;
+}
+
+.wiwa-modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 16px 24px;
+    border-top: 1px solid var(--wiwa-admin-gray-200);
+    background: var(--wiwa-admin-gray-50);
+}
+
+/* Modal buttons */
+.wiwa-modal-footer .button {
+    padding: 8px 16px !important;
+    height: auto !important;
+    line-height: 1.5 !important;
+}
+
+.wiwa-modal-footer .button-primary {
+    background: var(--wiwa-admin-primary) !important;
+    border-color: var(--wiwa-admin-primary) !important;
+}
+
+.wiwa-modal-footer .button-primary:hover {
+    background: var(--wiwa-admin-primary-hover) !important;
+    border-color: var(--wiwa-admin-primary-hover) !important;
+}
+
+/* Modal Form */
+.wiwa-form-group {
+    margin-bottom: 20px;
+}
+
+.wiwa-form-group label {
+    display: block;
+    margin-bottom: 6px;
+    font-weight: 500;
+    color: var(--wiwa-admin-gray-700);
+    font-size: 13px;
+}
+
+.wiwa-form-group .wiwa-field-input,
+.wiwa-form-group .wiwa-field-select {
+    width: 100%;
+}
+
+.wiwa-form-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+/* Type Icons in Select */
+.wiwa-type-option {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wiwa-type-icon {
+    font-size: 14px;
+}
+
+/* ===== Responsive ===== */
+@media (max-width: 1200px) {
+    .wiwa-fields-table .col-placeholder {
+        display: none;
+    }
+}
+
+@media (max-width: 992px) {
+    .wiwa-fields-table .col-position {
+        display: none;
+    }
+}
+
+/* =====================================================================
+   TAB GENERAL & INTEGRATIONS - Premium Styles
+   Scoped to .wiwa-tab-general and .wiwa-tab-integrations only
+   ===================================================================== */
+
+/* ===== Tab Content Container ===== */
+.wiwa-tab-general,
+.wiwa-tab-integrations {
+    max-width: 1000px;
+    padding-top: 10px;
+}
+
+/* Main Title with accent bar */
+.wiwa-tab-general>h3:first-child,
+.wiwa-tab-integrations>h3:first-child {
+    font-size: 22px;
+    font-weight: 600;
+    color: var(--wiwa-admin-gray-900);
+    margin: 0 0 24px 0;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-200);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.wiwa-tab-general>h3:first-child::before,
+.wiwa-tab-integrations>h3:first-child::before {
+    content: '';
+    width: 4px;
+    height: 26px;
+    background: var(--wiwa-admin-primary);
+    border-radius: 2px;
+}
+
+/* ===== Settings Section Card ===== */
+.wiwa-settings-section {
+    background: #fff;
+    border: 1px solid var(--wiwa-admin-gray-200);
+    border-radius: 12px;
+    padding: 24px;
+    margin-bottom: 24px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.wiwa-settings-section h4 {
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--wiwa-admin-gray-800);
+    margin: 0 0 20px 0;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-100);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.wiwa-settings-section h4::before {
+    content: '';
+    width: 3px;
+    height: 18px;
+    background: var(--wiwa-admin-primary);
+    border-radius: 2px;
+}
+
+.wiwa-settings-section p.section-desc {
+    color: var(--wiwa-admin-gray-500);
+    font-size: 13px;
+    margin: -8px 0 20px 0;
+}
+
+/* ===== Setting Row ===== */
+.wiwa-setting-row {
+    display: flex;
+    align-items: flex-start;
+    padding: 16px 0;
+    border-bottom: 1px solid var(--wiwa-admin-gray-100);
+}
+
+.wiwa-setting-row:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+}
+
+.wiwa-setting-row:first-child {
+    padding-top: 0;
+}
+
+.wiwa-setting-label {
+    flex: 0 0 200px;
+    font-weight: 500;
+    color: var(--wiwa-admin-gray-700);
+    padding-top: 8px;
+}
+
+.wiwa-setting-control {
+    flex: 1;
+}
+
+.wiwa-setting-control .description {
+    color: var(--wiwa-admin-gray-500);
+    font-size: 12px;
+    margin-top: 8px;
+    line-height: 1.5;
+}
+
+/* ===== Large Toggle Switch (for main settings) ===== */
+.wiwa-toggle-large {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+}
+
+.wiwa-toggle-large input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+.wiwa-toggle-slider-large {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--wiwa-admin-gray-300);
+    transition: 0.3s;
+    border-radius: 28px;
+}
+
+.wiwa-toggle-slider-large:before {
+    position: absolute;
+    content: "";
+    height: 22px;
+    width: 22px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.15);
+}
+
+.wiwa-toggle-large input:checked+.wiwa-toggle-slider-large {
+    background-color: var(--wiwa-admin-success);
+}
+
+.wiwa-toggle-large input:checked+.wiwa-toggle-slider-large:before {
+    transform: translateX(24px);
+}
+
+/* ===== Shortcode Box Elegant ===== */
+.wiwa-shortcode-card {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--wiwa-admin-gray-50);
+    border: 1px solid var(--wiwa-admin-gray-200);
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin: 8px 0;
+}
+
+.wiwa-shortcode-card code {
+    font-size: 14px;
+    font-family: 'SF Mono', Monaco, Consolas, monospace;
+    background: transparent;
+    color: var(--wiwa-admin-primary);
+    font-weight: 500;
+}
+
+.wiwa-shortcode-card .wiwa-copy-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    background: var(--wiwa-admin-primary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background-color 0.15s;
+}
+
+.wiwa-shortcode-card .wiwa-copy-btn:hover {
+    background: var(--wiwa-admin-primary-hover);
+}
+
+.wiwa-shortcode-card .wiwa-copy-btn .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+/* ===== Select Input Styled ===== */
+.wiwa-select-styled {
+    min-width: 280px;
+    padding: 0 16px;
+    height: 42px;
+    line-height: 40px;
+    border: 1px solid var(--wiwa-admin-gray-300);
+    border-radius: 8px;
+    font-size: 14px;
+    background: #fff;
+    color: var(--wiwa-admin-gray-700);
+    transition: all 0.2s;
+    cursor: pointer;
+}
+
+.wiwa-select-styled:focus {
+    outline: none;
+    border-color: var(--wiwa-admin-primary);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.1);
+}
+
+/* ===== Data Table (for currencies etc) ===== */
+.wiwa-data-table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid var(--wiwa-admin-gray-200);
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    background: #fff;
+}
+
+.wiwa-data-table thead th {
+    background: var(--wiwa-admin-gray-50);
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    color: var(--wiwa-admin-gray-600);
+    padding: 12px 16px;
+    border-bottom: 1px solid var(--wiwa-admin-gray-200);
+    text-align: left;
+}
+
+.wiwa-data-table tbody tr {
+    transition: background-color 0.15s ease;
+}
+
+.wiwa-data-table tbody tr:hover {
+    background-color: var(--wiwa-admin-gray-50);
+}
+
+.wiwa-data-table tbody td {
+    padding: 12px 16px;
+    vertical-align: middle;
+    border-bottom: 1px solid var(--wiwa-admin-gray-100);
+    font-size: 13px;
+    color: var(--wiwa-admin-gray-700);
+}
+
+.wiwa-data-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* ===== Elegant Badges ===== */
+.wiwa-badge {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.3px;
+}
+
+.wiwa-badge-primary {
+    background: #E8F4FD;
+    color: #1E6BB8;
+}
+
+.wiwa-badge-success {
+    background: #D1FAE5;
+    color: #065F46;
+}
+
+.wiwa-badge-warning {
+    background: #FEF3C7;
+    color: #92400E;
+}
+
+.wiwa-badge-error {
+    background: #FEE2E2;
+    color: #991B1B;
+}
+
+/* ===== Notices Styled ===== */
+.wiwa-notice {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 18px;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 13px;
+    line-height: 1.5;
+}
+
+.wiwa-notice .dashicons {
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.wiwa-notice-success {
+    background: #D1FAE5;
+    border: 1px solid #6EE7B7;
+    color: #065F46;
+}
+
+.wiwa-notice-warning {
+    background: #FEF3C7;
+    border: 1px solid #FCD34D;
+    color: #92400E;
+}
+
+.wiwa-notice-info {
+    background: #EFF6FF;
+    border: 1px solid #BFDBFE;
+    color: #1E40AF;
+}
+
+.wiwa-notice a {
+    color: inherit;
+    font-weight: 600;
+}
+
+/* ===== Checkbox & Radio Styled ===== */
+.wiwa-checkbox-row,
+.wiwa-radio-row {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 10px 0;
+}
+
+.wiwa-checkbox-row input[type="checkbox"],
+.wiwa-radio-row input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: var(--wiwa-admin-primary);
+    cursor: pointer;
+    flex-shrink: 0;
+}
+
+.wiwa-checkbox-row label,
+.wiwa-radio-row label {
+    font-size: 14px;
+    color: var(--wiwa-admin-gray-700);
+    cursor: pointer;
+}
+
+.wiwa-checkbox-row small,
+.wiwa-radio-row small {
+    display: block;
+    font-size: 12px;
+    color: var(--wiwa-admin-gray-500);
+    margin-top: 4px;
+}
+
+/* ===== Submit Button Premium ===== */
+.wiwa-submit-btn {
+    display: inline-flex !important;
+    align-items: center;
+    gap: 8px;
+    padding: 12px 24px !important;
+    background: var(--wiwa-admin-primary) !important;
+    color: #fff !important;
+    border: none !important;
+    border-radius: 8px !important;
+    font-size: 14px !important;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.wiwa-submit-btn:hover {
+    background: var(--wiwa-admin-primary-hover) !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.wiwa-submit-btn:active {
+    transform: translateY(0);
+}
+
+.wiwa-submit-btn .dashicons {
+    font-size: 18px;
+    width: 18px;
+    height: 18px;
+}
+
+/* ===== Section Divider ===== */
+.wiwa-divider {
+    height: 1px;
+    background: var(--wiwa-admin-gray-200);
+    margin: 24px 0;
+    border: none;
+}
+
+/* ===== Link Styled ===== */
+.wiwa-link {
+    color: var(--wiwa-admin-primary);
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.wiwa-link:hover {
+    text-decoration: underline;
+}
+
+/* ===== Status Indicator ===== */
+.wiwa-status-indicator {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+}
+
+.wiwa-status-indicator .dashicons {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+}
+
+.wiwa-status-indicator.status-ok {
+    color: var(--wiwa-admin-success);
+}
+
+.wiwa-status-indicator.status-warning {
+    color: var(--wiwa-admin-warning);
+}
+
+.wiwa-status-indicator.status-error {
+    color: var(--wiwa-admin-error);
+}
