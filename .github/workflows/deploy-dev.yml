@@ -21,4 +21,4 @@ jobs:
           REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER_DEV }}
           TARGET: "/home/wiwatour-dev/htdocs/dev.wiwatour.com/wp-content/plugins/wiwa-tour-checkout-pro"
-          EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa tr - Manual de marca.pdf, /force-reload.ps1"
+          EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa_Manual_de_marca.pdf, /force-reload.ps1"
