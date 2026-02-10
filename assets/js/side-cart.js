@@ -57,39 +57,39 @@ jQuery(document).ready(function($) {
     const checkEmptyState = () => {
         const $widgetContent = $('.widget_shopping_cart_content');
         const $productList = $('.elementor-menu-cart__products');
-        const $emptyMessage = $('.elementor-menu-cart__empty-message'); // Default Elementor empty msg
+        // Select specific Elementor empty message class and generic WooCommerce one
+        const $emptyMessage = $('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message'); 
 
         // Check if cart is empty
-        // Elementor usually shows a specific class or message when empty
-        // Or if the product list is empty/hidden
-        
-        const hasProducts = $productList.children().length > 0;
-        const isHidden = $productList.is(':hidden'); // Sometimes Elementor hides it
+        const hasProducts = $productList.children().length > 0 && !$productList.is(':empty');
+        const isHidden = $productList.is(':hidden');
 
-        if (!hasProducts || $emptyMessage.length > 0) { // It is empty
+        if (!hasProducts) { // It is empty
             
-            // Hide default message if visible
-            if ($emptyMessage.length) {
-                $emptyMessage.hide();
-            }
-
+            // Aggressively hide default messages
+            $emptyMessage.css('display', 'none !important').hide();
+            
             // Check if our branded message already exists
             if ($('.wiwa-side-cart-empty').length === 0) {
+                // Ensure we append to a visible container
                 $widgetContent.append(emptyCartHTML);
             }
         } else {
-            // Use has products, remove our message if present
+            // Has products, remove our message
             $('.wiwa-side-cart-empty').remove();
-            if ($emptyMessage.length) {
-                $emptyMessage.hide(); // Keep default hidden just in case
-            }
+            
+            // Don't necessarily show $emptyMessage, logic handles itself usually
+            $emptyMessage.css('display', 'none !important').hide(); 
         }
     };
+
+    // Update config to use explicit URL
+    config.homeUrl = '/tours/'; 
 
     // Start observing
     observeCart();
 
-    // Hook into WooCommerce fragments refresh (when adding to cart via AJAX)
+    // Hook into WooCommerce fragments refresh
     $(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function() {
         setTimeout(checkEmptyState, 100);
     });

@@ -89,12 +89,15 @@ class Wiwa_Checkout_Handler
      */
     public function redirect_cart_to_checkout()
     {
+        // Redirect disabled to allow access to Cart page
+        /*
         if (is_cart() && get_option('wiwa_checkout_enabled') && !WC()->cart->is_empty()) {
             $checkout_page_id = get_option('wiwa_checkout_page_id');
             $checkout_url = $checkout_page_id ? get_permalink($checkout_page_id) : wc_get_checkout_url();
             wp_safe_redirect($checkout_url);
             exit;
         }
+        */
     }
 
     /**
