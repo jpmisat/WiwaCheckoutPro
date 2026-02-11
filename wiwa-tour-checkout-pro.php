@@ -125,6 +125,14 @@ final class Wiwa_Tour_Checkout
 
         // Enqueue Custom Add to Cart Script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_custom_scripts']);
+
+        // --- CART REDESIGN HOOKS ---
+        // Filter to customize Mini Cart Quantity
+        add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 10, 3);
+        
+        // AJAX Handler for Mini Cart Quantity Update
+        add_action('wp_ajax_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
+        add_action('wp_ajax_nopriv_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
     }
 
     public function check_dependencies()
@@ -182,10 +190,85 @@ final class Wiwa_Tour_Checkout
 
     public function enqueue_custom_scripts()
     {
+        // Enqueue Global Cart Styles (Sidebar & Main Cart)
+        if ( is_cart() || is_checkout() || is_front_page() || is_product() || true ) { 
+            // 'true' forces load for global sidebar availability
+            wp_enqueue_style('wiwa-cart-styles', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
+            wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+             wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
+            ]);
+        }
+
         if (is_product()) {
             wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
             wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+            
+            wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
+                'ajax_url' => admin_url('admin-ajax.php'),
+                'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
+            ]);
         }
+    }
+
+    /**
+     * Custom Mini Cart Quantity Input
+     * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
+     */
+    public function custom_mini_cart_item_quantity($html, $cart_item, $cart_item_key)
+    {
+        $_product = $cart_item['data'];
+        if ($_product->is_sold_individually()) {
+            return $html;
+        }
+
+        $product_price = WC()->cart->get_product_price($_product);
+        $current_qty = $cart_item['quantity'];
+
+        // Build Custom Quantity Selector
+        ob_start();
+        ?>
+        <div class="wiwa-mini-cart-qty">
+            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+            <input type="number" 
+                   class="wiwa-qty-input" 
+                   value="<?php echo esc_attr($current_qty); ?>" 
+                   min="0" 
+                   step="1" 
+                   data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   readonly />
+            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
+        </div>
+        <span class="quantity" style="display:none !important"><?php echo $html; ?></span>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * AJAX Handler: Update Mini Cart Quantity
+     */
+    public function ajax_update_mini_cart_qty()
+    {
+        // check_ajax_referer('wiwa_checkout_nonce', 'security'); // Optional validation
+
+        $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
+        $qty = isset($_POST['qty']) ? intval($_POST['qty']) : 0;
+
+        if (!$cart_key) {
+            wp_send_json_error(['message' => 'Missing cart key']);
+        }
+
+        if ($qty <= 0) {
+            WC()->cart->remove_cart_item($cart_key);
+        } else {
+            WC()->cart->set_quantity($cart_key, $qty, true); // true = refresh totals
+        }
+
+        WC()->cart->calculate_totals();
+        WC()->cart->maybe_set_cart_cookies();
+
+        wp_send_json_success(['message' => 'Updated']);
     }
 
 

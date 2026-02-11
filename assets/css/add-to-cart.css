@@ -28,11 +28,14 @@
     gap: 8px;
     text-transform: uppercase;
     font-size: 14px;
+    position: relative;
+    overflow: hidden;
 }
 
 .btn-secondary-ghost:hover {
     background-color: var(--ova-primary, #e8604c) !important;
     color: #fff !important;
+    box-shadow: 0 4px 10px rgba(232, 96, 76, 0.2);
 }
 
 .btn-secondary-ghost .icon-cart:before {
@@ -40,29 +43,51 @@
     font-family: 'FontAwesome';
 }
 
+.btn-secondary-ghost.loading {
+    opacity: 0.8;
+    pointer-events: none;
+}
+
+/* Spinner */
+.wiwa-spinner:before {
+    content: '\f110';
+    font-family: 'FontAwesome';
+    animation: fa-spin 1s infinite steps(8);
+    display: inline-block;
+}
+
+@keyframes fa-spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 /* Success Layer */
 #ova-booking-success-layer {
     text-align: center;
-    padding: 20px;
+    padding: 30px 20px;
     animation: fadeIn 0.5s;
-    background: #f9f9f9;
+    background: #fff;
     border-radius: 8px;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.05); /* Sombra sutil */
     margin-top: 10px;
+    display: none; /* Asegurar oculto inicialmente */
 }
 
 .success-header h3 {
     color: #27ae60;
     margin-bottom: 10px;
     font-size: 24px;
+    font-weight: 700;
 }
 
 .success-header p {
     color: #555;
     font-size: 16px;
+    margin-bottom: 20px;
 }
 
 #success-tour-name {
-    font-weight: bold;
+    font-weight: 800;
     color: #333;
 }
 
@@ -70,13 +95,17 @@
 .success-cross-sell {
     margin: 30px 0;
     text-align: left;
+    border-top: 1px dashed #eee;
+    padding-top: 20px;
 }
 
 .success-cross-sell h4 {
     font-size: 16px;
-    margin-bottom: 15px;
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 10px;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #888;
+    text-align: center;
 }
 
 .success-cross-sell ul.products {
@@ -94,22 +123,30 @@
 }
 
 .success-cross-sell ul.products li.product img {
-    border-radius: 5px;
-    margin-bottom: 5px;
+    border-radius: 6px;
+    margin-bottom: 8px;
+    transition: transform 0.3s ease;
+}
+
+.success-cross-sell ul.products li.product:hover img {
+    transform: scale(1.05);
 }
 
 .success-cross-sell ul.products li.product h2 {
-    font-size: 12px !important;
+    font-size: 13px !important;
     line-height: 1.3;
+    margin-bottom: 5px !important;
+    font-weight: 600;
 }
 
 .success-cross-sell ul.products li.product .price {
     font-size: 12px !important;
     color: #777;
+    font-weight: 500;
 }
 
 .success-cross-sell ul.products li.product .button {
-    display: none !important; /* Ocultar botón añadir carrito de cross-sell por limpieza */
+    display: none !important; 
 }
 
 /* Actions */
@@ -117,33 +154,82 @@
     display: flex;
     gap: 15px;
     justify-content: center;
-    margin-top: 20px;
+    margin-top: 25px;
 }
 
 .btn-close-popup {
-    background: #eee;
-    color: #333;
-    border: none;
-    padding: 10px 20px;
+    background: #f1f1f1;
+    color: #555;
+    border: 1px solid #ddd;
+    padding: 12px 25px;
     border-radius: 4px;
     cursor: pointer;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-close-popup:hover {
+    background: #e1e1e1;
+    color: #333;
 }
 
 .btn-go-checkout {
     background: #27ae60;
     color: #fff !important;
-    padding: 10px 25px;
+    padding: 12px 30px;
     border-radius: 4px;
     text-decoration: none;
     font-weight: bold;
     display: inline-block;
+    border: 1px solid #27ae60;
+    transition: all 0.2s;
 }
 
 .btn-go-checkout:hover {
     background: #219150;
+    border-color: #219150;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+}
+
+/* Validation */
+.error-field {
+    border: 1px solid #e74c3c !important;
+    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+}
+
+.shake {
+    animation: shake 0.5s;
+}
+
+@keyframes shake {
+    0% { transform: translateX(0); }
+    25% { transform: translateX(-5px); }
+    50% { transform: translateX(5px); }
+    75% { transform: translateX(-5px); }
+    100% { transform: translateX(0); }
 }
 
 @keyframes fadeIn {
     from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+    #ova-booking-actions-container {
+        flex-direction: column;
+    }
+    
+    #ova-booking-actions-container button {
+        width: 100%;
+    }
+    
+    .success-cross-sell ul.products {
+        grid-template-columns: repeat(2, 1fr) !important;
+    }
+    
+    .success-cross-sell ul.products li.product:last-child {
+        display: none; /* Show only 2 on mobile if space is tight */
+    }
 }

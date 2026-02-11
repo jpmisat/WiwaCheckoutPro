@@ -7,46 +7,63 @@ jQuery(document).ready(function($) {
         var $btn = $(this);
         var $originalBtn = $form.find('button[name="add-to-cart"]');
         
-        // 1. Validación Básica (Simulada o usando reportValidity si existe)
-        // Intentamos usar la validación nativa del navegador primero
+        // 1. Validación
+        var isValid = true;
+
+        // Validación nativa HTML5
         if ($form[0].checkValidity && !$form[0].checkValidity()) {
             $form[0].reportValidity();
             return;
         }
 
-        // Validación específica de OvaTourBooking (si expone alguna función global, si no, confiamos en la validación server-side o visual básica)
-        // Verificamos campos requeridos manualmente por si acaso (fechas, travelers)
-        var missing = false;
+        // Validación manual de campos requeridos (backup)
         $form.find('[required]').each(function() {
             if (!$(this).val()) {
-                missing = true;
-                $(this).addClass('error'); // Clase de error genérica
+                isValid = false;
+                $(this).addClass('error-field');
             } else {
-                $(this).removeClass('error');
+                $(this).removeClass('error-field');
             }
         });
 
-        if (missing) {
-            // Si falta algo visual, detenemos. Pero normalmente checkValidity lo atrapa.
+        // Validación de fechas (OvaTourBooking suele usar campos hidden para fechas reales)
+        var checkin = $form.find('input[name="checkin_date"]').val();
+        if (!checkin && $form.find('.ovatb-datepicker').length) {
+             // Si hay datepicker y no hay fecha, intentar validar el input visible
+             var visibleDate = $form.find('.ovatb-datepicker').val();
+             if(!visibleDate) {
+                 isValid = false;
+                 $form.find('.ovatb-datepicker').addClass('error-field');
+             }
+        }
+        
+        if (!isValid) {
+            // Animación de shake u otro feedback visual
+            $form.addClass('shake');
+            setTimeout(function(){ $form.removeClass('shake'); }, 500);
             return;
         }
 
         // 2. Preparar Datos
         var formData = new FormData($form[0]);
-        formData.append('action', 'wiwa_ajax_add_to_cart'); // Acción personalizada
-        formData.append('is_ajax_cart', '1'); // Flag
+        formData.append('action', 'wiwa_ajax_add_to_cart');
+        formData.append('is_ajax_cart', '1');
         
-        // Añadir nonce si es necesario (generalmente está en ovatbAjaxObject o en el formulario)
-        // El formulario suele tener campos hidden.
+        if (typeof wiwaAjax !== 'undefined' && wiwaAjax.nonce) {
+             formData.append('security', wiwaAjax.nonce);
+        }
         
         // UI Loading
         $btn.addClass('loading');
         $originalBtn.prop('disabled', true);
-        $btn.prop('disabled', true).html('<span class="icon-spinner spin"></span> Procesando...');
+        var originalText = $btn.html();
+        $btn.prop('disabled', true).html('<span class="wiwa-spinner"></span> Procesando...');
 
         // 3. AJAX Request
+        var ajaxUrl = (typeof wiwaAjax !== 'undefined') ? wiwaAjax.ajax_url : ((typeof ovatbAjaxObject !== 'undefined') ? ovatbAjaxObject.ajax_url : '/wp-admin/admin-ajax.php');
+
         $.ajax({
-            url: ovatbAjaxObject.ajax_url, // Asumimos que este objeto existe globalmente (estándar en este plugin)
+            url: ajaxUrl,
             type: 'POST',
             data: formData,
             processData: false,
@@ -54,119 +71,89 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 $btn.removeClass('loading');
                 
-                // Analizar respuesta. OvaTour devuelve JSON normalmente.
-                // Si la respuesta es exitosa (success: true o similar)
-                // OJO: Al interceptar 'ovatb_booking_form', el plugin original podría devolver HTML o redirección.
-                // Si el plugin no soporta 'is_ajax_cart' nativamente, necesitamos asegurarnos que el backend (hook) 
-                // devuelva JSON limpio o interceptar el output buffer.
-                // Asumimos que el backend manejará 'is_ajax_cart' para devolver JSON.
-                
-                // NOTA: Como no hemos modificado el backend PHP profundo ("includes"), 
-                // solo el template, es posible que la respuesta sea la estándar.
-                // Si la respuesta estándar es una redirección, tendremos problemas.
-                // *Estrategia*: Si el user no pidió tocar backend PHP (clases), asumimos que el plugin
-                // ya maneja AJAX o que el user espera que modifiquemos el handler PHP. 
-                // El prompt dice: "Si es válido, recopilar datos y enviar AJAX a la acción ovatb_booking_form... 
-                // Importante: Agregar un parámetro is_ajax_cart=1 para diferenciarlo...".
-                // Esto implica que DEBERÍAMOS tocar el handler PHP si no lo soporta. 
-                // Pero el plan aprobado solo modificó el template y JS.
-                // Vamos a asumir que 'ovatb_booking_form' devuelve JSON con success: true/false y mensaje.
-                
-                try {
-                    // Si viene como string JSON parsearlo
-                    var res = (typeof response === 'object') ? response : JSON.parse(response);
-
-                    if (res.success || res.status === 'success' || res.result === 'success') {
-                        // EXITOSO
-                        handleSuccess(res);
-                    } else {
-                        // ERROR
-                        alert(res.message || res.msg || 'Error al agregar al carrito. Intente de nuevo.');
-                        resetButtons($btn);
+                // Parse response if string
+                var res = response;
+                if (typeof response === 'string') {
+                    try {
+                        res = JSON.parse(response);
+                    } catch (e) {
+                        console.log('Error parsing JSON:', e);
                     }
-                } catch (e) {
-                    console.error('Error parsing response', response);
-                    // Fallback: Si devuelve HTML (posiblemente error), mostrarlo o alertar.
-                    alert('Ocurrió un error inesperado. Por favor contacte soporte.');
-                    resetButtons($btn);
+                }
+
+                if (res.success) {
+                    handleSuccess(res && res.data ? res.data : res);
+                } else {
+                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || 'Error al agregar al carrito.');
+                    alert(msg);
+                    resetButtons($btn, originalText);
                 }
             },
             error: function(err) {
                 console.error(err);
-                alert('Error de conexión. Intente nuevamente.');
-                resetButtons($btn);
+                alert('Ocurrió un error de conexión. Intente nuevamente.');
+                resetButtons($btn, originalText);
             }
         });
     });
 
-    function handleSuccess(res) {
-        // UI Transitions
+    function handleSuccess(data) {
+        // Ocultar formulario y mostrar success
         $('#ova-booking-actions-container').slideUp();
-        $('.ova-booking-form-fields').slideUp(); // Ocultar campos del form si se desea
+        // Opcional: Ocultar todo el form
+        // $('.ova-booking-form-fields').slideUp(); 
         
-        // Mostrar Success Layer
         var $successLayer = $('#ova-booking-success-layer');
-        $successLayer.hide().removeClass('hidden').fadeIn(500);
-
-        // Actualizar nombre del tour si viene en respuesta
-        if (res.product_title) {
-            $('#success-tour-name').html(res.product_title);
-        }
-
-        // Actualizar Fragmentos de WooCommerce (Mini Cart)
-        $(document.body).trigger('wc_fragment_refresh');
         
-        // Forzar actualización visual del contador (a veces tarda)
-        setTimeout(function(){
-            $(document.body).trigger('wc_fragment_refresh');
-        }, 1000);
+        // Actualizar datos dinámicos
+        if (data.product_title) {
+            $('#success-tour-name').text(data.product_title);
+        }
+        
+        $successLayer.fadeIn();
+
+        // Actualizar fragmentos de WooCommerce
+        $(document.body).trigger('wc_fragment_refresh');
+        $(document.body).trigger('added_to_cart', [data.fragments, data.cart_hash, $]);
     }
 
-    function resetButtons($btn) {
-        $btn.prop('disabled', false).html('<span class="icon-cart"></span> Agregar al Carrito');
+    function resetButtons($btn, originalText) {
+        $btn.prop('disabled', false).html(originalText || '<span class="icon-cart"></span> Agregar al Carrito');
         $('button[name="add-to-cart"]').prop('disabled', false);
     }
 
     // Lógica de Reinicio al cerrar JetPopup
     $(window).on('jet-popup/hide', function() {
-        // Esperar animación de cierre (300ms)
         setTimeout(function() {
             var $form = $('#booking-form');
-            
-            // Resetear form nativo
-            $form[0].reset();
-            
-            // Restaurar UI
-            $('#ova-booking-success-layer').hide();
-            $('#ova-booking-actions-container').show();
-            $('.ova-booking-form-fields').show();
-            
-            // Resetear botones
-            resetButtons($('#btn-add-to-cart-soft'));
-            
-            // Reiniciar plugins si es necesario
-            // Flatpickr, Select2, etc. a veces necesitan reset manual.
-            // Intentamos disparar evento change para que JS dependiente se entere
-            $form.find('input, select').trigger('change');
-
-            // Limpiar clases de error
-            $form.find('.error').removeClass('error');
-            
+            if ($form.length) {
+                $form[0].reset();
+                // Resetear selects de Select2 si existen
+                $form.find('select').val(null).trigger('change');
+                
+                // Limpiar inputs hidden de fecha si es necesario
+                $form.find('input[name="checkin_date"]').val('');
+                $form.find('input[name="checkout_date"]').val('');
+                
+                // Mostrar formulario de nuevo
+                $('#ova-booking-actions-container').show();
+                $('.ova-booking-form-fields').show();
+                $('#ova-booking-success-layer').hide();
+                
+                // Resetear botones
+                var $btn = $('#btn-add-to-cart-soft');
+                resetButtons($btn, '<span class="icon-cart"></span> Agregar al Carrito');
+                $btn.removeClass('loading');
+            }
         }, 300);
     });
 
-    // Cerrar popup desde botón interno
+    // Cerrar popup manual
     $(document).on('click', '.btn-close-popup', function(e) {
         e.preventDefault();
-        // Intentar cerrar el popup más cercano
-        var popupId = $(this).closest('.jet-popup').attr('id');
-        if (window.jetPopup && popupId) {
-             // Extraer ID numérico si es necesario, pero jetPopup suele tener API
-             // Generic close trigger
-             $('.jet-popup-close-button').trigger('click');
-        } else {
-             // Fallback trigger close button visibility reference
-             $('.jet-popup-close-button').click();
-        }
+        // Trigger de cierre de JetPopup
+        $(this).closest('.jet-popup').find('.jet-popup__close-button').trigger('click');
+        // Fallback
+        $('.jet-popup-close-button').trigger('click');
     });
 });
