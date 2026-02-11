@@ -228,31 +228,77 @@ class Wiwa_Cart_Handler
             }
 
             /* CRITICAL: WooCommerce Notices */
+            .woocommerce-notices-wrapper {
+                margin-top: 20px;
+                margin-bottom: 20px;
+            }
+            
             .woocommerce-notices-wrapper .woocommerce-message, 
             .woocommerce-notices-wrapper .woocommerce-info, 
             .woocommerce-notices-wrapper .woocommerce-error {
-                background-color: #f8f9fa !important;
+                background-color: #ffffff !important;
                 color: #374151 !important;
-                border-top: 3px solid #1E3A2B !important;
+                border: 0 !important;
+                border-left: 4px solid #1E3A2B !important; /* Wiwa Brand */
                 border-radius: 8px !important;
-                padding: 15px 20px !important;
-                margin-bottom: 25px !important;
+                padding: 16px 24px !important;
+                margin-bottom: 20px !important;
                 display: flex !important;
                 align-items: center !important;
                 justify-content: space-between !important;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; 
+                box-shadow: 0 4px 20px rgba(0,0,0,0.08) !important;
+                font-family: 'Poppins', sans-serif !important;
+                font-size: 14px !important;
+                line-height: 1.5 !important;
+                position: relative !important;
             }
+
+            /* Error State */
             .woocommerce-notices-wrapper .woocommerce-error {
-                border-top-color: #EB5757 !important;
-                background-color: #FFF5F5 !important;
-                color: #9B2C2C !important;
+                border-left-color: #DC2626 !important; /* Red 600 */
+                background-color: #FEF2F2 !important; /* Red 50 */
+                color: #991B1B !important; /* Red 800 */
             }
+
+            /* Info State */
             .woocommerce-notices-wrapper .woocommerce-info {
-                border-top-color: #2F80ED !important;
+                border-left-color: #3B82F6 !important; /* Blue 500 */
+                background-color: #EFF6FF !important; /* Blue 50 */
+                color: #1E40AF !important; /* Blue 800 */
             }
-            .woocommerce-notices-wrapper .woocommerce-message .button {
+
+            /* Message State (Success/Status) */
+            .woocommerce-notices-wrapper .woocommerce-message {
+                border-left-color: #059669 !important; /* Emerald 600 */
+                background-color: #ECFDF5 !important; /* Emerald 50 */
+                color: #065F46 !important; /* Emerald 800 */
+            }
+
+            /* Buttons/Links inside notices */
+            .woocommerce-notices-wrapper .woocommerce-message .button,
+            .woocommerce-notices-wrapper .woocommerce-message a.restore-item {
                 float: none !important;
                 margin-left: auto !important;
+                background-color: transparent !important;
+                color: currentColor !important;
+                text-decoration: underline !important;
+                font-weight: 600 !important;
+                padding: 0 !important;
+                border: none !important;
+                transition: opacity 0.2s !important;
+            }
+            
+            .woocommerce-notices-wrapper .woocommerce-message a.restore-item:hover,
+            .woocommerce-notices-wrapper .woocommerce-message .button:hover {
+                background-color: transparent !important;
+                opacity: 0.8 !important;
+            }
+
+            /* Fix for icons if they exist (pseudo-elements) */
+            .woocommerce-notices-wrapper .woocommerce-message::before,
+            .woocommerce-notices-wrapper .woocommerce-info::before,
+            .woocommerce-notices-wrapper .woocommerce-error::before {
+                display: none !important; /* Hide default WC icons to control clean look */
             }
         </style>
         <?php

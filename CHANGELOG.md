@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.8.7] - 2026-02-10
+
+### Improved
+
+- **Notice Styling**: Completely revamped WooCommerce notices (Success, Error, Info) with a modern, flat design. Used semantic colors (Emerald/Red/Blue) with soft backgrounds and left accents. Improved the "Undo" link style to be cleaner and more integrated.
+
 ## [2.8.6] - 2026-02-10
 
 ### Deployment
