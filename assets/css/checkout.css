@@ -2988,4 +2988,73 @@ ul.order_details li strong {
     .wiwa-update-cart-btn {
         width: 100%;
     }
+
+/* 
+ * =========================================
+ * Layout Improvements (v2.8.1)
+ * =========================================
+ */
+
+/* Fix Side Cart Z-Index (Absolute Top) */
+.elementor-menu-cart__container,
+.elementor-menu-cart__main,
+.elementor-menu-cart__overlay {
+    z-index: 2147483647 !important; /* Max Int */
+}
+
+/* Empty Cart Button Hover */
+.wiwa-empty-cart-btn:hover {
+    background-color: #162c20; /* Darker green */
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2);
+}
+
+/* WooCommerce Notices Styling */
+.woocommerce-message, 
+.woocommerce-info, 
+.woocommerce-error {
+    background-color: #f8f9fa;
+    color: var(--wiwa-gray-700);
+    border-top: 3px solid var(--wiwa-brand);
+    border-radius: 8px;
+    padding: 15px 20px;
+    margin-bottom: 25px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    font-weight: 500;
+}
+
+.woocommerce-message::before, 
+.woocommerce-info::before, 
+.woocommerce-error::before {
+    display: none; /* Hide default icon to use ours if needed, or keeping simple */
+}
+
+.woocommerce-info {
+    border-top-color: var(--wiwa-blue, #2F80ED);
+}
+
+.woocommerce-error {
+    border-top-color: var(--wiwa-error, #EB5757);
+    background-color: #FFF5F5;
+    color: var(--wiwa-error);
+}
+
+.woocommerce-message .button {
+    float: right;
+    background: transparent !important;
+    color: var(--wiwa-brand) !important;
+    border: 1px solid var(--wiwa-brand) !important;
+    padding: 5px 15px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+}
+
+.woocommerce-message .button:hover {
+    background: var(--wiwa-brand) !important;
+    color: white !important;
 }

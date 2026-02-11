@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.8.2] - 2026-02-10
+
+### Fixed
+
+- **PHP Warnings**: Resolved "string given" error in `class-ovatb-booking.php` by correctly handling `ovatb_guest_info` array in cart updates.
+- **Data Persistence**: Passenger information is now saved in `sessionStorage` to prevent data loss on page reload.
+- **Z-Index**: Increased Side Cart Z-Index to `MAX_INT` to prevent overlapping issues.
+
+### Improved
+
+- **Empty Cart UI**: Button now redirects to `/tours/` (WPML compatible) and has improved hover styles.
+- **Notices**: Custom styling for WooCommerce messages to match the theme.
+
 ## [2.8.1] - 2026-02-10
 
 ### Added

@@ -16,55 +16,71 @@ class Wiwa_Cart_Handler
         // Enqueue side cart script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_side_cart_script']);
         
-        // Handle custom cart updates (Pax)
-        add_action('woocommerce_update_cart_action_cart_updated', [$this, 'handle_pax_updates_in_cart']);
+        // Handle custom cart updates (Pax & Guest Info)
+        add_action('woocommerce_update_cart_action_cart_updated', [$this, 'handle_custom_cart_updates']);
     }
 
     /**
-     * Process custom Pax (guest) updates from the cart page
+     * Process custom updates (Pax counts + Guest Info) from the cart page
      */
-    public function handle_pax_updates_in_cart($cart_updated)
+    public function handle_custom_cart_updates($cart_updated)
     {
         if (empty($_POST['cart']) || !is_array($_POST['cart'])) {
             return;
         }
 
         $cart = WC()->cart->get_cart();
+        $changes_made = false;
 
         foreach ($_POST['cart'] as $cart_item_key => $values) {
-            if (isset($values['guests']) && is_array($values['guests']) && isset($cart[$cart_item_key])) {
-                
-                $total_guests = 0;
-                $needs_update = false;
+            if (!isset($cart[$cart_item_key])) continue;
 
+            $item_changed = false;
+
+            // 1. Handle Pax Counts (numberof_*)
+            if (isset($values['guests']) && is_array($values['guests'])) {
+                $total_guests = 0;
+                
                 foreach ($values['guests'] as $guest_name => $qty) {
                     $qty = max(0, intval($qty)); // Sanitize
                     
                     // Update specific guest count
-                    if (isset($cart[$cart_item_key]['numberof_' . $guest_name]) && $cart[$cart_item_key]['numberof_' . $guest_name] != $qty) {
+                    if (!isset($cart[$cart_item_key]['numberof_' . $guest_name]) || $cart[$cart_item_key]['numberof_' . $guest_name] != $qty) {
                          $cart[$cart_item_key]['numberof_' . $guest_name] = $qty;
-                         $needs_update = true;
-                    } elseif (!isset($cart[$cart_item_key]['numberof_' . $guest_name])) {
-                         // If key didn't exist but we have input (unlikely but possible)
-                         $cart[$cart_item_key]['numberof_' . $guest_name] = $qty;
-                         $needs_update = true;
+                         $item_changed = true;
                     }
                     
                     $total_guests += $qty;
                 }
 
-                if ($needs_update) {
+                if ($item_changed) {
                     $cart[$cart_item_key]['numberof_guests'] = $total_guests;
-                    
-                    // If total guests is 0, maybe remove item? Or let standard validation handle it?
-                    // For now, we update the session data.
-                    WC()->cart->cart_contents[$cart_item_key] = $cart[$cart_item_key];
                 }
+            }
+
+            // 2. Handle Guest Info (ovatb_guest_info)
+            // Fixes PHP Warning: "foreach() argument must be of type array|object, string given"
+            if (isset($values['ovatb_guest_info'])) {
+                $guest_info = $values['ovatb_guest_info'];
+                
+                // Ensure it's an array
+                if (is_array($guest_info)) {
+                    // Sanitize recursively? For now just ensure structure
+                    // Ova expects array: [guest_type => [index => [info_fields]]]
+                    $cart[$cart_item_key]['ovatb_guest_info'] = $guest_info;
+                    $item_changed = true;
+                }
+            }
+
+            if ($item_changed) {
+                WC()->cart->cart_contents[$cart_item_key] = $cart[$cart_item_key];
+                $changes_made = true;
             }
         }
         
-        // Persist changes to session
-        WC()->cart->set_session();
+        if ($changes_made) {
+            WC()->cart->set_session();
+        }
     }
 
     /**
@@ -110,6 +126,17 @@ class Wiwa_Cart_Handler
             'btnText' => __('Explorar Tours', 'wiwa-checkout'),
             'iconUrl' => WIWA_CHECKOUT_URL . 'assets/images/empty-cart.svg' // We might need to handle the SVG inline or via URL
         ]);
+        
+        // Enqueue Persistence Script (for Main Cart)
+        if (is_cart()) {
+            wp_enqueue_script(
+                'wiwa-cart-persistence',
+                WIWA_CHECKOUT_URL . 'assets/js/cart-persistence.js',
+                ['jquery'],
+                WIWA_CHECKOUT_VERSION,
+                true
+            );
+        }
         
         // Enqueue styles for side cart specific tweaks
         wp_enqueue_style(

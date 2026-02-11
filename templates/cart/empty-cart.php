@@ -24,7 +24,7 @@ defined('ABSPATH') || exit;
         </p>
         
         <div class="wiwa-empty-cta">
-            <a href="<?php echo esc_url(home_url('/')); ?>" class="btn-primary">
+            <a href="<?php echo esc_url(home_url('/tours/')); ?>" class="wiwa-empty-cart-btn">
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
@@ -78,7 +78,7 @@ defined('ABSPATH') || exit;
     line-height: 1.7;
     margin: 0 0 32px;
 }
-.wiwa-empty-cta .btn-primary {
+.wiwa-empty-cta .wiwa-empty-cart-btn {
     display: inline-flex;
     align-items: center;
     gap: 10px;
@@ -92,9 +92,10 @@ defined('ABSPATH') || exit;
     transition: all 0.3s;
     box-shadow: 0 4px 15px rgba(30, 58, 43, 0.3);
 }
-.wiwa-empty-cta .btn-primary:hover {
+.wiwa-empty-cta .wiwa-empty-cart-btn:hover {
     transform: translateY(-3px);
     box-shadow: 0 8px 25px rgba(30, 58, 43, 0.4);
+    color: #ffffff;
 }
 .wiwa-empty-features {
     display: flex;
