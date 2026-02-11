@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.8.7');
+define('WIWA_CHECKOUT_VERSION', '2.8.8');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -104,6 +104,7 @@ final class Wiwa_Tour_Checkout
             Wiwa_Settings::init();
         });
 
+
         // Inicializar Handlers
         add_action('plugins_loaded', function () {
             new Wiwa_Checkout_Handler();
@@ -111,6 +112,9 @@ final class Wiwa_Tour_Checkout
             new Wiwa_Ajax_Handler();
             new Wiwa_Cart_Handler();
         });
+
+        // FIX: Agrupar datos de pasajeros (Guest Info) en el servidor para evitar fallos de JS
+        add_filter('woocommerce_add_cart_item_data', [$this, 'aggregate_guest_info_for_cart'], 10, 3);
 
         // DEBUG PATH HOOK
         add_action('wp_head', [$this, 'debug_paths']);
@@ -167,6 +171,46 @@ final class Wiwa_Tour_Checkout
     {
         echo "\n<!-- DEBUG PATH INFO: " . WIWA_CHECKOUT_PATH . " -->\n";
         echo "<!-- DEBUG TEMPLATE 1: " . WIWA_CHECKOUT_PATH . "templates/checkout/step-1.php -->\n";
+    }
+    /**
+     * Agrega la información de los pasajeros al item del carrito.
+     * Busca campos 'ovatb_{tipo}_info' en $_POST y los agrupa en 'ovatb_guest_info'.
+     */
+    public function aggregate_guest_info_for_cart($cart_item_data, $product_id, $variation_id)
+    {
+        if (empty($_POST)) return $cart_item_data;
+
+        $guest_info = [];
+        $found_data = false;
+
+        // Recorrer $_POST buscando patrones de OvaTourBooking
+        foreach ($_POST as $key => $value) {
+            // Buscamos patrones como 'ovatb_adult_info', 'ovatb_child_info', etc.
+            if (preg_match('/^ovatb_([a-zA-Z0-9_]+)_info$/', $key, $matches)) {
+                $guest_type = $matches[1]; // ej: 'adult', 'child'
+                
+                // Ignorar el campo 'guest' literal si existiera, buscamos tipos específicos
+                if ($guest_type === 'guest') continue;
+
+                // Estructura esperada por el backend: $guest_info['adult'] = [ ... ]
+                if (!empty($value) && is_array($value)) {
+                    $guest_info[$guest_type] = $value;
+                    $found_data = true;
+                }
+            }
+        }
+
+        // Si encontramos datos y no existe ya 'ovatb_guest_info' (o está vacío), lo asignamos
+        if ($found_data) {
+            // Si ya existe data parcial, la mezclamos (priorizando la que acabamos de armar)
+            if (isset($cart_item_data['ovatb_guest_info']) && is_array($cart_item_data['ovatb_guest_info'])) {
+                $cart_item_data['ovatb_guest_info'] = array_merge($cart_item_data['ovatb_guest_info'], $guest_info);
+            } else {
+                $cart_item_data['ovatb_guest_info'] = $guest_info;
+            }
+        }
+
+        return $cart_item_data;
     }
 }
 
