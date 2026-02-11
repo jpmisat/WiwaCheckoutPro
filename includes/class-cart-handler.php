@@ -206,50 +206,72 @@ class Wiwa_Cart_Handler
             WIWA_CHECKOUT_VERSION
         );
 
-        // FIX: Start - Move cart container to body to fix stacking context, AND handle toggle/close manually
+        // FIX: Start - Move cart container AND OVERLAY to body to fix stacking context, AND handle toggle/close manually
         wp_add_inline_script('wiwa-side-cart', "
             jQuery(document).ready(function($) {
                 var cartContainer = $('.elementor-menu-cart__container');
+                var cartOverlay = $('.elementor-menu-cart__overlay');
                 var body = $('body');
                 
-                // 1. Move to body if not there
+                // 1. Move Container to body
                 if (cartContainer.length && cartContainer.parent()[0] !== document.body) {
                     cartContainer.appendTo('body');
                 }
 
-                // 2. Manual Toggle Logic (since moving it might break Elementor bindings)
+                // 2. Move Overlay to body (Create if missing)
+                if (cartOverlay.length) {
+                    if (cartOverlay.parent()[0] !== document.body) {
+                        cartOverlay.appendTo('body');
+                    }
+                } else {
+                    // Fallback: If Elementor doesn't create one in DOM until open, we might need to rely on CSS on 'body:before' 
+                    // or just creating one ourselves if strictly needed. 
+                    // Usually Elementor has it.
+                }
+
+                function openCart() {
+                    body.addClass('elementor-menu-cart--shown');
+                    cartContainer.addClass('wiwa-cart-open');
+                    cartOverlay.addClass('wiwa-cart-open');
+                }
+
+                function closeCart() {
+                    body.removeClass('elementor-menu-cart--shown');
+                    cartContainer.removeClass('wiwa-cart-open');
+                    cartOverlay.removeClass('wiwa-cart-open');
+                }
+
+                // 3. Toggle Logic
                 // Open
                 $(document).on('click', '.elementor-menu-cart__toggle_button, .elementor-menu-cart__toggle_wrapper', function(e) {
                     e.preventDefault();
-                    body.addClass('elementor-menu-cart--shown');
-                    cartContainer.addClass('wiwa-cart-open');
+                    e.stopPropagation(); // Avoid bubbling issues
+                    openCart();
                 });
 
-                // Close (Button & Overlay)
-                $(document).on('click', '.elementor-menu-cart__close-button, .elementor-menu-cart__container .elementor-menu-cart__close-button', function(e) {
+                // Close (Button) - Delegate to document to catch it even if moved
+                $(document).on('click', '.elementor-menu-cart__close-button', function(e) {
                     e.preventDefault();
-                    body.removeClass('elementor-menu-cart--shown');
-                    cartContainer.removeClass('wiwa-cart-open');
+                    e.stopPropagation();
+                    closeCart();
                 });
 
-                // Close on Overlay click (if overlay is part of container or separate)
-                // Elementor creates a separate overlay usually.
-                $(document).on('click', '.elementor-menu-cart__overlay', function() {
-                     body.removeClass('elementor-menu-cart--shown');
-                     cartContainer.removeClass('wiwa-cart-open');
+                // Close (Overlay)
+                // Note: We use the moved overlay now
+                $(document).on('click', '.elementor-menu-cart__overlay', function(e) {
+                     e.preventDefault();
+                     closeCart();
                 });
                 
-                // ESC key to close
+                // ESC key
                 $(document).keyup(function(e) {
                     if (e.key === 'Escape') {
-                        body.removeClass('elementor-menu-cart--shown');
-                        cartContainer.removeClass('wiwa-cart-open');
+                        closeCart();
                     }
                 });
 
-                // Ensure it is closed on load
-                body.removeClass('elementor-menu-cart--shown');
-                cartContainer.removeClass('wiwa-cart-open');
+                // Ensure closed on load
+                closeCart();
             });
         ");
         // FIX: End
@@ -265,7 +287,8 @@ class Wiwa_Cart_Handler
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
             /* CRITICAL: Side Cart Z-Index & Visibility */
-            /* Ensure container is fixed and top-level, BUT HIDDEN by default */
+            
+            /* 1. CONTAINER (The Panel) */
             body .elementor-menu-cart__container {
                 z-index: 2147483647 !important;
                 position: fixed !important;
@@ -274,18 +297,34 @@ class Wiwa_Cart_Handler
                 height: 100vh !important;
                 transform: translateX(100%) !important; /* Hidden by default */
                 transition: transform 0.3s ease-in-out !important;
-                display: block !important; /* Ensure it's not display:none, just off-screen */
+                display: block !important;
             }
 
-            /* Show when active class is present (Elementor usually adds 'elementor-menu-cart--shown' to body) */
+            /* Show Panel */
             body.elementor-menu-cart--shown .elementor-menu-cart__container,
             body .elementor-menu-cart__container.wiwa-cart-open {
                 transform: translateX(0) !important;
             }
 
-            /* Dark Overlay */
-            body .elementor-menu-cart__main {
-                z-index: 2147483646 !important; /* Just below container */
+            /* 2. OVERLAY (The Dark Background) */
+            body .elementor-menu-cart__overlay {
+                z-index: 2147483646 !important; /* Below panel */
+                position: fixed !important;
+                top: 0 !important;
+                left: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+                background-color: rgba(0,0,0,0.5) !important; /* Ensure dark dimming */
+                display: none !important; /* Hidden by default */
+                opacity: 0 !important;
+                transition: opacity 0.2s ease-in-out !important;
+            }
+
+            /* Show Overlay */
+            body.elementor-menu-cart--shown .elementor-menu-cart__overlay,
+            body .elementor-menu-cart__overlay.wiwa-cart-open {
+                display: block !important;
+                opacity: 1 !important;
             }
             
             /* Wrapper (Button) - Not fixed */
