@@ -2,6 +2,10 @@
 
 ## [2.8.6] - 2026-02-10
 
+### Deployment
+
+- **Retry**: Triggering new deployment with updated GitHub Actions `SSH_PORT` secret.
+
 ### Fixed
 
 - **PHP Warnings**: Implemented `sanitize_cart_session_data` on `wp_loaded` to detect and remove malformed `ovatb_guest_info` from the session. This fixes the `foreach()` errors in OvaTourBooking.
