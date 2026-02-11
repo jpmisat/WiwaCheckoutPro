@@ -130,6 +130,9 @@ final class Wiwa_Tour_Checkout
         // Filter to customize Mini Cart Quantity
         add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 10, 3);
         
+        // Filter to customize Main Cart Quantity
+        add_filter('woocommerce_cart_item_quantity', [$this, 'custom_cart_item_quantity'], 10, 3);
+        
         // AJAX Handler for Mini Cart Quantity Update
         add_action('wp_ajax_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
         add_action('wp_ajax_nopriv_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
@@ -190,22 +193,26 @@ final class Wiwa_Tour_Checkout
 
     public function enqueue_custom_scripts()
     {
-        // Enqueue Global Cart Styles (Sidebar & Main Cart)
-        if ( is_cart() || is_checkout() || is_front_page() || is_product() || true ) { 
-            // 'true' forces load for global sidebar availability
-            wp_enqueue_style('wiwa-cart-styles', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
-            wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
-             wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
+        // --- ADD TO CART POPUP ASSETS ---
+        // Load globally or check for specific pages where the popup is used. 
+        // Since JetPopup can be anywhere, we load it broadly or check for 'elementor' if possible.
+        // For now, we load it if we are not in admin, or specifically on front/shop pages.
+        if ( !is_admin() ) {
+            wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
+            wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+            
+            wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
             ]);
         }
 
-        if (is_product()) {
-            wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
-            wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
-            
-            wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
+        // --- CART REDESIGN (Refined) ---
+        // Enqueue Global Cart Styles (Sidebar & Main Cart)
+        if ( !is_admin() ) { 
+            wp_enqueue_style('wiwa-cart-styles', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
+            wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+             wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
             ]);
@@ -241,6 +248,39 @@ final class Wiwa_Tour_Checkout
             <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
         </div>
         <span class="quantity" style="display:none !important"><?php echo $html; ?></span>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Custom Main Cart Quantity Input
+     */
+    public function custom_cart_item_quantity($product_quantity, $cart_item_key, $cart_item)
+    {
+        $_product = $cart_item['data'];
+        if ($_product->is_sold_individually()) {
+            return $product_quantity;
+        }
+
+        $current_qty = $cart_item['quantity'];
+        
+        // Main cart often wraps input in .quantity div. We will replace it or inject ours.
+        // Standard WC output is <div class="quantity"><input ...></div>
+        
+        ob_start();
+        ?>
+        <div class="wiwa-mini-cart-qty wiwa-main-cart-qty">
+            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+            <input type="number" 
+                   class="wiwa-qty-input" 
+                   name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" 
+                   value="<?php echo esc_attr($current_qty); ?>" 
+                   min="0" 
+                   step="1" 
+                   data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   readonly />
+            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
+        </div>
         <?php
         return ob_get_clean();
     }

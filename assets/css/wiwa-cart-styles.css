@@ -1,298 +1,333 @@
 /**
  * Wiwa Tour Checkout - Premium Cart Styles
  * Redesign for Sidebar Cart & Main Cart Page
+ * Fixed: Overlap issues & Side-by-Side Layout
  */
 
 :root {
-    --wiwa-green: #1E3A2B;
-    --wiwa-green-hover: #152A1F;
-    --wiwa-light-gray: #f9f9f9;
-    --wiwa-border-color: #f0f0f0;
-    --wiwa-shadow: 0 10px 30px rgba(0,0,0,0.08);
-    --wiwa-radius: 12px;
+  --wiwa-green: #1e3a2b;
+  --wiwa-green-hover: #152a1f;
+  --wiwa-light-gray: #f9f9f9;
+  --wiwa-border-color: #f0f0f0;
+  --wiwa-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+  --wiwa-radius: 12px;
 }
 
 /* =========================================
    SIDEBAR CART (Mini Cart)
    ========================================= */
 
-/* General Sidebar Container Override */
+/* Container Override */
 .elementor-menu-cart__container {
-    background: #fff !important;
+  background: #fff;
 }
 
 /* 1. Remove text-decoration from buttons & links */
 .widget_shopping_cart_content a,
 .elementor-menu-cart__container a {
-    text-decoration: none !important;
-    box-shadow: none !important;
+  text-decoration: none !important;
+  box-shadow: none !important;
 }
 
 /* 2. Buttons (View Cart / Checkout) - Premium Style */
 .elementor-menu-cart__footer-buttons .elementor-button {
-    border-radius: 8px !important;
-    font-weight: 600 !important;
-    text-transform: none !important; /* No UPPERCASE forced */
-    letter-spacing: 0.5px !important;
-    padding: 12px 20px !important;
-    transition: all 0.3s ease !important;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.05) !important;
+  border-radius: 8px !important;
+  font-weight: 600 !important;
+  text-transform: none !important;
+  letter-spacing: 0.5px !important;
+  padding: 12px 20px !important;
+  transition: all 0.3s ease !important;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
 }
 
 /* View Cart Button - Outline/Light Style */
 .elementor-menu-cart__footer-buttons .elementor-button--view-cart {
-    background-color: #fff !important;
-    border: 1px solid var(--wiwa-border-color) !important;
-    color: var(--wiwa-green) !important;
+  background-color: #fff !important;
+  border: 1px solid var(--wiwa-border-color) !important;
+  color: var(--wiwa-green) !important;
 }
 .elementor-menu-cart__footer-buttons .elementor-button--view-cart:hover {
-    background-color: var(--wiwa-light-gray) !important;
-    border-color: #e0e0e0 !important;
+  background-color: var(--wiwa-light-gray) !important;
+  border-color: #e0e0e0 !important;
 }
 
 /* Checkout Button - Solid Primary Style */
 .elementor-menu-cart__footer-buttons .elementor-button--checkout {
-    background-color: var(--wiwa-green) !important;
-    color: #fff !important;
-    border: 1px solid var(--wiwa-green) !important;
+  background-color: var(--wiwa-green) !important;
+  color: #fff !important;
+  border: 1px solid var(--wiwa-green) !important;
 }
 .elementor-menu-cart__footer-buttons .elementor-button--checkout:hover {
-    background-color: var(--wiwa-green-hover) !important;
-    opacity: 0.95;
-    transform: translateY(-1px);
-    box-shadow: 0 6px 12px rgba(0,0,0,0.1) !important;
+  background-color: var(--wiwa-green-hover) !important;
+  opacity: 0.95;
+  transform: translateY(-1px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.1) !important;
 }
 
 /* 3. Quantity Selector [ - ] [ N ] [ + ] */
 .wiwa-mini-cart-qty {
-    display: flex;
-    align-items: center;
-    gap: 5px;
-    margin-top: 8px;
-    background: #f5f5f5;
-    border-radius: 6px;
-    padding: 2px;
-    width: fit-content;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: 8px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  padding: 2px;
+  width: fit-content;
+  position: relative;
+  z-index: 10; /* Ensure clickable */
 }
 
 .wiwa-mini-cart-qty button {
-    background: none;
-    border: none;
-    color: #333;
-    font-size: 14px;
-    width: 24px;
-    height: 24px;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 4px;
-    transition: background 0.2s;
+  background: #fff; /* White background for better contrast */
+  border: 1px solid #eee;
+  color: #333;
+  font-size: 14px;
+  width: 28px; /* Slightly larger */
+  height: 28px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+  transition: all 0.2s;
 }
 
 .wiwa-mini-cart-qty button:hover {
-    background: #e0e0e0;
+  background: #e0e0e0;
+  border-color: #ccc;
 }
 
 .wiwa-mini-cart-qty input {
-    background: transparent;
-    border: none !important;
-    text-align: center;
-    width: 30px;
-    padding: 0;
-    margin: 0;
-    font-weight: 600;
-    font-size: 13px;
-    -moz-appearance: textfield;
+  background: transparent;
+  border: none !important;
+  text-align: center;
+  width: 35px;
+  padding: 0;
+  margin: 0;
+  font-weight: 600;
+  font-size: 14px;
+  -moz-appearance: textfield;
 }
 .wiwa-mini-cart-qty input::-webkit-outer-spin-button,
 .wiwa-mini-cart-qty input::-webkit-inner-spin-button {
-    -webkit-appearance: none;
-    margin: 0;
+  -webkit-appearance: none;
+  margin: 0;
 }
 
-/* Hidden elements if we replace them */
+/* Hide default WC quantity */
 .woocommerce-mini-cart-item .quantity {
-    display: none !important; /* Hide default WC quantity if present */
+  display: none !important;
+}
+.wiwa-mini-cart-qty {
+  display: flex !important;
 }
 
-/* 4. Remove Icon (Trash) */
+/* 4. Remove Icon (Trash) - FIX OVERLAP */
+.elementor-menu-cart__product-remove {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 20;
+}
+
 .elementor-menu-cart__product-remove a,
 .mini_cart_item a.remove {
-    color: #ccc !important; /* Default distinct color */
-    border: none !important;
-    background: transparent !important;
-    font-size: 0 !important; /* Hide text 'x' */
-    width: 24px !important;
-    height: 24px !important;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-    transition: all 0.2s;
+  color: transparent !important;
+  border: none !important;
+  background: transparent !important;
+  font-size: 0 !important;
+  width: 24px !important;
+  height: 24px !important;
+  display: flex !important;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  overflow: hidden; /* Hide text spill */
 }
 
-/* Inject Trash Icon via pseudo-element or expect SVG from filter (CSS approach here for pseudo fallback) */
-.elementor-menu-cart__product-remove a::before,
-.mini_cart_item a.remove::before {
-    content: "\f2ed"; /* FontAwesome Trash Alt */
-    font-family: "Font Awesome 5 Free"; /* Ensure FA is loaded or use SVG background */
-    font-weight: 400; /* Regular */
-    font-size: 16px !important;
-    color: #999;
-}
-
-/* If FontAwesome not reliable, use SVG background */
+/* Fallback SVG Icon - Trash Can */
 .elementor-menu-cart__product-remove a {
-     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="%23999999"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>') !important;
-     background-repeat: no-repeat !important;
-     background-position: center !important;
-     background-size: 18px !important;
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="%23999999"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>') !important;
+  background-repeat: no-repeat !important;
+  background-position: center !important;
+  background-size: 16px !important;
 }
-.elementor-menu-cart__product-remove a::before { content: none !important; } /* Reset if using SVG bg */
+.elementor-menu-cart__product-remove a::before {
+  content: none !important;
+}
 
 .elementor-menu-cart__product-remove a:hover {
-    background-color: #fff5f5 !important;
-}
-.elementor-menu-cart__product-remove a:hover {
-     background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="24" viewBox="0 -960 960 960" width="24" fill="%23dc2626"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>') !important;
+  background-color: #fee2e2 !important; /* Light red bg */
+  background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" height="20" viewBox="0 -960 960 960" width="20" fill="%23dc2626"><path d="M280-120q-33 0-56.5-23.5T200-200v-520h-40v-80h200v-40h240v40h200v80h-40v520q0 33-23.5 56.5T680-120H280Zm400-600H280v520h400v-520ZM360-280h80v-360h-80v360Zm160 0h80v-360h-80v360ZM280-720v520-520Z"/></svg>') !important;
 }
 
-
-/* 5. Subtotal Typography */
+/* 5. Subtotal Typography & Spacing */
 .elementor-menu-cart__subtotal {
-    border-top: 1px solid var(--wiwa-border-color) !important;
-    padding-top: 20px !important;
-    margin-top: 20px !important;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-}
-
-.elementor-menu-cart__subtotal strong {
-    font-weight: 600 !important;
-    color: #666;
-    font-size: 16px;
+  border-top: 1px solid var(--wiwa-border-color) !important;
+  padding-top: 20px !important;
+  margin-top: 20px !important;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .elementor-menu-cart__subtotal .woocommerce-Price-amount {
-    font-weight: 700 !important;
-    font-size: 1.2rem !important; /* Larger font */
-    color: var(--wiwa-green) !important;
+  font-weight: 700 !important;
+  font-size: 1.3rem !important; /* Larger font */
+  color: var(--wiwa-green) !important;
 }
-
 
 /* =========================================
    MAIN CART PAGE
    ========================================= */
 
-/* 1. Container & Spacing (Clean Card Look) */
+/* 1. Container - Specific Selector for Layout */
 .woocommerce-cart .woocommerce {
-    max-width: 1200px;
-    margin: 40px auto;
+  max-width: 1200px;
+  margin: 40px auto;
 }
 
-.woocommerce-cart-form {
+/* Flex Layout - Targets direct children to avoid popup breakage */
+@media (min-width: 992px) {
+  .woocommerce-cart .woocommerce {
+    display: flex; /* Re-enable flex */
+    align-items: flex-start;
+    gap: 30px;
+    flex-wrap: nowrap;
+  }
+
+  .woocommerce-cart .woocommerce-cart-form {
     background: #fff;
     border-radius: var(--wiwa-radius);
     padding: 30px;
     box-shadow: var(--wiwa-shadow);
-    margin-right: 20px; /* Space for sidebar */
-    flex: 1;
+    flex: 1; /* Takes remaining space */
+    width: auto; /* Let flex handle width */
+    margin-right: 0;
+    margin-bottom: 0;
+  }
+
+  .woocommerce-cart .cart-collaterals {
+    width: 380px; /* Fixed width for Totals */
+    flex-shrink: 0;
+    margin-top: 0 !important;
+  }
 }
 
-/* Flex layout for Desktop (Cart Table Left, Totals Right) */
-@media (min-width: 992px) {
-    .woocommerce-cart .woocommerce {
-        display: flex;
-        align-items: flex-start;
-        gap: 30px;
-    }
-    .woocommerce-cart-form {
-        margin-right: 0;
-        width: 65%;
-    }
-    .cart-collaterals {
-        width: 35%;
-        margin-top: 0 !important;
-    }
+/* Mobile & Tablet Fallback */
+@media (max-width: 991px) {
+  .woocommerce-cart .woocommerce-cart-form {
+    margin-bottom: 30px;
+    background: #fff;
+    border-radius: var(--wiwa-radius);
+    padding: 20px;
+  }
+  .woocommerce-cart .cart-collaterals {
+    width: 100%;
+  }
 }
 
-/* 2. Remove Hard Borders (Excel Style) */
+/* 2. Remove "Excel-like" Borders */
 .shop_table {
-    border: none !important;
+  border: none !important;
+  box-shadow: none !important;
 }
-.shop_table th, 
+.shop_table th,
 .shop_table td {
-    border-top: none !important;
-    border-left: none !important;
-    border-right: none !important;
-    border-bottom: 1px solid var(--wiwa-border-color) !important; /* Horizontal only */
-    padding: 20px 10px !important;
+  border-top: none !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-bottom: 1px solid var(--wiwa-border-color) !important;
+  padding: 20px 15px !important;
+  background: transparent !important;
 }
 .shop_table th {
-    background: #fcfcfc; /* Slight contrast for header */
-    font-weight: 600;
-    text-transform: uppercase;
-    font-size: 13px;
-    letter-spacing: 0.5px;
-    color: #888;
-    border-bottom: 2px solid #eee !important;
+  background: #f8f8f8 !important;
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+  color: #666;
+  border-bottom: 2px solid #eee !important;
+}
+.shop_table td {
+  vertical-align: middle;
 }
 
-/* 3. Cart Totals Module */
+/* 3. Cart Totals Module - Styled Card */
 .cart-collaterals .cart_totals {
-    background: #fafafa; /* Distinct background */
-    padding: 30px;
-    border-radius: var(--wiwa-radius);
-    box-shadow: none; /* Flat but distinct */
-    border: 1px solid #eee;
-    width: 100% !important;
-    float: none !important;
+  background: #fafafa;
+  padding: 25px;
+  border-radius: var(--wiwa-radius);
+  border: 1px solid #eee;
+  width: 100% !important;
+  float: none !important;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.03);
 }
 
 .cart_totals h2 {
-    font-size: 1.25rem;
-    font-weight: 700;
-    margin-bottom: 20px;
-    border-bottom: 1px solid #eaeaea;
-    padding-bottom: 15px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #eaeaea;
+  padding-bottom: 15px;
+  color: var(--wiwa-green);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
 }
 
 .cart_totals table.shop_table {
-    border: none !important;
-    background: transparent !important;
-    margin: 0 !important;
+  margin: 0 !important;
+  width: 100%;
+}
+.cart_totals th {
+  font-weight: 600;
+  width: 40%;
+}
+.cart_totals td {
+  text-align: right;
 }
 
-.cart_totals th, .cart_totals td {
-    background: transparent !important;
-    padding: 15px 0 !important;
-    font-size: 15px;
+.order-total th,
+.order-total td {
+  font-size: 1.3rem;
+  font-weight: 800;
+  color: var(--wiwa-green);
+  border-top: 2px solid #ddd !important;
+  border-bottom: none !important;
+  padding-top: 20px !important;
 }
 
-.order-total th, .order-total td {
-    font-size: 1.2rem;
-    font-weight: 700;
-    color: var(--wiwa-green);
-    border-top: 2px solid #ddd !important;
-    border-bottom: none !important;
-    padding-top: 20px !important;
-}
-
-/* Checkout Button in Totals */
+/* Checkout Button */
 .wc-proceed-to-checkout .checkout-button {
-    background-color: var(--wiwa-green) !important;
-    font-size: 1.1rem !important;
-    padding: 18px !important;
-    border-radius: 8px !important;
-    display: block;
-    width: 100%;
-    margin-top: 20px;
-    transition: all 0.3s ease;
+  background-color: var(--wiwa-green) !important;
+  font-size: 1.1rem !important;
+  padding: 16px !important;
+  border-radius: 8px !important;
+  display: block;
+  width: 100%;
+  margin-top: 25px;
+  transition: all 0.3s ease;
+  font-weight: 700;
 }
 .wc-proceed-to-checkout .checkout-button:hover {
-    background-color: var(--wiwa-green-hover) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 5px 15px rgba(30, 58, 43, 0.2);
+  background-color: var(--wiwa-green-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(30, 58, 43, 0.25);
+}
+
+/* 4. Booking Popup - Force Add to Cart Visibility */
+.jet-popup .single_add_to_cart_button {
+  display: inline-block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+/* Style it if needed to match reserving button */
+.jet-popup .single_add_to_cart_button {
+  background-color: #fff !important;
+  color: var(--wiwa-green) !important;
+  border: 2px solid var(--wiwa-green) !important;
+  margin-left: 10px;
 }
