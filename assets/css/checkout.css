@@ -3017,7 +3017,165 @@ ul.order_details li strong {
     box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2);
 }
 
-/* WooCommerce Notices Styling */
+/* ----------------------------------------------------------- */
+/*  5. SIDE CART UI ENHANCEMENTS (Premium Look)                */
+/* ----------------------------------------------------------- */
+
+/* 1. Remove Underlines & General Text */
+body .elementor-menu-cart__container a {
+    text-decoration: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+}
+
+body .elementor-menu-cart__product-name,
+body .elementor-menu-cart__product-price {
+    font-family: inherit !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+body .elementor-menu-cart__product-name {
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+
+/* 2. Remove Button (Circular Red) */
+body .elementor-menu-cart__product-remove {
+    position: relative !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 50% !important;
+    background-color: var(--wiwa-error-light) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    margin-left: 12px !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body .elementor-menu-cart__product-remove a,
+body .elementor-menu-cart__product-remove svg,
+body .elementor-menu-cart__product-remove i {
+    color: var(--wiwa-error) !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    display: block !important;
+    text-decoration: none !important;
+}
+
+/* If the theme uses an 'x' character instead of icon, center it */
+body .elementor-menu-cart__product-remove a {
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+body .elementor-menu-cart__product-remove:hover {
+    background-color: var(--wiwa-error) !important;
+    transform: scale(1.1);
+}
+
+body .elementor-menu-cart__product-remove:hover a,
+body .elementor-menu-cart__product-remove:hover svg {
+    color: white !important;
+}
+
+/* 3. Subtotal Section (Clean & Premium) */
+body .elementor-menu-cart__subtotal {
+    border-top: 1px solid var(--wiwa-gray-200) !important;
+    padding: 20px 24px !important;
+    display: flex !important;
+    justify-content: space-between !important; /* Spread text and price */
+    align-items: center !important;
+    background: white !important;
+    font-size: 16px !important;
+    color: var(--wiwa-gray-700) !important;
+    font-weight: 600 !important;
+}
+
+/* Isolate the Price part of Subtotal */
+body .elementor-menu-cart__subtotal .woocommerce-Price-amount {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--wiwa-green) !important;
+}
+
+/* 4. Footer Buttons */
+body .elementor-menu-cart__footer-buttons {
+    gap: 12px !important;
+    padding: 0 24px 24px !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart,
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    font-size: 15px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout {
+    background: var(--wiwa-green) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout:hover {
+    background: var(--wiwa-green-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(30, 58, 43, 0.3) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart {
+    background: white !important;
+    border: 2px solid var(--wiwa-gray-200) !important;
+    color: var(--wiwa-gray-700) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart:hover {
+    border-color: var(--wiwa-gray-400) !important;
+    background: var(--wiwa-gray-50) !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* 5. Quantity Input (If we manage to enable it) */
+.elementor-menu-cart__product-quantity .quantity {
+    display: flex !important;
+    align-items: center !important;
+    border: 1px solid var(--wiwa-gray-300) !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    width: fit-content !important;
+    margin-top: 8px !important;
+}
+
+.elementor-menu-cart__product-quantity .qty {
+    width: 40px !important;
+    height: 32px !important;
+    text-align: center !important;
+    border: none !important;
+    -moz-appearance: textfield !important;
+    background: white !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* Previous Notice Styles */
 .woocommerce-notices-wrapper .woocommerce-message, 
 .woocommerce-notices-wrapper .woocommerce-info, 
 .woocommerce-notices-wrapper .woocommerce-error {

@@ -113,11 +113,18 @@ final class Wiwa_Tour_Checkout
             new Wiwa_Cart_Handler();
         });
 
+        // AJAX Add to Cart Hooks
+        add_action('wp_ajax_wiwa_ajax_add_to_cart', [$this, 'ajax_add_to_cart']);
+        add_action('wp_ajax_nopriv_wiwa_ajax_add_to_cart', [$this, 'ajax_add_to_cart']);
+
         // FIX: Agrupar datos de pasajeros (Guest Info) en el servidor para evitar fallos de JS
         add_filter('woocommerce_add_cart_item_data', [$this, 'aggregate_guest_info_for_cart'], 10, 3);
 
         // DEBUG PATH HOOK
         add_action('wp_head', [$this, 'debug_paths']);
+
+        // Enqueue Custom Add to Cart Script
+        add_action('wp_enqueue_scripts', [$this, 'enqueue_custom_scripts']);
     }
 
     public function check_dependencies()
@@ -172,6 +179,135 @@ final class Wiwa_Tour_Checkout
         echo "\n<!-- DEBUG PATH INFO: " . WIWA_CHECKOUT_PATH . " -->\n";
         echo "<!-- DEBUG TEMPLATE 1: " . WIWA_CHECKOUT_PATH . "templates/checkout/step-1.php -->\n";
     }
+
+    public function enqueue_custom_scripts()
+    {
+        if (is_product()) {
+            wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
+            wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+        }
+    }
+
+
+    /**
+     * AJAX Handler for Add to Cart
+     */
+    public function ajax_add_to_cart()
+    {
+        // Verificar nonce (opcional pero recomendado, aunque ova-tour a veces usa 'ovatb-admin-ajax')
+        // check_ajax_referer('ovatb-admin-ajax', 'security'); 
+
+        $product_id = isset($_POST['ovatb-product-id']) ? intval($_POST['ovatb-product-id']) : 0;
+        
+        if (!$product_id) {
+            wp_send_json_error(['message' => 'ID de producto inválido.']);
+        }
+
+        $product = wc_get_product($product_id);
+        if (!$product) {
+            wp_send_json_error(['message' => 'Producto no encontrado.']);
+        }
+
+        // --- VALIDACIÓN ---
+        // Replicamos la logica de OVATB_Ajaxs::ovatb_calculate_total para validar
+        
+        // 1. Fechas y Horas
+        $checkin_date_str = isset($_POST['checkin_date']) ? sanitize_text_field($_POST['checkin_date']) : '';
+        $checkout_date_str = isset($_POST['checkout_date']) ? sanitize_text_field($_POST['checkout_date']) : '';
+        $start_time_str = isset($_POST['start_time']) ? sanitize_text_field($_POST['start_time']) : '';
+
+        $checkin_date = strtotime($checkin_date_str);
+        $checkout_date = strtotime($checkout_date_str);
+        $start_time = strtotime($start_time_str);
+
+        // Convert input date (Logic from ovatb)
+        if (function_exists('OVATB')) {
+            $new_dates = OVATB()->options->convert_input_date($product_id, $checkin_date, $checkout_date, $start_time);
+            $checkin_date = strtotime($new_dates['checkin_date']);
+            $checkout_date = strtotime($new_dates['checkout_date']);
+        }
+
+        // 2. Validate Booking
+        if (function_exists('OVATB') && isset(OVATB()->booking)) {
+            $passed = OVATB()->booking->booking_validation($product_id, $checkin_date, $checkout_date, isset($_POST['form_name']) ? $_POST['form_name'] : '');
+            if ($passed && $passed !== true) {
+                wp_send_json_error(['message' => $passed]);
+            }
+        }
+
+        // 3. Guests Validation
+        $data = [
+            'product_id' => $product_id,
+            'checkin_date' => $checkin_date,
+            'checkout_date' => $checkout_date,
+        ];
+        
+        // Recopilar numberof_*
+        $numberof_guests = 0;
+        if (function_exists('OVATB') && $product->is_type('ovatb_tour')) {
+            $guest_options = $product->get_guests();
+            if ($guest_options) {
+                foreach ($guest_options as $guest) {
+                    $key = 'numberof_' . $guest['name']; // ovtab_numberof_... ? En el form suele ser numberof_adult
+                    // El plugin usa 'ovatb_numberof_' en el ajax calculate total, pero el form input name suele ser 'numberof_adult'
+                    // Revisar form booking-form... pero en calculate_total usa ovatb_get_meta_data que busca varios prefijos.
+                    // Usaremos $_POST directo con fallback.
+                    
+                    $val = isset($_POST['numberof_' . $guest['name']]) ? intval($_POST['numberof_' . $guest['name']]) : 0;
+                    // También probar con ovatb_numberof_ si falla el anterior
+                    if (!$val && isset($_POST['ovatb_numberof_' . $guest['name']])) {
+                        $val = intval($_POST['ovatb_numberof_' . $guest['name']]);
+                    }
+
+                    $data['numberof_' . $guest['name']] = $val;
+                    $numberof_guests += $val;
+                }
+            }
+        }
+        $data['numberof_guests'] = $numberof_guests;
+
+        if (function_exists('OVATB') && isset(OVATB()->booking)) {
+            $mesg = OVATB()->booking->numberof_guests_validation($data, $product);
+            if ($mesg && $mesg !== true) {
+                 wp_send_json_error(['message' => $mesg]);
+            }
+            
+            // Availability Check
+             $available = OVATB()->booking->get_numberof_available_guests($product_id, $checkin_date, $checkout_date, $numberof_guests, isset($_POST['form_name']) ? $_POST['form_name'] : '');
+             if (isset($available['error']) && $available['error']) {
+                 wp_send_json_error(['message' => $available['error']]);
+             }
+        }
+
+        // --- AGREGAR AL CARRITO ---
+        // WooCommerce y OvaTourBooking hooks se encargarán de leer $_POST
+        // para agregar la meta data (guests, dates, etc) al item del carrito.
+        // Siempre que $_POST esté poblado (lo está en AJAX), esto debería funcionar.
+
+        $added = WC()->cart->add_to_cart($product_id, 1);
+
+        if ($added) {
+            wp_send_json_success([
+                'message' => 'Producto agregado al carrito',
+                'product_title' => $product->get_name(),
+                'cart_url' => wc_get_cart_url()
+            ]);
+        } else {
+            // Recopilar errores de WC
+            $errors = wc_get_notices('error');
+            wc_clear_notices(); // Limpiar para que no salgan en la próxima página
+            
+            // Format mistakes
+            $msg = 'No se pudo agregar al carrito.';
+            if (!empty($errors)) {
+                // $errors es array de arrays o HTML strings
+                 // Simplificación:
+                 $msg .= ' Verifique los datos.';
+            }
+            wp_send_json_error(['message' => $msg]);
+        }
+    }
+
     /**
      * Agrega la información de los pasajeros al item del carrito.
      * Busca campos 'ovatb_{tipo}_info' en $_POST y los agrupa en 'ovatb_guest_info'.
