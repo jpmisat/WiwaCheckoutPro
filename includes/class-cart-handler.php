@@ -189,7 +189,5 @@ class Wiwa_Cart_Handler
             }
         ";
         wp_add_inline_style('wiwa-side-cart-css', $critical_css); 
-            WIWA_CHECKOUT_VERSION
-        );
     }
 }
