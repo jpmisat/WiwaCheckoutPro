@@ -9,8 +9,9 @@ class Wiwa_Cart_Handler
 
     public function __construct()
     {
-        // Override empty cart template with high priority
-        add_filter('wc_get_template', [$this, 'override_empty_cart_template'], 999, 5);
+        // Override empty cart and main cart templates with highest possible priority
+        add_filter('wc_get_template', [$this, 'override_cart_templates'], PHP_INT_MAX, 5);
+        add_filter('woocommerce_locate_template', [$this, 'override_cart_templates'], PHP_INT_MAX, 3);
         
         // Enqueue side cart script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_side_cart_script']);
@@ -19,24 +20,21 @@ class Wiwa_Cart_Handler
     /**
      * Override default WooCommerce cart templates
      */
-    public function override_empty_cart_template($located, $template_name, $args, $template_path, $default_path)
+    public function override_cart_templates($template, $template_name, $template_path)
     {
-        // Nullify other template searches if we match
-        if ($template_name === 'cart/cart-empty.php') {
-            $custom_template = WIWA_CHECKOUT_PATH . 'templates/cart/empty-cart.php';
-            if (file_exists($custom_template)) {
-                return $custom_template;
-            }
-        }
-        
-        if ($template_name === 'cart/cart.php') {
-            $custom_template = WIWA_CHECKOUT_PATH . 'templates/cart/cart.php';
-            if (file_exists($custom_template)) {
-                return $custom_template;
-            }
+        // Custom template path
+        $custom_cart = WIWA_CHECKOUT_PATH . 'templates/cart/cart.php';
+        $custom_empty = WIWA_CHECKOUT_PATH . 'templates/cart/empty-cart.php';
+
+        if ($template_name === 'cart/cart.php' && file_exists($custom_cart)) {
+            return $custom_cart;
         }
 
-        return $located;
+        if ($template_name === 'cart/cart-empty.php' && file_exists($custom_empty)) {
+            return $custom_empty;
+        }
+
+        return $template;
     }
 
     /**

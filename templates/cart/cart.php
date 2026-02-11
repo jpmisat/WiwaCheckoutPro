@@ -11,6 +11,7 @@ defined( 'ABSPATH' ) || exit;
 do_action( 'woocommerce_before_cart' ); ?>
 
 <div class="wiwa-cart-wrapper">
+    <!-- WIWA CUSTOM CART TEMPLATE LOADED -->
     <h1 class="wiwa-cart-title"><?php esc_html_e( 'Tu Carrito de Aventuras', 'wiwa-checkout' ); ?></h1>
 
     <form class="woocommerce-cart-form" action="<?php echo esc_url( wc_get_cart_url() ); ?>" method="post">
