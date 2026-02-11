@@ -206,13 +206,50 @@ class Wiwa_Cart_Handler
             WIWA_CHECKOUT_VERSION
         );
 
-        // FIX: Start - Move cart container to body to fix stacking context issues
+        // FIX: Start - Move cart container to body to fix stacking context, AND handle toggle/close manually
         wp_add_inline_script('wiwa-side-cart', "
             jQuery(document).ready(function($) {
                 var cartContainer = $('.elementor-menu-cart__container');
+                var body = $('body');
+                
+                // 1. Move to body if not there
                 if (cartContainer.length && cartContainer.parent()[0] !== document.body) {
                     cartContainer.appendTo('body');
                 }
+
+                // 2. Manual Toggle Logic (since moving it might break Elementor bindings)
+                // Open
+                $(document).on('click', '.elementor-menu-cart__toggle_button, .elementor-menu-cart__toggle_wrapper', function(e) {
+                    e.preventDefault();
+                    body.addClass('elementor-menu-cart--shown');
+                    cartContainer.addClass('wiwa-cart-open');
+                });
+
+                // Close (Button & Overlay)
+                $(document).on('click', '.elementor-menu-cart__close-button, .elementor-menu-cart__container .elementor-menu-cart__close-button', function(e) {
+                    e.preventDefault();
+                    body.removeClass('elementor-menu-cart--shown');
+                    cartContainer.removeClass('wiwa-cart-open');
+                });
+
+                // Close on Overlay click (if overlay is part of container or separate)
+                // Elementor creates a separate overlay usually.
+                $(document).on('click', '.elementor-menu-cart__overlay', function() {
+                     body.removeClass('elementor-menu-cart--shown');
+                     cartContainer.removeClass('wiwa-cart-open');
+                });
+                
+                // ESC key to close
+                $(document).keyup(function(e) {
+                    if (e.key === 'Escape') {
+                        body.removeClass('elementor-menu-cart--shown');
+                        cartContainer.removeClass('wiwa-cart-open');
+                    }
+                });
+
+                // Ensure it is closed on load
+                body.removeClass('elementor-menu-cart--shown');
+                cartContainer.removeClass('wiwa-cart-open');
             });
         ");
         // FIX: End
@@ -227,20 +264,33 @@ class Wiwa_Cart_Handler
         ?>
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
-            /* CRITICAL: Side Cart Z-Index - Only target Container (Panel) & Overlay */
-            body .elementor-menu-cart__container,
-            body .elementor-menu-cart__main {
+            /* CRITICAL: Side Cart Z-Index & Visibility */
+            /* Ensure container is fixed and top-level, BUT HIDDEN by default */
+            body .elementor-menu-cart__container {
                 z-index: 2147483647 !important;
                 position: fixed !important;
+                right: 0 !important;
+                top: 0 !important;
+                height: 100vh !important;
+                transform: translateX(100%) !important; /* Hidden by default */
+                transition: transform 0.3s ease-in-out !important;
+                display: block !important; /* Ensure it's not display:none, just off-screen */
             }
-            /* Wrapper usually contains the button, should NOT be fixed */
+
+            /* Show when active class is present (Elementor usually adds 'elementor-menu-cart--shown' to body) */
+            body.elementor-menu-cart--shown .elementor-menu-cart__container,
+            body .elementor-menu-cart__container.wiwa-cart-open {
+                transform: translateX(0) !important;
+            }
+
+            /* Dark Overlay */
+            body .elementor-menu-cart__main {
+                z-index: 2147483646 !important; /* Just below container */
+            }
+            
+            /* Wrapper (Button) - Not fixed */
             body .elementor-menu-cart__wrapper {
-                 /* We can set z-index high if needed but NOT position fixed */
-                 z-index: 2147483647 !important; 
-            }
-            body .elementor-menu-cart__overlay {
-                z-index: 2147483646 !important;
-                position: fixed !important;
+                 z-index: 2147483640 !important; 
             }
 
             /* CRITICAL: WooCommerce Notices */
