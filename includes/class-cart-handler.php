@@ -19,8 +19,57 @@ class Wiwa_Cart_Handler
         // Handle custom cart updates (Pax & Guest Info)
         add_action('woocommerce_update_cart_action_cart_updated', [$this, 'handle_custom_cart_updates']);
         
-        // Critical CSS injection
+        // Critial CSS injection
         add_action('wp_head', [$this, 'print_critical_css'], 999);
+
+        // EMERGENCY FIX: Sanitize Cart Session on Load to remove bad data causing warnings
+        add_action('wp_loaded', [$this, 'sanitize_cart_session_data']);
+    }
+
+    /**
+     * Emergency Sanitize: Fix malformed ovatb_guest_info in session
+     */
+    public function sanitize_cart_session_data() {
+        if ( is_admin() || ! function_exists( 'WC' ) || ! WC()->cart ) {
+            return;
+        }
+
+        $cart = WC()->cart->get_cart();
+        $changes = false;
+
+        foreach ( $cart as $key => $item ) {
+            if ( isset( $item['ovatb_guest_info'] ) && is_array( $item['ovatb_guest_info'] ) ) {
+                $is_corrupted = false;
+                foreach ( $item['ovatb_guest_info'] as $guest_type => $guest_data ) {
+                    // Level 1: Guest Types (adults, children) - should be array
+                    if ( ! is_array( $guest_data ) ) {
+                        // FIX: If it's not array, it's definitely broken. Remove it.
+                        $is_corrupted = true; 
+                        break;
+                    }
+
+                    // Level 2: List of guests - should be array of arrays
+                    foreach ( $guest_data as $index => $info_fields ) {
+                        if ( ! is_array( $info_fields ) ) {
+                             // This is the error: foreach() on string
+                             // Found a string where an array of fields should be
+                             $is_corrupted = true;
+                             break 2;
+                        }
+                    }
+                }
+
+                if ( $is_corrupted ) {
+                    // Remove the bad data to stop the fatal error/warning
+                    unset( WC()->cart->cart_contents[$key]['ovatb_guest_info'] );
+                    $changes = true;
+                }
+            }
+        }
+
+        if ( $changes ) {
+            WC()->cart->set_session();
+        }
     }
 
     /**
@@ -62,16 +111,24 @@ class Wiwa_Cart_Handler
             }
 
             // 2. Handle Guest Info (ovatb_guest_info)
-            // Fixes PHP Warning: "foreach() argument must be of type array|object, string given"
             if (isset($values['ovatb_guest_info'])) {
                 $guest_info = $values['ovatb_guest_info'];
                 
-                // Ensure it's an array
+                // STRICT VALIDATION: Only save if structure is correct
+                // Expect: [ type => [ index => [ field => value ] ] ]
                 if (is_array($guest_info)) {
-                    // Sanitize recursively? For now just ensure structure
-                    // Ova expects array: [guest_type => [index => [info_fields]]]
-                    $cart[$cart_item_key]['ovatb_guest_info'] = $guest_info;
-                    $item_changed = true;
+                    $valid = true;
+                    foreach ($guest_info as $g_data) {
+                        if (!is_array($g_data)) { $valid = false; break; }
+                        foreach ($g_data as $fields) {
+                            if (!is_array($fields)) { $valid = false; break; }
+                        }
+                    }
+
+                    if ($valid) {
+                        $cart[$cart_item_key]['ovatb_guest_info'] = $guest_info;
+                        $item_changed = true;
+                    }
                 }
             }
 

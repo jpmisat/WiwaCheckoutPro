@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.6] - 2026-02-10
+
+### Fixed
+
+- **PHP Warnings**: Implemented `sanitize_cart_session_data` on `wp_loaded` to detect and remove malformed `ovatb_guest_info` from the session. This fixes the `foreach()` errors in OvaTourBooking.
+- **Data Validation**: Added strict structural validation in `handle_custom_cart_updates` to prevent future data corruption.
+
 ## [2.8.5] - 2026-02-10
 
 ### Fixed
