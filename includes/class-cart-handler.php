@@ -216,11 +216,15 @@ class Wiwa_Cart_Handler
         ?>
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
-            body .elementor-menu-cart__container,
-            body .elementor-menu-cart__main,
-            body .elementor-menu-cart__wrapper {
+            /* CRITICAL: Side Cart Z-Index - Only target Container (Panel), NOT Wrapper (Button) */
+            body .elementor-menu-cart__container {
                 z-index: 2147483647 !important;
                 position: fixed !important;
+            }
+            /* Wrapper usually contains the button, should NOT be fixed */
+            body .elementor-menu-cart__wrapper {
+                 /* We can set z-index high if needed but NOT position fixed */
+                 z-index: 2147483647 !important; 
             }
             body .elementor-menu-cart__overlay {
                 z-index: 2147483646 !important;
