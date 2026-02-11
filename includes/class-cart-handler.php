@@ -206,60 +206,56 @@ class Wiwa_Cart_Handler
             WIWA_CHECKOUT_VERSION
         );
 
-        // FIX: Start - Move cart container AND OVERLAY to body to fix stacking context, AND handle toggle/close manually
+        // FIX: Start - Move cart container AND Create CUSTOM OVERLAY to fix stacking context & click issues
         wp_add_inline_script('wiwa-side-cart', "
             jQuery(document).ready(function($) {
                 var cartContainer = $('.elementor-menu-cart__container');
-                var cartOverlay = $('.elementor-menu-cart__overlay');
                 var body = $('body');
+                var customOverlay = $('<div class=\"wiwa-custom-cart-overlay\"></div>');
                 
                 // 1. Move Container to body
                 if (cartContainer.length && cartContainer.parent()[0] !== document.body) {
                     cartContainer.appendTo('body');
                 }
 
-                // 2. Move Overlay to body (Create if missing)
-                if (cartOverlay.length) {
-                    if (cartOverlay.parent()[0] !== document.body) {
-                        cartOverlay.appendTo('body');
-                    }
+                // 2. Add Custom Overlay to Body (if not exists)
+                if ($('.wiwa-custom-cart-overlay').length === 0) {
+                    body.append(customOverlay);
                 } else {
-                    // Fallback: If Elementor doesn't create one in DOM until open, we might need to rely on CSS on 'body:before' 
-                    // or just creating one ourselves if strictly needed. 
-                    // Usually Elementor has it.
+                    customOverlay = $('.wiwa-custom-cart-overlay');
                 }
 
                 function openCart() {
                     body.addClass('elementor-menu-cart--shown');
                     cartContainer.addClass('wiwa-cart-open');
-                    cartOverlay.addClass('wiwa-cart-open');
+                    customOverlay.addClass('wiwa-cart-open');
                 }
 
                 function closeCart() {
                     body.removeClass('elementor-menu-cart--shown');
                     cartContainer.removeClass('wiwa-cart-open');
-                    cartOverlay.removeClass('wiwa-cart-open');
+                    customOverlay.removeClass('wiwa-cart-open');
                 }
 
                 // 3. Toggle Logic
                 // Open
                 $(document).on('click', '.elementor-menu-cart__toggle_button, .elementor-menu-cart__toggle_wrapper', function(e) {
                     e.preventDefault();
-                    e.stopPropagation(); // Avoid bubbling issues
+                    e.stopPropagation();
                     openCart();
                 });
 
-                // Close (Button) - Delegate to document to catch it even if moved
+                // Close (Button)
                 $(document).on('click', '.elementor-menu-cart__close-button', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     closeCart();
                 });
 
-                // Close (Overlay)
-                // Note: We use the moved overlay now
-                $(document).on('click', '.elementor-menu-cart__overlay', function(e) {
+                // Close (Custom Overlay)
+                $(document).on('click', '.wiwa-custom-cart-overlay', function(e) {
                      e.preventDefault();
+                     e.stopPropagation();
                      closeCart();
                 });
                 
@@ -306,8 +302,8 @@ class Wiwa_Cart_Handler
                 transform: translateX(0) !important;
             }
 
-            /* 2. OVERLAY (The Dark Background) */
-            body .elementor-menu-cart__overlay {
+            /* 2. OVERLAY (The Custom Dark Background) */
+            .wiwa-custom-cart-overlay {
                 z-index: 2147483646 !important; /* Below panel */
                 position: fixed !important;
                 top: 0 !important;
@@ -318,11 +314,12 @@ class Wiwa_Cart_Handler
                 display: none !important; /* Hidden by default */
                 opacity: 0 !important;
                 transition: opacity 0.2s ease-in-out !important;
+                cursor: pointer !important; /* Show pointer to indicate clickable */
             }
 
             /* Show Overlay */
-            body.elementor-menu-cart--shown .elementor-menu-cart__overlay,
-            body .elementor-menu-cart__overlay.wiwa-cart-open {
+            body.elementor-menu-cart--shown .wiwa-custom-cart-overlay,
+            body .wiwa-custom-cart-overlay.wiwa-cart-open {
                 display: block !important;
                 opacity: 1 !important;
             }
