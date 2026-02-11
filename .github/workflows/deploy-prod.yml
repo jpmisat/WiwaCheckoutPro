@@ -32,6 +32,6 @@ jobs:
           SOURCE: "/"
           REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
           REMOTE_USER: ${{ secrets.SSH_USER_PROD }}
-          remote_port: ${{ secrets.SSH_PORT || 22 }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           TARGET: "/home/wiwatour-ssh/htdocs/wiwatour.com/wp-content/plugins/wiwa-tour-checkout-pro"
           EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa_Manual_de_marca.pdf, /force-reload.ps1"

@@ -239,24 +239,40 @@ class Wiwa_Cart_Handler
 
                 // 3. Toggle Logic
                 // Open
-                $(document).on('click', '.elementor-menu-cart__toggle_button, .elementor-menu-cart__toggle_wrapper', function(e) {
+                $(document).on('click', '.elementor-menu-cart__toggle_button, .elementor-menu-cart__toggle_wrapper, .e-menu-cart-toggle-button', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     openCart();
                 });
 
                 // Close (Button)
-                $(document).on('click', '.elementor-menu-cart__close-button', function(e) {
+                $(document).on('click', '.elementor-menu-cart__close-button, .elementor-menu-cart__close-button-custom', function(e) {
                     e.preventDefault();
                     e.stopPropagation();
                     closeCart();
                 });
 
-                // Close (Custom Overlay)
-                $(document).on('click', '.wiwa-custom-cart-overlay', function(e) {
-                     e.preventDefault();
-                     e.stopPropagation();
-                     closeCart();
+                // 4. ROBUST CLOSING: Click Outside
+                // Listen for any click on the document
+                $(document).on('click', function(e) {
+                    // Only proceed if cart is actually open
+                    if (!body.hasClass('elementor-menu-cart--shown')) return;
+
+                    var target = $(e.target);
+
+                    // Check if click is inside the main cart panel (the white part)
+                    var isInsidePanel = target.closest('.elementor-menu-cart__main').length > 0;
+                    
+                    // Check if click is on a toggle button (to prevent conflict)
+                    var isToggle = target.closest('.elementor-menu-cart__toggle_button').length > 0 
+                                || target.closest('.elementor-menu-cart__toggle_wrapper').length > 0
+                                || target.closest('.e-menu-cart-toggle-button').length > 0;
+
+                    // If click is NOT inside panel and NOT on a toggle -> Close it
+                    if (!isInsidePanel && !isToggle) {
+                        // e.preventDefault(); // Don't prevent default, might be clicking a link behind (though usually overlay blocks it)
+                        closeCart();
+                    }
                 });
                 
                 // ESC key
