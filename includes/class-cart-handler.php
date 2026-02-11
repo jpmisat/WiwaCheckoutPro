@@ -206,6 +206,17 @@ class Wiwa_Cart_Handler
             WIWA_CHECKOUT_VERSION
         );
 
+        // FIX: Start - Move cart container to body to fix stacking context issues
+        wp_add_inline_script('wiwa-side-cart', "
+            jQuery(document).ready(function($) {
+                var cartContainer = $('.elementor-menu-cart__container');
+                if (cartContainer.length && cartContainer.parent()[0] !== document.body) {
+                    cartContainer.appendTo('body');
+                }
+            });
+        ");
+        // FIX: End
+
     }
 
     /**
@@ -216,8 +227,9 @@ class Wiwa_Cart_Handler
         ?>
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
-            /* CRITICAL: Side Cart Z-Index - Only target Container (Panel), NOT Wrapper (Button) */
-            body .elementor-menu-cart__container {
+            /* CRITICAL: Side Cart Z-Index - Only target Container (Panel) & Overlay */
+            body .elementor-menu-cart__container,
+            body .elementor-menu-cart__main {
                 z-index: 2147483647 !important;
                 position: fixed !important;
             }
