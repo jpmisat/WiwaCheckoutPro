@@ -124,7 +124,7 @@ class Wiwa_Cart_Handler
             'emptyText' => __('Tu carrito está vacío', 'wiwa-checkout'),
             'emptyDesc' => __('Parece que aún no has agregado ningún tour. ¡Explora nuestros destinos!', 'wiwa-checkout'),
             'btnText' => __('Explorar Tours', 'wiwa-checkout'),
-            'iconUrl' => WIWA_CHECKOUT_URL . 'assets/images/empty-cart.svg' // We might need to handle the SVG inline or via URL
+            'iconUrl' => WIWA_CHECKOUT_URL . 'assets/images/empty-cart.svg'
         ]);
         
         // Enqueue Persistence Script (for Main Cart)
@@ -153,7 +153,7 @@ class Wiwa_Cart_Handler
             body .elementor-menu-cart__main,
             body .elementor-menu-cart__wrapper {
                 z-index: 2147483647 !important;
-                position: fixed !important; /* Force fixed positioning */
+                position: fixed !important;
             }
             body .elementor-menu-cart__overlay {
                 z-index: 2147483646 !important;
@@ -165,8 +165,8 @@ class Wiwa_Cart_Handler
             .woocommerce-notices-wrapper .woocommerce-info, 
             .woocommerce-notices-wrapper .woocommerce-error {
                 background-color: #f8f9fa !important;
-                color: #374151 !important; /* Gray 700 */
-                border-top: 3px solid #1E3A2B !important; /* Wiwa Brand */
+                color: #374151 !important;
+                border-top: 3px solid #1E3A2B !important;
                 border-radius: 8px !important;
                 padding: 15px 20px !important;
                 margin-bottom: 25px !important;
@@ -188,6 +188,7 @@ class Wiwa_Cart_Handler
                 margin-left: auto !important;
             }
         ";
-        wp_add_inline_style('wiwa-side-cart-css', $critical_css); 
+        
+        wp_add_inline_style('wiwa-side-cart-css', $critical_css);
     }
 }
