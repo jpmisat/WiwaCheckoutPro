@@ -182,17 +182,26 @@ final class Wiwa_Tour_Checkout
 
         $guest_info = [];
         $found_data = false;
+        $quantity_keys = [];
 
-        // Recorrer $_POST buscando patrones de OvaTourBooking
+        // 1. Identificar qué tipos de pasajeros tienen cantidad (numberof_*)
+        foreach ($_POST as $key => $value) {
+            if (preg_match('/^numberof_([a-zA-Z0-9_]+)$/', $key, $matches)) {
+                if ($value > 0) {
+                    $quantity_keys[] = $matches[1]; // ej: 'adult'
+                }
+            }
+        }
+
+        // 2. Recolectar info de pasajeros
         foreach ($_POST as $key => $value) {
             // Buscamos patrones como 'ovatb_adult_info', 'ovatb_child_info', etc.
             if (preg_match('/^ovatb_([a-zA-Z0-9_]+)_info$/', $key, $matches)) {
-                $guest_type = $matches[1]; // ej: 'adult', 'child'
+                $guest_type = $matches[1]; // ej: 'adult', 'child', 'pax'
                 
-                // Ignorar el campo 'guest' literal si existiera, buscamos tipos específicos
+                // Ignorar el campo 'guest' literal si existiera
                 if ($guest_type === 'guest') continue;
 
-                // Estructura esperada por el backend: $guest_info['adult'] = [ ... ]
                 if (!empty($value) && is_array($value)) {
                     $guest_info[$guest_type] = $value;
                     $found_data = true;
@@ -200,9 +209,17 @@ final class Wiwa_Tour_Checkout
             }
         }
 
-        // Si encontramos datos y no existe ya 'ovatb_guest_info' (o está vacío), lo asignamos
+        // 3. FIX: Mapeo inteligente si hay discrepancia de slugs (ej: 'adult' vs 'pax')
+        // Si tenemos cantidad para 'adult' pero info para 'pax', asignamos info de 'pax' a 'adult'.
+        if ($found_data && !empty($quantity_keys)) {
+             // Caso común: El sistema usa 'adult' para cantidad, pero 'pax' para info
+             if (in_array('adult', $quantity_keys) && isset($guest_info['pax']) && !isset($guest_info['adult'])) {
+                 $guest_info['adult'] = $guest_info['pax'];
+             }
+        }
+
+        // 4. Guardar en el carrito
         if ($found_data) {
-            // Si ya existe data parcial, la mezclamos (priorizando la que acabamos de armar)
             if (isset($cart_item_data['ovatb_guest_info']) && is_array($cart_item_data['ovatb_guest_info'])) {
                 $cart_item_data['ovatb_guest_info'] = array_merge($cart_item_data['ovatb_guest_info'], $guest_info);
             } else {
