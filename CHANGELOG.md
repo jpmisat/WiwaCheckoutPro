@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.5] - 2026-02-10
+
+### Fixed
+
+- **CSS Delivery**: Changed Critical CSS injection method to `wp_head` hook (priority 999) to ensure styles are printed directly in the head, bypassing potential queueing issues.
+- **JS Verification**: Added console logging to cart persistence script to verify correct file loading.
+
 ## [2.8.4] - 2026-02-10
 
 ### Fixed

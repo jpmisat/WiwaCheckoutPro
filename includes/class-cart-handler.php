@@ -18,6 +18,9 @@ class Wiwa_Cart_Handler
         
         // Handle custom cart updates (Pax & Guest Info)
         add_action('woocommerce_update_cart_action_cart_updated', [$this, 'handle_custom_cart_updates']);
+        
+        // Critical CSS injection
+        add_action('wp_head', [$this, 'print_critical_css'], 999);
     }
 
     /**
@@ -146,8 +149,15 @@ class Wiwa_Cart_Handler
             WIWA_CHECKOUT_VERSION
         );
 
-        // FORCE CRITICAL CSS (Z-Index & Notices) - Inline to override everything
-        $critical_css = "
+    }
+
+    /**
+     * Force critical CSS into head to avoid caching/enqueue issues
+     */
+    public function print_critical_css() {
+        if (is_admin()) return;
+        ?>
+        <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
             body .elementor-menu-cart__container,
             body .elementor-menu-cart__main,
@@ -187,8 +197,7 @@ class Wiwa_Cart_Handler
                 float: none !important;
                 margin-left: auto !important;
             }
-        ";
-        
-        wp_add_inline_style('wiwa-side-cart-css', $critical_css);
+        </style>
+        <?php
     }
 }

@@ -1,4 +1,5 @@
 jQuery(document).ready(function($) {
+    console.log('Wiwa Cart Persistence Loaded v2.8.5');
     // Prefix for storage keys to avoid conflicts
     const STORAGE_PREFIX = 'wiwa_cart_data_';
     
