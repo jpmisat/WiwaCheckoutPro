@@ -145,5 +145,51 @@ class Wiwa_Cart_Handler
             [], 
             WIWA_CHECKOUT_VERSION
         );
+
+        // FORCE CRITICAL CSS (Z-Index & Notices) - Inline to override everything
+        $critical_css = "
+            /* CRITICAL: Side Cart Z-Index */
+            body .elementor-menu-cart__container,
+            body .elementor-menu-cart__main,
+            body .elementor-menu-cart__wrapper {
+                z-index: 2147483647 !important;
+                position: fixed !important; /* Force fixed positioning */
+            }
+            body .elementor-menu-cart__overlay {
+                z-index: 2147483646 !important;
+                position: fixed !important;
+            }
+
+            /* CRITICAL: WooCommerce Notices */
+            .woocommerce-notices-wrapper .woocommerce-message, 
+            .woocommerce-notices-wrapper .woocommerce-info, 
+            .woocommerce-notices-wrapper .woocommerce-error {
+                background-color: #f8f9fa !important;
+                color: #374151 !important; /* Gray 700 */
+                border-top: 3px solid #1E3A2B !important; /* Wiwa Brand */
+                border-radius: 8px !important;
+                padding: 15px 20px !important;
+                margin-bottom: 25px !important;
+                display: flex !important;
+                align-items: center !important;
+                justify-content: space-between !important;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important; 
+            }
+            .woocommerce-notices-wrapper .woocommerce-error {
+                border-top-color: #EB5757 !important;
+                background-color: #FFF5F5 !important;
+                color: #9B2C2C !important;
+            }
+            .woocommerce-notices-wrapper .woocommerce-info {
+                border-top-color: #2F80ED !important;
+            }
+            .woocommerce-notices-wrapper .woocommerce-message .button {
+                float: none !important;
+                margin-left: auto !important;
+            }
+        ";
+        wp_add_inline_style('wiwa-side-cart-css', $critical_css); 
+            WIWA_CHECKOUT_VERSION
+        );
     }
 }

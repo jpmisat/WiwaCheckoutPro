@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.4] - 2026-02-10
+
+### Fixed
+
+- **Critical CSS Injection**: Moved Z-index and Notice styling to inline CSS (`wp_add_inline_style`) to guarantee they load after all other stylesheets and override theme defaults.
+- **Side Cart Positioning**: Enforced `position: fixed` for side cart wrapper to ensure Z-index works correctly in all contexts.
+
 ## [2.8.3] - 2026-02-10
 
 ### Fixed
