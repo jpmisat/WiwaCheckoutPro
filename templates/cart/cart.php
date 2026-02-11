@@ -98,29 +98,58 @@ do_action( 'woocommerce_before_cart' ); ?>
 
                                 <td class="product-quantity" data-title="<?php esc_attr_e( 'Quantity', 'woocommerce' ); ?>">
                                     <div class="wiwa-quantity-wrapper">
-                                        <label class="wiwa-pax-label"><?php esc_html_e('Viajeros:', 'wiwa-checkout'); ?></label>
                                         <?php
-                                        if ( $_product->is_sold_individually() ) {
-                                            $min_quantity = 1;
-                                            $max_quantity = 1;
+                                        // Check if product has guest options (OvaTourBooking)
+                                        $guest_options = method_exists($_product, 'get_guests') ? $_product->get_guests() : [];
+                                        
+                                        if ( !empty($guest_options) ) {
+                                            foreach ( $guest_options as $guest ) {
+                                                // Get current value from cart item data
+                                                $current_val = isset($cart_item['numberof_'.$guest['name']]) ? $cart_item['numberof_'.$guest['name']] : 0;
+                                                // Min value is usually 0, but for at least one passenger maybe 1? Let's check logic later.
+                                                // For now allow 0, but total guests usually > 0.
+                                                
+                                                echo '<div class="wiwa-pax-input-group">';
+                                                echo '<label class="wiwa-pax-label">' . esc_html($guest['label']) . '</label>';
+                                                echo '<div class="quantity">';
+                                                echo '<input type="number" 
+                                                       name="cart[' . esc_attr( $cart_item_key ) . '][guests][' . esc_attr( $guest['name'] ) . ']" 
+                                                       value="' . esc_attr( $current_val ) . '" 
+                                                       title="' . esc_attr( $guest['label'] ) . '" 
+                                                       class="input-text qty text wiwa-pax-input" 
+                                                       size="4" 
+                                                       min="0" 
+                                                       step="1" 
+                                                       inputmode="numeric" />';
+                                                echo '</div>';
+                                                echo '</div>';
+                                            }
+                                            // Hidden standard quantity to keep WC happy (usually 1 for booking)
+                                            echo '<input type="hidden" name="cart[' . esc_attr( $cart_item_key ) . '][qty]" value="' . esc_attr( $cart_item['quantity'] ) . '" />';
                                         } else {
-                                            $min_quantity = 0;
-                                            $max_quantity = $_product->get_max_purchase_quantity();
+                                            // Fallback to standard quantity for non-tour products
+                                            if ( $_product->is_sold_individually() ) {
+                                                $min_quantity = 1;
+                                                $max_quantity = 1;
+                                            } else {
+                                                $min_quantity = 0;
+                                                $max_quantity = $_product->get_max_purchase_quantity();
+                                            }
+
+                                            $product_quantity = woocommerce_quantity_input(
+                                                array(
+                                                    'input_name'   => "cart[{$cart_item_key}][qty]",
+                                                    'input_value'  => $cart_item['quantity'],
+                                                    'max_value'    => $max_quantity,
+                                                    'min_value'    => $min_quantity,
+                                                    'product_name' => $_product->get_name(),
+                                                ),
+                                                $_product,
+                                                false
+                                            );
+
+                                            echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item );
                                         }
-
-                                        $product_quantity = woocommerce_quantity_input(
-                                            array(
-                                                'input_name'   => "cart[{$cart_item_key}][qty]",
-                                                'input_value'  => $cart_item['quantity'],
-                                                'max_value'    => $max_quantity,
-                                                'min_value'    => $min_quantity,
-                                                'product_name' => $_product->get_name(),
-                                            ),
-                                            $_product,
-                                            false
-                                        );
-
-                                        echo apply_filters( 'woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                         ?>
                                     </div>
                                 </td>

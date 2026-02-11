@@ -2755,36 +2755,42 @@ ul.order_details li strong {
     background: var(--wiwa-error-light);
 }
 
-/* 
- * Quantity / Pax Input 
- */
+/* Modern Quantity/Pax Input Styling */
 .wiwa-quantity-wrapper {
     display: flex;
     flex-direction: column;
-    align-items: start;
-    gap: 5px;
+    gap: 8px;
+    align-items: center;
+}
+
+.wiwa-pax-input-group {
+    display: flex;
+    align-items: center; /* Align label and input horizontally */
+    justify-content: space-between;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    width: 100%;
+    max-width: 140px; /* Constrain width */
 }
 
 .wiwa-pax-label {
     font-size: 0.8rem;
-    color: var(--wiwa-gray-500);
-    text-transform: uppercase;
-    font-weight: 600;
+    color: var(--wiwa-gray-600);
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
 }
 
 .wiwa-cart-table .quantity {
-    display: inline-flex;
-    border: 1px solid var(--wiwa-gray-300);
-    border-radius: 6px;
-    overflow: hidden;
+    display: flex;
+    align-items: center;
+    margin: 0;
 }
 
 .wiwa-cart-table .quantity input.qty {
-    width: 60px;
-    text-align: center;
-    border: none;
-    padding: 8px;
-    font-weight: 600;
     color: var(--wiwa-brand);
     appearance: textfield; /* Remove spinner */
     -moz-appearance: textfield;
