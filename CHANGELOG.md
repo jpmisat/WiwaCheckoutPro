@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.8.3] - 2026-02-10
+
+### Fixed
+
+- **CSS Specificity**: Forced WooCommerce notices styling with `!important` to override default theme styles.
+- **Side Cart Z-Index**: Added `position: relative` and targeted more Elementor classes to ensure proper stacking context.
+
 ## [2.8.2] - 2026-02-10
 
 ### Fixed

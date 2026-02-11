@@ -2998,8 +2998,15 @@ ul.order_details li strong {
 /* Fix Side Cart Z-Index (Absolute Top) */
 .elementor-menu-cart__container,
 .elementor-menu-cart__main,
-.elementor-menu-cart__overlay {
+.elementor-menu-cart__overlay,
+.elementor-menu-cart__wrapper {
     z-index: 2147483647 !important; /* Max Int */
+    position: relative; /* Ensure z-index applies */
+}
+
+/* Ensure the overlay covers everything */
+.elementor-menu-cart__overlay {
+    position: fixed !important; 
 }
 
 /* Empty Cart Button Hover */
@@ -3011,39 +3018,39 @@ ul.order_details li strong {
 }
 
 /* WooCommerce Notices Styling */
-.woocommerce-message, 
-.woocommerce-info, 
-.woocommerce-error {
-    background-color: #f8f9fa;
-    color: var(--wiwa-gray-700);
-    border-top: 3px solid var(--wiwa-brand);
-    border-radius: 8px;
-    padding: 15px 20px;
+.woocommerce-notices-wrapper .woocommerce-message, 
+.woocommerce-notices-wrapper .woocommerce-info, 
+.woocommerce-notices-wrapper .woocommerce-error {
+    background-color: #f8f9fa !important;
+    color: var(--wiwa-gray-700) !important;
+    border-top: 3px solid var(--wiwa-brand) !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
     margin-bottom: 25px !important;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
-    display: flex;
-    align-items: center;
-    gap: 15px;
-    font-weight: 500;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    font-weight: 500 !important;
 }
 
-.woocommerce-message::before, 
-.woocommerce-info::before, 
-.woocommerce-error::before {
-    display: none; /* Hide default icon to use ours if needed, or keeping simple */
+.woocommerce-notices-wrapper .woocommerce-message::before, 
+.woocommerce-notices-wrapper .woocommerce-info::before, 
+.woocommerce-notices-wrapper .woocommerce-error::before {
+    display: none !important; 
 }
 
-.woocommerce-info {
-    border-top-color: var(--wiwa-blue, #2F80ED);
+.woocommerce-notices-wrapper .woocommerce-info {
+    border-top-color: var(--wiwa-blue, #2F80ED) !important;
 }
 
-.woocommerce-error {
-    border-top-color: var(--wiwa-error, #EB5757);
-    background-color: #FFF5F5;
-    color: var(--wiwa-error);
+.woocommerce-notices-wrapper .woocommerce-error {
+    border-top-color: var(--wiwa-error, #EB5757) !important;
+    background-color: #FFF5F5 !important;
+    color: var(--wiwa-error) !important;
 }
 
-.woocommerce-message .button {
+.woocommerce-notices-wrapper .woocommerce-message .button {
     float: right;
     background: transparent !important;
     color: var(--wiwa-brand) !important;
@@ -3052,9 +3059,16 @@ ul.order_details li strong {
     border-radius: 4px !important;
     font-weight: 600 !important;
     transition: all 0.3s ease;
+    margin-left: auto;
 }
 
-.woocommerce-message .button:hover {
+.woocommerce-notices-wrapper .woocommerce-message .button:hover {
     background: var(--wiwa-brand) !important;
     color: white !important;
+}
+
+/* Fix link colors in notices */
+.woocommerce-notices-wrapper a {
+    color: var(--wiwa-brand);
+    text-decoration: underline;
 }
