@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.9.6
+ * Version: 2.9.7
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.9.6');
+define('WIWA_CHECKOUT_VERSION', '2.9.7');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -136,6 +136,10 @@ final class Wiwa_Tour_Checkout
         // AJAX Handler for Mini Cart Quantity Update
         add_action('wp_ajax_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
         add_action('wp_ajax_nopriv_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
+
+        // AJAX Handler for Smart Pax Update (OvaTourBooking Metadata)
+        add_action('wp_ajax_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
+        add_action('wp_ajax_nopriv_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
     }
 
     public function check_dependencies()
@@ -223,6 +227,10 @@ final class Wiwa_Tour_Checkout
      * Custom Mini Cart Quantity Input
      * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
      */
+    /**
+     * Custom Mini Cart Quantity Input
+     * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
+     */
     public function custom_mini_cart_item_quantity($html, $cart_item, $cart_item_key)
     {
         $_product = $cart_item['data'];
@@ -230,8 +238,8 @@ final class Wiwa_Tour_Checkout
             return $html;
         }
 
-        $product_price = WC()->cart->get_product_price($_product);
         $current_qty = $cart_item['quantity'];
+        $is_tour = $_product->is_type('ovatb_tour');
 
         // Build Custom Quantity Selector
         ob_start();
@@ -244,6 +252,7 @@ final class Wiwa_Tour_Checkout
                    min="0" 
                    step="1" 
                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
                    readonly />
             <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
         </div>
@@ -255,6 +264,9 @@ final class Wiwa_Tour_Checkout
     /**
      * Custom Main Cart Quantity Input
      */
+    /**
+     * Custom Main Cart Quantity Input
+     */
     public function custom_cart_item_quantity($product_quantity, $cart_item_key, $cart_item)
     {
         $_product = $cart_item['data'];
@@ -263,6 +275,7 @@ final class Wiwa_Tour_Checkout
         }
 
         $current_qty = $cart_item['quantity'];
+        $is_tour = $_product->is_type('ovatb_tour');
         
         // Main cart often wraps input in .quantity div. We will replace it or inject ours.
         // Standard WC output is <div class="quantity"><input ...></div>
@@ -278,6 +291,7 @@ final class Wiwa_Tour_Checkout
                    min="0" 
                    step="1" 
                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
                    readonly />
             <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
         </div>
@@ -487,6 +501,73 @@ final class Wiwa_Tour_Checkout
         }
 
         return $cart_item_data;
+    }
+
+    /**
+     * AJAX Handler: Update TOUR Pax (Metadata)
+     * Handles the complex logic of updating 'numberof_X' metadata.
+     */
+    public function ajax_update_tour_pax()
+    {
+        check_ajax_referer('wiwa_checkout_nonce', 'security');
+
+        $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
+        $action   = isset($_POST['update_action']) ? sanitize_text_field($_POST['update_action']) : ''; // 'increase' or 'decrease'
+        
+        $cart = WC()->cart->get_cart();
+        
+        if (!isset($cart[$cart_key])) {
+             wp_send_json_error(['message' => 'Item not found']);
+        }
+
+        $cart_item = $cart[$cart_key];
+        
+        // Strategy: Find the dominant passenger type.
+        // If there's only one type (e.g. numberof_adults > 0, others 0), update it.
+        // If mixed, return error (JS should have hidden buttons).
+        
+        $pax_keys = [];
+        foreach ($cart_item as $key => $value) {
+            if (strpos($key, 'numberof_') === 0 && $key !== 'numberof_guests') {
+                if ($value > 0) {
+                    $pax_keys[] = $key;
+                }
+            }
+        }
+        
+        // Fallback for simple setup where maybe only 'numberof_adult' exists even if 0?
+        // If pax_keys is empty, try to find 'numberof_adult' or 'numberof_pax'
+        if (empty($pax_keys)) {
+             if (isset($cart_item['numberof_adult'])) $pax_keys[] = 'numberof_adult';
+             elseif (isset($cart_item['numberof_pax'])) $pax_keys[] = 'numberof_pax';
+        }
+
+        if (count($pax_keys) === 1) {
+            $target_key = $pax_keys[0];
+            $current_val = intval($cart_item[$target_key]);
+            
+            if ($action === 'increase') {
+                $new_val = $current_val + 1;
+            } else {
+                $new_val = max(1, $current_val - 1);
+            }
+            
+            // Update Cart Item Data in Session
+            WC()->cart->cart_contents[$cart_key][$target_key] = $new_val;
+            
+            // Also update total 'numberof_guests'
+            WC()->cart->cart_contents[$cart_key]['numberof_guests'] = $new_val;
+            
+            // Save to session
+            WC()->cart->set_session();
+            
+            // Recalculate Totals
+            WC()->cart->calculate_totals();
+            
+            wp_send_json_success(['new_qty' => $new_val, 'type' => $target_key, 'message' => 'Pax Updated']);
+        } else {
+            wp_send_json_error(['message' => 'Complex passenger mix. Please edit in details.']);
+        }
     }
 }
 

@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.9.7] - 2026-02-12
+
+### Added
+
+- **Smart Pax System**: Custom quantity logic for OvaTourBooking.
+  - **Simple Tours**: Direct passenger update via +/- buttons.
+  - **Complex Tours**: Informative label for mixed passenger types.
+- **Creative UI Overhaul**:
+  - **Sidebar Cart**: Borderless design, sticky footer, premium typography.
+  - **Main Cart**: Card-based layout, hidden table headers, "Receipt" style totals.
+
+### Changed
+
+- **JS Refactor**: Completely rewrote `wiwa-mini-cart.js` to handle conditional smart pax logic.
+- **CSS Refactor**: Massive update to `wiwa-cart-styles.css` implementing the new design system.
+
 ## [2.8.7] - 2026-02-10
 
 ### Improved

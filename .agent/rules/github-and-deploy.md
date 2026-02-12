@@ -1,3 +1,7 @@
+---
+trigger: always_on
+---
+
 # Reglas de Agente: Gestión de GitHub, Versionado y Despliegue
 
 Este documento define las reglas **OBLIGATORIAS** que el Agente debe seguir al realizar cambios en el proyecto **Wiwa Tour Checkout Pro**. Estas reglas tienen prioridad y deben ejecutarse proactivamente.
