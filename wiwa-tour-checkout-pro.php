@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.9.9
+ * Version: 2.10.0
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.9.9');
+define('WIWA_CHECKOUT_VERSION', '2.10.0');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -240,6 +240,7 @@ final class Wiwa_Tour_Checkout
 
         $current_qty = $cart_item['quantity'];
         $is_tour = $_product->is_type('ovatb_tour');
+        $min_qty = $is_tour ? 1 : 0;
 
         // Build Custom Quantity Selector
         ob_start();
@@ -249,7 +250,7 @@ final class Wiwa_Tour_Checkout
             <input type="number" 
                    class="wiwa-qty-input" 
                    value="<?php echo esc_attr($current_qty); ?>" 
-                   min="0" 
+                   min="<?php echo esc_attr($min_qty); ?>" 
                    step="1" 
                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
                    data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
@@ -273,6 +274,7 @@ final class Wiwa_Tour_Checkout
 
         $current_qty = $cart_item['quantity'];
         $is_tour = $_product->is_type('ovatb_tour');
+        $min_qty = $is_tour ? 1 : 0;
         
         // Main cart often wraps input in .quantity div. We will replace it or inject ours.
         // Standard WC output is <div class="quantity"><input ...></div>
@@ -285,7 +287,7 @@ final class Wiwa_Tour_Checkout
                    class="wiwa-qty-input" 
                    name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" 
                    value="<?php echo esc_attr($current_qty); ?>" 
-                   min="0" 
+                   min="<?php echo esc_attr($min_qty); ?>" 
                    step="1" 
                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
                    data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
@@ -338,17 +340,20 @@ final class Wiwa_Tour_Checkout
      */
     public function ajax_update_mini_cart_qty()
     {
-        // check_ajax_referer('wiwa_checkout_nonce', 'security'); // Optional validation
+        check_ajax_referer('wiwa_checkout_nonce', 'security');
 
         $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
-        $qty = isset($_POST['qty']) ? intval($_POST['qty']) : 0;
+        $qty = isset($_POST['qty']) ? max(0, min(99, intval($_POST['qty']))) : 0;
 
-        if (!$cart_key) {
+        if (!$cart_key || !isset(WC()->cart->get_cart()[$cart_key])) {
             wp_send_json_error(['message' => 'Missing cart key']);
         }
 
+        $item_removed = false;
+
         if ($qty <= 0) {
             WC()->cart->remove_cart_item($cart_key);
+            $item_removed = true;
         } else {
             WC()->cart->set_quantity($cart_key, $qty, true); // true = refresh totals
         }
@@ -356,7 +361,117 @@ final class Wiwa_Tour_Checkout
         WC()->cart->calculate_totals();
         WC()->cart->maybe_set_cart_cookies();
 
-        wp_send_json_success(['message' => 'Updated']);
+        wp_send_json_success([
+            'message' => 'Updated',
+            'item_removed' => $item_removed,
+            'item_subtotal' => $item_removed ? '' : $this->get_cart_item_subtotal_html($cart_key),
+            'cart_subtotal' => WC()->cart->get_cart_subtotal(),
+            'cart_total' => WC()->cart->get_total(),
+            'totals_html' => $this->get_cart_totals_html(),
+        ]);
+    }
+
+    /**
+     * Render cart totals block for AJAX responses.
+     */
+    private function get_cart_totals_html()
+    {
+        if (!function_exists('woocommerce_cart_totals')) {
+            return '';
+        }
+
+        ob_start();
+        woocommerce_cart_totals();
+        return ob_get_clean();
+    }
+
+    /**
+     * Resolve line subtotal HTML for a specific cart item.
+     */
+    private function get_cart_item_subtotal_html($cart_item_key)
+    {
+        $cart = WC()->cart ? WC()->cart->get_cart() : [];
+        if (!isset($cart[$cart_item_key])) {
+            return '';
+        }
+
+        $cart_item = $cart[$cart_item_key];
+        if (!isset($cart_item['data'])) {
+            return '';
+        }
+
+        return WC()->cart->get_product_subtotal($cart_item['data'], $cart_item['quantity']);
+    }
+
+    /**
+     * Extract and normalize guest breakdown from cart item metadata.
+     */
+    private function get_cart_item_guest_breakdown($cart_item)
+    {
+        $breakdown = [];
+
+        foreach ((array) $cart_item as $key => $value) {
+            if (strpos($key, 'numberof_') !== 0 || $key === 'numberof_guests' || !is_numeric($value)) {
+                continue;
+            }
+
+            $count = max(0, intval($value));
+            if ($count <= 0) {
+                continue;
+            }
+
+            $slug = str_replace('numberof_', '', $key);
+            $breakdown[$slug] = [
+                'key' => $key,
+                'label' => ucwords(str_replace(['_', '-'], ' ', $slug)),
+                'count' => $count,
+            ];
+        }
+
+        return $breakdown;
+    }
+
+    /**
+     * Determine the editable passenger metadata key for a cart item.
+     */
+    private function resolve_target_guest_key($cart_item, $requested_key = '')
+    {
+        $all_guest_keys = [];
+
+        foreach ((array) $cart_item as $key => $value) {
+            if (strpos($key, 'numberof_') === 0 && $key !== 'numberof_guests' && is_numeric($value)) {
+                $all_guest_keys[] = $key;
+            }
+        }
+
+        foreach (['numberof_pax', 'numberof_adult', 'numberof_adults'] as $fallback_key) {
+            if (isset($cart_item[$fallback_key]) && !in_array($fallback_key, $all_guest_keys, true)) {
+                $all_guest_keys[] = $fallback_key;
+            }
+        }
+
+        if (empty($all_guest_keys)) {
+            return ['', []];
+        }
+
+        if ($requested_key) {
+            $normalized = strpos($requested_key, 'numberof_') === 0 ? $requested_key : 'numberof_' . $requested_key;
+            if (in_array($normalized, $all_guest_keys, true)) {
+                return [$normalized, $all_guest_keys];
+            }
+        }
+
+        if (in_array('numberof_pax', $all_guest_keys, true)) {
+            return ['numberof_pax', $all_guest_keys];
+        }
+
+        foreach ($all_guest_keys as $guest_key) {
+            if (!empty($cart_item[$guest_key]) && intval($cart_item[$guest_key]) > 0) {
+                return [$guest_key, $all_guest_keys];
+            }
+        }
+
+        return [$all_guest_keys[0], $all_guest_keys];
     }
 
 
@@ -546,62 +661,83 @@ final class Wiwa_Tour_Checkout
         check_ajax_referer('wiwa_checkout_nonce', 'security');
 
         $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
-        $action   = isset($_POST['update_action']) ? sanitize_text_field($_POST['update_action']) : ''; // 'increase' or 'decrease'
-        
+        $action = isset($_POST['update_action']) ? sanitize_text_field($_POST['update_action']) : 'update';
+        $requested_qty = isset($_POST['qty']) ? intval($_POST['qty']) : 0;
+        $requested_guest_key = isset($_POST['guest_key']) ? sanitize_key($_POST['guest_key']) : '';
+
         $cart = WC()->cart->get_cart();
-        
-        if (!isset($cart[$cart_key])) {
-             wp_send_json_error(['message' => 'Item not found']);
+
+        if (!$cart_key || !isset($cart[$cart_key])) {
+            wp_send_json_error(['message' => 'Item not found']);
         }
 
         $cart_item = $cart[$cart_key];
-        
-        // Strategy: Find the dominant passenger type.
-        // If there's only one type (e.g. numberof_adults > 0, others 0), update it.
-        // If mixed, return error (JS should have hidden buttons).
-        
-        $pax_keys = [];
-        foreach ($cart_item as $key => $value) {
-            if (strpos($key, 'numberof_') === 0 && $key !== 'numberof_guests') {
-                if ($value > 0) {
-                    $pax_keys[] = $key;
-                }
-            }
-        }
-        
-        // Fallback for simple setup where maybe only 'numberof_adult' exists even if 0?
-        // If pax_keys is empty, try to find 'numberof_adult' or 'numberof_pax'
-        if (empty($pax_keys)) {
-             if (isset($cart_item['numberof_adult'])) $pax_keys[] = 'numberof_adult';
-             elseif (isset($cart_item['numberof_pax'])) $pax_keys[] = 'numberof_pax';
+
+        list($target_key, $all_guest_keys) = $this->resolve_target_guest_key($cart_item, $requested_guest_key);
+        if (!$target_key) {
+            wp_send_json_error(['message' => 'Passenger metadata not found.']);
         }
 
-        if (count($pax_keys) === 1) {
-            $target_key = $pax_keys[0];
-            $current_val = intval($cart_item[$target_key]);
-            
-            if ($action === 'increase') {
-                $new_val = $current_val + 1;
-            } else {
-                $new_val = max(1, $current_val - 1);
-            }
-            
-            // Update Cart Item Data in Session
-            WC()->cart->cart_contents[$cart_key][$target_key] = $new_val;
-            
-            // Also update total 'numberof_guests'
-            WC()->cart->cart_contents[$cart_key]['numberof_guests'] = $new_val;
-            
-            // Save to session
-            WC()->cart->set_session();
-            
-            // Recalculate Totals
-            WC()->cart->calculate_totals();
-            
-            wp_send_json_success(['new_qty' => $new_val, 'type' => $target_key, 'message' => 'Pax Updated']);
+        $current_val = isset($cart_item[$target_key]) ? intval($cart_item[$target_key]) : 1;
+
+        if ($requested_qty > 0) {
+            $new_val = $requested_qty;
+        } elseif ($action === 'increase') {
+            $new_val = $current_val + 1;
         } else {
-            wp_send_json_error(['message' => 'Complex passenger mix. Please edit in details.']);
+            $new_val = $current_val - 1;
         }
+
+        $new_val = max(1, min(99, intval($new_val)));
+
+        WC()->cart->cart_contents[$cart_key][$target_key] = $new_val;
+
+        $total_guests = 0;
+        foreach ($all_guest_keys as $guest_key) {
+            $value = isset(WC()->cart->cart_contents[$cart_key][$guest_key]) ? intval(WC()->cart->cart_contents[$cart_key][$guest_key]) : 0;
+            $value = max(0, $value);
+            WC()->cart->cart_contents[$cart_key][$guest_key] = $value;
+            $total_guests += $value;
+        }
+
+        if ($total_guests <= 0) {
+            WC()->cart->cart_contents[$cart_key][$target_key] = 1;
+            $new_val = 1;
+            $total_guests = 1;
+        }
+
+        WC()->cart->cart_contents[$cart_key]['numberof_guests'] = $total_guests;
+        WC()->cart->set_session();
+        WC()->cart->calculate_totals();
+        WC()->cart->maybe_set_cart_cookies();
+
+        $cart_after = WC()->cart->get_cart();
+        if (!isset($cart_after[$cart_key])) {
+            wp_send_json_error(['message' => 'Unable to refresh cart item.']);
+        }
+
+        $updated_item = $cart_after[$cart_key];
+        $breakdown_data = $this->get_cart_item_guest_breakdown($updated_item);
+
+        $guest_breakdown = [];
+        $guest_breakdown_text = [];
+        foreach ($breakdown_data as $slug => $guest_data) {
+            $guest_breakdown[$slug] = $guest_data['count'];
+            $guest_breakdown_text[] = sprintf('%d %s', $guest_data['count'], $guest_data['label']);
+        }
+
+        wp_send_json_success([
+            'new_qty' => $new_val,
+            'total_pax' => isset($updated_item['numberof_guests']) ? intval($updated_item['numberof_guests']) : $new_val,
+            'target_key' => $target_key,
+            'guest_breakdown' => $guest_breakdown,
+            'guest_breakdown_text' => implode(' - ', $guest_breakdown_text),
+            'item_subtotal' => $this->get_cart_item_subtotal_html($cart_key),
+            'cart_subtotal' => WC()->cart->get_cart_subtotal(),
+            'cart_total' => WC()->cart->get_total(),
+            'totals_html' => $this->get_cart_totals_html(),
+            'message' => 'Pax updated',
+        ]);
     }
 }
 

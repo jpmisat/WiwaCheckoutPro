@@ -1,5 +1,24 @@
 # Changelog
 
+## [2.10.0] - 2026-02-12
+
+### Added
+
+- AJAX feedback loop for cart passenger controls: row locking, spinner state, and inline error feedback without full-page reload.
+- Dynamic cart refresh payloads from backend endpoints, including line subtotal updates and regenerated totals HTML for instant UI sync.
+
+### Changed
+
+- Rebuilt `templates/cart/cart.php` into a card-first structure with premium hierarchy: larger tour title, native metadata chips, and branded pax controls.
+- Redesigned `assets/css/wiwa-cart-styles.css` to a Wiwa brand system using manual palette (`#8d0e12`, `#d27800`, `#480000`, `#152a03`, `#f0dfcd`) with soft shadows, rounded cards, and responsive layout.
+- Refactored `assets/js/wiwa-mini-cart.js` to handle both mini-cart and main-cart quantity actions through a unified AJAX flow.
+
+### Fixed
+
+- Main cart passenger +/- controls now recalculate totals and update DOM instantly.
+- WooCommerce cart line subtotals and totals card now remain in sync after pax changes.
+- Tour pax updates now use Tour Booking metadata (`numberof_*` and `numberof_guests`) instead of relying on cart quantity alone.
+
 ## [2.9.9] - 2026-02-12
 
 ### Changed
