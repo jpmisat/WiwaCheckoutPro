@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.6] - 2026-02-12
+
+### Changed
+
+- **Strict Stitch Sync:** Implemented Pixel-Perfect Card Grid.
+- **Layout:** 3-Column Grid on Desktop (Image | Details | Actions).
+- **Actions:** Pax Control moved to top-right, Price to bottom-right.
+- **Visuals:** Updated Red "Eliminar" link, accurate Pill shape, and precise Typography.
+
 ## [2.10.5] - 2026-02-12
 
 ### Changed

@@ -1,26 +1,26 @@
 /**
  * Wiwa Tour Checkout - Premium Cart & Sidebar Styles
- * Version: 2.10.4 - High-End Aesthetic Polish
+ * Version: 2.10.6 - Strict Stitch Sync
  */
 
 /* =========================================
-   0. DESIGN TOKENS (Stitch Sync)
+   0. DESIGN TOKENS
    ========================================= */
 :root {
-  --wiwa-primary: #1a3c28;        /* Stitch: wiwa-green */
-  --wiwa-primary-light: #2b4c3b;  /* Stitch: wiwa-green-light */
-  --wiwa-accent: #f5f1ea;         /* Stitch: wiwa-cream */
-  --wiwa-bg-body: #f9f9f9;        /* Stitch: wiwa-bg */
+  --wiwa-primary: #1a3c28;        /* Green */
+  --wiwa-primary-light: #2b4c3b;
+  --wiwa-accent: #f5f1ea;         /* Cream */
+  --wiwa-bg-body: #f9f9f9;
   --wiwa-bg-card: #ffffff;
   --wiwa-text: #2d3436;
-  --wiwa-text-gray: #6b7280;      /* Stitch: wiwa-text-gray */
-  --wiwa-border: #e5e7eb;         /* Stitch: wiwa-border */
+  --wiwa-text-gray: #6b7280;
+  --wiwa-border: #e5e7eb;
+  --wiwa-red: #ef4444;
   
-  /* Stitch Shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), ... */
   --wiwa-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --wiwa-radius: 8px;             /* Stitch: ROUND_EIGHT */
+  --wiwa-radius: 12px;
   
-  --wiwa-font-main: 'Montserrat', 'Inter', system-ui, sans-serif; /* Stitch: Plus Jakarta Sans mapped to Montserrat for now as requested */
+  --wiwa-font-main: 'Montserrat', sans-serif;
 }
 
 body.woocommerce-cart {
@@ -31,10 +31,7 @@ body.woocommerce-cart {
 }
 
 /* =========================================
-   1. MAIN LAYOUT (GRID)
-   ========================================= */
-/* =========================================
-   1. MAIN LAYOUT (GRID) - Responsive
+   1. MAIN WRAPPER
    ========================================= */
 .wiwa-cart-wrapper {
   max-width: 1280px;
@@ -49,32 +46,13 @@ body.woocommerce-cart {
   .wiwa-cart-wrapper {
     flex-direction: row;
     align-items: flex-start;
-    padding: 0 32px;
+    padding: 0 40px;
     gap: 48px;
   }
 }
 
-/* Header */
-.wiwa-cart-header {
-  width: 100%;
-  margin-bottom: 24px;
-}
-.wiwa-cart-title {
-  font-size: 1.8rem;
-  font-weight: 700;
-  color: var(--wiwa-text); 
-  letter-spacing: -0.01em;
-  margin: 0;
-}
-.wiwa-cart-subtitle {
-  color: var(--wiwa-text-gray);
-  font-size: 0.95rem;
-  margin-top: 4px;
-  font-weight: 500;
-}
-
 /* =========================================
-   2. CART ITEMS (CARDS)
+   2. CART ITEMS LIST
    ========================================= */
 .wiwa-cart-grid-container {
   flex: 1;
@@ -83,212 +61,176 @@ body.woocommerce-cart {
   gap: 24px;
 }
 
+/* CARD LAYOUT - MOBILE FIRST (Stacked) */
 .wiwa-cart-card {
-  display: grid;
-  grid-template-areas: 
-    "image details"
-    "image actions";
-  grid-template-columns: 120px 1fr;
-  gap: 16px 24px;
-  
   background: var(--wiwa-bg-card);
   border-radius: var(--wiwa-radius);
-  padding: 24px;
   box-shadow: var(--wiwa-shadow);
+  padding: 20px;
   border: 1px solid transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
   position: relative;
   transition: all 0.2s ease;
 }
 
+/* CARD LAYOUT - DESKTOP (Grid) */
 @media (min-width: 768px) {
   .wiwa-cart-card {
-    grid-template-areas: "image details actions";
-    grid-template-columns: 160px 1fr 240px; /* Stitch Desktop Grid */
+    display: grid;
+    /* Image | Details | Actions */
+    grid-template-columns: 160px 1fr 220px;
     gap: 32px;
     padding: 32px;
+    align-items: start;
   }
 }
 
-.wiwa-cart-card:hover {
-  border-color: var(--wiwa-accent);
-  transform: translateY(-2px);
-}
-
-/* Image */
+/* 2.1 IMAGE COLUMN */
 .wiwa-card-image {
-  grid-area: image;
   width: 100%;
-  height: 100%;
-  min-height: 120px;
-  border-radius: 12px; /* Stitch rounded corners */
+  aspect-ratio: 1; /* Square */
+  border-radius: var(--wiwa-radius);
   overflow: hidden;
   background: #f3f4f6;
-  aspect-ratio: 1;
 }
-@media (min-width: 768px) {
-  .wiwa-card-image {
-    height: 160px; /* Fixed height on desktop */
-  }
-}
-
 .wiwa-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform 0.4s ease;
+  transition: transform 0.3s ease;
+}
+.wiwa-card-image:hover img {
+  transform: scale(1.05);
 }
 
-/* Details Section */
+/* 2.2 DETAILS COLUMN */
 .wiwa-card-details {
-  grid-area: details;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
 
-/* Product Title */
+/* Title */
+.wiwa-card-title {
+  margin: 0;
+  line-height: 1.3;
+}
 .wiwa-card-title a {
-  font-size: 1.15rem;
+  font-size: 1.25rem;
   font-weight: 700;
   color: var(--wiwa-primary);
   text-decoration: none;
-  line-height: 1.3;
-  display: block;
 }
-@media (min-width: 768px) {
-  .wiwa-card-title a { font-size: 1.35rem; }
+@media (max-width: 767px) {
+  .wiwa-card-title a { font-size: 1.1rem; }
 }
 
-/* Metadata Grid */
+/* Metadata List */
+.wiwa-card-meta {
+  font-size: 0.9rem;
+  color: var(--wiwa-text-gray);
+}
 .wiwa-card-meta dl.variation {
   display: grid;
-  grid-template-columns: auto;
   gap: 8px;
-  font-size: 0.85rem;
-  color: var(--wiwa-text);
   margin: 0;
 }
 .wiwa-card-meta dt {
+  display: none; /* Hide standard DT labels if aiming for icon+text look, or style them inline */
+  /* For now keeping standard WC output styling but cleaner */
+  float: left;
+  clear: left;
   font-weight: 600;
-  color: var(--wiwa-text-gray);
-  font-size: 0.75rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  display: inline-block;
-  margin-right: 4px;
+  margin-right: 5px;
 }
 .wiwa-card-meta dd {
-  display: inline-block;
-  font-weight: 500;
+  float: left;
   margin: 0;
+  font-weight: 500;
 }
 .wiwa-card-meta p { margin: 0; }
 
-/* Actions Section (Price & Pax) */
+/* Remove Link */
+.wiwa-card-remove-link {
+  margin-top: 8px;
+}
+.wiwa-card-remove-link a.remove {
+  color: var(--wiwa-red) !important;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: opacity 0.2s;
+}
+.wiwa-card-remove-link a.remove:hover {
+  text-decoration: underline;
+  opacity: 0.8;
+}
+
+/* 2.3 ACTIONS COLUMN */
 .wiwa-card-actions {
-  grid-area: actions;
   display: flex;
-  flex-direction: row;
+  flex-direction: row; /* Mobile: side by side or stacked */
   justify-content: space-between;
   align-items: center;
-  margin-top: 16px;
-  padding-top: 16px;
   border-top: 1px solid var(--wiwa-border);
+  padding-top: 16px;
 }
 
 @media (min-width: 768px) {
   .wiwa-card-actions {
     flex-direction: column;
-    justify-content: center;
-    align-items: flex-end;
-    margin-top: 0;
-    padding-top: 0;
-    padding-left: 32px;
+    justify-content: space-between; /* Pax Top, Price Bottom */
+    align-items: flex-end; /* Right align */
+    height: 100%;
     border-top: none;
-    border-left: 1px solid var(--wiwa-border);
+    padding-top: 0;
     gap: 20px;
   }
 }
 
-/* Remove Button - Top Right Absolute handled by HTML structure usually, keeping absolute for now */
-.wiwa-card-remove {
-  position: absolute;
-  top: 12px;
-  right: 12px;
-  z-index: 10;
+/* Pax Control */
+.wiwa-card-qty {
+  /* Position logic */
 }
-.wiwa-card-remove a.remove {
-  width: 32px;
-  height: 32px;
-  border-radius: 50%;
-  color: var(--wiwa-text-gray) !important;
-  font-size: 18px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  text-decoration: none;
-  transition: all 0.2s;
-  background: white;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
-}
-.wiwa-card-remove a.remove:hover {
-  background: #fee2e2;
-  color: #ef4444 !important;
-  transform: scale(1.1);
-}
-
-/* Quantity Control (Stitch Style) */
 .wiwa-pax-control {
   display: flex;
   flex-direction: column;
+  align-items: flex-end; /* Align right on desktop */
   gap: 4px;
-  align-items: flex-start; /* Mobile: start */
 }
-@media (min-width: 768px) {
-  .wiwa-pax-control { align-items: flex-end; }
-}
-
-.wiwa-pax-label {
-  font-size: 0.7rem;
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--wiwa-text-gray);
-  font-weight: 600;
+/* Mobile alignment overlap fix */
+@media (max-width: 767px) {
+  .wiwa-pax-control { align-items: flex-start; }
 }
 
 .wiwa-qty-pill {
   display: flex;
   align-items: center;
-  gap: 4px;
-  background: #ffffff;
-  border: 1px solid var(--wiwa-border);
-  border-radius: 20px; /* Full pill */
-  padding: 4px 8px;
-  transition: all 0.2s;
+  gap: 0;
+  background: var(--wiwa-bg-body);
+  border-radius: 30px; /* Pill */
+  padding: 4px;
 }
-.wiwa-qty-pill:hover {
-  border-color: var(--wiwa-primary-light);
-  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
-}
-
 .wiwa-qty-btn {
-  width: 24px;
-  height: 24px;
+  width: 28px;
+  height: 28px;
   border-radius: 50%;
   border: none;
-  background: var(--wiwa-accent); /* Cream background for buttons */
+  background: transparent;
   color: var(--wiwa-primary);
   font-weight: 600;
-  font-size: 14px;
+  font-size: 16px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.2s;
 }
-.wiwa-qty-btn:hover {
-  background: #e2e8f0;
-}
+.wiwa-qty-btn:hover { background: #e5e7eb; }
 
 .wiwa-qty-input {
   width: 32px;
@@ -297,56 +239,62 @@ body.woocommerce-cart {
   text-align: center;
   font-weight: 700;
   color: var(--wiwa-text);
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   padding: 0;
   margin: 0;
-}
   -moz-appearance: textfield;
 }
 
-/* Price Hierarchy */
-.wiwa-card-subtotal {
-  font-family: var(--wiwa-font-main);
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start; /* Mobile: start */
-  gap: 2px;
-}
-@media (min-width: 768px) {
-  .wiwa-card-subtotal { align-items: flex-end; }
+.wiwa-pax-label {
+  font-size: 0.65rem;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--wiwa-text-gray);
+  font-weight: 700;
+  text-align: center;
+  width: 100%;
 }
 
-.wiwa-card-subtotal .woocommerce-Price-amount {
-  font-size: 1.25rem;
+/* Price Block */
+.wiwa-card-price-block {
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.wiwa-unit-price {
+  font-size: 0.85rem;
+  color: var(--wiwa-text-gray);
+}
+.wiwa-card-subtotal {
+  font-size: 1.5rem;
   font-weight: 800;
   color: var(--wiwa-primary);
-  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-top: 4px;
 }
-/* Remaining/Deposit tweaks */
-.wiwa-card-subtotal small.tax_label {
-  font-size: 0.8rem;
-  color: var(--wiwa-text-gray);
-  display: block;
-}
-.wiwa-card-subtotal dl.variation {
+.wiwa-deposit-info {
+  font-size: 0.9rem;
   display: flex;
-  gap: 5px;
-  font-size: 0.8rem;
-  color: var(--wiwa-text-gray);
+  flex-direction: column;
+  gap: 2px;
+  margin-top: 4px;
 }
-.wiwa-card-subtotal dl.variation dt {
-  font-weight: 600;
+.wiwa-deposit-info .red {
+  color: var(--wiwa-red);
+  font-weight: 700;
 }
 
 /* =========================================
-   3. TOTALS PANEL (Sticky)
+   3. SIDEBAR (TOTALS)
    ========================================= */
 .wiwa-cart-collaterals {
   width: 100%;
 }
 @media (min-width: 1024px) {
   .wiwa-cart-collaterals {
-    width: 360px;
+    width: 380px; /* Slightly wider */
     flex-shrink: 0;
     position: sticky;
     top: 40px;
@@ -357,132 +305,97 @@ body.woocommerce-cart {
   background: var(--wiwa-bg-card);
   border-radius: var(--wiwa-radius);
   box-shadow: var(--wiwa-shadow);
-  padding: 24px;
+  padding: 32px;
   border: 1px solid var(--wiwa-border);
-}
-@media (min-width: 768px) {
-  .cart_totals { padding: 32px; }
 }
 
 .cart_totals h2 {
-  font-size: 0.95rem;
+  font-size: 0.9rem;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  color: var(--wiwa-text-light);
+  letter-spacing: 0.15em;
+  color: var(--wiwa-text);
   margin-bottom: 24px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f1f2f6;
   font-weight: 700;
+  border-bottom: none;
 }
 
 .cart_totals table {
   width: 100%;
+  border-collapse: collapse;
+}
+.cart_totals th, .cart_totals td {
+  padding: 12px 0;
+  vertical-align: middle;
 }
 .cart_totals th {
   text-align: left;
-  padding: 12px 0;
-  color: var(--wiwa-text-light);
+  color: var(--wiwa-text-gray);
   font-weight: 500;
-  font-size: 0.9rem;
+  font-size: 0.95rem;
 }
 .cart_totals td {
   text-align: right;
-  padding: 12px 0;
-  color: var(--wiwa-text);
   font-weight: 700;
-  font-size: 1rem;
-}
-.cart_totals tr {
-  border-bottom: 1px solid #f8f9fa;
+  color: var(--wiwa-text);
 }
 
-/* Total Row Highlight */
+/* Divider simulation */
+.cart_totals tr {
+  border-bottom: 1px dashed var(--wiwa-border);
+}
+.cart_totals tr:last-child { border-bottom: none; }
+
+/* Total Amount Highlights */
 .cart_totals tr.order-total th, 
 .cart_totals tr.order-total td {
-  border-top: 2px solid #f1f2f6;
-  border-bottom: none;
+  border-top: none; 
   padding-top: 24px;
-  margin-top: 12px;
+  font-size: 1.8rem; /* Big total */
   color: var(--wiwa-primary);
-  font-size: 1.4rem;
   font-weight: 800;
 }
+.cart_totals tr.order-total th {
+  font-size: 1rem;
+  color: var(--wiwa-text-gray);
+  font-weight: 500;
+  padding-top: 32px; /* Visual gap */
+}
 
+/* Checkout Button */
 .wc-proceed-to-checkout {
-  margin-top: 32px;
+  margin-top: 24px;
 }
 .wc-proceed-to-checkout a.checkout-button {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  width: 100%;
   background: var(--wiwa-primary);
   color: white;
-  padding: 18px;
-  border-radius: 10px;
-  font-weight: 600;
-  font-size: 1rem;
-  letter-spacing: 0.02em;
+  display: block;
+  text-align: center;
+  padding: 16px;
+  border-radius: 8px;
+  font-weight: 700;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(26, 60, 40, 0.2);
-  transition: all 0.2s ease;
+  font-size: 0.9rem;
+  transition: all 0.2s;
 }
 .wc-proceed-to-checkout a.checkout-button:hover {
-  background: var(--wiwa-primary-hover);
-  transform: translateY(-2px);
-  box-shadow: 0 8px 20px rgba(26, 60, 40, 0.3);
+  background: var(--wiwa-primary-light);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(26, 60, 40, 0.2);
 }
 
 /* =========================================
-   4. LOADING STATE
+   4. RESPONSIVE UTILS
    ========================================= */
-.wiwa-loading {
-  position: relative;
-  opacity: 0.7;
-  pointer-events: none;
-  filter: blur(1px);
-  transition: all 0.3s;
+.wiwa-bg-hidden {
+  display: none !important;
 }
 
-/* =========================================
-   5. RESPONSIVE
-   ========================================= */
-@media (max-width: 991px) {
-  .wiwa-cart-wrapper {
-    grid-template-columns: 1fr;
-    gap: 32px;
-  }
-}
-
-@media (max-width: 600px) {
-  .wiwa-cart-card {
-    grid-template-columns: 1fr;
-    gap: 20px;
-    padding: 24px;
-  }
-  
+/* Helper to center content in mobile if needed */
+@media (max-width: 767px) {
   .wiwa-card-image {
-    width: 100%;
-    height: 200px;
-  }
-  
-  .wiwa-card-actions {
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    border-left: none;
-    border-top: 1px solid #f1f2f6;
-    padding-left: 0;
-    padding-top: 20px;
-    text-align: left;
-  }
-  
-  .wiwa-pax-control {
-    align-items: flex-start;
-    margin-top: 0;
-  }
-  
-  .wiwa-card-subtotal {
-    align-items: flex-end;
+    max-width: 100%; 
+    height: auto;
   }
 }
