@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.7] - 2026-02-12
+
+### Fixed
+
+- **Visual Sync:** Corrected "Viajeros" pill sizing to be compact and capsule-like.
+- **Typography:** Adjusted Price hierarchy; reduced "Remaining" font size to avoid dominance.
+- **Components:** Replaced text "Eliminar" with a cleaner text+icon style.
+- **Layout:** Optimized grid columns (140px | 1fr | 200px) for better spacing.
+
 ## [2.10.6] - 2026-02-12
 
 ### Changed
