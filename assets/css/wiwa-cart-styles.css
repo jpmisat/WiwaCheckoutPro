@@ -26,6 +26,7 @@
   /* FIX: Force proper positioning and width */
   position: fixed !important;
   right: 0 !important;
+  left: auto !important; /* Force override of left:0 */
   top: 0 !important;
   width: 450px !important;
   max-width: 90vw !important;
