@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.10.2] - 2026-02-12
+
+### Changed
+
+- **Premium Card UI Refactor:** Completely replaced cart table structure with a modern Grid/Card layout. Removed all border opacities and table styles.
+- **Cart Totals:** Redesigned as a sticky, clean panel with proper hierarchy and spacing.
+- **Sidebar Cart:** Fixed positioning (forced right), z-index, and implemented matching card style for items.
+- **Quantity Controls:** New pill-shaped design integrating +/- buttons and input.
+- **AJAX Logic:** Implemented debounce (500ms) for quantity updates and **forced** cart update trigger to ensure accurate totals calculation on every change.
+
 ## [2.10.1] - 2026-02-12
 
 ### Fixed
