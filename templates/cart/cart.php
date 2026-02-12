@@ -3,7 +3,7 @@
  * Custom Cart Template for Wiwa Tours.
  *
  * @package WiwaTourCheckout
- * @version 2.10.0
+ * @version 2.10.1
  */
 
 defined('ABSPATH') || exit;
@@ -14,7 +14,7 @@ do_action('woocommerce_before_cart');
 <div class="wiwa-cart-wrapper">
     <header class="wiwa-cart-header">
         <h1 class="wiwa-cart-title"><?php esc_html_e('Tu Carrito de Aventuras', 'wiwa-checkout'); ?></h1>
-        <p class="wiwa-cart-subtitle"><?php esc_html_e('Turismo con el alma desde el corazon de la tierra.', 'wiwa-checkout'); ?></p>
+        <p class="wiwa-cart-subtitle"><?php esc_html_e('Revisa tus experiencias antes de continuar.', 'wiwa-checkout'); ?></p>
     </header>
 
     <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
@@ -26,7 +26,7 @@ do_action('woocommerce_before_cart');
                     <tr>
                         <th class="product-remove"><span class="screen-reader-text"><?php esc_html_e('Remove item', 'woocommerce'); ?></span></th>
                         <th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail image', 'woocommerce'); ?></span></th>
-                        <th class="product-name"><?php esc_html_e('Tour', 'wiwa-checkout'); ?></th>
+                        <th class="product-name"><?php esc_html_e('Tour / Experiencia', 'wiwa-checkout'); ?></th>
                         <th class="product-price"><?php esc_html_e('Precio', 'woocommerce'); ?></th>
                         <th class="product-quantity"><?php esc_html_e('Pasajeros', 'wiwa-checkout'); ?></th>
                         <th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
@@ -47,6 +47,7 @@ do_action('woocommerce_before_cart');
                         $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
                         $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image('woocommerce_thumbnail'), $cart_item, $cart_item_key);
 
+                        // Detect tour guest keys
                         $guest_keys = [];
                         foreach ($cart_item as $meta_key => $meta_value) {
                             if (strpos($meta_key, 'numberof_') === 0 && $meta_key !== 'numberof_guests' && is_numeric($meta_value)) {
@@ -54,41 +55,43 @@ do_action('woocommerce_before_cart');
                             }
                         }
 
+                        // Find primary guest key
                         $primary_guest_key = '';
                         if (!empty($guest_keys)) {
                             if (in_array('numberof_pax', $guest_keys, true)) {
                                 $primary_guest_key = 'numberof_pax';
                             } else {
-                                foreach ($guest_keys as $guest_key) {
-                                    if (intval($cart_item[$guest_key]) > 0) {
-                                        $primary_guest_key = $guest_key;
+                                foreach ($guest_keys as $gk) {
+                                    if (intval($cart_item[$gk]) > 0) {
+                                        $primary_guest_key = $gk;
                                         break;
                                     }
                                 }
-                                if (!$primary_guest_key) {
+                                if (!$primary_guest_key && !empty($guest_keys)) {
                                     $primary_guest_key = $guest_keys[0];
                                 }
                             }
                         }
 
-                        $is_tour_editable = !empty($primary_guest_key);
-                        $pax_total = class_exists('Wiwa_Tour_Booking_Integration') ? Wiwa_Tour_Booking_Integration::get_pax_count($cart_item) : intval($cart_item['quantity']);
-                        $guest_breakdown = class_exists('Wiwa_Tour_Booking_Integration') ? Wiwa_Tour_Booking_Integration::get_guest_breakdown($cart_item, $_product) : [];
+                        $is_tour = !empty($primary_guest_key);
+                        $pax_total = isset($cart_item['numberof_guests']) ? intval($cart_item['numberof_guests']) : intval($cart_item['quantity']);
+                        if ($pax_total <= 0) $pax_total = intval($cart_item['quantity']);
                         ?>
 
-                        <tr class="woocommerce-cart-form__cart-item <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?> wiwa-cart-card" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+                        <tr class="woocommerce-cart-form__cart-item <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
                             <td class="product-remove">
                                 <?php
-                                $remove_link = sprintf(
-                                    '<a href="%s" class="remove wiwa-remove-item" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="screen-reader-text">%s</span><svg viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M9 3h6l1 2h4v2H4V5h4l1-2zm1 7h2v8h-2v-8zm4 0h2v8h-2v-8zM7 10h2v8H7v-8z"/></svg></a>',
-                                    esc_url(wc_get_cart_remove_url($cart_item_key)),
-                                    esc_attr__('Remove this item', 'woocommerce'),
-                                    esc_attr($product_id),
-                                    esc_attr($_product->get_sku()),
-                                    esc_html__('Remove this item', 'woocommerce')
+                                echo apply_filters(
+                                    'woocommerce_cart_item_remove_link',
+                                    sprintf(
+                                        '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
+                                        esc_url(wc_get_cart_remove_url($cart_item_key)),
+                                        esc_html__('Remove this item', 'woocommerce'),
+                                        esc_attr($product_id),
+                                        esc_attr($_product->get_sku())
+                                    ),
+                                    $cart_item_key
                                 );
-
-                                echo apply_filters('woocommerce_cart_item_remove_link', $remove_link, $cart_item_key);
                                 ?>
                             </td>
 
@@ -97,7 +100,7 @@ do_action('woocommerce_before_cart');
                                 if (!$product_permalink) {
                                     echo $thumbnail;
                                 } else {
-                                    printf('<a href="%s" class="wiwa-cart-thumb-link">%s</a>', esc_url($product_permalink), $thumbnail);
+                                    printf('<a href="%s">%s</a>', esc_url($product_permalink), $thumbnail);
                                 }
                                 ?>
                             </td>
@@ -128,12 +131,12 @@ do_action('woocommerce_before_cart');
                             </td>
 
                             <td class="product-quantity" data-title="<?php esc_attr_e('Quantity', 'woocommerce'); ?>">
-                                <?php if ($is_tour_editable): ?>
+                                <?php if ($is_tour): ?>
                                     <div class="wiwa-pax-panel">
-                                        <span class="wiwa-pax-label"><?php esc_html_e('Cantidad de viajeros', 'wiwa-checkout'); ?></span>
+                                        <span class="wiwa-pax-label"><?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></span>
 
                                         <div class="wiwa-mini-cart-qty wiwa-main-cart-qty">
-                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus" aria-label="<?php esc_attr_e('Reducir pasajeros', 'wiwa-checkout'); ?>">-</button>
+                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus" aria-label="<?php esc_attr_e('Reducir pasajeros', 'wiwa-checkout'); ?>">−</button>
                                             <input
                                                 type="number"
                                                 class="wiwa-qty-input"
@@ -157,32 +160,7 @@ do_action('woocommerce_before_cart');
                                             ?>
                                         </span>
 
-                                        <?php if (!empty($guest_breakdown) && count($guest_breakdown) > 1): ?>
-                                            <span class="wiwa-pax-breakdown">
-                                                <?php
-                                                $breakdown_parts = [];
-                                                foreach ($guest_breakdown as $type_label => $type_count) {
-                                                    $breakdown_parts[] = sprintf('%d %s', $type_count, $type_label);
-                                                }
-                                                echo esc_html(implode(' - ', $breakdown_parts));
-                                                ?>
-                                            </span>
-                                        <?php endif; ?>
-
                                         <input type="hidden" name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" value="<?php echo esc_attr($cart_item['quantity']); ?>" />
-                                        <?php foreach ($guest_keys as $guest_key): ?>
-                                            <?php
-                                            $guest_slug = str_replace('numberof_', '', $guest_key);
-                                            $guest_count = isset($cart_item[$guest_key]) ? intval($cart_item[$guest_key]) : 0;
-                                            ?>
-                                            <input
-                                                type="hidden"
-                                                class="wiwa-hidden-guest-input"
-                                                data-guest-slug="<?php echo esc_attr($guest_slug); ?>"
-                                                name="cart[<?php echo esc_attr($cart_item_key); ?>][guests][<?php echo esc_attr($guest_slug); ?>]"
-                                                value="<?php echo esc_attr($guest_count); ?>"
-                                            />
-                                        <?php endforeach; ?>
                                     </div>
                                 <?php else: ?>
                                     <?php
@@ -196,10 +174,10 @@ do_action('woocommerce_before_cart');
 
                                     $product_quantity = woocommerce_quantity_input(
                                         [
-                                            'input_name' => "cart[{$cart_item_key}][qty]",
-                                            'input_value' => $cart_item['quantity'],
-                                            'max_value' => $max_quantity,
-                                            'min_value' => $min_quantity,
+                                            'input_name'   => "cart[{$cart_item_key}][qty]",
+                                            'input_value'  => $cart_item['quantity'],
+                                            'max_value'    => $max_quantity,
+                                            'min_value'    => $min_quantity,
                                             'product_name' => $_product->get_name(),
                                         ],
                                         $_product,

@@ -1,5 +1,18 @@
 # Changelog
 
+## [2.10.1] - 2026-02-12
+
+### Fixed
+
+- Complete CSS rewrite for cart page and sidebar cart with system-safe font stack (`-apple-system`, `Segoe UI`, `Roboto`).
+- Sidebar cart now correctly positioned as a fixed right-anchored drawer with proper flex layout and scrollable product list.
+- Main cart page rebuilt with clean 4-column card grid (thumbnail, name, qty, subtotal) and rounded card design.
+- Removed broken `Wiwa_Tour_Booking_Integration` class references from `cart.php` that caused potential fatal errors.
+- Simplified pax/passenger detection logic to use inline `numberof_*` metadata from cart items.
+- Fixed quantity pill alignment, subtotal overflow, and product title wrapping.
+- Improved mobile responsive breakpoints for cart cards and sidebar.
+- Restored simple `×` character for remove button instead of unreliable SVG.
+
 ## [2.10.0] - 2026-02-12
 
 ### Added

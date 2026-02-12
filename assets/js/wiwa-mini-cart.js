@@ -1,6 +1,6 @@
 /**
  * Wiwa Tour Checkout - Cart Frontend Logic
- * Version: 2.10.0
+ * Version: 2.10.1
  */
 
 jQuery(function ($) {
