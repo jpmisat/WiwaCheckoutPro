@@ -57,7 +57,7 @@ jQuery(function ($) {
      */
     var triggerCartUpdate = debounce(function ($input) {
         var isMainCart = $('.woocommerce-cart-form').length > 0;
-        var $row = $input.closest('tr.cart_item, .elementor-menu-cart__product');
+        var $row = $input.closest('tr.cart_item, .wiwa-cart-card, .elementor-menu-cart__product');
 
         // Visual Feedback
         $row.addClass('wiwa-loading');

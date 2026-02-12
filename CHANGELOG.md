@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.3] - 2026-02-12
+
+### Changed (Emergency Redesign)
+
+- **Template Rewrite:** Deleted legacy `<table>` structure in `cart.php`. Replaced with `div.wiwa-cart-grid` and semantic `.wiwa-cart-card` components.
+- **CSS Overhaul:** Completely rewrote styles to support the new grid layout. Eliminated all table-based CSS hacks and "transparent background" issues.
+- **Visuals:** Implemented deep shadow card design, fixed image aspect ratios, and polished typography.
+- **JS Support:** Updated selectors to target new `.wiwa-cart-card` elements for AJAX updates.
+
 ## [2.10.2] - 2026-02-12
 
 ### Changed

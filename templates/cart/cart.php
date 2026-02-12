@@ -1,87 +1,64 @@
 <?php
 /**
- * Custom Cart Template for Wiwa Tours.
- *
- * @package WiwaTourCheckout
- * @version 2.10.1
+ * Wiwa Tour Checkout - Premium Cart Template (Div-Based)
+ * Version: 2.10.3
+ * 
+ * @see     https://docs.woocommerce.com/document/template-structure/
+ * @package WooCommerce\Templates
+ * @version 7.9.0
  */
 
 defined('ABSPATH') || exit;
 
-do_action('woocommerce_before_cart');
+do_action('woocommerce_before_cart'); 
 ?>
 
 <div class="wiwa-cart-wrapper">
+
+    <!-- CART HEADER -->
     <header class="wiwa-cart-header">
         <h1 class="wiwa-cart-title"><?php esc_html_e('Tu Carrito de Aventuras', 'wiwa-checkout'); ?></h1>
         <p class="wiwa-cart-subtitle"><?php esc_html_e('Revisa tus experiencias antes de continuar.', 'wiwa-checkout'); ?></p>
     </header>
 
+    <!-- FORM START -->
     <form class="woocommerce-cart-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
         <?php do_action('woocommerce_before_cart_table'); ?>
 
-        <div class="wiwa-cart-table-container">
-            <table class="shop_table shop_table_responsive cart woocommerce-cart-form__contents wiwa-cart-table" cellspacing="0">
-                <thead>
-                    <tr>
-                        <th class="product-remove"><span class="screen-reader-text"><?php esc_html_e('Remove item', 'woocommerce'); ?></span></th>
-                        <th class="product-thumbnail"><span class="screen-reader-text"><?php esc_html_e('Thumbnail image', 'woocommerce'); ?></span></th>
-                        <th class="product-name"><?php esc_html_e('Tour / Experiencia', 'wiwa-checkout'); ?></th>
-                        <th class="product-price"><?php esc_html_e('Precio', 'woocommerce'); ?></th>
-                        <th class="product-quantity"><?php esc_html_e('Pasajeros', 'wiwa-checkout'); ?></th>
-                        <th class="product-subtotal"><?php esc_html_e('Subtotal', 'woocommerce'); ?></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php do_action('woocommerce_before_cart_contents'); ?>
+        <div class="wiwa-cart-grid-container">
+            <?php do_action('woocommerce_before_cart_contents'); ?>
 
-                    <?php
-                    foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
-                        $_product = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
-                        $product_id = apply_filters('woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key);
+            <?php
+            foreach (WC()->cart->get_cart() as $cart_item_key => $cart_item) {
+                $_product   = apply_filters('woocommerce_cart_item_product', $cart_item['data'], $cart_item, $cart_item_key);
+                $product_id = apply_filters('woocommerce_cart_item_product_id', $cart_item['product_id'], $cart_item, $cart_item_key);
 
-                        if (!$_product || !$_product->exists() || $cart_item['quantity'] <= 0 || !apply_filters('woocommerce_cart_item_visible', true, $cart_item, $cart_item_key)) {
-                            continue;
+                if ($_product && $_product->exists() && $cart_item['quantity'] > 0 && apply_filters('woocommerce_cart_item_visible', true, $cart_item, $cart_item_key)) {
+                    $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
+                    
+                    // --- DATA PREP ---
+                    $is_tour = false;
+                    $pax_total = 1;
+                    $primary_guest_key = '';
+
+                    // Detect pax logic (simplified inline)
+                    foreach ($cart_item as $key => $val) {
+                        if (strpos($key, 'numberof_') === 0 && is_numeric($val) && $val > 0) {
+                            $is_tour = true;
+                            $pax_total = intval($val);
+                            $primary_guest_key = $key;
+                            break; 
                         }
-
-                        $product_permalink = apply_filters('woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink($cart_item) : '', $cart_item, $cart_item_key);
-                        $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image('woocommerce_thumbnail'), $cart_item, $cart_item_key);
-
-                        // Detect tour guest keys
-                        $guest_keys = [];
-                        foreach ($cart_item as $meta_key => $meta_value) {
-                            if (strpos($meta_key, 'numberof_') === 0 && $meta_key !== 'numberof_guests' && is_numeric($meta_value)) {
-                                $guest_keys[] = $meta_key;
-                            }
-                        }
-
-                        // Find primary guest key
-                        $primary_guest_key = '';
-                        if (!empty($guest_keys)) {
-                            if (in_array('numberof_pax', $guest_keys, true)) {
-                                $primary_guest_key = 'numberof_pax';
-                            } else {
-                                foreach ($guest_keys as $gk) {
-                                    if (intval($cart_item[$gk]) > 0) {
-                                        $primary_guest_key = $gk;
-                                        break;
-                                    }
-                                }
-                                if (!$primary_guest_key && !empty($guest_keys)) {
-                                    $primary_guest_key = $guest_keys[0];
-                                }
-                            }
-                        }
-
-                        $is_tour = !empty($primary_guest_key);
-                        $pax_total = isset($cart_item['numberof_guests']) ? intval($cart_item['numberof_guests']) : intval($cart_item['quantity']);
-                        if ($pax_total <= 0) $pax_total = intval($cart_item['quantity']);
-                        ?>
-
-                        <tr class="woocommerce-cart-form__cart-item <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
-                            <td class="product-remove">
-                                <?php
-                                echo apply_filters(
+                    }
+                    ?>
+                    
+                    <!-- CART CARD ITEM -->
+                    <div class="wiwa-cart-card <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+                        
+                        <!-- REMOVE BUTTON (Top Right) -->
+                        <div class="wiwa-card-remove">
+                            <?php
+                                echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
                                         '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s">&times;</a>',
@@ -92,54 +69,68 @@ do_action('woocommerce_before_cart');
                                     ),
                                     $cart_item_key
                                 );
-                                ?>
-                            </td>
+                            ?>
+                        </div>
 
-                            <td class="product-thumbnail">
+                        <!-- 1. IMAGE -->
+                        <div class="wiwa-card-image">
+                            <?php
+                            $thumbnail = apply_filters('woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key);
+                            if (!$product_permalink) {
+                                echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            } else {
+                                printf('<a href="%s">%s</a>', esc_url($product_permalink), $thumbnail); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                            }
+                            ?>
+                        </div>
+
+                        <!-- 2. DETAILS (Title + Meta) -->
+                        <div class="wiwa-card-details">
+                            <h3 class="wiwa-card-title" data-title="<?php esc_attr_e('Product', 'woocommerce'); ?>">
                                 <?php
                                 if (!$product_permalink) {
-                                    echo $thumbnail;
+                                    echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key) . '&nbsp;');
                                 } else {
-                                    printf('<a href="%s">%s</a>', esc_url($product_permalink), $thumbnail);
+                                    echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s">%s</a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key));
                                 }
-                                ?>
-                            </td>
 
-                            <td class="product-name" data-title="<?php esc_attr_e('Product', 'woocommerce'); ?>">
+                                do_action('woocommerce_after_cart_item_name', $cart_item, $cart_item_key);
+                                ?>
+                            </h3>
+
+                            <div class="wiwa-card-meta">
                                 <?php
-                                if (!$product_permalink) {
-                                    echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $_product->get_name(), $cart_item, $cart_item_key));
-                                } else {
-                                    echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s" class="wiwa-cart-product-title">%s</a>', esc_url($product_permalink), $_product->get_name()), $cart_item, $cart_item_key));
+                                // Meta data.
+                                echo wc_get_formatted_cart_item_data($cart_item); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+
+                                // Backorder notification.
+                                if ($_product->backorders_require_notification() && $_product->is_on_backorder($cart_item['quantity'])) {
+                                    echo wp_kses_post(apply_filters('woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__('Available on backorder', 'woocommerce') . '</p>', $product_id));
                                 }
                                 ?>
+                            </div>
+                            
+                            <!-- PRICE (Unit) - Optional visual guide -->
+                            <div class="wiwa-card-unit-price">
+                                <?php
+                                    echo apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                ?>
+                            </div>
+                        </div>
 
-                                <div class="wiwa-cart-meta">
-                                    <?php
-                                    echo wc_get_formatted_cart_item_data($cart_item);
-                                    do_action('woocommerce_after_cart_item_name', $cart_item, $cart_item_key);
-
-                                    if ($_product->backorders_require_notification() && $_product->is_on_backorder($cart_item['quantity'])) {
-                                        echo wp_kses_post(apply_filters('woocommerce_cart_item_backorder_notification', '<p class="backorder_notification">' . esc_html__('Available on backorder', 'woocommerce') . '</p>', $product_id));
-                                    }
-                                    ?>
-                                </div>
-                            </td>
-
-                            <td class="product-price" data-title="<?php esc_attr_e('Price', 'woocommerce'); ?>">
-                                <?php echo wp_kses_post(apply_filters('woocommerce_cart_item_price', WC()->cart->get_product_price($_product), $cart_item, $cart_item_key)); ?>
-                            </td>
-
-                            <td class="product-quantity" data-title="<?php esc_attr_e('Quantity', 'woocommerce'); ?>">
+                        <!-- 3. ACTIONS (Pax + Subtotal) -->
+                        <div class="wiwa-card-actions">
+                            
+                            <!-- QUANTITY/PAX CONTROL -->
+                            <div class="wiwa-card-qty" data-title="<?php esc_attr_e('Quantity', 'woocommerce'); ?>">
                                 <?php if ($is_tour): ?>
-                                    <div class="wiwa-pax-panel">
-                                        <span class="wiwa-pax-label"><?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></span>
-
-                                        <div class="wiwa-mini-cart-qty wiwa-main-cart-qty">
-                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus" aria-label="<?php esc_attr_e('Reducir pasajeros', 'wiwa-checkout'); ?>">−</button>
-                                            <input
-                                                type="number"
-                                                class="wiwa-qty-input"
+                                    <div class="wiwa-pax-control">
+                                        <label class="wiwa-pax-label"><?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></label>
+                                        <div class="wiwa-qty-pill">
+                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+                                            <input 
+                                                type="number" 
+                                                class="wiwa-qty-input" 
                                                 value="<?php echo esc_attr(max(1, $pax_total)); ?>"
                                                 min="1"
                                                 step="1"
@@ -148,21 +139,16 @@ do_action('woocommerce_before_cart');
                                                 data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
                                                 readonly
                                             />
-                                            <button type="button" class="wiwa-qty-btn wiwa-qty-plus" aria-label="<?php esc_attr_e('Aumentar pasajeros', 'wiwa-checkout'); ?>">+</button>
+                                            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">+</button>
                                         </div>
-
-                                        <span class="wiwa-pax-total-value">
-                                            <?php
-                                            printf(
-                                                esc_html(_n('%d viajero', '%d viajeros', max(1, $pax_total), 'wiwa-checkout')),
-                                                max(1, $pax_total)
-                                            );
-                                            ?>
+                                        <span class="wiwa-pax-summary">
+                                            <?php printf(esc_html(_n('%d viajero', '%d viajeros', max(1, $pax_total), 'wiwa-checkout')), max(1, $pax_total)); ?>
                                         </span>
-
+                                        <!-- Hidden WC Quantity for Form Submission -->
                                         <input type="hidden" name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" value="<?php echo esc_attr($cart_item['quantity']); ?>" />
                                     </div>
                                 <?php else: ?>
+                                    <!-- Standard Product Qty -->
                                     <?php
                                     if ($_product->is_sold_individually()) {
                                         $min_quantity = 1;
@@ -187,39 +173,50 @@ do_action('woocommerce_before_cart');
                                     echo apply_filters('woocommerce_cart_item_quantity', $product_quantity, $cart_item_key, $cart_item);
                                     ?>
                                 <?php endif; ?>
-                            </td>
+                            </div>
 
-                            <td class="product-subtotal" data-title="<?php esc_attr_e('Subtotal', 'woocommerce'); ?>">
-                                <span class="wiwa-item-subtotal-value">
-                                    <?php echo wp_kses_post(apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key)); ?>
-                                </span>
-                            </td>
-                        </tr>
-                    <?php } ?>
+                            <!-- SUBTOTAL DISPLAY -->
+                            <div class="wiwa-card-subtotal" data-title="<?php esc_attr_e('Subtotal', 'woocommerce'); ?>">
+                                <?php
+                                    echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                ?>
+                            </div>
 
-                    <?php do_action('woocommerce_cart_contents'); ?>
+                        </div> <!-- End .wiwa-card-actions -->
 
-                    <tr>
-                        <td colspan="6" class="actions">
-                            <button type="submit" class="button wiwa-update-cart-btn" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>"><?php esc_html_e('Actualizar Carrito', 'wiwa-checkout'); ?></button>
-                            <?php do_action('woocommerce_cart_actions'); ?>
-                            <?php wp_nonce_field('woocommerce-cart', 'woocommerce-cart-nonce'); ?>
-                        </td>
-                    </tr>
+                    </div> <!-- End .wiwa-cart-card -->
+                    <?php
+                }
+            }
+            ?>
+            
+            <?php do_action('woocommerce_cart_contents'); ?>
+            
+            <!-- UPDATE CART BUTTON (Hidden but functional for JS trigger) -->
+            <button type="submit" class="button wiwa-bg-hidden" name="update_cart" value="<?php esc_attr_e('Update cart', 'woocommerce'); ?>">
+                <?php esc_html_e('Update cart', 'woocommerce'); ?>
+            </button>
 
-                    <?php do_action('woocommerce_after_cart_contents'); ?>
-                </tbody>
-            </table>
+            <?php do_action('woocommerce_after_cart_contents'); ?>
         </div>
-
+        
         <?php do_action('woocommerce_after_cart_table'); ?>
     </form>
 
-    <?php do_action('woocommerce_before_cart_collaterals'); ?>
 
-    <div class="cart-collaterals wiwa-cart-collaterals">
-        <?php do_action('woocommerce_cart_collaterals'); ?>
+    <!-- COLLATERALS / TOTALS -->
+    <div class="wiwa-cart-collaterals">
+        <?php
+            /**
+             * Cart collaterals hook.
+             *
+             * @hooked woocommerce_cross_sell_display
+             * @hooked woocommerce_cart_totals - 10
+             */
+            do_action('woocommerce_cart_collaterals');
+        ?>
     </div>
+
 </div>
 
 <?php do_action('woocommerce_after_cart'); ?>
