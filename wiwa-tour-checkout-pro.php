@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.9.7
+ * Version: 2.9.8
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.9.7');
+define('WIWA_CHECKOUT_VERSION', '2.9.8');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -127,11 +127,15 @@ final class Wiwa_Tour_Checkout
         add_action('wp_enqueue_scripts', [$this, 'enqueue_custom_scripts']);
 
         // --- CART REDESIGN HOOKS ---
+        // --- CART REDESIGN HOOKS ---
         // Filter to customize Mini Cart Quantity
-        add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 10, 3);
+        add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 999, 3);
         
         // Filter to customize Main Cart Quantity
-        add_filter('woocommerce_cart_item_quantity', [$this, 'custom_cart_item_quantity'], 10, 3);
+        add_filter('woocommerce_cart_item_quantity', [$this, 'custom_cart_item_quantity'], 999, 3);
+        
+        // Remove Redundant "Cantidad de viajeros" metadata if present (to avoid duplication with input)
+        add_filter('woocommerce_get_item_data', [$this, 'clean_cart_item_data'], 10, 2);
         
         // AJAX Handler for Mini Cart Quantity Update
         add_action('wp_ajax_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
@@ -297,6 +301,41 @@ final class Wiwa_Tour_Checkout
         </div>
         <?php
         return ob_get_clean();
+    }
+
+    /**
+     * Clean Cart Item Data (Metadata)
+     * Removes "numberof_adult", "numberof_child", etc from the line item description
+     * because we show it in the quantity box or it's redundant.
+     */
+    public function clean_cart_item_data($item_data, $cart_item)
+    {
+        // Define keys we want to hide from the standard metadata list
+        $hidden_keys = [
+            'numberof_adult', 
+            'numberof_adults', 
+            'numberof_pax', 
+            'Cantidad de viajeros', // Label often used
+            'adults', 
+            'children',
+            'enfants',
+            'niños'
+        ];
+
+        foreach ($item_data as $key => $data) {
+            // Check against key or display label
+            if (in_array($data['key'], $hidden_keys) || in_array($data['name'], $hidden_keys)) {
+                unset($item_data[$key]);
+            }
+            
+            // Loose check for "numberof_"
+            if (strpos($data['key'], 'numberof_') === 0 && $data['key'] !== 'numberof_guests') {
+                 // Keep 'numberof_guests' if you want a total, or hide it if it's redundant
+                 unset($item_data[$key]);
+            }
+        }
+
+        return $item_data;
     }
 
     /**

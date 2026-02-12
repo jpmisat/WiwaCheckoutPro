@@ -23,6 +23,16 @@
 /* Canvas/Container */
 .elementor-menu-cart__container {
   background: #fff;
+  /* FIX: Force proper positioning and width */
+  position: fixed !important;
+  right: 0 !important;
+  top: 0 !important;
+  width: 450px !important;
+  max-width: 90vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important; /* Max Z-Index */
+  box-shadow: -10px 0 40px rgba(0,0,0,0.1) !important;
+  transform: translateX(0) !important; /* Reset any potential transforms */
 }
 .elementor-menu-cart__main {
   padding: 0 !important; /* Full bleed */
@@ -242,11 +252,12 @@
   border-radius: var(--wiwa-radius);
   box-shadow: var(--wiwa-card-shadow);
   margin-bottom: 20px;
-  padding: 20px;
+  padding: 20px 20px 20px 120px; /* Left padding for image absolute pos */
   border: 1px solid transparent;
   transition: all 0.3s ease;
   flex-wrap: wrap; /* Allow wrapping on mobile */
   position: relative;
+  min-height: 140px;
 }
 .woocommerce-cart .shop_table tr.cart_item:hover {
   border-color: var(--wiwa-green);
@@ -259,6 +270,7 @@
   border: none !important;
   padding: 0 !important;
   background: transparent !important;
+  display: block !important; /* Force block to break table layout */
 }
 
 /* 1. Remove Button (Top Left or Right) */
@@ -269,16 +281,20 @@
   width: auto !important;
 }
 
-/* 2. Thumbnail (Left) */
+/* 2. Thumbnail (Left - Absolute for Card Look) */
 .woocommerce-cart .shop_table td.product-thumbnail {
-  width: 100px;
-  flex-shrink: 0;
-  margin-right: 25px;
+  position: absolute;
+  left: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 80px !important;
+  height: 80px !important;
+  margin: 0 !important;
 }
 .woocommerce-cart .shop_table td.product-thumbnail img {
   border-radius: var(--wiwa-radius-sm);
-  width: 100px !important;
-  height: 100px !important;
+  width: 80px !important;
+  height: 80px !important;
   object-fit: cover;
   box-shadow: 0 4px 10px rgba(0,0,0,0.05);
 }
@@ -356,12 +372,24 @@
 /* Actions Row (Coupon etc) */
 .woocommerce-cart .shop_table tr:not(.cart_item) {
   background: transparent;
+  display: flex;
+  flex-wrap: wrap;
 }
 .actions {
   padding: 20px 0 !important;
   display: flex;
   justify-content: space-between;
+  width: 100%;
+  align-items: center;
 }
+
+/* Hide Default Update Cart Button (We auto-update) */
+.actions button[name="update_cart"] {
+   visibility: hidden;
+   position: absolute;
+   left: -9999px;
+}
+
 .coupon {
   display: flex;
   gap: 10px;
@@ -369,8 +397,15 @@
 .coupon input {
   border: 1px solid #ddd !important;
   border-radius: var(--wiwa-radius-sm) !important;
-  padding: 0 15px !important;
+  padding: 10px 15px !important;
   min-width: 200px;
+  height: 45px;
+}
+.coupon button {
+  background: var(--wiwa-text-dark) !important;
+  color: #fff !important;
+  border-radius: var(--wiwa-radius-sm) !important;
+  padding: 0 20px !important;
 }
 
 /* =========================================
@@ -498,4 +533,36 @@
   border-radius: 4px;
   display: inline-block;
   margin-top: 5px;
+}
+
+/* =========================================
+   5. BOOKING POPUP BUTTONS
+   ========================================= */
+#btn-add-to-cart-soft {
+  background-color: var(--wiwa-green) !important;
+  color: #fff !important;
+  font-weight: 700 !important;
+  padding: 15px 30px !important;
+  border-radius: var(--wiwa-radius-sm) !important;
+  text-transform: uppercase;
+  font-size: 16px !important;
+  width: 100%;
+  margin-top: 10px;
+  border: none !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: all 0.3s;
+  cursor: pointer;
+}
+#btn-add-to-cart-soft:hover {
+  background-color: var(--wiwa-green-hover) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+}
+#btn-add-to-cart-soft:before {
+  content: '\f217'; /* FontAwesome Cart Icon or similar if available, else omit */
+  font-family: "Font Awesome 5 Free";
+  font-weight: 900;
 }

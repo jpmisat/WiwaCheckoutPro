@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.9.8] - 2026-02-12
+
+### Fixed
+
+- **UI Repairs**: Fixed sidebar cart cutoff issue by enforcing fixed positioning and width.
+- **UI Repairs**: Forced "Card" layout in main cart to fix broken table responsiveness.
+- **UI Repairs**: Removed redundant "Cantidad de viajeros" metadata key to avoid duplication with quantity input.
+- **UI Repairs**: Styled "Agregar al Carrito" button in booking popup to be prominent and consistent.
+
 ## [2.9.7] - 2026-02-12
 
 ### Added
