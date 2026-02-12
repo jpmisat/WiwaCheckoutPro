@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.10.9] - 2026-02-12
+
+### Added
+
+- **Stitch Sidebar:** Implemented pixel-perfect "Order Summary" sidebar matching the Stitch design.
+- **Visuals:** Added premium styling for totals, deposit information (placeholder), and checkout button.
+
+### Changed
+
+- **Templates:** Completely replaced `woocommerce_cart_collaterals` in `cart.php` with custom HTML structure.
+- **CSS:** Updated color tokens and component styles to match high-fidelity design specs.
+
 ## [2.10.8] - 2026-02-12
 
 ### Fixed

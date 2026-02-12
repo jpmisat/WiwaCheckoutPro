@@ -7,20 +7,28 @@
    0. DESIGN TOKENS
    ========================================= */
 :root {
-  --wiwa-primary: #1a3c28;        /* Green */
-  --wiwa-primary-light: #2b4c3b;
-  --wiwa-accent: #f5f1ea;         /* Cream */
-  --wiwa-bg-body: #f9f9f9;
+  /* Colors from Stitch Design */
+  --wiwa-primary: #1a3c28; /* text-wiwa-green */
+  --wiwa-primary-light: #2b4c3b; /* hover:bg-wiwa-green-light */
+  --wiwa-cream: #fdfbf7; /* bg-wiwa-cream / header bg */
+  --wiwa-bg-body: #f9f9f9; /* bg-wiwa-bg */
   --wiwa-bg-card: #ffffff;
-  --wiwa-text: #2d3436;
-  --wiwa-text-gray: #6b7280;
-  --wiwa-border: #e2e8f0;
-  --wiwa-red: #dc2626;
-  
-  --wiwa-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --wiwa-radius: 12px;
-  
-  --wiwa-font-main: 'Montserrat', sans-serif;
+  --wiwa-text: #1f2937; /* text-gray-800 */
+  --wiwa-text-gray: #4b5563; /* text-gray-600/500 */
+  --wiwa-text-light: #9ca3af; /* text-gray-400 */
+  --wiwa-border: #e5e7eb; /* border-gray-200 */
+  --wiwa-border-light: #f9fafb; /* border-gray-50 */
+  --wiwa-red: #dc2626; /* text-red-600 */
+
+  /* Shadows & Radius */
+  --wiwa-shadow:
+    0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --wiwa-card-shadow:
+    0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+  --wiwa-radius-xl: 0.75rem; /* rounded-xl (12px) */
+  --wiwa-radius-2xl: 1rem; /* rounded-2xl (16px) */
+
+  --wiwa-font-main: "Montserrat", sans-serif;
 }
 
 body.woocommerce-cart {
@@ -62,17 +70,22 @@ body.woocommerce-cart {
 }
 
 /* CARD LAYOUT - MOBILE FIRST (Stacked) */
+/* CARD LAYOUT - MOBILE FIRST (Stacked) */
 .wiwa-cart-card {
   background: var(--wiwa-bg-card);
-  border-radius: var(--wiwa-radius);
-  box-shadow: var(--wiwa-shadow);
-  padding: 20px;
-  border: 1px solid transparent;
+  border-radius: var(--wiwa-radius-2xl); /* Matching Stitch rounded-2xl */
+  box-shadow: var(--wiwa-card-shadow);   /* Matching Stitch card-shadow */
+  padding: 24px; /* Slightly increased padding */
+  border: 1px solid var(--wiwa-border-light);
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 24px;
   position: relative;
   transition: all 0.2s ease;
+}
+.wiwa-cart-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
 }
 
 /* CARD LAYOUT - DESKTOP (Grid) */
@@ -126,7 +139,9 @@ body.woocommerce-cart {
   text-decoration: none;
 }
 @media (min-width: 768px) {
-  .wiwa-card-title a { font-size: 1.2rem; }
+  .wiwa-card-title a {
+    font-size: 1.2rem;
+  }
 }
 
 /* Metadata List */
@@ -152,7 +167,9 @@ body.woocommerce-cart {
   margin: 0;
   font-weight: 500;
 }
-.wiwa-card-meta p { margin: 0; }
+.wiwa-card-meta p {
+  margin: 0;
+}
 
 /* Remove Link - Subtle X */
 .wiwa-card-remove-link {
@@ -170,7 +187,7 @@ body.woocommerce-cart {
   display: inline-block;
   line-height: 1;
   transition: all 0.2s;
-  text-decoration: none !important; 
+  text-decoration: none !important;
   opacity: 0.7;
 }
 .wiwa-card-remove-link a.remove:hover {
@@ -211,7 +228,9 @@ body.woocommerce-cart {
   gap: 4px;
 }
 @media (max-width: 767px) {
-  .wiwa-pax-control { align-items: flex-start; }
+  .wiwa-pax-control {
+    align-items: flex-start;
+  }
 }
 
 /* Actual Pill Container */
@@ -226,7 +245,7 @@ body.woocommerce-cart {
   padding: 2px;
   height: 32px;
   width: 90px; /* Fixed width */
-  box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   overflow: hidden;
 }
 
@@ -272,7 +291,9 @@ body.woocommerce-cart {
   appearance: none;
   box-shadow: none !important;
 }
-.wiwa-qty-input:focus { outline: none; }
+.wiwa-qty-input:focus {
+  outline: none;
+}
 .wiwa-qty-input::-webkit-outer-spin-button,
 .wiwa-qty-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -336,99 +357,201 @@ body.woocommerce-cart {
 }
 @media (min-width: 1024px) {
   .wiwa-cart-collaterals {
-    width: 350px;
+    width: 350px; /* lg:w-1/3 roughly */
     flex-shrink: 0;
     position: sticky;
-    top: 40px;
+    top: 128px; /* top-32 */
   }
 }
 
-.cart_totals {
+/* Sidebar Card Container */
+.wiwa-summary-card {
   background: var(--wiwa-bg-card);
-  border-radius: var(--wiwa-radius);
-  box-shadow: var(--wiwa-shadow);
-  padding: 24px;
-  border: 1px solid var(--wiwa-border);
+  border-radius: var(--wiwa-radius-2xl);
+  box-shadow: var(--wiwa-card-shadow);
+  padding: 32px; /* p-8 */
+  border: 1px solid var(--wiwa-border-light);
+  margin-bottom: 24px;
 }
 
-.cart_totals h2 {
-  font-size: 0.85rem;
-  text-transform: uppercase;
-  letter-spacing: 0.1em;
+/* Header */
+.wiwa-summary-title {
+  font-size: 13px;
+  font-weight: 700;
   color: var(--wiwa-primary);
-  margin-bottom: 20px;
-  font-weight: 800;
-  border-bottom: 2px solid var(--wiwa-accent);
-  padding-bottom: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.2em;
+  border-bottom: 1px solid var(--wiwa-border-light); /* border-gray-100 */
+  padding-bottom: 24px; /* pb-6 */
+  margin-bottom: 32px; /* mb-8 */
+  margin-top: 0;
 }
 
-.cart_totals table {
-  width: 100%;
-  border-collapse: collapse;
+/* Rows Container */
+.wiwa-summary-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 24px; /* space-y-6 */
+  margin-bottom: 40px; /* mb-10 */
 }
-.cart_totals th, .cart_totals td {
-  padding: 10px 0;
-  vertical-align: middle;
+
+/* Individual Row */
+.wiwa-summary-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 15px;
+  color: var(--wiwa-text-gray);
 }
-.cart_totals th {
-  text-align: left;
+.wiwa-summary-row.subtotal {
+  color: var(--wiwa-text-gray);
+}
+.wiwa-summary-row.subtotal .amount {
+  font-weight: 600;
+  color: var(--wiwa-text);
+}
+
+.wiwa-summary-row.deposit {
+  color: var(--wiwa-primary);
+}
+.wiwa-summary-row.deposit .label {
+  font-weight: 500;
+}
+.wiwa-summary-row.deposit .amount {
+  font-weight: 700;
+}
+
+/* Pending Section (Dashed Border Top) */
+.wiwa-summary-pending-group {
+  padding-top: 24px;
+  border-top: 1px dashed var(--wiwa-border);
+}
+.wiwa-summary-row.pending {
+  color: var(--wiwa-red);
+}
+.wiwa-summary-row.pending .amount {
+  font-weight: 700;
+}
+.wiwa-pending-note {
+  font-size: 11px;
+  color: var(--wiwa-text-light); /* text-gray-400 */
+  margin-top: 8px;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+/* Total Block */
+.wiwa-summary-total-block {
+  padding-top: 32px;
+  border-top: 1px solid var(--wiwa-border-light);
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 32px;
+}
+.wiwa-summary-total-label {
+  font-size: 14px;
   color: var(--wiwa-text-gray);
   font-weight: 500;
-  font-size: 0.9rem;
 }
-.cart_totals td {
-  text-align: right;
+.wiwa-summary-total-amount {
+  font-size: 3rem; /* text-5xl equivalent roughly */
   font-weight: 700;
-  color: var(--wiwa-text);
-  font-size: 0.95rem;
-}
-
-/* Divider simulation */
-.cart_totals tr {
-  border-bottom: 1px dashed var(--wiwa-border);
-}
-.cart_totals tr:last-child { border-bottom: none; }
-
-/* Total Amount Highlights */
-.cart_totals tr.order-total th, 
-.cart_totals tr.order-total td {
-  border-top: none; 
-  padding-top: 20px;
-  font-size: 1.4rem;
   color: var(--wiwa-primary);
-  font-weight: 800;
-}
-.cart_totals tr.order-total th {
-  font-size: 1rem;
-  color: var(--wiwa-text);
-  font-weight: 700;
-  padding-top: 26px;
+  line-height: 1;
+  letter-spacing: -0.025em; /* tracking-tight */
 }
 
-/* Checkout Button */
-.wc-proceed-to-checkout {
-  margin-top: 24px;
+/* Proceed Button */
+.wiwa-checkout-btn-container {
+  width: 100%;
 }
-.wc-proceed-to-checkout a.checkout-button {
-  background: var(--wiwa-primary);
+.wiwa-checkout-btn {
+  width: 100%;
+  display: block;
+  background-color: var(--wiwa-primary);
   color: white;
+  font-weight: 700;
+  padding: 20px; /* py-5 */
+  border-radius: var(--wiwa-radius-xl);
+  text-align: center;
+  text-transform: uppercase;
+  letter-spacing: 0.1em; /* tracking-widest */
+  font-size: 14px;
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
+  transition: all 0.3s ease;
+  text-decoration: none !important;
+  border: none;
+  cursor: pointer;
+}
+.wiwa-checkout-btn:hover {
+  background-color: var(--wiwa-primary-light);
+  transform: translateY(-4px);
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
+  color: white;
+}
+
+/* Secure Badge */
+.wiwa-secure-badge {
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 14px;
-  border-radius: 50px; /* Pill shape button */
-  font-weight: 700;
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-decoration: none;
-  font-size: 0.9rem;
-  transition: all 0.2s;
-  box-shadow: 0 4px 6px rgba(26, 60, 40, 0.2);
+  gap: 8px;
+  margin-top: 24px;
 }
-.wc-proceed-to-checkout a.checkout-button:hover {
-  background: var(--wiwa-primary-light);
-  transform: translateY(-1px);
-  box-shadow: 0 6px 12px rgba(26, 60, 40, 0.25);
+.wiwa-secure-text {
+  font-size: 11px;
+  color: var(--wiwa-text-light);
+  text-transform: uppercase;
+  font-weight: 500;
+  letter-spacing: 0.05em;
+}
+
+/* Coupon Card */
+.wiwa-coupon-card {
+  margin-top: 24px;
+  background-color: var(--wiwa-cream);
+  padding: 24px;
+  border-radius: var(--wiwa-radius-2xl);
+  border: 1px solid rgba(229, 231, 235, 0.4);
+}
+.wiwa-coupon-label {
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--wiwa-primary);
+  margin-bottom: 12px;
+}
+.wiwa-coupon-form {
+  display: flex;
+  gap: 8px;
+}
+.wiwa-coupon-input {
+  flex-grow: 1;
+  background: white;
+  border: 1px solid var(--wiwa-border);
+  border-radius: 8px;
+  font-size: 14px;
+  padding: 8px 16px;
+  outline: none;
+}
+.wiwa-coupon-input:focus {
+  border-color: var(--wiwa-primary);
+  box-shadow: 0 0 0 1px var(--wiwa-primary);
+}
+.wiwa-coupon-btn {
+  background: var(--wiwa-primary);
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 12px;
+  font-weight: 700;
+  text-transform: uppercase;
+  border: none;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+.wiwa-coupon-btn:hover {
+  opacity: 0.9;
 }
 
 /* =========================================
@@ -444,7 +567,7 @@ body.woocommerce-cart {
     gap: 16px;
   }
   .wiwa-card-image {
-    width: 100%; 
+    width: 100%;
     height: 200px;
   }
   .wiwa-card-actions {

@@ -207,17 +207,109 @@ do_action('woocommerce_before_cart');
     </form>
 
 
-    <!-- COLLATERALS / TOTALS -->
+<!-- COLLATERALS / TOTALS -->
     <div class="wiwa-cart-collaterals">
-        <?php
-            /**
-             * Cart collaterals hook.
-             *
-             * @hooked woocommerce_cross_sell_display
-             * @hooked woocommerce_cart_totals - 10
-             */
-            do_action('woocommerce_cart_collaterals');
-        ?>
+        <aside class="wiwa-order-summary">
+            <div class="wiwa-summary-card">
+                <h3 class="wiwa-summary-title"><?php esc_html_e('Totales del Carrito', 'wiwa-checkout'); ?></h3>
+                
+                <div class="wiwa-summary-rows">
+                    <!-- Subtotal -->
+                    <div class="wiwa-summary-row subtotal">
+                        <span><?php esc_html_e('Subtotal experiencias', 'wiwa-checkout'); ?></span>
+                        <span class="amount"><?php wc_cart_totals_subtotal_html(); ?></span>
+                    </div>
+
+                    <!-- Discount (Optional) -->
+                    <?php foreach (WC()->cart->get_coupons() as $code => $coupon) : ?>
+                        <div class="wiwa-summary-row discount cart-discount coupon-<?php echo esc_attr(sanitize_title($code)); ?>">
+                            <span><?php wc_cart_totals_coupon_label($coupon); ?></span>
+                            <span class="amount"><?php wc_cart_totals_coupon_html($coupon); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <!-- Shipping (If applicable, usually hidden for tours but good to have) -->
+                    <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
+                        <div class="wiwa-summary-row shipping">
+                            <span><?php esc_html_e('Envío', 'woocommerce'); ?></span>
+                            <span class="amount"><?php wc_cart_totals_shipping_html(); ?></span>
+                        </div>
+                    <?php endif; ?>
+
+                    <!-- Fees -->
+                    <?php foreach (WC()->cart->get_fees() as $fee) : ?>
+                        <div class="wiwa-summary-row fee">
+                            <span><?php echo esc_html($fee->name); ?></span>
+                            <span class="amount"><?php wc_cart_totals_fee_html($fee); ?></span>
+                        </div>
+                    <?php endforeach; ?>
+
+                    <!-- Tax -->
+                    <?php if (wc_tax_enabled() && !WC()->cart->display_prices_including_tax()) : ?>
+                        <?php if ('itemized' === get_option('woocommerce_tax_total_display')) : ?>
+                            <?php foreach (WC()->cart->get_tax_totals() as $code => $tax) : ?>
+                                <div class="wiwa-summary-row tax-rate">
+                                    <span><?php echo esc_html($tax->label); ?></span>
+                                    <span class="amount"><?php echo wp_kses_post($tax->formatted_amount); ?></span>
+                                </div>
+                            <?php endforeach; ?>
+                        <?php else : ?>
+                            <div class="wiwa-summary-row tax-total">
+                                <span><?php echo esc_html(WC()->countries->tax_or_vat()); ?></span>
+                                <span class="amount"><?php wc_cart_totals_taxes_total_html(); ?></span>
+                            </div>
+                        <?php endif; ?>
+                    <?php endif; ?>
+
+                    <!-- Total / Deposit -->
+                    <div class="wiwa-summary-row deposit">
+                        <span class="label"><?php esc_html_e('Total a pagar hoy', 'wiwa-checkout'); ?></span>
+                        <span class="amount"><?php wc_cart_totals_order_total_html(); ?></span>
+                    </div>
+                    
+                    <!-- Placeholder for Pending Amount (Logic pending) -->
+                    <!-- 
+                    <div class="wiwa-summary-pending-group">
+                        <div class="wiwa-summary-row pending">
+                            <span>Pendiente por pagar</span>
+                            <span class="amount">$ 0</span>
+                        </div>
+                        <p class="wiwa-pending-note">El saldo restante se pagará directamente en nuestras oficinas el día del tour.</p>
+                    </div>
+                    -->
+                </div>
+
+                <!-- Big Reservation Total (For now same as Total, update if partial payment logic exists) -->
+                <div class="wiwa-summary-total-block">
+                    <span class="wiwa-summary-total-label"><?php esc_html_e('Total de la reserva', 'wiwa-checkout'); ?></span>
+                    <span class="wiwa-summary-total-amount"><?php echo wp_kses_post(WC()->cart->get_total()); ?></span>
+                </div>
+
+                <!-- Proceed Button -->
+                <div class="wiwa-checkout-btn-container">
+                    <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="wiwa-checkout-btn">
+                        <?php esc_html_e('Proceder al Pago', 'wiwa-checkout'); ?>
+                    </a>
+                </div>
+                
+                <!-- SSL -->
+                <div class="wiwa-secure-badge">
+                    <svg style="width:16px;height:16px;fill:#9ca3af;" viewBox="0 0 24 24"><path d="M12 1L3 5v6c0 5.55 3.84 10.74 9 12 5.16-1.26 9-6.45 9-12V5l-9-4zm0 10.99h7c-.53 4.12-3.28 7.79-7 8.94V12H5V6.3l7-3.11v8.8z"/></svg>
+                    <span class="wiwa-secure-text"><?php esc_html_e('Pago Seguro SSL', 'wiwa-checkout'); ?></span>
+                </div>
+            </div>
+
+            <!-- Coupon -->
+            <div class="wiwa-coupon-card">
+                 <?php if (wc_coupons_enabled()) { ?>
+                    <div class="wiwa-coupon-label"><?php esc_html_e('¿Tienes un código de descuento?', 'wiwa-checkout'); ?></div>
+                    <form class="wiwa-coupon-form" action="<?php echo esc_url(wc_get_cart_url()); ?>" method="post">
+                        <input type="text" name="coupon_code" class="wiwa-coupon-input" placeholder="<?php esc_attr_e('Ingresa tu código', 'woocommerce'); ?>" />
+                        <button type="submit" class="wiwa-coupon-btn" name="apply_coupon" value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>"><?php esc_html_e('Aplicar', 'woocommerce'); ?></button>
+                    </form>
+                 <?php } ?>
+            </div>
+        </aside>
     </div>
 
 </div>
