@@ -4,20 +4,23 @@
  */
 
 /* =========================================
-   0. DESIGN TOKENS
+   0. DESIGN TOKENS (Stitch Sync)
    ========================================= */
 :root {
-  --wiwa-primary: #1a3c28;        /* Deep Forest Green */
-  --wiwa-primary-hover: #142e1f;
-  --wiwa-secondary: #c4973b;      /* Gold Accent */
-  --wiwa-text: #2d3436;           /* Dark Slate */
-  --wiwa-text-light: #636e72;     /* Muted Text */
-  --wiwa-bg-body: #f9fafb;        /* Very light gray/blue tint */
+  --wiwa-primary: #1a3c28;        /* Stitch: wiwa-green */
+  --wiwa-primary-light: #2b4c3b;  /* Stitch: wiwa-green-light */
+  --wiwa-accent: #f5f1ea;         /* Stitch: wiwa-cream */
+  --wiwa-bg-body: #f9f9f9;        /* Stitch: wiwa-bg */
   --wiwa-bg-card: #ffffff;
-  --wiwa-border: #edf2f7;
-  --wiwa-shadow: 0 4px 20px rgba(0,0,0,0.06); /* Soft, diffused shadow */
-  --wiwa-radius: 16px;
-  --wiwa-font-main: 'Inter', system-ui, -apple-system, sans-serif;
+  --wiwa-text: #2d3436;
+  --wiwa-text-gray: #6b7280;      /* Stitch: wiwa-text-gray */
+  --wiwa-border: #e5e7eb;         /* Stitch: wiwa-border */
+  
+  /* Stitch Shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), ... */
+  --wiwa-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
+  --wiwa-radius: 8px;             /* Stitch: ROUND_EIGHT */
+  
+  --wiwa-font-main: 'Montserrat', 'Inter', system-ui, sans-serif; /* Stitch: Plus Jakarta Sans mapped to Montserrat for now as requested */
 }
 
 body.woocommerce-cart {
@@ -30,42 +33,51 @@ body.woocommerce-cart {
 /* =========================================
    1. MAIN LAYOUT (GRID)
    ========================================= */
+/* =========================================
+   1. MAIN LAYOUT (GRID) - Responsive
+   ========================================= */
 .wiwa-cart-wrapper {
-  max-width: 1140px;
-  margin: 60px auto;
-  padding: 0 24px;
-  display: grid;
-  grid-template-columns: 1fr 360px;
-  gap: 48px;
-  align-items: start;
+  max-width: 1280px;
+  margin: 40px auto;
+  padding: 0 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 32px;
+}
+
+@media (min-width: 1024px) {
+  .wiwa-cart-wrapper {
+    flex-direction: row;
+    align-items: flex-start;
+    padding: 0 32px;
+    gap: 48px;
+  }
 }
 
 /* Header */
 .wiwa-cart-header {
-  grid-column: 1 / -1;
-  text-align: left;
-  margin-bottom: 32px;
-  border-bottom: 1px solid rgba(0,0,0,0.05);
-  padding-bottom: 24px;
+  width: 100%;
+  margin-bottom: 24px;
 }
 .wiwa-cart-title {
-  font-size: 2rem;
-  font-weight: 800;
-  color: var(--wiwa-primary);
-  letter-spacing: -0.02em;
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: var(--wiwa-text); 
+  letter-spacing: -0.01em;
   margin: 0;
 }
 .wiwa-cart-subtitle {
-  color: var(--wiwa-text-light);
-  font-size: 1rem;
-  margin-top: 8px;
-  font-weight: 400;
+  color: var(--wiwa-text-gray);
+  font-size: 0.95rem;
+  margin-top: 4px;
+  font-weight: 500;
 }
 
 /* =========================================
    2. CART ITEMS (CARDS)
    ========================================= */
 .wiwa-cart-grid-container {
+  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -73,178 +85,222 @@ body.woocommerce-cart {
 
 .wiwa-cart-card {
   display: grid;
-  grid-template-columns: 140px 1fr 220px; /* Image | Details | Actions */
-  gap: 32px;
+  grid-template-areas: 
+    "image details"
+    "image actions";
+  grid-template-columns: 120px 1fr;
+  gap: 16px 24px;
+  
   background: var(--wiwa-bg-card);
   border-radius: var(--wiwa-radius);
-  padding: 32px;
+  padding: 24px;
   box-shadow: var(--wiwa-shadow);
-  position: relative;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
   border: 1px solid transparent;
+  position: relative;
+  transition: all 0.2s ease;
+}
+
+@media (min-width: 768px) {
+  .wiwa-cart-card {
+    grid-template-areas: "image details actions";
+    grid-template-columns: 160px 1fr 240px; /* Stitch Desktop Grid */
+    gap: 32px;
+    padding: 32px;
+  }
 }
 
 .wiwa-cart-card:hover {
+  border-color: var(--wiwa-accent);
   transform: translateY(-2px);
-  box-shadow: 0 12px 30px rgba(0,0,0,0.08);
-  border-color: rgba(0,0,0,0.03);
 }
 
 /* Image */
 .wiwa-card-image {
-  width: 140px;
-  height: 140px;
-  border-radius: 12px;
+  grid-area: image;
+  width: 100%;
+  height: 100%;
+  min-height: 120px;
+  border-radius: 12px; /* Stitch rounded corners */
   overflow: hidden;
-  background: #f1f2f6;
-  box-shadow: inset 0 0 0 1px rgba(0,0,0,0.03);
+  background: #f3f4f6;
+  aspect-ratio: 1;
 }
+@media (min-width: 768px) {
+  .wiwa-card-image {
+    height: 160px; /* Fixed height on desktop */
+  }
+}
+
 .wiwa-card-image img {
   width: 100%;
   height: 100%;
   object-fit: cover;
   transition: transform 0.4s ease;
 }
-.wiwa-cart-card:hover .wiwa-card-image img {
-  transform: scale(1.03);
-}
 
 /* Details Section */
 .wiwa-card-details {
+  grid-area: details;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
-  padding-top: 5px;
+  gap: 12px;
 }
 
 /* Product Title */
 .wiwa-card-title a {
-  font-size: 1.25rem;
+  font-size: 1.15rem;
   font-weight: 700;
   color: var(--wiwa-primary);
   text-decoration: none;
-  line-height: 1.4;
-  margin-bottom: 16px;
+  line-height: 1.3;
   display: block;
+}
+@media (min-width: 768px) {
+  .wiwa-card-title a { font-size: 1.35rem; }
 }
 
 /* Metadata Grid */
 .wiwa-card-meta dl.variation {
   display: grid;
-  grid-template-columns: max-content auto;
-  gap: 8px 16px;
-  font-size: 0.9rem;
+  grid-template-columns: auto;
+  gap: 8px;
+  font-size: 0.85rem;
   color: var(--wiwa-text);
   margin: 0;
-  align-items: center;
 }
 .wiwa-card-meta dt {
   font-weight: 600;
-  color: var(--wiwa-text-light);
-  margin: 0;
-  font-size: 0.85rem;
+  color: var(--wiwa-text-gray);
+  font-size: 0.75rem;
   text-transform: uppercase;
-  letter-spacing: 0.03em;
+  letter-spacing: 0.05em;
+  display: inline-block;
+  margin-right: 4px;
 }
 .wiwa-card-meta dd {
-  margin: 0;
+  display: inline-block;
   font-weight: 500;
+  margin: 0;
 }
 .wiwa-card-meta p { margin: 0; }
 
-/* Actions Section (Right Side) */
+/* Actions Section (Price & Pax) */
 .wiwa-card-actions {
+  grid-area: actions;
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
   justify-content: space-between;
-  align-items: flex-end;
-  text-align: right;
-  padding-left: 20px;
-  border-left: 1px solid rgba(0,0,0,0.03);
+  align-items: center;
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid var(--wiwa-border);
 }
 
-/* Remove Button */
+@media (min-width: 768px) {
+  .wiwa-card-actions {
+    flex-direction: column;
+    justify-content: center;
+    align-items: flex-end;
+    margin-top: 0;
+    padding-top: 0;
+    padding-left: 32px;
+    border-top: none;
+    border-left: 1px solid var(--wiwa-border);
+    gap: 20px;
+  }
+}
+
+/* Remove Button - Top Right Absolute handled by HTML structure usually, keeping absolute for now */
 .wiwa-card-remove {
   position: absolute;
-  top: 16px;
-  right: 16px;
+  top: 12px;
+  right: 12px;
   z-index: 10;
 }
 .wiwa-card-remove a.remove {
-  width: 28px;
-  height: 28px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  color: #dfe6e9 !important;
-  font-size: 20px;
+  color: var(--wiwa-text-gray) !important;
+  font-size: 18px;
   display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
   transition: all 0.2s;
-  background: transparent;
-  line-height: 1;
+  background: white;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.05);
 }
 .wiwa-card-remove a.remove:hover {
-  background: #fff0f0;
-  color: var(--wiwa-secondary) !important; /* Red/Gold accent */
+  background: #fee2e2;
+  color: #ef4444 !important;
+  transform: scale(1.1);
 }
 
-/* Quantity Control (Refined) */
+/* Quantity Control (Stitch Style) */
 .wiwa-pax-control {
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 6px;
-  margin-top: 10px;
+  gap: 4px;
+  align-items: flex-start; /* Mobile: start */
 }
+@media (min-width: 768px) {
+  .wiwa-pax-control { align-items: flex-end; }
+}
+
 .wiwa-pax-label {
   font-size: 0.7rem;
   text-transform: uppercase;
   letter-spacing: 0.05em;
-  color: var(--wiwa-text-light);
-  font-weight: 700;
+  color: var(--wiwa-text-gray);
+  font-weight: 600;
 }
+
 .wiwa-qty-pill {
-  display: inline-flex;
+  display: flex;
   align-items: center;
+  gap: 4px;
   background: #ffffff;
-  border: 1px solid #e1e4e8;
-  border-radius: 8px; /* Slightly squared pill */
-  padding: 3px;
-  height: 38px;
-  transition: border-color 0.2s;
+  border: 1px solid var(--wiwa-border);
+  border-radius: 20px; /* Full pill */
+  padding: 4px 8px;
+  transition: all 0.2s;
 }
 .wiwa-qty-pill:hover {
-  border-color: #b2bec3;
+  border-color: var(--wiwa-primary-light);
+  box-shadow: 0 2px 4px rgba(0,0,0,0.02);
 }
+
 .wiwa-qty-btn {
-  width: 30px;
-  height: 30px;
-  border-radius: 6px;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
   border: none;
-  background: transparent;
-  color: var(--wiwa-text);
-  font-weight: 500;
-  font-size: 16px;
+  background: var(--wiwa-accent); /* Cream background for buttons */
+  color: var(--wiwa-primary);
+  font-weight: 600;
+  font-size: 14px;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: background 0.1s;
+  transition: background 0.2s;
 }
 .wiwa-qty-btn:hover {
-  background: #f1f2f6;
-  color: var(--wiwa-primary);
+  background: #e2e8f0;
 }
+
 .wiwa-qty-input {
-  width: 40px;
+  width: 32px;
   border: none;
   background: transparent;
   text-align: center;
-  font-weight: 600;
-  color: var(--wiwa-primary);
-  font-size: 1rem;
+  font-weight: 700;
+  color: var(--wiwa-text);
+  font-size: 0.95rem;
   padding: 0;
+  margin: 0;
+}
   -moz-appearance: textfield;
 }
 
@@ -253,29 +309,30 @@ body.woocommerce-cart {
   font-family: var(--wiwa-font-main);
   display: flex;
   flex-direction: column;
-  align-items: flex-end;
-  gap: 4px;
+  align-items: flex-start; /* Mobile: start */
+  gap: 2px;
 }
+@media (min-width: 768px) {
+  .wiwa-card-subtotal { align-items: flex-end; }
+}
+
 .wiwa-card-subtotal .woocommerce-Price-amount {
-  font-size: 1.3rem;
-  font-weight: 700;
+  font-size: 1.25rem;
+  font-weight: 800;
   color: var(--wiwa-primary);
   letter-spacing: -0.02em;
 }
 /* Remaining/Deposit tweaks */
 .wiwa-card-subtotal small.tax_label {
   font-size: 0.8rem;
-  color: var(--wiwa-text-light);
-  opacity: 0.8;
+  color: var(--wiwa-text-gray);
   display: block;
-  margin-top: 2px;
 }
 .wiwa-card-subtotal dl.variation {
   display: flex;
   gap: 5px;
   font-size: 0.8rem;
-  color: var(--wiwa-text-light);
-  margin-top: 4px;
+  color: var(--wiwa-text-gray);
 }
 .wiwa-card-subtotal dl.variation dt {
   font-weight: 600;
@@ -285,16 +342,26 @@ body.woocommerce-cart {
    3. TOTALS PANEL (Sticky)
    ========================================= */
 .wiwa-cart-collaterals {
-  position: sticky;
-  top: 40px;
+  width: 100%;
+}
+@media (min-width: 1024px) {
+  .wiwa-cart-collaterals {
+    width: 360px;
+    flex-shrink: 0;
+    position: sticky;
+    top: 40px;
+  }
 }
 
 .cart_totals {
   background: var(--wiwa-bg-card);
   border-radius: var(--wiwa-radius);
   box-shadow: var(--wiwa-shadow);
-  padding: 32px;
-  border: 1px solid rgba(0,0,0,0.03);
+  padding: 24px;
+  border: 1px solid var(--wiwa-border);
+}
+@media (min-width: 768px) {
+  .cart_totals { padding: 32px; }
 }
 
 .cart_totals h2 {

@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.5] - 2026-02-12
+
+### Changed
+
+- **Stitch Design Sync:** Implemented "Carrito - Wiwatour Final" high-fidelity design.
+- **Visual Overhaul:** New color palette (Wiwa Green/Cream), Montserrat typography, and refined shadows.
+- **Responsive Layout:** Optimized Flex/Grid layout for desktop (row) and mobile (column).
+- **Components:** Redesigned Pax Control and Price hierarchy to match Stitch specifics.
+
 ## [2.10.4] - 2026-02-12
 
 ### Changed

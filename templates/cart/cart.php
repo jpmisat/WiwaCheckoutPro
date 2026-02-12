@@ -1,7 +1,7 @@
 <?php
 /**
- * Wiwa Tour Checkout - Premium Cart Template (Div-Based)
- * Version: 2.10.3
+ * Wiwa Tour Checkout - Premium Cart Template (Stitch Sync)
+ * Version: 2.10.5
  * 
  * @see     https://docs.woocommerce.com/document/template-structure/
  * @package WooCommerce\Templates
@@ -127,7 +127,7 @@ do_action('woocommerce_before_cart');
                                     <div class="wiwa-pax-control">
                                         <label class="wiwa-pax-label"><?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></label>
                                         <div class="wiwa-qty-pill">
-                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+                                            <button type="button" class="wiwa-qty-btn wiwa-qty-minus"><span class="icon">-</span></button>
                                             <input 
                                                 type="number" 
                                                 class="wiwa-qty-input" 
@@ -139,7 +139,7 @@ do_action('woocommerce_before_cart');
                                                 data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
                                                 readonly
                                             />
-                                            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">+</button>
+                                            <button type="button" class="wiwa-qty-btn wiwa-qty-plus"><span class="icon">+</span></button>
                                         </div>
                                         <span class="wiwa-pax-summary">
                                             <?php printf(esc_html(_n('%d viajero', '%d viajeros', max(1, $pax_total), 'wiwa-checkout')), max(1, $pax_total)); ?>
