@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.4] - 2026-02-12
+
+### Changed
+
+- **Aesthetic Polish:** Refined "Card UI" with premium styling.
+- **Pax Control:** Redesigned quantity selector to be minimalist and solid (removed cheap borders).
+- **Typography:** Improved hierarchy in price display (Total vs Remaining) and metadata.
+- **Organization:** Better grid spacing and alignment for card elements.
+
 ## [2.10.3] - 2026-02-12
 
 ### Changed (Emergency Redesign)
