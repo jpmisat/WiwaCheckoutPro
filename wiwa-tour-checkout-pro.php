@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.9.8
+ * Version: 2.9.9
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.9.8');
+define('WIWA_CHECKOUT_VERSION', '2.9.9');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -231,10 +231,6 @@ final class Wiwa_Tour_Checkout
      * Custom Mini Cart Quantity Input
      * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
      */
-    /**
-     * Custom Mini Cart Quantity Input
-     * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
-     */
     public function custom_mini_cart_item_quantity($html, $cart_item, $cart_item_key)
     {
         $_product = $cart_item['data'];
@@ -265,9 +261,6 @@ final class Wiwa_Tour_Checkout
         return ob_get_clean();
     }
 
-    /**
-     * Custom Main Cart Quantity Input
-     */
     /**
      * Custom Main Cart Quantity Input
      */
@@ -310,28 +303,30 @@ final class Wiwa_Tour_Checkout
      */
     public function clean_cart_item_data($item_data, $cart_item)
     {
-        // Define keys we want to hide from the standard metadata list
+        // Keys/labels to hide from cart item metadata display
+        // These are redundant because our custom quantity pill handles pax count
         $hidden_keys = [
-            'numberof_adult', 
-            'numberof_adults', 
-            'numberof_pax', 
-            'Cantidad de viajeros', // Label often used
-            'adults', 
-            'children',
-            'enfants',
-            'niños'
+            'numberof_adult', 'numberof_adults', 'numberof_child', 'numberof_children',
+            'numberof_pax', 'numberof_guests', 'numberof_infant', 'numberof_infants',
+            'Cantidad de viajeros', 'cantidad de viajeros',
+            'adults', 'children', 'enfants', 'niños', 'infants',
+            'Adultos', 'Niños', 'Infantes',
         ];
 
         foreach ($item_data as $key => $data) {
-            // Check against key or display label
-            if (in_array($data['key'], $hidden_keys) || in_array($data['name'], $hidden_keys)) {
+            $data_key = isset($data['key']) ? strtolower(trim($data['key'])) : '';
+            $data_name = isset($data['name']) ? strtolower(trim($data['name'])) : '';
+
+            // Exact match against hidden keys (case-insensitive)
+            if (in_array($data_key, array_map('strtolower', $hidden_keys)) || 
+                in_array($data_name, array_map('strtolower', $hidden_keys))) {
                 unset($item_data[$key]);
+                continue;
             }
             
-            // Loose check for "numberof_"
-            if (strpos($data['key'], 'numberof_') === 0 && $data['key'] !== 'numberof_guests') {
-                 // Keep 'numberof_guests' if you want a total, or hide it if it's redundant
-                 unset($item_data[$key]);
+            // Loose check for any "numberof_" prefix
+            if (strpos($data_key, 'numberof_') === 0) {
+                unset($item_data[$key]);
             }
         }
 

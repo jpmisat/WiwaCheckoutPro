@@ -1,11 +1,11 @@
 /**
  * Wiwa Tour Checkout - Cart Frontend Logic
- * Version: 2.9.6 (Creative Update)
+ * Version: 2.9.9 (UX Refactor)
  */
 
 jQuery(function ($) {
     
-    console.log('Wiwa Cart: Smart Pax & Creative UI Loaded');
+    console.log('Wiwa Cart: Smart Pax v2.9.9 Loaded');
 
     /* =========================================
        1. QUANTITY SELECTOR UI (Shared)
@@ -17,11 +17,10 @@ jQuery(function ($) {
         var $wrapper = $button.closest('.wiwa-mini-cart-qty');
         var $input = $wrapper.find('.wiwa-qty-input');
         
-        // Safety check, though inputs should be read-only
         var currentVal = parseFloat($input.val()) || 0;
         var step = 1;
         var min = parseFloat($input.attr('min')) || 0;
-        var max = 99; // Hard limit
+        var max = 99;
         
         var newVal = currentVal;
 
@@ -35,11 +34,8 @@ jQuery(function ($) {
             }
         }
 
-        // Trigger change if value differs
         if (newVal !== currentVal) {
             $input.val(newVal).trigger('change');
-            
-            // Helpful: Store action for AJAX
             $input.data('last-action', $button.hasClass('wiwa-qty-plus') ? 'increase' : 'decrease');
         }
     });
@@ -52,30 +48,25 @@ jQuery(function ($) {
     $(document.body).on('change', '.wiwa-qty-input', function () {
         var $input = $(this);
         var cartKey = $input.data('cart-key');
-        var isTour  = $input.data('is-tour') == '1'; // Coerce to boolean
+        var isTour  = $input.data('is-tour') == '1';
         var qty     = $input.val();
-        var action  = $input.data('last-action') || 'update'; // 'increase', 'decrease', or 'update'
+        var action  = $input.data('last-action') || 'update';
 
         if (!cartKey) return;
 
-        // Visual feedback
-        var $itemRow = $input.closest('.elementor-menu-cart__product, tr.cart_item');
-        $itemRow.css('opacity', '0.5');
+        // Visual loading state
+        var $itemRow = $input.closest('.elementor-menu-cart__product, .mini_cart_item, tr.cart_item');
+        $itemRow.addClass('wiwa-loading');
 
         clearTimeout(updateTimer);
 
         updateTimer = setTimeout(function () {
-            
-            // Case A: Smart Pax Update (Tour Metadata)
             if (isTour) {
                 updateTourPax(cartKey, qty, action, $input, $itemRow);
-            } 
-            // Case B: Standard WooCommerce Quantity
-            else {
+            } else {
                 updateStandardQty(cartKey, qty, $itemRow);
             }
-
-        }, 500); // 500ms Debounce
+        }, 400);
     });
 
     /**
@@ -88,39 +79,38 @@ jQuery(function ($) {
             data: {
                 action: 'wiwa_update_tour_pax',
                 cart_key: cartKey,
-                qty: qty,       // Sending raw qty just in case
-                update_action: action, // Sending direction (increase/decrease)
+                qty: qty,
+                update_action: action,
                 security: wiwa_vars.nonce
             },
             success: function (response) {
                 if (response.success) {
                     console.log('Wiwa: Pax Updated', response.data);
-                    // Refresh Cart Fragments (Standard WC Trigger)
                     $(document.body).trigger('wc_fragment_refresh');
-                    $(document.body).trigger('updated_cart_totals'); // Main cart refresh
+                    $(document.body).trigger('updated_cart_totals');
                 } else {
                     console.warn('Wiwa: Pax Update Failed', response);
-                    alert(response.data.message || 'Cannot update passengers. Please check details page.');
-                    // Revert input? Reloading fragments handles this usually.
                     $(document.body).trigger('wc_fragment_refresh');
                 }
             },
+            error: function() {
+                console.error('Wiwa: AJAX Error on pax update');
+            },
             complete: function() {
-                $itemRow.css('opacity', '1');
+                $itemRow.removeClass('wiwa-loading');
             }
         });
     }
 
     /**
-     * Handler for Standard Products (Mini Cart & Main Cart)
+     * Handler for Standard Products
      */
     function updateStandardQty(cartKey, qty, $itemRow) {
         
-        // If we are in Main Cart page, triggering the native "Update Cart" button is safer/better
+        // Main Cart: trigger native WC update
         if ($('.woocommerce-cart-form').length) {
-            $('[name="update_cart"]').prop('disabled', false).trigger('click');
-            // Opacity handled by WC scripts usually, but let's reset ours just in case
-            setTimeout(function(){ $itemRow.css('opacity', '1'); }, 1000);
+            $('[name="update_cart"]').removeAttr('disabled').prop('disabled', false).trigger('click');
+            setTimeout(function(){ $itemRow.removeClass('wiwa-loading'); }, 1500);
             return;
         }
 
@@ -139,12 +129,14 @@ jQuery(function ($) {
                     $(document.body).trigger('wc_fragment_refresh');
                 }
             },
+            error: function() {
+                console.error('Wiwa: AJAX Error on qty update');
+            },
             complete: function() {
-                $itemRow.css('opacity', '1');
+                $itemRow.removeClass('wiwa-loading');
             }
         });
     }
-
 
     /* =========================================
        3. POPUP "ADD TO CART" INJECTION
@@ -152,14 +144,12 @@ jQuery(function ($) {
     function injectAddToCartButton() {
         var $bookingForm = $('.ovatb_booking_form, #booking-form'); 
         
-        // Only inject if it doesn't exist and we have a form
         if ($bookingForm.length && $('#btn-add-to-cart-soft').length === 0) {
             var $submitBtn = $bookingForm.find('button[type="submit"]');
             
             if ($submitBtn.length) {
-                // Style: Clean outline/secondary button next to primary
-                var btnHtml = '<button type="button" id="btn-add-to-cart-soft" class="btn btn-secondary" style="margin-left:10px; background-color:#fff; color:#333; border:1px solid #ccc; padding: 10px 20px; border-radius: 5px; cursor: pointer;">' + 
-                              '<span class="icon-cart"></span> Agregar al Carrito' + 
+                var btnHtml = '<button type="button" id="btn-add-to-cart-soft">' + 
+                              '<span>🛒</span> Agregar al Carrito' + 
                               '</button>';
                 
                 $submitBtn.after(btnHtml);
@@ -168,7 +158,6 @@ jQuery(function ($) {
         }
     }
 
-    // Timers to ensure injection happens after popup load
     injectAddToCartButton();
     $(window).on('jet-popup/show', function() {
         setTimeout(injectAddToCartButton, 500); 

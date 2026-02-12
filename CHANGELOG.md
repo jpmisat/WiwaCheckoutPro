@@ -1,5 +1,21 @@
 # Changelog
 
+## [2.9.9] - 2026-02-12
+
+### Changed
+
+- **CSS Full Rewrite**: Migrated cart card layout to CSS Grid for reliable alignment. Fixed sidebar positioning (`left: auto`). Ensured quantity pill buttons are always visible with `min-width: 110px`. Added `wiwa-loading` spinner animation class.
+- **PHP Cleanup**: Removed duplicate docblock comments. Enhanced `clean_cart_item_data` with case-insensitive matching and broader hidden key list (includes `numberof_guests`, `numberof_infant`, etc.).
+- **JS Improvements**: Switched from inline opacity to CSS class-based loading state. Added error handling to AJAX calls. Cleaned up "Agregar al Carrito" button injection.
+
+### Fixed
+
+- Sidebar cart quantity +/- buttons being cut off or invisible.
+- Main cart page not showing custom quantity pill — was displaying raw WC quantity input.
+- Redundant metadata ("Cantidad de viajeros", "numberof_guests") still leaking through.
+- "Actualizar Carrito" button now fully hidden via CSS.
+- Mobile responsive layout for cart cards.
+
 ## [2.9.8] - 2026-02-12
 
 ### Fixed
