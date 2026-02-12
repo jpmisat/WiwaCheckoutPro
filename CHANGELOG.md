@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.10.8] - 2026-02-12
+
+### Fixed
+
+- **Cart HTML Structure:** Simplified "Remove" link and "Pax Control" markup for cleaner styling.
+- **CSS Refinement:** Enforced "pill" shape for pax control using flexbox and strict overrides.
+- **Remove Link:** Changed to a subtle "×" with no text, styled for minimalism.
+- **Grid Stability:** Added min-width safety to details column to prevent layout breakage.
+
 ## [2.10.7] - 2026-02-12
 
 ### Fixed

@@ -97,12 +97,11 @@ do_action('woocommerce_before_cart');
                                         echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                             'woocommerce_cart_item_remove_link',
                                             sprintf(
-                                                '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="dashicons dashicons-trash"></span> %s</a>',
+                                                '<a href="%s" class="remove" aria-label="%s" data-product_id="%s" data-product_sku="%s" title="Eliminar">&times;</a>',
                                                 esc_url(wc_get_cart_remove_url($cart_item_key)),
                                                 esc_html__('Remove this item', 'woocommerce'),
                                                 esc_attr($product_id),
-                                                esc_attr($_product->get_sku()),
-                                                esc_html__('Eliminar', 'wiwa-checkout')
+                                                esc_attr($_product->get_sku())
                                             ),
                                             $cart_item_key
                                         );
@@ -118,21 +117,19 @@ do_action('woocommerce_before_cart');
                                     <?php if ($is_tour): ?>
                                         <div class="wiwa-pax-control">
                                             <div class="wiwa-qty-pill">
-                                                <button type="button" class="wiwa-qty-btn wiwa-qty-minus"><span class="icon">-</span></button>
-                                                <div class="wiwa-qty-value">
-                                                    <input 
-                                                        type="number" 
-                                                        class="wiwa-qty-input" 
-                                                        value="<?php echo esc_attr(max(1, $pax_total)); ?>"
-                                                        min="1"
-                                                        step="1"
-                                                        data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
-                                                        data-is-tour="1"
-                                                        data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
-                                                        readonly
-                                                    />
-                                                </div>
-                                                <button type="button" class="wiwa-qty-btn wiwa-qty-plus"><span class="icon">+</span></button>
+                                                <button type="button" class="wiwa-qty-btn wiwa-qty-minus">-</button>
+                                                <input 
+                                                    type="number" 
+                                                    class="wiwa-qty-input" 
+                                                    value="<?php echo esc_attr(max(1, $pax_total)); ?>"
+                                                    min="1"
+                                                    step="1"
+                                                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
+                                                    data-is-tour="1"
+                                                    data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
+                                                    readonly
+                                                />
+                                                <button type="button" class="wiwa-qty-btn wiwa-qty-plus">+</button>
                                             </div>
                                             <label class="wiwa-pax-label"><?php esc_html_e('VIAJEROS', 'wiwa-checkout'); ?></label>
                                             
