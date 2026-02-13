@@ -58,40 +58,65 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
         const widgetContent = document.querySelector('.widget_shopping_cart_content');
-        const productList = document.querySelector('.elementor-menu-cart__products');
         
-        // Select specific Elementor empty message class and generic WooCommerce one
+        // Elementor often renders a list (ul) for items.
+        // It might be empty, OR it might simply not exist if the cart is fully empty in some themes.
+        const productList = document.querySelector('.elementor-menu-cart__products') 
+                         || document.querySelector('.woocommerce-mini-cart');
+        
+        // Select message elements to hide
         const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message');
 
-        if (!productList || !widgetContent) return;
+        if (!widgetContent) return;
 
-        // Check if cart is empty (no children or empty text)
-        const hasProducts = productList.children.length > 0 && productList.innerText.trim() !== '';
+        // Determine if cart has items.
+        // Logic:
+        // 1. If productList exists and has children (LI items), it's NOT empty.
+        // 2. If productList exists but has no children, it IS empty.
+        // 3. If productList does NOT exist, use WC cookie or other signal? 
+        //    Actually, Mini-Cart template usually outputs the <p>empty</p> if empty, so list might be missing.
+        
+        let hasProducts = false;
+        
+        // Check for actual list items
+        const listItems = document.querySelectorAll('.woocommerce-mini-cart-item, .elementor-menu-cart__product');
+        if (listItems.length > 0) {
+            hasProducts = true;
+        }
 
-        if (!hasProducts) { // It is empty
+        // --- EMPTY STATE ---
+        if (!hasProducts) { 
             
-            // Aggressively hide default messages
+            // Hide default text
             emptyMessages.forEach(el => {
                 el.style.display = 'none';
                 el.style.setProperty('display', 'none', 'important');
             });
             
-            // Check if our branded message already exists
+            // Inject our branded content if missing
             if (!document.querySelector('.wiwa-empty-cart-content')) {
-                // Ensure we append to a visible container
+                // Clear out potential residual text nodes (often "No products in cart" raw text)
+                // specific to how some widgets render
+                 // Note: we append, we don't clear innerHTML to avoid breaking hidden inputs if any
                 widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
             }
+            
+            // Double check visibility of our content
+            const ours = document.querySelector('.wiwa-empty-cart-content');
+            if (ours) ours.style.display = 'flex';
+
         } else {
-            // Has products, remove our message
+            // --- POPULATED STATE ---
+            
+            // Remove branded empty state
             const ourMessage = document.querySelector('.wiwa-empty-cart-content');
             if (ourMessage) {
                 ourMessage.remove();
             }
             
-            // Hide default messages (logic usually handles this, but we ensure it)
+            // Ensure default empty messages stay hidden (just in case)
             emptyMessages.forEach(el => {
                 el.style.display = 'none';
-                el.style.setProperty('display', 'none', 'important');
             });
         }
     };

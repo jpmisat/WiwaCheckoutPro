@@ -609,138 +609,137 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 
 /* Meta Data */
 .wiwa-mini-cart-meta {
-    font-size: 11px;
+    font-size: 13px; /* Slightly larger text per request for clarity */
     color: var(--wiwa-text-gray);
-    margin-bottom: 6px;
-    line-height: 1.4;
+    margin-bottom: 15px; /* More breathing room */
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 6px;
 }
 .wiwa-mini-cart-meta .meta-row {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 8px; /* Better icon spacing */
 }
 .wiwa-mini-cart-meta .material-symbols-outlined {
-    font-size: 16px;
-    width: 16px;
-    height: 16px;
+    font-size: 18px; /* Larger icons */
+    width: 18px;
+    height: 18px;
     color: #9CA3AF;
-    /* Ensure font loads if not global, but usually it is */
     display: inline-block;
     line-height: 1;
 }
 
-/* Footer Row: Stepper | Price | Remove */
+/* Footer Row */
 .wiwa-mini-cart-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px; /* Breathing room */
+    margin-top: auto;
+    width: 100%;
+}
+
+/* Footer Left: Stepper + Price */
+.wiwa-footer-left {
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
 /* Stepper (Pill Shape) */
 .wiwa-mini-cart-stepper .wiwa-mini-cart-qty {
-    height: 32px; /* Slightly smaller than previous iteration, better proportion */
-    width: 90px;
-    border-radius: 999px; /* Pill */
-    border: 1px solid var(--wiwa-border); /* Subtle border */
-    background: #FAFAFA; /* Off-white bg */
-    padding: 2px;
+    height: 38px; /* Taller pill for mobile touch */
+    width: 110px; /* Wider for clarity */
+    border-radius: 999px;
+    border: 1px solid var(--wiwa-border);
+    background: #ffffff;
+    padding: 3px;
     display: flex;
     align-items: center;
     justify-content: space-between;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 .wiwa-mini-cart-stepper .wiwa-qty-btn {
-    width: 26px;
-    height: 26px;
-    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
     color: var(--wiwa-text-gray);
     border-radius: 50%;
     margin: 0;
-}
-.wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
-    background: #ffffff;
-    color: var(--wiwa-primary);
-    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
-}
-.wiwa-mini-cart-stepper .wiwa-qty-input {
-    font-size: 14px;
-    font-weight: 700;
-    color: var(--wiwa-primary);
-}
-/* Static pill for single item */
-.wiwa-stepper-pill.disabled {
+    display: flex;
+    align-items: center;
     justify-content: center;
     background: #F3F4F6;
-    border-color: transparent;
 }
-.wiwa-qty-static {
-    font-size: 14px;
+.wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
+    background: var(--wiwa-primary);
+    color: #ffffff;
+}
+.wiwa-mini-cart-stepper .wiwa-qty-input {
+    font-size: 15px;
     font-weight: 700;
-    color: var(--wiwa-text-gray);
+    color: var(--wiwa-text);
 }
 
 /* Price */
 .wiwa-mini-cart-price {
     font-weight: 800;
     color: var(--wiwa-text);
-    font-size: 14px;
-    margin-left: auto;
-    margin-right: 10px;
+    font-size: 15px;
 }
 
-/* Remove Button (Icon style) */
+/* Remove Button (Clean) */
 .wiwa-mini-cart-footer .remove {
     position: static !important;
-    width: 24px;
-    height: 24px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
     background: transparent !important;
-    color: #9CA3AF !important;
-    border: none !important; /* Cleaner, no border unless hover */
+    color: #ef4444 !important; /* Standard red */
+    border: 1px solid transparent !important;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
-    font-size: 18px;
-    line-height: 1;
     transition: all 0.2s;
 }
 .wiwa-mini-cart-footer .remove:hover {
-    color: #DC2626 !important;
-    background: #FEE2E2 !important;
+    background: #FEF2F2 !important;
+    border-color: #FECACA !important;
+}
+.wiwa-mini-cart-footer .remove .material-symbols-outlined {
+    font-size: 20px;
 }
 
 /* Bottom Section */
 .wiwa-mini-cart-bottom {
-    border-top: 1px solid var(--wiwa-border-light);
-    padding-top: 16px;
-    margin-top: 16px;
+    border-top: 1px solid #E5E7EB;
+    padding-top: 20px;
+    margin-top: 15px;
 }
 
-/* Subtotal Box - Subtle & Elegant per request */
+/* Subtotal Box (Reduced height & Elegant) */
 .wiwa-mini-cart-subtotal {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 20px;
-    padding: 12px 16px; /* Less height */
-    background: #F9FAFB;
-    border-radius: 8px; /* Less round */
-    border: none; /* Cleaner */
+    padding: 10px 0; /* Minimal vertical padding, remove background box if desired, or keep light */
+    border-bottom: 1px dashed #E5E7EB; /* Subtle divider instead of box */
+    background: transparent; /* Remove box bg per request "menos altura" implies cleaner */
+    border-radius: 0;
+    border-top: none;
+    border-left: none;
+    border-right: none;
 }
 .wiwa-mini-cart-subtotal span:first-child {
-    font-size: 14px;
+    font-size: 15px;
     color: var(--wiwa-text-gray);
     font-weight: 500;
 }
 .wiwa-subtotal-amount {
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--wiwa-text);
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--wiwa-primary);
 }
 
 /* Buttons */
