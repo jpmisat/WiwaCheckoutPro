@@ -37,90 +37,58 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
-        // console.log('[Wiwa] checkEmptyState running'); 
-        const widgetContent = document.querySelector('.widget_shopping_cart_content');
+        // Find the container - support multiple common selectors
+        const widgetContent = document.querySelector('.widget_shopping_cart_content') || document.querySelector('.elementor-menu-cart__container');
         
-        // Elementor often renders a list (ul) for items.
-        // It might be empty, OR it might simply not exist if the cart is fully empty in some themes.
-        const productList = document.querySelector('.elementor-menu-cart__products') 
-                         || document.querySelector('.woocommerce-mini-cart');
-        
-        // Select message elements to hide
-        const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message');
-
         if (!widgetContent) {
-            // console.warn('[Wiwa] .widget_shopping_cart_content not found');
+            // console.warn('[Wiwa] Cart container not found.');
             return;
         }
 
-        // Determine if cart has items.
-        // Logic:
-        // 1. If productList exists and has children (LI items), it's NOT empty.
-        // 2. If productList exists but has no children, it IS empty.
-        // 3. If productList does NOT exist, use WC cookie or other signal? 
-        //    Actually, Mini-Cart template usually outputs the <p>empty</p> if empty, so list might be missing.
-        
-        let hasProducts = false;
-        
-        // Check for actual list items
+        // List items
         const listItems = document.querySelectorAll('.woocommerce-mini-cart-item, .elementor-menu-cart__product');
-        
-        // Also check if the generic list container is effectively empty (contains only text nodes or whitespace)
-        // because sometimes WC outputs <ul class="... mini-cart"></ul> without items.
-        // If listItems found, definitely not empty.
-        if (listItems.length > 0) {
-            hasProducts = true;
-        } else if (productList && productList.children.length > 0) {
-             // Fallback: if there are children but not matched by our selector?
-             // Usually implies not empty, but let's be strict.
-             // If children are just <p>empty</p>, then it IS empty.
-             const emptyP = productList.querySelector('.woocommerce-mini-cart__empty-message, .elementor-menu-cart__empty-message');
-             if (!emptyP) {
-                 hasProducts = true;
-             }
-        }
-        
-        // console.log('[Wiwa] hasProducts:', hasProducts);
+        let hasProducts = listItems.length > 0;
 
-        // --- EMPTY STATE ---
+        // Select default empty messages to hide
+        const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message, .woocommerce-mini-cart__empty-message');
+
+        // --- VISUAL LOGIC ---
         if (!hasProducts) { 
+            // 1. Hide default empty text
+            emptyMessages.forEach(el => el.style.display = 'none');
             
-            // Hide default text
-            emptyMessages.forEach(el => {
-                el.style.display = 'none';
-                el.style.setProperty('display', 'none', 'important');
-            });
+            // 2. Check if our branded content is already there
+            let ourContent = document.querySelector('.wiwa-empty-cart-content');
             
-            // Inject our branded content if missing
-            // Force inject even if widgetContent looks empty/cleared by WC
-            if (!document.querySelector('.wiwa-empty-cart-content')) {
-                // console.log('[Wiwa] Injecting empty cart HTML');
-                // Clear out potential residual text nodes (often "No products in cart" raw text)
-                // specific to how some widgets render. Be aggressive if it looks like just text.
-                 // Note: we append, we don't clear innerHTML completely to avoid breaking hidden inputs if any
-                 // BUT if it's acting weird, we might need to check children.
-                widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
+            if (!ourContent) {
+                 // Inject Branded HTML
+                 widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
+                 ourContent = document.querySelector('.wiwa-empty-cart-content');
             }
             
-            // Double check visibility of our content
-            const ours = document.querySelector('.wiwa-empty-cart-content');
-            if (ours) ours.style.display = 'flex';
+            // 3. Force visibility
+            if (ourContent) {
+                ourContent.style.display = 'flex';
+                // Ensure parent doesn't hide it
+                widgetContent.style.display = 'block';
+                widgetContent.style.opacity = '1';
+                widgetContent.style.height = 'auto';
+            }
 
         } else {
             // --- POPULATED STATE ---
-            
             // Remove branded empty state
             const ourMessage = document.querySelector('.wiwa-empty-cart-content');
-            if (ourMessage) {
-                ourMessage.remove();
-            }
+            if (ourMessage) ourMessage.remove();
             
-            // Ensure default empty messages stay hidden (just in case)
-            emptyMessages.forEach(el => {
-                el.style.display = 'none';
-            });
+            // Ensure container is visible
+            widgetContent.style.display = '';
+            widgetContent.style.height = '';
         }
     };
+    
+    // Polling fallback to ensure empty state persists (fixes rare race conditions)
+    setInterval(checkEmptyState, 2000);
 
     // Initial check
     checkEmptyState();

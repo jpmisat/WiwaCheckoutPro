@@ -88,7 +88,9 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
-                                        '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s"><span class="material-symbols-rounded">close</span></a>',
+                                        '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                        </a>',
                                         esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
                                         esc_attr__( 'Remove this item', 'woocommerce' ),
                                         esc_attr( $product_id ),
@@ -136,11 +138,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 <!-- Stepper -->
                                 <div class="wiwa-qty-stepper">
                                     <div class="wiwa-stepper-pill">
-                                        <button type="button" class="wiwa-qty-minus">-</button>
-                                        <?php
-                                        // We use a custom input that hooks into wiwa-mini-cart.js
-                                        // Note: For tours, we don't use standard WC quantity input alone.
-                                        ?>
+                                        <button type="button" class="wiwa-qty-minus">−</button>
                                         <input type="number" 
                                             class="wiwa-qty-input" 
                                             value="<?php echo esc_attr( $qty_display_value ); ?>" 
@@ -157,7 +155,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                                 <!-- Price -->
                                 <div class="wiwa-mini-cart-price">
-                                    <?php echo apply_filters( 'woocommerce_widget_cart_item_quantity', '<span class="quantity">' . sprintf( '%s', $product_price ) . '</span>', $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                    <?php echo sprintf( '%s', $product_price ); ?>
                                 </div>
                             </div>
                         </div>
