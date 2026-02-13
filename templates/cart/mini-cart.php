@@ -62,15 +62,34 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                         <!-- 2. Content -->
                         <div class="wiwa-mini-cart-content">
-                            <h4 class="wiwa-mini-cart-title">
-                                <?php if ( ! empty( $product_permalink ) ) : ?>
-                                    <a href="<?php echo esc_url( $product_permalink ); ?>"><?php echo wp_kses_post( $product_name ); ?></a>
-                                <?php else : ?>
-                                    <?php echo wp_kses_post( $product_name ); ?>
-                                <?php endif; ?>
-                            </h4>
+                            <!-- 1. Top Section: Title & Remove -->
+                            <div class="wiwa-mini-cart-header">
+                                <h4 class="wiwa-mini-cart-title">
+                                    <?php if ( ! empty( $product_permalink ) ) : ?>
+                                        <a href="<?php echo esc_url( $product_permalink ); ?>"><?php echo wp_kses_post( $product_name ); ?></a>
+                                    <?php else : ?>
+                                        <?php echo wp_kses_post( $product_name ); ?>
+                                    <?php endif; ?>
+                                </h4>
+                                
+                                <!-- Absolute Remove Button -->
+                                <?php
+                                echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+                                    'woocommerce_cart_item_remove_link',
+                                    sprintf(
+                                        '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s"><span class="material-symbols-outlined">close</span></a>',
+                                        esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
+                                        esc_attr__( 'Remove this item', 'woocommerce' ),
+                                        esc_attr( $product_id ),
+                                        esc_attr( $cart_item_key ),
+                                        esc_attr( $_product->get_sku() )
+                                    ),
+                                    $cart_item_key
+                                );
+                                ?>
+                            </div>
 
-                            <!-- Detailed Meta Data -->
+                            <!-- 2. Meta Data (Compact) -->
                             <div class="wiwa-mini-cart-meta">
                                 <?php if (!empty($tour_meta['checkin'])) : ?>
                                 <div class="meta-row">
@@ -80,68 +99,52 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 <?php endif; ?>
 
                                 <?php if (!empty($tour_meta['duration_label'])) : ?>
+                                <span class="meta-sep">•</span>
                                 <div class="meta-row">
                                     <span class="material-symbols-outlined">schedule</span>
                                     <span><?php echo esc_html($tour_meta['duration_label']); ?></span>
                                 </div>
                                 <?php endif; ?>
-
+                            </div>
+                            
+                            <?php if ($pax_count > 0) : ?>
+                            <div class="wiwa-mini-cart-meta-row-2">
                                 <div class="meta-row">
                                     <span class="material-symbols-outlined">group</span>
                                     <span><?php echo esc_html($pax_count); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></span>
                                 </div>
                             </div>
+                            <?php endif; ?>
 
-                            <!-- Footer: Quantity | Price | Remove -->
+                            <!-- 3. Footer: Stepper (Left) & Price (Right) -->
                             <div class="wiwa-mini-cart-footer">
                                 
-                                <!-- Group: Stepper + Price -->
-                                <div class="wiwa-footer-left">
-                                    <!-- Quantity Stepper -->
-                                    <div class="wiwa-mini-cart-stepper">
-                                        <?php if ($_product->is_sold_individually()) : ?>
-                                            <div class="wiwa-stepper-pill disabled">
-                                                <span class="wiwa-qty-static">1</span>
-                                            </div>
-                                        <?php else : ?>
-                                            <div class="wiwa-stepper-pill">
-                                                <button type="button" class="wiwa-qty-minus" aria-label="<?php esc_attr_e('Decrease quantity', 'wiwa-checkout'); ?>">−</button>
-                                                <input type="number" 
-                                                    class="wiwa-qty-input" 
-                                                    value="<?php echo esc_attr($qty_valid_value); ?>" 
-                                                    min="1" 
-                                                    step="1"
-                                                    data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
-                                                    data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
-                                                    data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
-                                                    readonly />
-                                                <button type="button" class="wiwa-qty-plus" aria-label="<?php esc_attr_e('Increase quantity', 'wiwa-checkout'); ?>">+</button>
-                                            </div>
-                                        <?php endif; ?>
-                                    </div>
-
-                                    <!-- Price -->
-                                    <div class="wiwa-mini-cart-price">
-                                        <?php echo WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ); ?>
-                                    </div>
+                                <!-- Quantity Stepper -->
+                                <div class="wiwa-mini-cart-stepper">
+                                    <?php if ($_product->is_sold_individually()) : ?>
+                                        <div class="wiwa-stepper-pill disabled">
+                                            <span class="wiwa-qty-static">1</span>
+                                        </div>
+                                    <?php else : ?>
+                                        <div class="wiwa-stepper-pill">
+                                            <button type="button" class="wiwa-qty-minus" aria-label="<?php esc_attr_e('Decrease quantity', 'wiwa-checkout'); ?>">−</button>
+                                            <input type="number" 
+                                                class="wiwa-qty-input" 
+                                                value="<?php echo esc_attr($qty_valid_value); ?>" 
+                                                min="1" 
+                                                step="1"
+                                                data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
+                                                data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
+                                                data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
+                                                readonly />
+                                            <button type="button" class="wiwa-qty-plus" aria-label="<?php esc_attr_e('Increase quantity', 'wiwa-checkout'); ?>">+</button>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
 
-                                <!-- Remove Actions -->
-                                <div class="wiwa-footer-right">
-                                    <?php
-                                    echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-                                        'woocommerce_cart_item_remove_link',
-                                        sprintf(
-                                            '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s"><span class="material-symbols-outlined">close</span></a>',
-                                            esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
-                                            esc_attr__( 'Remove this item', 'woocommerce' ),
-                                            esc_attr( $product_id ),
-                                            esc_attr( $cart_item_key ),
-                                            esc_attr( $_product->get_sku() )
-                                        ),
-                                        $cart_item_key
-                                    );
-                                    ?>
+                                <!-- Price -->
+                                <div class="wiwa-mini-cart-price">
+                                    <?php echo WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ); ?>
                                 </div>
                             </div>
                         </div>
