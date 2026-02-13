@@ -12,6 +12,13 @@ class Wiwa_Checkout_Handler
         add_shortcode('wiwa_checkout', [$this, 'render_checkout']);
         add_action('wp_enqueue_scripts', [$this, 'enqueue_assets']);
 
+        // AJAX: Save Step 1 Data
+        add_action('wp_ajax_wiwa_update_order_data', [$this, 'handle_checkout_step_1']);
+        add_action('wp_ajax_nopriv_wiwa_update_order_data', [$this, 'handle_checkout_step_1']);
+
+        // Hook to save session data to Valid Order
+        add_action('woocommerce_checkout_create_order', [$this, 'save_custom_data_to_order'], 10, 2);
+
         // Override standard checkout when option is enabled
         if (get_option('wiwa_checkout_enabled')) {
             add_filter('the_content', [$this, 'replace_checkout_content']);
@@ -19,6 +26,54 @@ class Wiwa_Checkout_Handler
 
             // Customize fields classes based on configuration
             add_filter('woocommerce_checkout_fields', [$this, 'customize_checkout_fields'], 99);
+        }
+    }
+
+    /**
+     * AJAX Handler: Save Checkout Step 1 Data to Session
+     */
+    public function handle_checkout_step_1()
+    {
+        check_ajax_referer('wiwa_checkout_nonce', 'nonce');
+
+        $data = $_POST;
+        $guest_data = [];
+
+        // Save standard billing fields to WC Session customer
+        // This ensures they pre-fill if user reloads
+        if (!empty($data['billing_first_name'])) WC()->customer->set_billing_first_name(sanitize_text_field($data['billing_first_name']));
+        if (!empty($data['billing_last_name']))  WC()->customer->set_billing_last_name(sanitize_text_field($data['billing_last_name']));
+        if (!empty($data['billing_email']))      WC()->customer->set_billing_email(sanitize_email($data['billing_email']));
+        if (!empty($data['billing_phone']))      WC()->customer->set_billing_phone(sanitize_text_field($data['billing_phone']));
+        if (!empty($data['billing_country']))    WC()->customer->set_billing_country(sanitize_text_field($data['billing_country']));
+        
+        // Save Custom Guest Data to Session
+        // We look for any keys starting with 'guest_' or inside an array
+        // Assuming the form sends data like guest[0][name], etc OR flat keys.
+        // Based on previous context, use 'wiwa_guest_data' session key.
+        
+        // Store the specific POST data relevant to us
+        WC()->session->set('wiwa_checkout_data', $data);
+        WC()->session->save_data();
+
+        wp_send_json_success(['message' => 'Datos guardados']);
+    }
+
+    /**
+     * Save Session Data to Order Meta
+     */
+    public function save_custom_data_to_order($order, $data)
+    {
+        $session_data = WC()->session->get('wiwa_checkout_data');
+        
+        if ($session_data) {
+            // Save raw data for debugging/reference
+            $order->update_meta_data('_wiwa_checkout_raw', $session_data);
+
+            // Process specific fields if needed
+            // Example: Map 'guest_details' to line items? 
+            // Usually OvaTourBooking handles its own meta if fields are named correctly.
+            // But if we have custom fields, we save them here.
         }
     }
 

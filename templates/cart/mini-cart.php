@@ -11,6 +11,8 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
 <?php if ( ! WC()->cart->is_empty() ) : ?>
 
+    <h3 class="wiwa-mini-cart-main-title"><?php esc_html_e( 'Tus Tours', 'wiwa-tour-checkout' ); ?></h3>
+
     <ul class="woocommerce-mini-cart cart_list product_list_widget <?php echo esc_attr( $args['list_class'] ); ?>">
         <?php
         do_action( 'woocommerce_before_mini_cart_contents' );
