@@ -842,7 +842,29 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 }
 
 /* Hide default buttons block */
+/* Hide default buttons block */
 .elementor-menu-cart__footer-buttons {
     display: none !important;
+}
+
+/* Force List Style None for Cart Items - FIX FOR BULLETS */
+.widget_shopping_cart_content ul,
+.woocommerce-mini-cart,
+.elementor-menu-cart__products {
+    list-style: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
+}
+.widget_shopping_cart_content li,
+.woocommerce-mini-cart-item,
+.elementor-menu-cart__product {
+    list-style-type: none !important;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+}
+.widget_shopping_cart_content li::before,
+.woocommerce-mini-cart-item::before {
+    display: none !important;
+    content: none !important;
 }
 

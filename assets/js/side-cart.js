@@ -31,30 +31,6 @@ document.addEventListener('DOMContentLoaded', () => {
         </div>
     `;
 
-    // Observer to detect when the cart is opened or updated
-    const observeCart = () => {
-        const cartContainer = document.querySelector('.elementor-menu-cart__container');
-        
-        if (!cartContainer) {
-            // Retry if not loaded yet (Elementor sometimes loads late)
-            setTimeout(observeCart, 1000);
-            return;
-        }
-
-        const observer = new MutationObserver((mutations) => {
-            checkEmptyState();
-        });
-
-        observer.observe(cartContainer, {
-            childList: true,
-            subtree: true,
-            attributes: true // Watch for class changes (showing/hiding)
-        });
-        
-        // Initial check
-        checkEmptyState();
-    };
-
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
         const widgetContent = document.querySelector('.widget_shopping_cart_content');
@@ -134,20 +110,20 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     };
 
-    // Start observing
-    observeCart();
+    // Initial check
+    checkEmptyState();
 
-    // Hook into WooCommerce fragments refresh
-    // Note: WC triggers events on document.body using jQuery. 
-    // We can listen to it via jQuery if available, or try native custom event integration.
-    // For safety with WC, we'll use a lightweight jQuery listener if available, otherwise fallback.
-    // Hook into WooCommerce fragments refresh
-    // We rely on MutationObserver (above) to detect changes, so we don't need jQuery here.
-    // However, if we want to be extra safe with native events:
-    document.body.addEventListener('wc_fragments_refreshed', () => { // Some modern WC themes dispatch native events too
-         setTimeout(checkEmptyState, 50);
-    });
+    // Hook into WooCommerce fragments refresh and other relevant events
+    // We remove the MutationObserver here to prevents infinite loops if our DOM changes trigger it.
+    // WC events are the standard and safe way to react to cart changes.
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function() {
+            // Small delay to allow WC to finish its DOM writes
+            setTimeout(checkEmptyState, 50);
+        });
+    }
 
-    // Also run on window resize/load to be safe
+    // Native fallback events if needed (though WC mostly uses jQuery events)
     window.addEventListener('load', checkEmptyState);
+    window.addEventListener('resize', checkEmptyState);
 });
