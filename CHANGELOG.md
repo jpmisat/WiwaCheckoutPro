@@ -1,6 +1,12 @@
 # Changelog
 
-## [2.11.7] - 2024-05-24
+## [2.11.8] - 2024-05-24
+
+### Fixed
+
+- **Core:** Resolved fatal error caused by redeclaration of `wiwa_extract_tour_meta` function.
+
+## [2.11.7]
 
 ### Improved
 
