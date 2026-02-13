@@ -37,6 +37,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
+        // console.log('[Wiwa] checkEmptyState running'); 
         const widgetContent = document.querySelector('.widget_shopping_cart_content');
         
         // Elementor often renders a list (ul) for items.
@@ -47,7 +48,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // Select message elements to hide
         const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message');
 
-        if (!widgetContent) return;
+        if (!widgetContent) {
+            // console.warn('[Wiwa] .widget_shopping_cart_content not found');
+            return;
+        }
 
         // Determine if cart has items.
         // Logic:
@@ -75,6 +79,8 @@ document.addEventListener('DOMContentLoaded', () => {
                  hasProducts = true;
              }
         }
+        
+        // console.log('[Wiwa] hasProducts:', hasProducts);
 
         // --- EMPTY STATE ---
         if (!hasProducts) { 
@@ -88,6 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
             // Inject our branded content if missing
             // Force inject even if widgetContent looks empty/cleared by WC
             if (!document.querySelector('.wiwa-empty-cart-content')) {
+                // console.log('[Wiwa] Injecting empty cart HTML');
                 // Clear out potential residual text nodes (often "No products in cart" raw text)
                 // specific to how some widgets render. Be aggressive if it looks like just text.
                  // Note: we append, we don't clear innerHTML completely to avoid breaking hidden inputs if any
