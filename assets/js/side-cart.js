@@ -38,48 +38,56 @@ document.addEventListener('DOMContentLoaded', () => {
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
         // Find the container - support multiple common selectors
+        // We prefer the standard WC widget content, but Elementor's might be different
         const widgetContent = document.querySelector('.widget_shopping_cart_content') || document.querySelector('.elementor-menu-cart__container');
         
-        if (!widgetContent) {
-            // console.warn('[Wiwa] Cart container not found.');
-            return;
-        }
+        if (!widgetContent) return;
 
-        // List items
-        const listItems = document.querySelectorAll('.woocommerce-mini-cart-item, .elementor-menu-cart__product');
-        let hasProducts = listItems.length > 0;
+        // List items - strict check for VISIBLE items
+        // Sometimes WC leaves empty LIs or hidden ones
+        const listItems = widgetContent.querySelectorAll('li.woocommerce-mini-cart-item, li.mini_cart_item, .elementor-menu-cart__product');
+        const hasProducts = listItems.length > 0;
 
         // Select default empty messages to hide
-        const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message, .woocommerce-mini-cart__empty-message');
+        const emptyMessages = widgetContent.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message, .total, .woocommerce-mini-cart__buttons');
 
         // --- VISUAL LOGIC ---
         if (!hasProducts) { 
-            // 1. Hide default empty text
+            // 1. Hide default empty text AND any leftover standard WC elements (buttons/totals)
             emptyMessages.forEach(el => el.style.display = 'none');
             
             // 2. Check if our branded content is already there
-            let ourContent = document.querySelector('.wiwa-empty-cart-content');
+            let ourContent = widgetContent.querySelector('.wiwa-empty-cart-content');
             
             if (!ourContent) {
                  // Inject Branded HTML
                  widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
-                 ourContent = document.querySelector('.wiwa-empty-cart-content');
+                 ourContent = widgetContent.querySelector('.wiwa-empty-cart-content');
             }
             
             // 3. Force visibility
             if (ourContent) {
                 ourContent.style.display = 'flex';
                 // Ensure parent doesn't hide it
+                // Elementor sometimes hides the container if it thinks it's empty
                 widgetContent.style.display = 'block';
-                widgetContent.style.opacity = '1';
                 widgetContent.style.height = 'auto';
+                widgetContent.style.opacity = '1';
+                // Force parent wrapper visibility if needed
+                const wrapper = widgetContent.closest('.elementor-menu-cart__wrapper');
+                if (wrapper) wrapper.style.display = 'block';
             }
 
         } else {
             // --- POPULATED STATE ---
             // Remove branded empty state
-            const ourMessage = document.querySelector('.wiwa-empty-cart-content');
+            const ourMessage = widgetContent.querySelector('.wiwa-empty-cart-content');
             if (ourMessage) ourMessage.remove();
+            
+            // Revert display of standard elements? 
+            // Actually, WC fragments will re-render them fresh, so we don't need to un-hide manual hides usually,
+            // but if we hid them via JS on a previous loop, we might need to reset.
+            // However, since "hasProducts" is true, it means WC probably just reloaded the HTML.
             
             // Ensure container is visible
             widgetContent.style.display = '';
