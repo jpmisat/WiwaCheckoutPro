@@ -477,12 +477,24 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     border-radius: 24px;
     padding: 60px 40px;
     border: 1px solid #E5E7EB;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
 }
-.wiwa-empty-icon {
+.wiwa-empty-icon-wrapper {
     margin-bottom: 24px;
     display: flex;
     justify-content: center;
     align-items: center;
+    width: 100%;
+}
+.wiwa-empty-decorations {
+    margin-top: 32px;
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    opacity: 0.7;
 }
 .wiwa-empty-title {
     font-size: 28px;

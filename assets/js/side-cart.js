@@ -15,11 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
     // The branded empty cart HTML structure
     const emptyCartHTML = `
         <div class="wiwa-empty-cart-content">
-            <div class="wiwa-empty-icon">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
-                    <path d="M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM20 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
-                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"/>
-                </svg>
+            <div class="wiwa-empty-icon-wrapper">
+                <span class="material-symbols-rounded" style="font-size: 64px; color: #d1d5db;">shopping_cart</span>
             </div>
             <h3 class="wiwa-empty-title">${config.emptyText}</h3>
             <p class="wiwa-empty-description">${config.emptyDesc}</p>
@@ -27,6 +24,13 @@ document.addEventListener('DOMContentLoaded', () => {
                 <a href="${config.homeUrl}" class="wiwa-empty-cart-btn">
                     ${config.btnText}
                 </a>
+            </div>
+            <div class="wiwa-empty-decorations">
+                 <!-- Simple decorative icons or keep them as background via CSS if preferred, 
+                      but user asked for 'icons below'. We'll add a small row of them. -->
+                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">palm_tree</span>
+                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">backpack</span>
+                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">camera_alt</span>
             </div>
         </div>
     `;
