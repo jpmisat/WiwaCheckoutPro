@@ -1,15 +1,15 @@
 /**
- * Wiwa Tour Frontend Script
+ * Wiwa Tour Frontend Script (Vanilla JS)
  * Hides the guest info form in Tour Booking popups
  * This is needed because Tour Booking uses inline styles that override CSS
  */
-(function ($) {
+(function () {
     'use strict';
 
     // Function to hide guest info elements (handles inline styles)
     function hideGuestInfo() {
         // Target specific classes used by Tour Booking
-        var selectors = [
+        const selectors = [
             '.ovatb-guest-info',
             '.guest-info-heading',
             '.guest-info-accordion',
@@ -18,34 +18,39 @@
             '.guest-info-field'
         ];
 
-        selectors.forEach(function (selector) {
-            $(selector).each(function () {
+        selectors.forEach(selector => {
+            const elements = document.querySelectorAll(selector);
+            elements.forEach(el => {
                 // Force hide by setting inline style
-                $(this).attr('style', 'display: none !important; visibility: hidden !important; height: 0 !important; max-height: 0 !important; overflow: hidden !important; opacity: 0 !important;');
+                el.style.cssText = 'display: none !important; visibility: hidden !important; height: 0 !important; max-height: 0 !important; overflow: hidden !important; opacity: 0 !important;';
             });
         });
     }
 
     // Run on document ready
-    $(document).ready(function () {
+    document.addEventListener('DOMContentLoaded', () => {
         hideGuestInfo();
 
-        // Also run when popup opens (Tour Booking uses AJAX)
-        $(document).on('click', '.ovatb-btn-booking, .ova-booking-btn, .book-now-btn, [data-toggle="modal"]', function () {
-            setTimeout(hideGuestInfo, 100);
-            setTimeout(hideGuestInfo, 300);
-            setTimeout(hideGuestInfo, 500);
-            setTimeout(hideGuestInfo, 1000);
+        // Also run when popup triggers generic clicks (delegation)
+        document.addEventListener('click', (e) => {
+            if (e.target.matches('.ovatb-btn-booking, .ova-booking-btn, .book-now-btn, [data-toggle="modal"]') || e.target.closest('.ovatb-btn-booking, .ova-booking-btn, .book-now-btn, [data-toggle="modal"]')) {
+                setTimeout(hideGuestInfo, 100);
+                setTimeout(hideGuestInfo, 300);
+                setTimeout(hideGuestInfo, 500);
+                setTimeout(hideGuestInfo, 1000);
+            }
         });
 
         // MutationObserver to catch dynamically added elements
         if (typeof MutationObserver !== 'undefined') {
-            var observer = new MutationObserver(function (mutations) {
-                mutations.forEach(function (mutation) {
+            const observer = new MutationObserver((mutations) => {
+                let shouldHide = false;
+                mutations.forEach((mutation) => {
                     if (mutation.addedNodes.length) {
-                        hideGuestInfo();
+                        shouldHide = true;
                     }
                 });
+                if (shouldHide) hideGuestInfo();
             });
 
             // Observe body for changes
@@ -54,14 +59,16 @@
                 subtree: true
             });
         }
-
-        // Also run on any AJAX complete
-        $(document).ajaxComplete(function () {
-            hideGuestInfo();
-        });
+        
+        // Listen to jQuery AJAX complete events if jQuery is present (common in WP)
+        if (typeof jQuery !== 'undefined') {
+             jQuery(document).ajaxComplete(() => {
+                 hideGuestInfo();
+             });
+        }
     });
 
-    // Run immediately (before DOM ready)
+    // Run immediately (before DOM ready, just in case)
     hideGuestInfo();
 
-})(jQuery);
+})();

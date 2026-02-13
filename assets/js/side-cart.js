@@ -1,18 +1,18 @@
 /**
- * Wiwa Side Cart Customizer
+ * Wiwa Side Cart Customizer (Vanilla JS)
  * Detects Elementor Menu Cart and injects branded empty state
  */
-jQuery(document).ready(function($) {
+document.addEventListener('DOMContentLoaded', () => {
     
     // Configuration
-    const config = wiwaSideCart || {
+    const config = window.wiwaSideCart || {
         homeUrl: '/',
         emptyText: 'Tu carrito está vacío',
         emptyDesc: 'Parece que aún no has agregado ningún tour.',
         btnText: 'Explorar Tours'
     };
 
-    // The branded empty cart HTML structure (Compact version)
+    // The branded empty cart HTML structure
     const emptyCartHTML = `
         <div class="wiwa-side-cart-empty">
             <div class="wiwa-empty-icon">
@@ -55,31 +55,42 @@ jQuery(document).ready(function($) {
 
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
-        const $widgetContent = $('.widget_shopping_cart_content');
-        const $productList = $('.elementor-menu-cart__products');
+        const widgetContent = document.querySelector('.widget_shopping_cart_content');
+        const productList = document.querySelector('.elementor-menu-cart__products');
+        
         // Select specific Elementor empty message class and generic WooCommerce one
-        const $emptyMessage = $('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message'); 
+        const emptyMessages = document.querySelectorAll('.elementor-menu-cart__empty-message, .woocommerce-mini-cart__empty-message');
 
-        // Check if cart is empty
-        const hasProducts = $productList.children().length > 0 && !$productList.is(':empty');
-        const isHidden = $productList.is(':hidden');
+        if (!productList || !widgetContent) return;
+
+        // Check if cart is empty (no children or empty text)
+        const hasProducts = productList.children.length > 0 && productList.innerText.trim() !== '';
 
         if (!hasProducts) { // It is empty
             
             // Aggressively hide default messages
-            $emptyMessage.css('display', 'none !important').hide();
+            emptyMessages.forEach(el => {
+                el.style.display = 'none';
+                el.style.setProperty('display', 'none', 'important');
+            });
             
             // Check if our branded message already exists
-            if ($('.wiwa-side-cart-empty').length === 0) {
+            if (!document.querySelector('.wiwa-side-cart-empty')) {
                 // Ensure we append to a visible container
-                $widgetContent.append(emptyCartHTML);
+                widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
             }
         } else {
             // Has products, remove our message
-            $('.wiwa-side-cart-empty').remove();
+            const ourMessage = document.querySelector('.wiwa-side-cart-empty');
+            if (ourMessage) {
+                ourMessage.remove();
+            }
             
-            // Don't necessarily show $emptyMessage, logic handles itself usually
-            $emptyMessage.css('display', 'none !important').hide(); 
+            // Hide default messages (logic usually handles this, but we ensure it)
+            emptyMessages.forEach(el => {
+                el.style.display = 'none';
+                el.style.setProperty('display', 'none', 'important');
+            });
         }
     };
 
@@ -87,7 +98,12 @@ jQuery(document).ready(function($) {
     observeCart();
 
     // Hook into WooCommerce fragments refresh
-    $(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function() {
-        setTimeout(checkEmptyState, 100);
-    });
+    // Note: WC triggers events on document.body using jQuery. 
+    // We can listen to it via jQuery if available, or try native custom event integration.
+    // For safety with WC, we'll use a lightweight jQuery listener if available, otherwise fallback.
+    if (typeof jQuery !== 'undefined') {
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function() {
+            setTimeout(checkEmptyState, 100);
+        });
+    }
 });

@@ -1,5 +1,17 @@
 # Changelog
 
+## [2.11.12] - 2026-02-13
+
+### Changed
+
+- Refactored `side-cart.js` and `hide-guest-form.js` to Vanilla JS for better performance.
+
+### Removed
+
+- Deleted legacy script `checkout-scripts.js` (replaced by `checkout.js`).
+- Deleted unused scripts `fox-sync.js` and `geoip.js`.
+- Removed enqueue of `geoip.js`.
+
 ## [2.11.11] - 2026-02-13
 
 ### Removed
