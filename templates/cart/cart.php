@@ -236,7 +236,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
         font-size: 12px !important;
     }
     .wiwa-price-subtotal {
-        font-size: 1.5rem;
+        font-size: 1.5rem;  
         font-weight: 700;
         color: #1a3c28;
     }
@@ -253,7 +253,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
     }
     @media (min-width: 1024px) {
         .wiwa-price-subtotal .woocs_special_price_code {
-            font-size: 2rem !important; /* Approx 32px, large but fits better than 2.5rem */
+            font-size: 1.75rem !important; /* Reduced from 2rem as requested */
         }
     }
     .wiwa-price-per-person .woocs_special_price_code {
@@ -631,7 +631,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                     <div class="pt-7 border-t border-gray-100">
                         <div class="flex flex-col gap-1 mb-7">
                             <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total de la reserva', 'wiwa-checkout'); ?></span>
-                            <span class="text-4xl md:text-5xl font-bold text-[#1a3c28] tracking-tight">
+                            <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight">
                                 <?php echo wp_kses_post(WC()->cart->get_total()); ?><span class="wiwa-currency-code"><?php echo esc_html($wiwa_currency_code); ?></span>
                             </span>
                         </div>

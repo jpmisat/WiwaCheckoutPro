@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.4] - 2026-02-13
+
+### Fixed
+
+- **Typography Adjustments:** Reduced "Total de la reserva" font size from `text-5xl` to `text-4xl` (approx 2.25rem).
+- **Card Price Sizing:** Further reduced the tour card special price size to `1.75rem` on desktop for better visual balance.
+
 ## [2.11.3] - 2026-02-13
 
 ### Fixed
