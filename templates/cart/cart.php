@@ -1,7 +1,7 @@
 <?php
 /**
- * Wiwa Tour Checkout - Premium Cart Template (Stitch Pixel-Perfect v2)
- * Version: 2.11.1
+ * Wiwa Tour Checkout - Premium Cart Template (Stitch Pixel-Perfect v3)
+ * Version: 2.11.2
  * 
  * Matches the code-stich.html design exactly, integrated with
  * WooCommerce + OvaTourBooking + WOOCS data sources.
@@ -43,18 +43,20 @@ function wiwa_extract_tour_meta($cart_item) {
     if (!empty($cart_item['checkin_date']) && !empty($cart_item['checkout_date'])) {
         $ts_in  = strtotime($cart_item['checkin_date']);
         $ts_out = strtotime($cart_item['checkout_date']);
-        if ($ts_in && $ts_out && $ts_out > $ts_in) {
-            $diff_days = (int) ceil(($ts_out - $ts_in) / 86400);
-            $meta['duration_days'] = $diff_days;
-            if ($diff_days === 1) {
+        if ($ts_in && $ts_out && $ts_out >= $ts_in) {
+            // Difference in nights + 1 = total inclusive days (standard tourism logic)
+            $diff_nights = (int) ceil(($ts_out - $ts_in) / 86400);
+            $meta['duration_days'] = $diff_nights + 1; 
+
+            if ($meta['duration_days'] === 1) {
                 $meta['duration_label'] = '1 día full';
             } else {
-                $meta['duration_label'] = $diff_days . ' días';
+                $meta['duration_label'] = $meta['duration_days'] . ' días';
             }
         }
     }
 
-    // If no checkout, try the product's duration metadata
+    // If still no duration, try the product's duration metadata
     if ($meta['duration_days'] === 0) {
         $_product = $cart_item['data'];
         if (method_exists($_product, 'get_meta_value')) {
@@ -80,7 +82,7 @@ function wiwa_extract_tour_meta($cart_item) {
     if (isset($cart_item['numberof_guests']) && intval($cart_item['numberof_guests']) > 0) {
         $meta['travelers'] = intval($cart_item['numberof_guests']);
     } else {
-        // Sum all numberof_ keys
+        // Sum all numberof_ keys as fallback
         $total_pax = 0;
         foreach ($cart_item as $key => $val) {
             if (strpos($key, 'numberof_') === 0 && $key !== 'numberof_guests') {
@@ -121,13 +123,14 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
     /* ===== Stitch Cart Inline Styles ===== */
     .wiwa-cart-page {
         font-family: 'Montserrat', 'Roboto', sans-serif;
-        max-width: 1440px;
+        width: 100%;
+        max-width: 100%;  /* Full Width Fix */
         margin: 0 auto;
         padding: 0 16px;
     }
     @media (min-width: 1024px) {
         .wiwa-cart-page {
-            padding: 0 40px;
+            padding: 0 32px; /* Responsive padding */
         }
     }
     .card-shadow {
@@ -243,7 +246,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
     /* Tame any theme-injected woocs price markup */
     .wiwa-price-subtotal .woocs_special_price_code,
     .wiwa-price-per-person .woocs_special_price_code {
-        font-size: inherit !important;
+        font-size: 2.5rem !important;
         font-weight: inherit !important;
         display: inline !important;
     }
@@ -350,7 +353,10 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
 
                         // Extract tour-specific meta from OvaTourBooking
                         $tour_meta = wiwa_extract_tour_meta($cart_item);
-                        $qty_value = $cart_item['quantity'];
+                        
+                        // FIX: Use tour traveler count for stepper value if it's a tour
+                        // OvaTB forces WC quantity to 1, but we want to show/edit the guest count
+                        $qty_valid_value = $is_tour ? $tour_meta['travelers'] : $cart_item['quantity'];
 
                         // Prices
                         $unit_price    = floatval($_product->get_price());
@@ -437,7 +443,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 echo apply_filters(
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
-                                        '<a href="%s" class="flex items-center gap-1.5 text-red-500 hover:text-red-700 text-[13px] font-medium transition-colors" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[16px]">delete</span> %s</a>',
+                                        '<a href="%s" class="flex items-center gap-1.5 text-red-500 hover:text-red-700 text-[13px] font-medium transition-colors" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[16px]" style="color: #ef4444 !important;">delete</span> %s</a>',
                                         esc_url(wc_get_cart_remove_url($cart_item_key)),
                                         esc_html__('Remove this item', 'woocommerce'),
                                         esc_attr($product_id),
@@ -469,7 +475,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                         <input type="number"
                                                class="wiwa-qty-input"
                                                name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]"
-                                               value="<?php echo esc_attr($qty_value); ?>"
+                                               value="<?php echo esc_attr($qty_valid_value); ?>"
                                                min="1"
                                                step="1"
                                                data-cart-key="<?php echo esc_attr($cart_item_key); ?>"

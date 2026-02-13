@@ -1,5 +1,14 @@
 # Changelog
 
+## [2.11.2] - 2026-02-13
+
+### Fixed
+
+- **Cart Container Width:** Forced the cart container to be 100% full width (`max-width: 100%`) for a more spacious layout as requested.
+- **Delete Button Color:** Added `!important` rule to force the "Eliminar" link and icon to be red (`#ef4444`).
+- **Tour Duration Calculation:** Adjusted duration logic to `(checkout - checkin) + 1` to correctly reflect inclusive "Days".
+- **Stepper Value:** Fixed the initial value of the quantity stepper to reflect the actual traveler count (from OvaTourBooking metadata) instead of the WC quantity (which is always 1).
+
 ## [2.11.1] - 2026-02-12
 
 ### Fixed
