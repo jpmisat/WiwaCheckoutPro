@@ -1,5 +1,15 @@
 # Changelog
 
+## [2.11.13] - 2026-02-13
+
+### Changed
+
+- Restored branded "Empty Cart" UI in side cart (fixed JS regression).
+- Enhanced Mini-Cart UI:
+  - Added custom `mini-cart.php` template.
+  - Improved item layout (Grid with thumbnail).
+  - Cleaned up buttons (no underline) and separators.
+
 ## [2.11.12] - 2026-02-13
 
 ### Changed

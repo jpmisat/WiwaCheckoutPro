@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // The branded empty cart HTML structure
     const emptyCartHTML = `
-        <div class="wiwa-side-cart-empty">
+        <div class="wiwa-empty-cart-content">
             <div class="wiwa-empty-icon">
                 <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="#9CA3AF" stroke-width="1.5">
                     <path d="M9 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2zM20 22a1 1 0 1 0 0-2 1 1 0 0 0 0 2z"/>
@@ -22,10 +22,12 @@ document.addEventListener('DOMContentLoaded', () => {
                 </svg>
             </div>
             <h3 class="wiwa-empty-title">${config.emptyText}</h3>
-            <p class="wiwa-empty-desc">${config.emptyDesc}</p>
-            <a href="${config.homeUrl}" class="wiwa-btn-primary">
-                ${config.btnText}
-            </a>
+            <p class="wiwa-empty-description">${config.emptyDesc}</p>
+            <div class="wiwa-empty-cta">
+                <a href="${config.homeUrl}" class="wiwa-empty-cart-btn">
+                    ${config.btnText}
+                </a>
+            </div>
         </div>
     `;
 
@@ -75,13 +77,13 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             // Check if our branded message already exists
-            if (!document.querySelector('.wiwa-side-cart-empty')) {
+            if (!document.querySelector('.wiwa-empty-cart-content')) {
                 // Ensure we append to a visible container
                 widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
             }
         } else {
             // Has products, remove our message
-            const ourMessage = document.querySelector('.wiwa-side-cart-empty');
+            const ourMessage = document.querySelector('.wiwa-empty-cart-content');
             if (ourMessage) {
                 ourMessage.remove();
             }

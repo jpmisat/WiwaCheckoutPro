@@ -170,6 +170,12 @@ class Wiwa_Cart_Handler
             return $custom_empty;
         }
 
+        // New Mini Cart Override
+        $custom_mini = WIWA_CHECKOUT_PATH . 'templates/cart/mini-cart.php';
+        if ($template_name === 'cart/mini-cart.php' && file_exists($custom_mini)) {
+            return $custom_mini;
+        }
+
         return $template;
     }
 
