@@ -57,7 +57,8 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         $is_tour           = $_product->is_type('ovatb_tour');
 
                         // Extract tour-specific meta from OvaTourBooking
-                        $tour_meta = wiwa_extract_tour_meta($cart_item);
+                        // Function is defined in includes/wiwa-helpers.php or similar
+                        $tour_meta = function_exists('wiwa_extract_tour_meta') ? wiwa_extract_tour_meta($cart_item) : [];
                         
                         // FIX: Use tour traveler count for stepper value if it's a tour
                         // OvaTB forces WC quantity to 1, but we want to show/edit the guest count
