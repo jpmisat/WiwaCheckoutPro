@@ -30,12 +30,13 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.10.9');
+define('WIWA_CHECKOUT_VERSION', '2.10.10');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
 define('WIWA_CHECKOUT_BASENAME', plugin_basename(__FILE__));
 
+// ... (restored)
 
 /**
  * Clase principal del plugin (Singleton)
@@ -218,6 +219,10 @@ final class Wiwa_Tour_Checkout
         // --- CART REDESIGN (Refined) ---
         // Enqueue Global Cart Styles (Sidebar & Main Cart)
         if ( !is_admin() ) { 
+            // Load Tailwind CSS (CDN) - Essential for the Stitch Design
+            // We use the same configuration as provided in the design source
+            wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms', [], null, false);
+
             wp_enqueue_style('wiwa-cart-styles', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
             wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
              wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.10.10] - 2026-02-12
+
+### Added
+
+- **Tailwind Integration:** Enqueued Tailwind CSS CDN to ensure robust styling across all environments, critical for the new design.
+- **Cart Refinement:** Updated `cart.php` structure and versioning for immediate deployment.
+
 ## [2.10.9] - 2026-02-12
 
 ### Added
