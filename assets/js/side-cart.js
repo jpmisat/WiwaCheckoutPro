@@ -6,9 +6,9 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configuration
     const config = window.wiwaSideCart || {
-        homeUrl: '/tours', // Direct link to tours page
+        homeUrl: '/tours/', // User requested '/tours/'
         emptyText: 'Tu carrito está vacío',
-        emptyDesc: 'Parece que aún no has agregado ningún tour.',
+        emptyDesc: 'Parece que aún no has agregado ningún tour. ¡Es hora de planear tu aventura!',
         btnText: 'Explorar Tours'
     };
 
@@ -16,21 +16,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const emptyCartHTML = `
         <div class="wiwa-empty-cart-content">
             <div class="wiwa-empty-icon-wrapper">
-                <span class="material-symbols-rounded" style="font-size: 64px; color: #d1d5db;">shopping_cart</span>
+                <!-- SVG Empty Shopping Cart -->
+                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#d1d5db" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" style="width: 80px; height: 80px;">
+                    <circle cx="9" cy="21" r="1"></circle>
+                    <circle cx="20" cy="21" r="1"></circle>
+                    <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+                </svg>
             </div>
             <h3 class="wiwa-empty-title">${config.emptyText}</h3>
             <p class="wiwa-empty-description">${config.emptyDesc}</p>
             <div class="wiwa-empty-cta">
-                <a href="${config.homeUrl}" class="wiwa-empty-cart-btn">
+                <a href="${config.homeUrl}" class="wiwa-empty-cart-btn button wiwa-btn-primary">
                     ${config.btnText}
                 </a>
-            </div>
-            <div class="wiwa-empty-decorations">
-                 <!-- Simple decorative icons or keep them as background via CSS if preferred, 
-                      but user asked for 'icons below'. We'll add a small row of them. -->
-                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">palm_tree</span>
-                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">backpack</span>
-                 <span class="material-symbols-rounded" style="font-size: 24px; color: #e5e7eb;">camera_alt</span>
             </div>
         </div>
     `;
@@ -54,7 +52,10 @@ document.addEventListener('DOMContentLoaded', () => {
         // --- VISUAL LOGIC ---
         if (!hasProducts) { 
             // 1. Hide default empty text AND any leftover standard WC elements (buttons/totals)
-            emptyMessages.forEach(el => el.style.display = 'none');
+            emptyMessages.forEach(el => {
+                el.style.display = 'none';
+                el.classList.add('wiwa-hidden'); // Add class to force hide via CSS if needed
+            });
             
             // 2. Check if our branded content is already there
             let ourContent = widgetContent.querySelector('.wiwa-empty-cart-content');

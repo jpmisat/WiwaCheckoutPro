@@ -142,8 +142,8 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                         $price_html = wc_price( $unit_price );
                                     ?>
                                     <span class="meta-item wiwa-price-per-person-text">
-                                        <!-- Tag Icon -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                                        <!-- Currency/Money Icon (Dollar Sign) -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="1" x2="12" y2="23"></line><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"></path></svg>
                                         <?php echo sprintf( '%s', $price_html ); ?>
                                     </span>
                                 </div>
@@ -176,8 +176,8 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                 <?php
             }
         }
-
-        do_action( 'woocommerce_mini_cart_contents' );
+        
+        // Removed 'woocommerce_mini_cart_contents' to prevent duplicate buttons from other plugins/themes
         ?>
     </ul>
 
@@ -190,7 +190,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
             </span>
         </div>
 
-        <?php do_action( 'woocommerce_widget_shopping_cart_before_buttons' ); ?>
+        <!-- Removed generic before_buttons action to prevent duplication -->
 
         <div class="wiwa-mini-cart-buttons">
             <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
@@ -201,7 +201,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
             </a>
         </div>
 
-        <?php do_action( 'woocommerce_widget_shopping_cart_after_buttons' ); ?>
+        <!-- Removed generic after_buttons action to prevent duplication -->
     </div>
 
 <?php else : ?>
