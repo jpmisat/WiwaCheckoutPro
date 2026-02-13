@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.5] - 2026-02-13
+
+### Fixed
+
+- **Calc:** Fixed unit price display bug where tour pax count > 1 showed the total line price as the unit price. Now correctly recalculates `Unit Price = Line Total / Pax Count`.
+
 ## [2.11.4] - 2026-02-13
 
 ### Fixed

@@ -369,11 +369,22 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         $qty_valid_value = $is_tour ? $tour_meta['travelers'] : $cart_item['quantity'];
 
                         // Prices
-                        $unit_price    = floatval($_product->get_price());
-                        $line_subtotal = floatval($cart_item['line_subtotal']);
+                        $line_subtotal_raw = floatval($cart_item['line_subtotal']);
+                        
+                        // Handle tax for display if needed
+                        if (wc_tax_enabled() && WC()->cart->display_prices_including_tax()) {
+                            $line_subtotal_raw += floatval($cart_item['line_subtotal_tax']);
+                        }
+
+                        // Fix: OvaTourBooking sets the product price to the Total Line Price (qty=1).
+                        // We must recalculate the unit price (Price Per Person) by dividing Total by Travelers.
+                        $pax_count  = $tour_meta['travelers'] > 0 ? $tour_meta['travelers'] : 1;
+                        $unit_price = $line_subtotal_raw / $pax_count;
+
+                        // Calculations for deposit (keeping existing logic based on raw subtotal)
                         $deposit_rate  = apply_filters('wiwa_deposit_rate', 0.30);
-                        $deposit_val   = $line_subtotal * $deposit_rate;
-                        $pending_val   = $line_subtotal - $deposit_val;
+                        $deposit_val   = $line_subtotal_raw * $deposit_rate;
+                        $pending_val   = $line_subtotal_raw - $deposit_val;
 
                         // Determine primary guest key for AJAX
                         $primary_guest_key = '';
@@ -438,11 +449,6 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                         <span class="font-medium text-gray-700">
                                             <?php echo esc_html($tour_meta['travelers']); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?>
                                         </span>
-                                        <?php if ($product_permalink) : ?>
-                                        <a href="<?php echo esc_url($product_permalink); ?>" class="text-[#2b4c3b] underline text-[11px] ml-0.5 hover:text-green-800" style="text-underline-offset:2px">
-                                            <?php esc_html_e('Ver info', 'wiwa-checkout'); ?>
-                                        </a>
-                                        <?php endif; ?>
                                     </div>
                                 </div>
                             </div>
