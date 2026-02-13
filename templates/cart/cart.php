@@ -244,11 +244,21 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
         font-size: inherit !important;
     }
     /* Tame any theme-injected woocs price markup */
-    .wiwa-price-subtotal .woocs_special_price_code,
+    .wiwa-price-subtotal .woocs_special_price_code {
+        font-size: 1.5rem !important;
+        font-weight: 700 !important;
+        display: inline-block !important;
+        line-height: 1.2;
+        word-break: break-word;
+    }
+    @media (min-width: 1024px) {
+        .wiwa-price-subtotal .woocs_special_price_code {
+            font-size: 2rem !important; /* Approx 32px, large but fits better than 2.5rem */
+        }
+    }
     .wiwa-price-per-person .woocs_special_price_code {
-        font-size: 2.5rem !important;
+        font-size: 0.85rem !important;
         font-weight: inherit !important;
-        display: inline !important;
     }
 
     /* ===== Sticky sidebar ===== */
@@ -500,7 +510,19 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     <span class="opacity-70">/ persona</span>
                                 </p>
                                 <p class="wiwa-price-subtotal mb-0">
-                                    <?php echo apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key); ?>
+                                    <?php 
+                                    $subtotal_html = apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);
+                                    // Split deposit/extra text (usually in parenthesis) to smaller line
+                                    if (strpos($subtotal_html, '(') !== false) {
+                                        // Regex to find first occurrence of ( and wrap till end or matching )
+                                        // Simpler: Split at first (
+                                        $parts = explode('(', $subtotal_html, 2);
+                                        echo $parts[0];
+                                        echo '<small class="block text-[11px] text-gray-400 font-normal mt-1 leading-tight">(' . $parts[1] . '</small>';
+                                    } else {
+                                        echo $subtotal_html;
+                                    }
+                                    ?>
                                 </p>
                                 <div class="mt-3 space-y-1.5">
                                     <div class="flex justify-end gap-2 text-[12px] text-gray-500">

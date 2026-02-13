@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.3] - 2026-02-13
+
+### Fixed
+
+- **Cart Price Formatting:** Split the WOOCS price/deposit text so the main amount is prominent and the "(10% deposit...)" text is smaller and unobtrusive.
+- **Price Text Sizing:** Refined `.woocs_special_price_code` font size (max 2rem on desktop, 1.5rem on mobile) and added word-break to prevent overflow on long price strings.
+
 ## [2.11.2] - 2026-02-13
 
 ### Fixed
