@@ -571,6 +571,13 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .woocommerce-mini-cart-item {
     padding: 0 !important;
     border-bottom: none !important;
+    list-style: none !important; /* No bullets */
+    margin-left: 0 !important;
+}
+.woocommerce-mini-cart {
+    list-style: none !important;
+    padding: 0 !important;
+    margin: 0 !important;
 }
 
 /* Thumbnail */

@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configuration
     const config = window.wiwaSideCart || {
-        homeUrl: '/',
+        homeUrl: '/tours', // Direct link to tours page
         emptyText: 'Tu carrito está vacío',
         emptyDesc: 'Parece que aún no has agregado ningún tour.',
         btnText: 'Explorar Tours'
