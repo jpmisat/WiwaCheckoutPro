@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.10] - 2026-02-13
+
+### Removed
+
+- Deleted legacy template files (`checkout-step-1.php`, `checkout-step-2.php`, `checkout-wrapper.php`, `order-summary.php`) from `templates/` root.
+
 ## [2.11.9] - 2024-05-24
 
 ### Improved
