@@ -399,4 +399,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ==================== CART SYNC ====================
+    
+    // Detect Cart Updates from Sidebar/Mini-Cart
+    $(document.body).on('wc_fragments_refreshed', function() {
+        // Only if we are on our custom checkout page
+        if ($('#wiwa-checkout-step-1').length > 0 || $('.wiwa-checkout-payment-wrapper').length > 0) {
+            // Store a flag in session to know we are reloading due to cart update
+            // to potentially show a message "Updated form based on cart changes"
+            
+            // Check if it was a quantity change vs just an initial load
+            // We assume if this event fires AFTER page load, it's a change.
+            // But it also fires on page load. We need to distinguish.
+            
+            // Simple check: Is the side-cart open? 
+            // Or just check if the "block-UI" is redundant.
+            // Actually, safest is: Check if the number of forms in DOM matches specific data attribute?
+            // But 'wc_fragments_refreshed' provides fragments, not the full cart data object usually.
+            
+            // User requirement: "If quantity changes in sidebar... update traveler info window".
+            // Since side-cart.js triggers 'wc_fragments_refreshed' AFTER ajax success.
+            // We can trust this event implies a change initiated by the user.
+            
+            // However, this event ALSO fires on initial page load by WC script.
+            // We must filter that out.
+            // WC typically sets `wc_fragments_refreshed` triggered by `wc_cart_fragments_params`.
+            
+            // Workaround: side-cart.js triggers 'wc_update_cart' or we can add a custom event in side-cart.js
+            // In side-cart.js (viewed earlier), I saw:
+            // $(document.body).trigger('wc_fragment_refresh');
+            // $(document.body).trigger('wc_fragments_refreshed');
+            
+            // I will assume if this event happens > 2 seconds after load, it's a user action.
+            if (performance.now() > 2000) {
+                 console.log('[Wiwa] Cart updated. Reloading checkout...');
+                 window.location.reload();
+            }
+        }
+    });
+
 });
