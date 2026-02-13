@@ -552,55 +552,74 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    8. MINI CART CUSTOM LAYOUT
    ========================================= */
 
+/* =========================================
+   8. MINI CART CUSTOM LAYOUT
+   ========================================= */
+
 /* Grid Layout for Item */
 .wiwa-mini-cart-item-grid {
     display: grid;
-    grid-template-columns: 80px 1fr;
+    grid-template-columns: 90px 1fr; /* Slightly larger thumb col */
     gap: 16px;
     align-items: start;
-    padding: 16px 0;
-    border-bottom: 1px dashed var(--wiwa-border);
+    padding: 20px 0;
+    border-bottom: 1px solid var(--wiwa-border);
 }
 .woocommerce-mini-cart-item:last-child .wiwa-mini-cart-item-grid {
     border-bottom: none;
 }
 .woocommerce-mini-cart-item {
-    padding: 0 !important; /* Reset default padding */
-    border-bottom: none !important; /* We handle border in grid */
+    padding: 0 !important;
+    border-bottom: none !important;
 }
 
 /* Thumbnail */
 .wiwa-mini-cart-thumb img {
     width: 100% !important;
-    height: 80px !important;
+    height: 90px !important; /* Square-ish */
     object-fit: cover;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+    border-radius: 12px; /* Smoother radius */
+    box-shadow: 0 4px 6px rgba(0,0,0,0.05);
 }
 
-/* Content */
+/* Content Column */
+.wiwa-mini-cart-content {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+/* Title */
 .wiwa-mini-cart-title {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    margin: 0 0 4px;
+    margin: 0 0 6px;
     line-height: 1.3;
+    color: var(--wiwa-text);
 }
 .wiwa-mini-cart-title a {
-    color: var(--wiwa-primary);
+    color: var(--wiwa-text);
     text-decoration: none;
+    transition: color 0.2s;
+}
+.wiwa-mini-cart-title a:hover {
+    color: var(--wiwa-primary);
 }
 
 /* Meta Data */
 .wiwa-mini-cart-meta {
-    font-size: 11px;
+    font-size: 12px;
     color: var(--wiwa-text-gray);
-    margin-bottom: 8px;
+    margin-bottom: 12px;
+    line-height: 1.5;
 }
 .wiwa-mini-cart-meta dt {
     font-weight: 600;
     float: left;
     clear: left;
     margin-right: 4px;
+    color: var(--wiwa-text);
 }
 .wiwa-mini-cart-meta dd {
     float: left;
@@ -612,106 +631,157 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     clear: both;
 }
 
-/* Footer: Stepper, Price, Remove */
+/* Footer Row: Stepper | Price | Remove */
 .wiwa-mini-cart-footer {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: 8px;
+    margin-top: auto;
 }
 
-/* Stepper tweaks for mini-cart */
+/* Stepper (Pill Shape from Ref Image 3) */
 .wiwa-mini-cart-stepper .wiwa-mini-cart-qty {
-    height: 28px;
-    width: 80px;
+    height: 36px; /* Taller pill */
+    width: 100px; /* Wider */
+    border-radius: 50px;
+    border: 1px solid var(--wiwa-border);
+    background: #FAFAFA;
+    padding: 2px;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
 }
 .wiwa-mini-cart-stepper .wiwa-qty-btn {
-    width: 24px;
-    height: 28px;
-    font-size: 14px;
+    width: 30px;
+    height: 30px;
+    font-size: 16px;
+    color: var(--wiwa-text-gray);
+    border-radius: 50%;
+}
+.wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
+    background: #ffffff;
+    color: var(--wiwa-primary);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 .wiwa-mini-cart-stepper .wiwa-qty-input {
-    font-size: 0.8rem;
+    font-size: 15px; /* Larger number */
+    font-weight: 800; /* Bolder */
+    color: var(--wiwa-primary); /* Dark green */
 }
 
 /* Price */
 .wiwa-mini-cart-price {
     font-weight: 700;
     color: var(--wiwa-text);
-    font-size: 13px;
+    font-size: 14px;
+    margin-left: auto;
+    margin-right: 12px;
 }
 
-/* Remove Button */
+/* Remove Button (Icon style) */
 .wiwa-mini-cart-footer .remove {
-    position: static !important; /* Reset absolute positioning often found in themes */
-    width: 24px;
-    height: 24px;
+    position: static !important;
+    width: 28px;
+    height: 28px;
     border-radius: 50%;
-    background: #FEE2E2 !important;
-    color: #DC2626 !important;
+    background: transparent !important; /* Clean look */
+    color: #9CA3AF !important;
+    border: 1px solid var(--wiwa-border) !important;
     display: flex;
     align-items: center;
     justify-content: center;
     text-decoration: none;
     font-size: 18px;
     line-height: 1;
-    margin-left: 8px;
+    transition: all 0.2s;
 }
 .wiwa-mini-cart-footer .remove:hover {
-    background: #FCA5A5 !important;
-    color: #991B1B !important;
+    background: #FEE2E2 !important;
+    color: #DC2626 !important;
+    border-color: #FEE2E2 !important;
 }
 
-/* Bottom Section (separator) */
+/* Bottom Section */
 .wiwa-mini-cart-bottom {
-    border-top: 2px solid var(--wiwa-border-light);
-    padding-top: 20px;
-    margin-top: 20px;
+    border-top: 1px solid var(--wiwa-border);
+    padding-top: 24px;
+    margin-top: 12px;
 }
+
+/* Subtotal Box (Ref Image 1 style hint) */
 .wiwa-mini-cart-subtotal {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 24px;
-    font-size: 16px;
-    font-weight: 700;
-    color: var(--wiwa-primary);
+    padding: 16px;
+    background: #F9FAFB;
+    border-radius: 12px;
+    border: 1px solid var(--wiwa-border-light);
+}
+.wiwa-mini-cart-subtotal span:first-child {
+    font-size: 15px;
+    color: var(--wiwa-text-gray);
+    font-weight: 600;
+}
+.wiwa-subtotal-amount {
+    font-size: 18px;
+    font-weight: 800;
+    color: var(--wiwa-text);
 }
 
 /* Buttons */
 .wiwa-mini-cart-buttons {
-    display: grid;
-    gap: 12px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
 }
 .wiwa-mini-cart-buttons .button {
     width: 100%;
     text-align: center;
-    text-decoration: none !important; /* Requested fix */
-    display: block;
-    padding: 12px;
-    border-radius: 8px;
-    font-weight: 600;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 16px !important; /* Taller touch targets */
+    border-radius: 50px !important; /* Rounded pills like Image 1/3 vibe or Standard rounded? Image 1 has slightly rounded rectangles. Let's do 12px for modern standard or 50px for pill. Image 1 looks like 8-12px. I'll stick to 12px but Make them distinctive. */
+    border-radius: 12px !important;
+    font-weight: 700;
+    font-size: 15px;
+    text-decoration: none !important;
+    text-transform: none; /* User might prefer normal case */
+    letter-spacing: 0.5px;
+    transition: transform 0.2s, box-shadow 0.2s;
 }
+.wiwa-mini-cart-buttons .button:active {
+    transform: scale(0.98);
+}
+
+/* "View Cart" - White with Border (Image 1) */
 .wiwa-btn-outline {
-    background: transparent;
-    border: 1px solid var(--wiwa-border);
-    color: var(--wiwa-text);
+    background: #ffffff !important;
+    border: 1px solid #D1D5DB !important; /* Visible gray border */
+    color: var(--wiwa-text) !important;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .wiwa-btn-outline:hover {
-    background: var(--wiwa-bg-body);
-    color: var(--wiwa-primary);
+    background: #F9FAFB !important;
+    border-color: #9CA3AF !important;
+    color: #111827 !important;
 }
+
+/* "Checkout" - Dark Green (Image 1) */
 .wiwa-btn-primary {
-    background: var(--wiwa-primary);
-    color: white !important;
-    border: 1px solid var(--wiwa-primary);
+    background: var(--wiwa-primary) !important;
+    color: #ffffff !important;
+    border: 1px solid var(--wiwa-primary) !important;
+    box-shadow: 0 4px 6px rgba(26, 60, 40, 0.2);
 }
 .wiwa-btn-primary:hover {
-    background: var(--wiwa-primary-light);
+    background: var(--wiwa-primary-light) !important;
+    box-shadow: 0 6px 12px rgba(26, 60, 40, 0.25);
     color: white !important;
 }
 
-/* Hide default buttons block if our template renders it */
+/* Hide default buttons block */
 .elementor-menu-cart__footer-buttons {
     display: none !important;
 }
+
