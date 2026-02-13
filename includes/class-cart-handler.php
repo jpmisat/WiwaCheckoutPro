@@ -24,6 +24,16 @@ class Wiwa_Cart_Handler
 
         // EMERGENCY FIX: Sanitize Cart Session on Load to remove bad data causing warnings
         add_action('wp_loaded', [$this, 'sanitize_cart_session_data']);
+
+        // Custom Quantity Inputs
+        add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 10, 3);
+        add_filter('woocommerce_cart_item_quantity', [$this, 'custom_cart_item_quantity'], 10, 3);
+
+        // Metadata Cleanup (Display)
+        add_filter('woocommerce_get_item_data', [$this, 'clean_cart_item_data'], 10, 2);
+
+        // Metadata Persistence (Add to Cart)
+        add_filter('woocommerce_add_cart_item_data', [$this, 'aggregate_guest_info_for_cart'], 10, 3);
     }
 
     /**
@@ -420,5 +430,171 @@ class Wiwa_Cart_Handler
             }
         </style>
         <?php
+    }
+
+    /**
+     * Custom Mini Cart Quantity Input
+     * Replaces standard "1 x $100" with [ - ] [ 1 ] [ + ]
+     */
+    public function custom_mini_cart_item_quantity($html, $cart_item, $cart_item_key)
+    {
+        $_product = $cart_item['data'];
+        if ($_product->is_sold_individually()) {
+            return $html;
+        }
+
+        $current_qty = $cart_item['quantity'];
+        $is_tour = $_product->is_type('ovatb_tour');
+        $min_qty = $is_tour ? 1 : 0;
+
+        // Build Custom Quantity Selector
+        ob_start();
+        ?>
+        <div class="wiwa-mini-cart-qty">
+            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+            <input type="number" 
+                   class="wiwa-qty-input" 
+                   value="<?php echo esc_attr($current_qty); ?>" 
+                   min="<?php echo esc_attr($min_qty); ?>" 
+                   step="1" 
+                   data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
+                   readonly />
+            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
+        </div>
+        <span class="quantity" style="display:none !important"><?php echo $html; ?></span>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Custom Main Cart Quantity Input
+     */
+    public function custom_cart_item_quantity($product_quantity, $cart_item_key, $cart_item)
+    {
+        $_product = $cart_item['data'];
+        if ($_product->is_sold_individually()) {
+            return $product_quantity;
+        }
+
+        $current_qty = $cart_item['quantity'];
+        $is_tour = $_product->is_type('ovatb_tour');
+        $min_qty = $is_tour ? 1 : 0;
+        
+        // Main cart often wraps input in .quantity div. We will replace it or inject ours.
+        // Standard WC output is <div class="quantity"><input ...></div>
+        
+        ob_start();
+        ?>
+        <div class="wiwa-mini-cart-qty wiwa-main-cart-qty">
+            <button type="button" class="wiwa-qty-btn wiwa-qty-minus">&minus;</button>
+            <input type="number" 
+                   class="wiwa-qty-input" 
+                   name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" 
+                   value="<?php echo esc_attr($current_qty); ?>" 
+                   min="<?php echo esc_attr($min_qty); ?>" 
+                   step="1" 
+                   data-cart-key="<?php echo esc_attr($cart_item_key); ?>" 
+                   data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
+                   readonly />
+            <button type="button" class="wiwa-qty-btn wiwa-qty-plus">&plus;</button>
+        </div>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Clean Cart Item Data (Metadata)
+     * Removes "numberof_adult", "numberof_child", etc from the line item description
+     * because we show it in the quantity box or it's redundant.
+     */
+    public function clean_cart_item_data($item_data, $cart_item)
+    {
+        // Keys/labels to hide from cart item metadata display
+        // These are redundant because our custom quantity pill handles pax count
+        $hidden_keys = [
+            'numberof_adult', 'numberof_adults', 'numberof_child', 'numberof_children',
+            'numberof_pax', 'numberof_guests', 'numberof_infant', 'numberof_infants',
+            'Cantidad de viajeros', 'cantidad de viajeros',
+            'adults', 'children', 'enfants', 'niños', 'infants',
+            'Adultos', 'Niños', 'Infantes',
+        ];
+
+        foreach ($item_data as $key => $data) {
+            $data_key = isset($data['key']) ? strtolower(trim($data['key'])) : '';
+            $data_name = isset($data['name']) ? strtolower(trim($data['name'])) : '';
+
+            // Exact match against hidden keys (case-insensitive)
+            if (in_array($data_key, array_map('strtolower', $hidden_keys)) || 
+                in_array($data_name, array_map('strtolower', $hidden_keys))) {
+                unset($item_data[$key]);
+                continue;
+            }
+            
+            // Loose check for any "numberof_" prefix
+            if (strpos($data_key, 'numberof_') === 0) {
+                unset($item_data[$key]);
+            }
+        }
+
+        return $item_data;
+    }
+
+    /**
+     * Agrega la información de los pasajeros al item del carrito.
+     * Busca campos 'ovatb_{tipo}_info' en $_POST y los agrupa en 'ovatb_guest_info'.
+     */
+    public function aggregate_guest_info_for_cart($cart_item_data, $product_id, $variation_id)
+    {
+        if (empty($_POST)) return $cart_item_data;
+
+        $guest_info = [];
+        $found_data = false;
+        $quantity_keys = [];
+
+        // 1. Identificar qué tipos de pasajeros tienen cantidad (numberof_*)
+        foreach ($_POST as $key => $value) {
+            if (preg_match('/^numberof_([a-zA-Z0-9_]+)$/', $key, $matches)) {
+                if ($value > 0) {
+                    $quantity_keys[] = $matches[1]; // ej: 'adult'
+                }
+            }
+        }
+
+        // 2. Recolectar info de pasajeros
+        foreach ($_POST as $key => $value) {
+            // Buscamos patrones como 'ovatb_adult_info', 'ovatb_child_info', etc.
+            if (preg_match('/^ovatb_([a-zA-Z0-9_]+)_info$/', $key, $matches)) {
+                $guest_type = $matches[1]; // ej: 'adult', 'child', 'pax'
+                
+                // Ignorar el campo 'guest' literal si existiera
+                if ($guest_type === 'guest') continue;
+
+                if (!empty($value) && is_array($value)) {
+                    $guest_info[$guest_type] = $value;
+                    $found_data = true;
+                }
+            }
+        }
+
+        // 3. FIX: Mapeo inteligente si hay discrepancia de slugs (ej: 'adult' vs 'pax')
+        // Si tenemos cantidad para 'adult' pero info para 'pax', asignamos info de 'pax' a 'adult'.
+        if ($found_data && !empty($quantity_keys)) {
+             // Caso común: El sistema usa 'adult' para cantidad, pero 'pax' para info
+             if (in_array('adult', $quantity_keys) && isset($guest_info['pax']) && !isset($guest_info['adult'])) {
+                 $guest_info['adult'] = $guest_info['pax'];
+             }
+        }
+
+        // 4. Guardar en el carrito
+        if ($found_data) {
+            if (isset($cart_item_data['ovatb_guest_info']) && is_array($cart_item_data['ovatb_guest_info'])) {
+                $cart_item_data['ovatb_guest_info'] = array_merge($cart_item_data['ovatb_guest_info'], $guest_info);
+            } else {
+                $cart_item_data['ovatb_guest_info'] = $guest_info;
+            }
+        }
+
+        return $cart_item_data;
     }
 }

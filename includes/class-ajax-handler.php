@@ -27,6 +27,18 @@ class Wiwa_Ajax_Handler
         // Update order data (Step 1 -> Session)
         add_action('wp_ajax_wiwa_update_order_data', [$this, 'update_order_data']);
         add_action('wp_ajax_nopriv_wiwa_update_order_data', [$this, 'update_order_data']);
+
+        // AJAX Add to Cart Hooks
+        add_action('wp_ajax_wiwa_ajax_add_to_cart', [$this, 'ajax_add_to_cart']);
+        add_action('wp_ajax_nopriv_wiwa_ajax_add_to_cart', [$this, 'ajax_add_to_cart']);
+
+        // Mini Cart Qty
+        add_action('wp_ajax_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
+        add_action('wp_ajax_nopriv_wiwa_update_mini_cart_qty', [$this, 'ajax_update_mini_cart_qty']);
+
+        // Smart Pax Update
+        add_action('wp_ajax_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
+        add_action('wp_ajax_nopriv_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
     }
 
     /**
@@ -323,5 +335,339 @@ class Wiwa_Ajax_Handler
         }
 
         wp_send_json_success(['message' => 'Data updated']);
+    }
+
+    /**
+     * AJAX Handler: Update Mini Cart Quantity
+     */
+    public function ajax_update_mini_cart_qty()
+    {
+        check_ajax_referer('wiwa_checkout_nonce', 'security');
+
+        $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
+        $qty = isset($_POST['qty']) ? max(0, min(99, intval($_POST['qty']))) : 0;
+
+        if (!$cart_key || !isset(WC()->cart->get_cart()[$cart_key])) {
+            wp_send_json_error(['message' => 'Missing cart key']);
+        }
+
+        $item_removed = false;
+
+        if ($qty <= 0) {
+            WC()->cart->remove_cart_item($cart_key);
+            $item_removed = true;
+        } else {
+            WC()->cart->set_quantity($cart_key, $qty, true); // true = refresh totals
+        }
+
+        WC()->cart->calculate_totals();
+        WC()->cart->maybe_set_cart_cookies();
+
+        wp_send_json_success([
+            'message' => 'Updated',
+            'item_removed' => $item_removed,
+            'item_subtotal' => $item_removed ? '' : $this->get_cart_item_subtotal_html($cart_key),
+            'cart_subtotal' => WC()->cart->get_cart_subtotal(),
+            'cart_total' => WC()->cart->get_total(),
+            'totals_html' => $this->get_cart_totals_html(),
+        ]);
+    }
+
+    /**
+     * Render cart totals block for AJAX responses.
+     */
+    private function get_cart_totals_html()
+    {
+        if (!function_exists('woocommerce_cart_totals')) {
+            return '';
+        }
+
+        ob_start();
+        woocommerce_cart_totals();
+        return ob_get_clean();
+    }
+
+    /**
+     * Resolve line subtotal HTML for a specific cart item.
+     */
+    private function get_cart_item_subtotal_html($cart_item_key)
+    {
+        $cart = WC()->cart ? WC()->cart->get_cart() : [];
+        if (!isset($cart[$cart_item_key])) {
+            return '';
+        }
+
+        $cart_item = $cart[$cart_item_key];
+        if (!isset($cart_item['data'])) {
+            return '';
+        }
+
+        return WC()->cart->get_product_subtotal($cart_item['data'], $cart_item['quantity']);
+    }
+
+    /**
+     * Extract and normalize guest breakdown from cart item metadata.
+     */
+    private function get_cart_item_guest_breakdown($cart_item)
+    {
+        $breakdown = [];
+
+        foreach ((array) $cart_item as $key => $value) {
+            if (strpos($key, 'numberof_') !== 0 || $key === 'numberof_guests' || !is_numeric($value)) {
+                continue;
+            }
+
+            $count = max(0, intval($value));
+            if ($count <= 0) {
+                continue;
+            }
+
+            $slug = str_replace('numberof_', '', $key);
+            $breakdown[$slug] = [
+                'key' => $key,
+                'label' => ucwords(str_replace(['_', '-'], ' ', $slug)),
+                'count' => $count,
+            ];
+        }
+
+        return $breakdown;
+    }
+
+    /**
+     * Determine the editable passenger metadata key for a cart item.
+     */
+    private function resolve_target_guest_key($cart_item, $requested_key = '')
+    {
+        $all_guest_keys = [];
+
+        foreach ((array) $cart_item as $key => $value) {
+            if (strpos($key, 'numberof_') === 0 && $key !== 'numberof_guests' && is_numeric($value)) {
+                $all_guest_keys[] = $key;
+            }
+        }
+
+        foreach (['numberof_pax', 'numberof_adult', 'numberof_adults'] as $fallback_key) {
+            if (isset($cart_item[$fallback_key]) && !in_array($fallback_key, $all_guest_keys, true)) {
+                $all_guest_keys[] = $fallback_key;
+            }
+        }
+
+        if (empty($all_guest_keys)) {
+            return ['', []];
+        }
+
+        if ($requested_key) {
+            $normalized = strpos($requested_key, 'numberof_') === 0 ? $requested_key : 'numberof_' . $requested_key;
+            if (in_array($normalized, $all_guest_keys, true)) {
+                return [$normalized, $all_guest_keys];
+            }
+        }
+
+        if (in_array('numberof_pax', $all_guest_keys, true)) {
+            return ['numberof_pax', $all_guest_keys];
+        }
+
+        foreach ($all_guest_keys as $guest_key) {
+            if (!empty($cart_item[$guest_key]) && intval($cart_item[$guest_key]) > 0) {
+                return [$guest_key, $all_guest_keys];
+            }
+        }
+
+        return [$all_guest_keys[0], $all_guest_keys];
+    }
+
+
+    /**
+     * AJAX Handler for Add to Cart
+     */
+    public function ajax_add_to_cart()
+    {
+        // Verificar nonce
+        // check_ajax_referer('ovatb-admin-ajax', 'security'); 
+
+        $product_id = isset($_POST['ovatb-product-id']) ? intval($_POST['ovatb-product-id']) : 0;
+        
+        if (!$product_id) {
+            wp_send_json_error(['message' => 'ID de producto inválido.']);
+        }
+
+        $product = wc_get_product($product_id);
+        if (!$product) {
+            wp_send_json_error(['message' => 'Producto no encontrado.']);
+        }
+
+        // --- VALIDACIÓN ---
+        // Replicamos la logica de OVATB_Ajaxs::ovatb_calculate_total para validar
+        
+        // 1. Fechas y Horas
+        $checkin_date_str = isset($_POST['checkin_date']) ? sanitize_text_field($_POST['checkin_date']) : '';
+        $checkout_date_str = isset($_POST['checkout_date']) ? sanitize_text_field($_POST['checkout_date']) : '';
+        $start_time_str = isset($_POST['start_time']) ? sanitize_text_field($_POST['start_time']) : '';
+
+        $checkin_date = strtotime($checkin_date_str);
+        $checkout_date = strtotime($checkout_date_str);
+        $start_time = strtotime($start_time_str);
+
+        // Convert input date (Logic from ovatb)
+        if (function_exists('OVATB')) {
+            $new_dates = OVATB()->options->convert_input_date($product_id, $checkin_date, $checkout_date, $start_time);
+            $checkin_date = strtotime($new_dates['checkin_date']);
+            $checkout_date = strtotime($new_dates['checkout_date']);
+        }
+
+        // 2. Validate Booking
+        if (function_exists('OVATB') && isset(OVATB()->booking)) {
+            $passed = OVATB()->booking->booking_validation($product_id, $checkin_date, $checkout_date, isset($_POST['form_name']) ? $_POST['form_name'] : '');
+            if ($passed && $passed !== true) {
+                wp_send_json_error(['message' => $passed]);
+            }
+        }
+
+        // 3. Guests Validation
+        $data = [
+            'product_id' => $product_id,
+            'checkin_date' => $checkin_date,
+            'checkout_date' => $checkout_date,
+        ];
+        
+        // Recopilar numberof_*
+        $numberof_guests = 0;
+        if (function_exists('OVATB') && $product->is_type('ovatb_tour')) {
+            $guest_options = $product->get_guests();
+            if ($guest_options) {
+                foreach ($guest_options as $guest) {
+                    $val = isset($_POST['numberof_' . $guest['name']]) ? intval($_POST['numberof_' . $guest['name']]) : 0;
+                    if (!$val && isset($_POST['ovatb_numberof_' . $guest['name']])) {
+                        $val = intval($_POST['ovatb_numberof_' . $guest['name']]);
+                    }
+
+                    $data['numberof_' . $guest['name']] = $val;
+                    $numberof_guests += $val;
+                }
+            }
+        }
+        $data['numberof_guests'] = $numberof_guests;
+
+        if (function_exists('OVATB') && isset(OVATB()->booking)) {
+            $mesg = OVATB()->booking->numberof_guests_validation($data, $product);
+            if ($mesg && $mesg !== true) {
+                 wp_send_json_error(['message' => $mesg]);
+            }
+            
+            // Availability Check
+             $available = OVATB()->booking->get_numberof_available_guests($product_id, $checkin_date, $checkout_date, $numberof_guests, isset($_POST['form_name']) ? $_POST['form_name'] : '');
+             if (isset($available['error']) && $available['error']) {
+                 wp_send_json_error(['message' => $available['error']]);
+             }
+        }
+
+        // --- AGREGAR AL CARRITO ---
+        $added = WC()->cart->add_to_cart($product_id, 1);
+
+        if ($added) {
+            wp_send_json_success([
+                'message' => 'Producto agregado al carrito',
+                'product_title' => $product->get_name(),
+                'cart_url' => wc_get_cart_url()
+            ]);
+        } else {
+            // Recopilar errores de WC
+            $errors = wc_get_notices('error');
+            wc_clear_notices(); 
+            
+            $msg = 'No se pudo agregar al carrito.';
+            if (!empty($errors)) {
+                 $msg .= ' Verifique los datos.';
+            }
+            wp_send_json_error(['message' => $msg]);
+        }
+    }
+
+    /**
+     * AJAX Handler: Update TOUR Pax (Metadata)
+     * Handles the complex logic of updating 'numberof_X' metadata.
+     */
+    public function ajax_update_tour_pax()
+    {
+        check_ajax_referer('wiwa_checkout_nonce', 'security');
+
+        $cart_key = isset($_POST['cart_key']) ? sanitize_text_field($_POST['cart_key']) : '';
+        $action = isset($_POST['update_action']) ? sanitize_text_field($_POST['update_action']) : 'update';
+        $requested_qty = isset($_POST['qty']) ? intval($_POST['qty']) : 0;
+        $requested_guest_key = isset($_POST['guest_key']) ? sanitize_key($_POST['guest_key']) : '';
+
+        $cart = WC()->cart->get_cart();
+
+        if (!$cart_key || !isset($cart[$cart_key])) {
+            wp_send_json_error(['message' => 'Item not found']);
+        }
+
+        $cart_item = $cart[$cart_key];
+
+        list($target_key, $all_guest_keys) = $this->resolve_target_guest_key($cart_item, $requested_guest_key);
+        if (!$target_key) {
+            wp_send_json_error(['message' => 'Passenger metadata not found.']);
+        }
+
+        $current_val = isset($cart_item[$target_key]) ? intval($cart_item[$target_key]) : 1;
+
+        if ($requested_qty > 0) {
+            $new_val = $requested_qty;
+        } elseif ($action === 'increase') {
+            $new_val = $current_val + 1;
+        } else {
+            $new_val = $current_val - 1;
+        }
+
+        $new_val = max(1, min(99, intval($new_val)));
+
+        WC()->cart->cart_contents[$cart_key][$target_key] = $new_val;
+
+        $total_guests = 0;
+        foreach ($all_guest_keys as $guest_key) {
+            $value = isset(WC()->cart->cart_contents[$cart_key][$guest_key]) ? intval(WC()->cart->cart_contents[$cart_key][$guest_key]) : 0;
+            $value = max(0, $value);
+            WC()->cart->cart_contents[$cart_key][$guest_key] = $value;
+            $total_guests += $value;
+        }
+
+        if ($total_guests <= 0) {
+            WC()->cart->cart_contents[$cart_key][$target_key] = 1;
+            $new_val = 1;
+            $total_guests = 1;
+        }
+
+        WC()->cart->cart_contents[$cart_key]['numberof_guests'] = $total_guests;
+        WC()->cart->set_session();
+        WC()->cart->calculate_totals();
+        WC()->cart->maybe_set_cart_cookies();
+
+        $cart_after = WC()->cart->get_cart();
+        if (!isset($cart_after[$cart_key])) {
+            wp_send_json_error(['message' => 'Unable to refresh cart item.']);
+        }
+
+        $updated_item = $cart_after[$cart_key];
+        $breakdown_data = $this->get_cart_item_guest_breakdown($updated_item);
+
+        $guest_breakdown = [];
+        $guest_breakdown_text = [];
+        foreach ($breakdown_data as $slug => $guest_data) {
+            $guest_breakdown[$slug] = $guest_data['count'];
+            $guest_breakdown_text[] = sprintf('%d %s', $guest_data['count'], $guest_data['label']);
+        }
+
+        wp_send_json_success([
+            'new_qty' => $new_val,
+            'total_pax' => isset($updated_item['numberof_guests']) ? intval($updated_item['numberof_guests']) : $new_val,
+            'target_key' => $target_key,
+            'guest_breakdown' => $guest_breakdown,
+            'guest_breakdown_text' => implode(' - ', $guest_breakdown_text),
+            'item_subtotal' => $this->get_cart_item_subtotal_html($cart_key),
+            'cart_subtotal' => WC()->cart->get_cart_subtotal(),
+            'cart_total' => WC()->cart->get_total(),
+            'totals_html' => $this->get_cart_totals_html(),
+            'message' => 'Pax updated',
+        ]);
     }
 }

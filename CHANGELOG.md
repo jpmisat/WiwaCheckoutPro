@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.7] - 2024-05-24
+
+### Improved
+
+- **Frontend:** Extracted inline CSS from `templates/cart/cart.php` to `assets/css/wiwa-cart-styles.css` for better performance and maintainability.
+- **Frontend:** Cleaned up cart template file structure.
+
 ## [2.11.6] - 2026-02-13
 
 ### Fixed
