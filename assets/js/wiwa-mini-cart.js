@@ -121,6 +121,7 @@ jQuery(function ($) {
                     // Trigger standard WC cart fragment refresh instead of hard reload
                     // This keeps the sidebar open if possible
                     $(document.body).trigger('wc_fragment_refresh');
+                    $(document.body).trigger('wc_fragments_refreshed'); // Force trigger for side-cart.js
                     $(document.body).trigger('wc_update_cart');
                 } else {
                     console.error('[Wiwa] Tour pax update error:', response.data ? response.data.message : 'Unknown');

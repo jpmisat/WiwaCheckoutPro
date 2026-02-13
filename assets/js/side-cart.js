@@ -79,9 +79,22 @@ document.addEventListener('DOMContentLoaded', () => {
         let hasProducts = false;
         
         // Check for actual list items
+        // Check for actual list items
         const listItems = document.querySelectorAll('.woocommerce-mini-cart-item, .elementor-menu-cart__product');
+        
+        // Also check if the generic list container is effectively empty (contains only text nodes or whitespace)
+        // because sometimes WC outputs <ul class="... mini-cart"></ul> without items.
+        // If listItems found, definitely not empty.
         if (listItems.length > 0) {
             hasProducts = true;
+        } else if (productList && productList.children.length > 0) {
+             // Fallback: if there are children but not matched by our selector?
+             // Usually implies not empty, but let's be strict.
+             // If children are just <p>empty</p>, then it IS empty.
+             const emptyP = productList.querySelector('.woocommerce-mini-cart__empty-message, .elementor-menu-cart__empty-message');
+             if (!emptyP) {
+                 hasProducts = true;
+             }
         }
 
         // --- EMPTY STATE ---
@@ -129,8 +142,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // We can listen to it via jQuery if available, or try native custom event integration.
     // For safety with WC, we'll use a lightweight jQuery listener if available, otherwise fallback.
     if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded', function() {
-            setTimeout(checkEmptyState, 100);
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div', function() {
+            // Small delay to allow DOM to settle
+            setTimeout(checkEmptyState, 50);
         });
     }
+
+    // Also run on window resize/load to be safe
+    window.addEventListener('load', checkEmptyState);
 });

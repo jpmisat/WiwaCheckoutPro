@@ -591,12 +591,21 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 }
 
 /* Title */
+.wiwa-mini-cart-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    margin-bottom: 6px;
+    padding-right: 28px; /* Space for absolute remove key */
+    position: relative;
+    width: 100%;
+}
 .wiwa-mini-cart-title {
-    font-size: 15px;
+    font-size: 14px;
     font-weight: 700;
-    margin: 0 0 6px;
-    line-height: 1.3;
-    color: var(--wiwa-text);
+    line-height: 1.4;
+    padding: 0;
+    margin: 0;
 }
 .wiwa-mini-cart-title a {
     color: var(--wiwa-text);
@@ -607,24 +616,55 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     color: var(--wiwa-primary);
 }
 
-/* Meta Data */
-.wiwa-mini-cart-meta {
-    font-size: 13px; /* Slightly larger text per request for clarity */
-    color: var(--wiwa-text-gray);
-    margin-bottom: 15px; /* More breathing room */
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
-}
-.wiwa-mini-cart-meta .meta-row {
+/* Remove Button (Absolute Top Right) */
+.wiwa-mini-cart-header .remove {
+    position: absolute !important;
+    top: -4px;
+    right: -8px; 
+    width: 28px;
+    height: 28px;
+    background: transparent !important;
+    color: #9CA3AF !important;
     display: flex;
     align-items: center;
-    gap: 8px; /* Better icon spacing */
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s;
+    border-radius: 50%;
 }
-.wiwa-mini-cart-meta .material-symbols-outlined {
-    font-size: 18px; /* Larger icons */
-    width: 18px;
-    height: 18px;
+.wiwa-mini-cart-header .remove:hover {
+    color: #DC2626 !important;
+    background: #FEF2F2 !important;
+}
+.wiwa-mini-cart-header .remove .material-symbols-outlined {
+    font-size: 20px;
+}
+
+/* Meta Data - Compact */
+.wiwa-mini-cart-meta, .wiwa-mini-cart-meta-row-2 {
+    font-size: 13px;
+    color: var(--wiwa-text-gray);
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 4px;
+    line-height: 1.4;
+}
+.wiwa-mini-cart-meta-row-2 {
+    margin-bottom: 12px;
+}
+.wiwa-mini-cart-meta .meta-row, .wiwa-mini-cart-meta-row-2 .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.wiwa-mini-cart-meta .meta-sep {
+    color: #E5E7EB;
+    font-size: 10px;
+}
+.wiwa-mini-cart-meta .material-symbols-outlined, .wiwa-mini-cart-meta-row-2 .material-symbols-outlined {
+    font-size: 16px;
     color: #9CA3AF;
     display: inline-block;
     line-height: 1;
