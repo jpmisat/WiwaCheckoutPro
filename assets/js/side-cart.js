@@ -119,13 +119,25 @@ document.addEventListener('DOMContentLoaded', () => {
     checkEmptyState();
 
     // Hook into WooCommerce fragments refresh and other relevant events
-    // We remove the MutationObserver here to prevents infinite loops if our DOM changes trigger it.
-    // WC events are the standard and safe way to react to cart changes.
     if (typeof jQuery !== 'undefined') {
         jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function() {
             // Small delay to allow WC to finish its DOM writes
             setTimeout(checkEmptyState, 50);
         });
+    }
+
+    // MutationObserver to handle dynamic updates from other scripts (e.g. Elementor)
+    const widgetContent = document.querySelector('.widget_shopping_cart_content');
+    if (widgetContent) {
+        const observer = new MutationObserver((mutations) => {
+            // Disconnect to avoid infinite loops if we modify DOM
+            observer.disconnect();
+            checkEmptyState();
+            // Reconnect
+            observer.observe(widgetContent, { childList: true, subtree: true });
+        });
+        
+        observer.observe(widgetContent, { childList: true, subtree: true });
     }
 
     // Native fallback events if needed (though WC mostly uses jQuery events)
