@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.11] - 2026-02-13
+
+### Removed
+
+- Deleted redundant and legacy CSS files (`cart.css`, `checkout-styles.css`, `product-popup-override.css`, etc.)
+- Removed enqueue of legacy `cart.css` from `class-checkout-handler.php`.
+
 ## [2.11.10] - 2026-02-13
 
 ### Removed

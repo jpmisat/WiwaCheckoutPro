@@ -185,15 +185,7 @@ class Wiwa_Checkout_Handler
             );
         }
 
-        // Enqueue cart styles on cart page
-        if (is_cart()) {
-            wp_enqueue_style(
-                'wiwa-cart-css',
-                WIWA_CHECKOUT_URL . 'assets/css/cart.css',
-            [],
-                WIWA_CHECKOUT_VERSION
-            );
-        }
+
 
         // Check if we should load checkout assets
         if (!$this->is_wiwa_checkout_page() && !is_checkout()) {
