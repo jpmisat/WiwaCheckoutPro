@@ -28,55 +28,38 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                 // Extract Tour Meta
                 $is_tour   = $_product->is_type('ovatb_tour');
                 $tour_meta = function_exists('wiwa_extract_tour_meta') ? wiwa_extract_tour_meta($cart_item) : [];
-                
-                // Stepper Value Logic
-                $qty_valid_value = ($is_tour && isset($tour_meta['travelers'])) ? $tour_meta['travelers'] : $cart_item['quantity'];
 
-                // Calculate Unit Price
-                $line_subtotal_raw = floatval($cart_item['line_subtotal']);
-                if (wc_tax_enabled() && WC()->cart->display_prices_including_tax()) {
-                    $line_subtotal_raw += floatval($cart_item['line_subtotal_tax']);
-                }
-                <?php
-                // --- CUSTOM: Extract Tour Meta ---
-                // We restart logic to get date, duration, travelers
-                $security_deposit = get_post_meta( $product_id, 'ovabrw_security_deposit_amount', true );
-                
-                // Get check-in (Date)
+                // --- CUSTOM: Extract Tour Meta (Redundant check for safer variables) ---
                 $date_check_in = '';
-                if ( isset( $cart_item['ovabrw_checkin'] ) && ! empty( $cart_item['ovabrw_checkin'] ) ) {
-                    $date_check_in = date( get_option( 'date_format' ), strtotime( $cart_item['ovabrw_checkin'] ) );
-                } elseif ( isset( $cart_item['checkin'] ) && ! empty( $cart_item['checkin'] ) ) {
-                    $date_check_in = date( get_option( 'date_format' ), strtotime( $cart_item['checkin'] ) );
+                if ( ! empty( $tour_meta['checkin'] ) ) {
+                    $date_check_in = $tour_meta['checkin'];
                 }
 
-                // Get Duration
                 $duration = '';
-                if ( isset( $cart_item['duration_label'] ) && ! empty( $cart_item['duration_label'] ) ) {
-                    $duration = $cart_item['duration_label'];
-                } elseif ( isset( $cart_item['ovabrw_duration'] ) ) {
-                    $duration = $cart_item['ovabrw_duration'];
+                if ( ! empty( $tour_meta['duration_label'] ) ) {
+                    $duration = $tour_meta['duration_label'];
                 }
 
-                // Get Travelers (Adults + Kids + Babies)
+                // Travelers Label
                 $travelers_label = '';
-                $guest_keys = array(
-                    'adults' => esc_html__( 'Adultos', 'wiwa-tour-checkout' ),
-                    'kids'   => esc_html__( 'Niños', 'wiwa-tour-checkout' ),
-                    'babies' => esc_html__( 'Bebés', 'wiwa-tour-checkout' ),
-                );
-                $guests_list = array();
-                
-                // Try to find the keys in cart item
-                foreach( $guest_keys as $key => $label ) {
-                     if ( isset( $cart_item[$key] ) && intval( $cart_item[$key] ) > 0 ) {
-                         $guests_list[] = intval( $cart_item[$key] ) . ' ' . $label;
-                     } elseif ( isset( $cart_item['ovabrw_'.$key] ) && intval( $cart_item['ovabrw_'.$key] ) > 0 ) {
-                         $guests_list[] = intval( $cart_item['ovabrw_'.$key] ) . ' ' . $label;
-                     }
-                }
-                if ( ! empty( $guests_list ) ) {
-                    $travelers_label = implode( ', ', $guests_list );
+                if ( ! empty( $tour_meta['adults'] ) ) $travelers_label .= $tour_meta['adults'] . ' ' . __( 'Adultos', 'wiwa-tour-checkout' );
+                if ( ! empty( $tour_meta['kids'] ) )   $travelers_label .= ', ' . $tour_meta['kids'] . ' ' . __( 'Niños', 'wiwa-tour-checkout' );
+                if ( ! empty( $tour_meta['babies'] ) ) $travelers_label .= ', ' . $tour_meta['babies'] . ' ' . __( 'Bebés', 'wiwa-tour-checkout' );
+
+                // Stepper Logic
+                // For tours, "quantity" in WC is 1, but we want to show travelers or just the pax count?
+                // Actually, for OvaTourBooking, WC quantity IS the number of people usually, OR it's 1 and price is total.
+                // wiwa-mini-cart.js documentation says: "WC quantity is always 1. Actual traveler count is stored in metadata."
+                // So the input value should be the traveler count.
+                // We use $tour_meta['travelers'] (sum of pax) as the visible quantity.
+                $qty_display_value = ($is_tour && isset($tour_meta['travelers'])) ? $tour_meta['travelers'] : $cart_item['quantity'];
+
+                // Primary Guest Key for AJAX (needed for wiwa-mini-cart.js)
+                $primary_guest_key = '';
+                if (!empty($tour_meta['guests_detail'])) {
+                     // Just use 'adults' or the first key available if we want to increment main pax
+                     // wiwa-mini-cart.js uses 'guest_key' data attribute.
+                     $primary_guest_key = 'adults'; 
                 }
                 ?>
                 <li class="woocommerce-mini-cart-item <?php echo esc_attr( apply_filters( 'woocommerce_mini_cart_item_class', 'mini_cart_item', $cart_item, $cart_item_key ) ); ?>">
@@ -86,10 +69,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                         <div class="wiwa-mini-cart-thumb">
                             <?php if ( ! empty( $product_permalink ) ) : ?>
                                 <a href="<?php echo esc_url( $product_permalink ); ?>">
-                                    <?php echo $thumbnail; ?>
+                                    <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                 </a>
                             <?php else : ?>
-                                <?php echo $thumbnail; ?>
+                                <?php echo $thumbnail; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                             <?php endif; ?>
                         </div>
 
@@ -150,11 +133,31 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                             <!-- ROW 4: Footer (Stepper + Price) -->
                             <div class="wiwa-mini-cart-footer">
+                                <!-- Stepper -->
+                                <div class="wiwa-qty-stepper">
+                                    <div class="wiwa-stepper-pill">
+                                        <button type="button" class="wiwa-qty-minus">-</button>
+                                        <?php
+                                        // We use a custom input that hooks into wiwa-mini-cart.js
+                                        // Note: For tours, we don't use standard WC quantity input alone.
+                                        ?>
+                                        <input type="number" 
+                                            class="wiwa-qty-input" 
+                                            value="<?php echo esc_attr( $qty_display_value ); ?>" 
+                                            min="1" 
+                                            step="1"
+                                            data-cart-key="<?php echo esc_attr( $cart_item_key ); ?>"
+                                            data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
+                                            data-guest-key="<?php echo esc_attr( $primary_guest_key ); ?>"
+                                            readonly 
+                                        />
+                                        <button type="button" class="wiwa-qty-plus">+</button>
+                                    </div>
                                 </div>
 
                                 <!-- Price -->
                                 <div class="wiwa-mini-cart-price">
-                                    <?php echo WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ); ?>
+                                    <?php echo apply_filters( 'woocommerce_widget_cart_item_quantity', '<span class="quantity">' . sprintf( '%s', $product_price ) . '</span>', $cart_item, $cart_item_key ); // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                 </div>
                             </div>
                         </div>
