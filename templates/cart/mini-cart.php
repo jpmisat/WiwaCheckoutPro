@@ -80,7 +80,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                         <div class="wiwa-mini-cart-content">
                             <!-- ROW 1: Title + Remove -->
                             <div class="wiwa-mini-cart-header">
-                                <a href="<?php echo esc_url( $product_permalink ); ?>">
+                                <a href="<?php echo esc_url( $product_permalink ); ?>" class="wiwa-item-title">
                                     <?php echo $product_name; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
                                 </a>
 
@@ -89,7 +89,8 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
                                         '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s">
-                                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"></line><line x1="6" y1="6" x2="18" y2="18"></line></svg>
+                                            <!-- Trash Icon -->
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg>
                                         </a>',
                                         esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
                                         esc_attr__( 'Remove this item', 'woocommerce' ),
@@ -106,7 +107,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                             <div class="wiwa-mini-cart-meta">
                                 <?php if ( $date_check_in ) : ?>
                                     <span class="meta-item">
-                                        <!-- SVG Calendar -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
                                         <?php echo esc_html( $date_check_in ); ?>
                                     </span>
@@ -115,26 +115,32 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 <?php if ( $duration ) : ?>
                                     <span class="meta-separator">|</span>
                                     <span class="meta-item">
-                                        <!-- SVG Clock -->
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                                         <?php echo esc_html( $duration ); ?>
                                     </span>
                                 <?php endif; ?>
                             </div>
 
-                            <!-- ROW 3: Travelers -->
-                            <?php if ( $travelers_label ) : ?>
+                            <!-- ROW 3: Travelers Count + Icon -->
+                            <?php if ( $is_tour && $qty_display_value > 0 ) : ?>
                                 <div class="wiwa-mini-cart-meta-row-2">
                                      <span class="meta-item">
-                                        <!-- SVG User -->
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
-                                        <?php echo esc_html( $travelers_label ); ?>
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
+                                        <?php echo esc_html( $qty_display_value ); ?> <?php echo ($qty_display_value > 1) ? 'Viajeros' : 'Viajero'; ?>
                                     </span>
                                 </div>
                             <?php endif; ?>
 
-                            <!-- ROW 4: Footer (Stepper + Price) -->
+                            <!-- ROW 4: Footer (Price + Stepper) -->
+                            <!-- Reordering per user request: Price prominently, then stepper -->
                             <div class="wiwa-mini-cart-footer">
+                                
+                                <!-- Price -->
+                                <div class="wiwa-mini-cart-price">
+                                    <?php echo sprintf( '%s', $product_price ); ?> 
+                                    <span class="wiwa-currency-code"><?php echo get_woocommerce_currency(); ?></span>
+                                </div>
+
                                 <!-- Stepper -->
                                 <div class="wiwa-qty-stepper">
                                     <div class="wiwa-stepper-pill">
@@ -153,10 +159,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                     </div>
                                 </div>
 
-                                <!-- Price -->
-                                <div class="wiwa-mini-cart-price">
-                                    <?php echo sprintf( '%s', $product_price ); ?>
-                                </div>
                             </div>
                         </div>
                     </div>
