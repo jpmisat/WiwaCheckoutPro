@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.11.6] - 2026-02-13
+
+### Fixed
+
+- **Critical:** Moved `wiwa_extract_tour_meta` helper function from `cart.php` template to main plugin file to prevent "Cannot redeclare function" fatal error (HTTP 500) when template is loaded multiple times (e.g. via AJAX).
+
 ## [2.11.5] - 2026-02-13
 
 ### Fixed
