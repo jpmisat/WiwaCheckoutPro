@@ -609,26 +609,27 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 
 /* Meta Data */
 .wiwa-mini-cart-meta {
-    font-size: 12px;
+    font-size: 11px;
     color: var(--wiwa-text-gray);
-    margin-bottom: 12px;
-    line-height: 1.5;
+    margin-bottom: 6px;
+    line-height: 1.4;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
 }
-.wiwa-mini-cart-meta dt {
-    font-weight: 600;
-    float: left;
-    clear: left;
-    margin-right: 4px;
-    color: var(--wiwa-text);
+.wiwa-mini-cart-meta .meta-row {
+    display: flex;
+    align-items: center;
+    gap: 6px;
 }
-.wiwa-mini-cart-meta dd {
-    float: left;
-    margin-bottom: 2px;
-}
-.wiwa-mini-cart-meta:after {
-    content: "";
-    display: table;
-    clear: both;
+.wiwa-mini-cart-meta .material-symbols-outlined {
+    font-size: 16px;
+    width: 16px;
+    height: 16px;
+    color: #9CA3AF;
+    /* Ensure font loads if not global, but usually it is */
+    display: inline-block;
+    line-height: 1;
 }
 
 /* Footer Row: Stepper | Price | Remove */
@@ -636,55 +637,70 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     display: flex;
     align-items: center;
     justify-content: space-between;
-    margin-top: auto;
+    margin-top: 8px; /* Breathing room */
 }
 
-/* Stepper (Pill Shape from Ref Image 3) */
+/* Stepper (Pill Shape) */
 .wiwa-mini-cart-stepper .wiwa-mini-cart-qty {
-    height: 36px; /* Taller pill */
-    width: 100px; /* Wider */
-    border-radius: 50px;
-    border: 1px solid var(--wiwa-border);
-    background: #FAFAFA;
+    height: 32px; /* Slightly smaller than previous iteration, better proportion */
+    width: 90px;
+    border-radius: 999px; /* Pill */
+    border: 1px solid var(--wiwa-border); /* Subtle border */
+    background: #FAFAFA; /* Off-white bg */
     padding: 2px;
-    box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.02);
 }
 .wiwa-mini-cart-stepper .wiwa-qty-btn {
-    width: 30px;
-    height: 30px;
-    font-size: 16px;
+    width: 26px;
+    height: 26px;
+    font-size: 14px;
     color: var(--wiwa-text-gray);
     border-radius: 50%;
+    margin: 0;
 }
 .wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
     background: #ffffff;
     color: var(--wiwa-primary);
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 1px 2px rgba(0,0,0,0.05);
 }
 .wiwa-mini-cart-stepper .wiwa-qty-input {
-    font-size: 15px; /* Larger number */
-    font-weight: 800; /* Bolder */
-    color: var(--wiwa-primary); /* Dark green */
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--wiwa-primary);
+}
+/* Static pill for single item */
+.wiwa-stepper-pill.disabled {
+    justify-content: center;
+    background: #F3F4F6;
+    border-color: transparent;
+}
+.wiwa-qty-static {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--wiwa-text-gray);
 }
 
 /* Price */
 .wiwa-mini-cart-price {
-    font-weight: 700;
+    font-weight: 800;
     color: var(--wiwa-text);
     font-size: 14px;
     margin-left: auto;
-    margin-right: 12px;
+    margin-right: 10px;
 }
 
 /* Remove Button (Icon style) */
 .wiwa-mini-cart-footer .remove {
     position: static !important;
-    width: 28px;
-    height: 28px;
+    width: 24px;
+    height: 24px;
     border-radius: 50%;
-    background: transparent !important; /* Clean look */
+    background: transparent !important;
     color: #9CA3AF !important;
-    border: 1px solid var(--wiwa-border) !important;
+    border: none !important; /* Cleaner, no border unless hover */
     display: flex;
     align-items: center;
     justify-content: center;
@@ -694,37 +710,36 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     transition: all 0.2s;
 }
 .wiwa-mini-cart-footer .remove:hover {
-    background: #FEE2E2 !important;
     color: #DC2626 !important;
-    border-color: #FEE2E2 !important;
+    background: #FEE2E2 !important;
 }
 
 /* Bottom Section */
 .wiwa-mini-cart-bottom {
-    border-top: 1px solid var(--wiwa-border);
-    padding-top: 24px;
-    margin-top: 12px;
+    border-top: 1px solid var(--wiwa-border-light);
+    padding-top: 16px;
+    margin-top: 16px;
 }
 
-/* Subtotal Box (Ref Image 1 style hint) */
+/* Subtotal Box - Subtle & Elegant per request */
 .wiwa-mini-cart-subtotal {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-bottom: 24px;
-    padding: 16px;
+    margin-bottom: 20px;
+    padding: 12px 16px; /* Less height */
     background: #F9FAFB;
-    border-radius: 12px;
-    border: 1px solid var(--wiwa-border-light);
+    border-radius: 8px; /* Less round */
+    border: none; /* Cleaner */
 }
 .wiwa-mini-cart-subtotal span:first-child {
-    font-size: 15px;
+    font-size: 14px;
     color: var(--wiwa-text-gray);
-    font-weight: 600;
+    font-weight: 500;
 }
 .wiwa-subtotal-amount {
-    font-size: 18px;
-    font-weight: 800;
+    font-size: 16px;
+    font-weight: 700;
     color: var(--wiwa-text);
 }
 

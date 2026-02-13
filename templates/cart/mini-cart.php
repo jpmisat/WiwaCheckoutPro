@@ -24,6 +24,27 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                 $thumbnail         = apply_filters( 'woocommerce_cart_item_thumbnail', $_product->get_image(), $cart_item, $cart_item_key );
                 $product_price     = apply_filters( 'woocommerce_cart_item_price', WC()->cart->get_product_price( $_product ), $cart_item, $cart_item_key );
                 $product_permalink = apply_filters( 'woocommerce_cart_item_permalink', $_product->is_visible() ? $_product->get_permalink( $cart_item ) : '', $cart_item, $cart_item_key );
+
+                // Extract Tour Meta
+                $is_tour   = $_product->is_type('ovatb_tour');
+                $tour_meta = function_exists('wiwa_extract_tour_meta') ? wiwa_extract_tour_meta($cart_item) : [];
+                
+                // Stepper Value Logic
+                $qty_valid_value = ($is_tour && isset($tour_meta['travelers'])) ? $tour_meta['travelers'] : $cart_item['quantity'];
+
+                // Calculate Unit Price
+                $line_subtotal_raw = floatval($cart_item['line_subtotal']);
+                if (wc_tax_enabled() && WC()->cart->display_prices_including_tax()) {
+                    $line_subtotal_raw += floatval($cart_item['line_subtotal_tax']);
+                }
+                $pax_count  = (isset($tour_meta['travelers']) && $tour_meta['travelers'] > 0) ? $tour_meta['travelers'] : 1;
+                $unit_price = $line_subtotal_raw / $pax_count;
+
+                // Primary Guest Key for AJAX
+                $primary_guest_key = '';
+                if (!empty($tour_meta['guests_detail'])) {
+                    $primary_guest_key = $tour_meta['guests_detail'][0]['name'];
+                }
                 ?>
                 <li class="woocommerce-mini-cart-item <?php echo esc_attr( apply_filters( 'woocommerce_mini_cart_item_class', 'mini_cart_item', $cart_item, $cart_item_key ) ); ?>">
                     
@@ -49,24 +70,60 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 <?php endif; ?>
                             </h4>
 
-                            <!-- Meta Data (Date, Pax, etc.) -->
+                            <!-- Detailed Meta Data (Date, Duration, Pax) -->
                             <div class="wiwa-mini-cart-meta">
-                                <?php echo wc_get_formatted_cart_item_data( $cart_item ); ?>
+                                <?php if (!empty($tour_meta['checkin'])) : ?>
+                                <div class="meta-row">
+                                    <span class="material-symbols-outlined">calendar_today</span>
+                                    <span><?php echo esc_html($tour_meta['checkin']); ?></span>
+                                </div>
+                                <?php endif; ?>
+
+                                <?php if (!empty($tour_meta['duration_label'])) : ?>
+                                <div class="meta-row">
+                                    <span class="material-symbols-outlined">schedule</span>
+                                    <span><?php echo esc_html($tour_meta['duration_label']); ?></span>
+                                </div>
+                                <?php endif; ?>
+
+                                <div class="meta-row">
+                                    <span class="material-symbols-outlined">group</span>
+                                    <span><?php echo esc_html($pax_count); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></span>
+                                </div>
                             </div>
 
                             <!-- Footer: Stepper + Price + Remove -->
                             <div class="wiwa-mini-cart-footer">
+                                
+                                <!-- Quantity Stepper -->
                                 <div class="wiwa-mini-cart-stepper">
-                                    <?php
-                                    // This hook handles our custom stepper HTML via 'custom_mini_cart_item_quantity' filter
-                                    echo apply_filters( 'woocommerce_widget_cart_item_quantity', '<span class="quantity">' . sprintf( '%s &times; %s', $cart_item['quantity'], $product_price ) . '</span>', $cart_item, $cart_item_key ); 
-                                    ?>
+                                    <?php if ($_product->is_sold_individually()) : ?>
+                                        <div class="wiwa-stepper-pill disabled">
+                                            <span class="wiwa-qty-static">1</span>
+                                        </div>
+                                    <?php else : ?>
+                                        <div class="wiwa-stepper-pill">
+                                            <button type="button" class="wiwa-qty-minus" aria-label="<?php esc_attr_e('Decrease quantity', 'wiwa-checkout'); ?>">−</button>
+                                            <input type="number" 
+                                                   class="wiwa-qty-input" 
+                                                   value="<?php echo esc_attr($qty_valid_value); ?>" 
+                                                   min="1" 
+                                                   step="1"
+                                                   data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
+                                                   data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
+                                                   data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
+                                                   readonly />
+                                            <button type="button" class="wiwa-qty-plus" aria-label="<?php esc_attr_e('Increase quantity', 'wiwa-checkout'); ?>">+</button>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
                                 
+                                <!-- Total Price -->
                                 <div class="wiwa-mini-cart-price">
-                                    <?php echo $product_price; ?>
+                                    <?php echo WC()->cart->get_product_subtotal( $_product, $cart_item['quantity'] ); ?>
                                 </div>
 
+                                <!-- Remove -->
                                 <?php
                                 echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     'woocommerce_cart_item_remove_link',
@@ -103,10 +160,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
         <div class="wiwa-mini-cart-buttons">
             <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
-                <?php esc_html_e( 'View cart', 'woocommerce' ); ?>
+                <?php esc_html_e( 'Ver carrito', 'woocommerce' ); ?>
             </a>
             <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wiwa-btn-primary">
-                <?php esc_html_e( 'Checkout', 'woocommerce' ); ?>
+                <?php esc_html_e( 'Finalizar compra', 'woocommerce' ); ?>
             </a>
         </div>
 

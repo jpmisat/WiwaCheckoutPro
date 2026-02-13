@@ -118,9 +118,10 @@ jQuery(function ($) {
             },
             success: function (response) {
                 if (response.success) {
-                    // Reload the page to reflect updated OvaTourBooking pricing
-                    // (OvaTourBooking recalculates price per total guests in before_calculate_totals)
-                    window.location.reload();
+                    // Trigger standard WC cart fragment refresh instead of hard reload
+                    // This keeps the sidebar open if possible
+                    $(document.body).trigger('wc_fragment_refresh');
+                    $(document.body).trigger('wc_update_cart');
                 } else {
                     console.error('[Wiwa] Tour pax update error:', response.data ? response.data.message : 'Unknown');
                     if ($el && $el.length) {
