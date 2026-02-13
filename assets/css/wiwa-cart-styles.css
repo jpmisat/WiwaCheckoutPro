@@ -662,52 +662,58 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     font-size: 20px;
 }
 
-/* Meta Data Rows */
-.wiwa-mini-cart-meta, .wiwa-mini-cart-meta-row-2 {
+
+/* Meta Rows */
+.wiwa-mini-cart-meta, 
+.wiwa-mini-cart-meta-row-2 {
     font-size: 13px;
     color: var(--wiwa-text-gray);
     display: flex;
     align-items: center;
     flex-wrap: wrap;
-    gap: 8px;
+    gap: 8px; /* Consistent gap */
     margin-bottom: 4px;
     line-height: 1.4;
 }
+
 .wiwa-mini-cart-meta-row-2 {
-    margin-bottom: 12px;
+    margin-bottom: 8px; /* More space before footer */
 }
-.wiwa-mini-cart-meta .meta-item, 
-.wiwa-mini-cart-meta-row-2 .meta-item {
-    display: flex;
+
+/* Price Per Person Text (New) */
+.wiwa-price-per-person-text {
+    font-size: 13px;
+    font-weight: 700; /* Bold as requested */
+    color: var(--wiwa-text-gray);
+    display: inline-flex;
     align-items: center;
     gap: 4px;
 }
-.wiwa-mini-cart-meta .meta-item svg,
-.wiwa-mini-cart-meta-row-2 .meta-item svg {
-    /* SVG Icon styles */
-    width: 14px;
-    height: 14px;
-    color: var(--wiwa-primary); 
-    flex-shrink: 0;
+.wiwa-price-per-person-text .woocommerce-Price-amount {
+    font-size: 13px !important;
 }
-.wiwa-mini-cart-meta .meta-separator {
+.meta-separator {
     color: #E5E7EB;
     margin: 0 4px;
-}
-.wiwa-mini-cart-meta .material-symbols-outlined, .wiwa-mini-cart-meta-row-2 .material-symbols-outlined {
-    font-size: 16px;
-    color: #9CA3AF;
-    display: inline-block;
-    line-height: 1;
+    font-size: 10px;
 }
 
 /* Footer Row */
 .wiwa-mini-cart-footer {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: flex-start; /* Align left */
     margin-top: auto;
     width: 100%;
+}
+
+/* Subtotal Currency */
+.wiwa-currency-code-large {
+    font-size: 0.6em;
+    font-weight: 600;
+    color: #9CA3AF;
+    vertical-align: super;
+    margin-left: 2px;
 }
 
 /* Footer Left: Stepper + Price */

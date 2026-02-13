@@ -121,26 +121,36 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 <?php endif; ?>
                             </div>
 
-                            <!-- ROW 3: Travelers Count + Icon -->
+                            <!-- ROW 3: Travelers Count + Price Per Person -->
                             <?php if ( $is_tour && $qty_display_value > 0 ) : ?>
                                 <div class="wiwa-mini-cart-meta-row-2">
                                      <span class="meta-item">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M23 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg>
                                         <?php echo esc_html( $qty_display_value ); ?> <?php echo ($qty_display_value > 1) ? 'Viajeros' : 'Viajero'; ?>
                                     </span>
+
+                                    <span class="meta-separator">|</span>
+
+                                    <?php
+                                        // Calculate Unit/Person Price
+                                        // Use line subtotal (which includes everything for this line) divided by quantity
+                                        $line_total = $cart_item['line_subtotal'];
+                                        if ( wc_prices_include_tax() ) {
+                                            $line_total += $cart_item['line_subtotal_tax'];
+                                        }
+                                        $unit_price = $line_total / max(1, $qty_display_value);
+                                        $price_html = wc_price( $unit_price );
+                                    ?>
+                                    <span class="meta-item wiwa-price-per-person-text">
+                                        <!-- Tag Icon -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path><line x1="7" y1="7" x2="7.01" y2="7"></line></svg>
+                                        <?php echo sprintf( '%s', $price_html ); ?>
+                                    </span>
                                 </div>
                             <?php endif; ?>
 
-                            <!-- ROW 4: Footer (Price + Stepper) -->
-                            <!-- Reordering per user request: Price prominently, then stepper -->
+                            <!-- ROW 4: Footer (Stepper ONLY) -->
                             <div class="wiwa-mini-cart-footer">
-                                
-                                <!-- Price -->
-                                <div class="wiwa-mini-cart-price">
-                                    <?php echo sprintf( '%s', $product_price ); ?> 
-                                    <span class="wiwa-currency-code"><?php echo get_woocommerce_currency(); ?></span>
-                                </div>
-
                                 <!-- Stepper -->
                                 <div class="wiwa-qty-stepper">
                                     <div class="wiwa-stepper-pill">
@@ -158,8 +168,8 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                         <button type="button" class="wiwa-qty-plus">+</button>
                                     </div>
                                 </div>
-
                             </div>
+                        </div>
                         </div>
                     </div>
                 </li>
@@ -174,7 +184,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
     <div class="wiwa-mini-cart-bottom">
         <div class="wiwa-mini-cart-subtotal">
             <span><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></span>
-            <span class="wiwa-subtotal-amount"><?php echo WC()->cart->get_cart_subtotal(); ?></span>
+            <span class="wiwa-subtotal-amount">
+                <?php echo WC()->cart->get_cart_subtotal(); ?>
+                <span class="wiwa-currency-code-large"><?php echo get_woocommerce_currency(); ?></span>
+            </span>
         </div>
 
         <?php do_action( 'woocommerce_widget_shopping_cart_before_buttons' ); ?>
