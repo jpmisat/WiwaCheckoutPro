@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.11.9] - 2024-05-24
+
+### Improved
+
+- **Frontend:** Refactored Empty Cart template for better code quality and centered the SVG icon.
+- **Frontend:** Migrated Empty Cart inline styles to `assets/css/wiwa-cart-styles.css`.
+
 ## [2.11.8] - 2024-05-24
 
 ### Fixed
