@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.10.9
+ * Version: 2.11.0
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.10.10');
+define('WIWA_CHECKOUT_VERSION', '2.11.0');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -202,30 +202,58 @@ final class Wiwa_Tour_Checkout
 
     public function enqueue_custom_scripts()
     {
-        // --- ADD TO CART POPUP ASSETS ---
-        // Load globally or check for specific pages where the popup is used. 
-        // Since JetPopup can be anywhere, we load it broadly or check for 'elementor' if possible.
-        // For now, we load it if we are not in admin, or specifically on front/shop pages.
+        // --- ADD TO CART POPUP ASSETS (Global) ---
         if ( !is_admin() ) {
             wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
             wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
-            
             wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
             ]);
         }
 
-        // --- CART REDESIGN (Refined) ---
-        // Enqueue Global Cart Styles (Sidebar & Main Cart)
-        if ( !is_admin() ) { 
-            // Load Tailwind CSS (CDN) - Essential for the Stitch Design
-            // We use the same configuration as provided in the design source
-            wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms', [], null, false);
+        // --- CART PAGE SPECIFIC ASSETS ---
+        if ( !is_admin() && is_cart() ) {
+            // 1. Tailwind CSS CDN (cart page only to avoid breaking other pages)
+            wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,container-queries', [], null, false);
 
+            // 2. Tailwind config with Stitch design tokens (inline after tailwind loads)
+            $tw_config = "
+                tailwind.config = {
+                    theme: {
+                        extend: {
+                            colors: {
+                                'wiwa-cream': '#fdfbf7',
+                                'wiwa-bg': '#f9f9f9',
+                                'wiwa-green': '#1a3c28',
+                                'wiwa-green-light': '#2b4c3b',
+                                'wiwa-text-gray': '#4b5563',
+                                'wiwa-border': '#e5e7eb',
+                            },
+                            fontFamily: {
+                                sans: ['Montserrat', 'Roboto', 'sans-serif'],
+                            }
+                        }
+                    }
+                }
+            ";
+            wp_add_inline_script('tailwindcss', $tw_config);
+
+            // 3. Google Material Symbols (icons used in the design)
+            wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', [], null);
+
+            // 4. Montserrat Font
+            wp_enqueue_style('google-montserrat', 'https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap', [], null);
+
+            // 5. Custom cart styles (overrides + Stitch extras)
             wp_enqueue_style('wiwa-cart-styles', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
+        }
+
+        // --- MINI CART / SIDEBAR ASSETS (Global) ---
+        if ( !is_admin() ) {
+            wp_enqueue_style('wiwa-cart-styles-global', WIWA_CHECKOUT_URL . 'assets/css/wiwa-cart-styles.css', [], WIWA_CHECKOUT_VERSION);
             wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
-             wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
+            wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
             ]);

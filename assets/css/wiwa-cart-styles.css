@@ -1,255 +1,127 @@
 /**
- * Wiwa Tour Checkout - Premium Cart & Sidebar Styles
- * Version: 2.10.8 - Pixel Perfect Sync
+ * Wiwa Tour Checkout - Cart & Mini-Cart Styles
+ * Version: 2.11.0
+ *
+ * This file provides:
+ * 1. Base overrides for WooCommerce cart elements to align with Stitch design
+ * 2. Mini-cart sidebar quantity pill styles (used outside the main cart page)
+ * 3. Fallback styles when Tailwind is NOT loaded (mini-cart widget, etc.)
+ *
+ * The main cart page (templates/cart/cart.php) uses Tailwind CDN for layout.
+ * These styles complement Tailwind, they don't replace it.
  */
 
 /* =========================================
    0. DESIGN TOKENS
    ========================================= */
 :root {
-  /* Colors from Stitch Design */
-  --wiwa-primary: #1a3c28; /* text-wiwa-green */
-  --wiwa-primary-light: #2b4c3b; /* hover:bg-wiwa-green-light */
-  --wiwa-cream: #fdfbf7; /* bg-wiwa-cream / header bg */
-  --wiwa-bg-body: #f9f9f9; /* bg-wiwa-bg */
+  --wiwa-primary: #1a3c28;
+  --wiwa-primary-light: #2b4c3b;
+  --wiwa-cream: #fdfbf7;
+  --wiwa-bg-body: #f9f9f9;
   --wiwa-bg-card: #ffffff;
-  --wiwa-text: #1f2937; /* text-gray-800 */
-  --wiwa-text-gray: #4b5563; /* text-gray-600/500 */
-  --wiwa-text-light: #9ca3af; /* text-gray-400 */
-  --wiwa-border: #e5e7eb; /* border-gray-200 */
-  --wiwa-border-light: #f9fafb; /* border-gray-50 */
-  --wiwa-red: #dc2626; /* text-red-600 */
-
-  /* Shadows & Radius */
-  --wiwa-shadow:
-    0 4px 6px -1px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.03);
-  --wiwa-card-shadow:
-    0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
-  --wiwa-radius-xl: 0.75rem; /* rounded-xl (12px) */
-  --wiwa-radius-2xl: 1rem; /* rounded-2xl (16px) */
-
+  --wiwa-text: #1f2937;
+  --wiwa-text-gray: #4b5563;
+  --wiwa-text-light: #9ca3af;
+  --wiwa-border: #e5e7eb;
+  --wiwa-border-light: #f9fafb;
+  --wiwa-red: #dc2626;
   --wiwa-font-main: "Montserrat", sans-serif;
 }
 
+/* =========================================
+   1. MAIN CART PAGE - WC OVERRIDES
+   ========================================= */
+
+/* Force body background on cart pages */
 body.woocommerce-cart {
-  background-color: var(--wiwa-bg-body);
-  font-family: var(--wiwa-font-main);
-  color: var(--wiwa-text);
-  -webkit-font-smoothing: antialiased;
+  background-color: var(--wiwa-bg-body) !important;
 }
 
-/* =========================================
-   1. MAIN WRAPPER
-   ========================================= */
-.wiwa-cart-wrapper {
-  max-width: 1280px;
-  margin: 40px auto;
-  padding: 0 16px;
-  display: flex;
-  flex-direction: column;
-  gap: 32px;
+/* Reset WC table-based cart styles that may leak through */
+body.woocommerce-cart .woocommerce table.shop_table,
+body.woocommerce-cart .woocommerce table.shop_table thead,
+body.woocommerce-cart .woocommerce table.shop_table tbody,
+body.woocommerce-cart .woocommerce table.shop_table tr,
+body.woocommerce-cart .woocommerce table.shop_table td,
+body.woocommerce-cart .woocommerce table.shop_table th {
+  border: none !important;
+  background: transparent !important;
 }
 
-@media (min-width: 1024px) {
-  .wiwa-cart-wrapper {
-    flex-direction: row;
-    align-items: flex-start;
-    padding: 0 40px;
-    gap: 40px;
-  }
+/* Image override: ensure WC-generated images fill our container */
+.wiwa-cart-page .wiwa-thumb-wrap img,
+.wiwa-cart-page .wiwa-thumb-wrap a img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 0 !important; /* parent has rounded-xl */
+  max-width: none !important;
 }
-
-/* =========================================
-   2. CART ITEMS LIST
-   ========================================= */
-.wiwa-cart-grid-container {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-/* CARD LAYOUT - MOBILE FIRST (Stacked) */
-/* CARD LAYOUT - MOBILE FIRST (Stacked) */
-.wiwa-cart-card {
-  background: var(--wiwa-bg-card);
-  border-radius: var(--wiwa-radius-2xl); /* Matching Stitch rounded-2xl */
-  box-shadow: var(--wiwa-card-shadow);   /* Matching Stitch card-shadow */
-  padding: 24px; /* Slightly increased padding */
-  border: 1px solid var(--wiwa-border-light);
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  position: relative;
-  transition: all 0.2s ease;
-}
-.wiwa-cart-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.025);
-}
-
-/* CARD LAYOUT - DESKTOP (Grid) */
-@media (min-width: 768px) {
-  .wiwa-cart-card {
-    display: grid;
-    /* Image | Details | Actions */
-    grid-template-columns: 140px 1fr 200px;
-    gap: 24px;
-    padding: 24px;
-    align-items: start;
-  }
-}
-
-/* 2.1 IMAGE COLUMN */
-.wiwa-card-image {
-  width: 100%;
-  aspect-ratio: 1; /* Square */
-  border-radius: 8px;
-  overflow: hidden;
-  background: #f3f4f6;
-  position: relative;
-}
-.wiwa-card-image img {
+.wiwa-cart-page .wiwa-thumb-wrap a {
+  display: block;
   width: 100%;
   height: 100%;
-  object-fit: cover;
-  transition: transform 0.3s ease;
-}
-.wiwa-card-image:hover img {
-  transform: scale(1.05);
 }
 
-/* 2.2 DETAILS COLUMN */
-.wiwa-card-details {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  min-width: 0; /* Prevents grid blowout */
+/* Remove WC default list styles from meta data */
+.wiwa-cart-page .variation,
+.wiwa-cart-page dl.variation {
+  display: none !important; /* We display our own meta via PHP extraction */
 }
 
-/* Title */
-.wiwa-card-title {
-  margin: 0;
-  line-height: 1.25;
-}
-.wiwa-card-title a {
-  font-size: 1.1rem;
-  font-weight: 700;
-  color: var(--wiwa-primary);
-  text-decoration: none;
-}
-@media (min-width: 768px) {
-  .wiwa-card-title a {
-    font-size: 1.2rem;
-  }
+/* WC Price amount styling */
+.wiwa-cart-page .woocommerce-Price-amount {
+  font-family: var(--wiwa-font-main) !important;
 }
 
-/* Metadata List */
-.wiwa-card-meta {
-  font-size: 0.85rem;
-  color: var(--wiwa-text-gray);
-  line-height: 1.4;
-}
-.wiwa-card-meta dl.variation {
-  display: grid;
-  gap: 4px;
-  margin: 0;
-}
-.wiwa-card-meta dt {
-  display: none; /* Hide labels for cleaner look */
-  float: left;
-  clear: left;
-  font-weight: 600;
-  margin-right: 5px;
-}
-.wiwa-card-meta dd {
-  float: left;
-  margin: 0;
-  font-weight: 500;
-}
-.wiwa-card-meta p {
-  margin: 0;
+/* Hide the WC update cart button (we handle it differently) */
+.wiwa-cart-page button[name="update_cart"] {
+  display: none !important;
 }
 
-/* Remove Link - Subtle X */
-.wiwa-card-remove-link {
-  margin-top: 8px;
-}
-.wiwa-card-remove-link a.remove {
-  /* Reset theme styles */
-  width: auto !important;
-  height: auto !important;
-  background: transparent !important;
+/* Remove WC default borders/backgrounds from cart totals in sidebar */
+.wiwa-cart-page .cart_totals,
+.wiwa-cart-page .woocommerce-cart-form,
+.wiwa-cart-page .cart-collaterals {
   border: none !important;
-  color: #9ca3af !important; /* specific gray */
-  font-size: 24px !important; /* Slightly larger clickable area */
-  font-weight: 300 !important;
-  display: inline-block;
-  line-height: 1;
-  transition: all 0.2s;
-  text-decoration: none !important;
-  opacity: 0.7;
-}
-.wiwa-card-remove-link a.remove:hover {
-  color: var(--wiwa-red) !important;
   background: transparent !important;
-  opacity: 1;
-  transform: scale(1.1);
+  padding: 0 !important;
 }
 
-/* 2.3 ACTIONS COLUMN */
-.wiwa-card-actions {
-  display: flex;
-  flex-direction: row; /* Mobile: side by side or stacked */
-  justify-content: space-between;
-  align-items: center;
-  border-top: 1px solid var(--wiwa-border);
-  padding-top: 16px;
+/* Fix: Material Symbols icon vertical alignment */
+.wiwa-cart-page .material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
+  vertical-align: middle;
 }
 
-@media (min-width: 768px) {
-  .wiwa-card-actions {
-    flex-direction: column;
-    justify-content: space-between; /* Space them out vertically */
-    align-items: flex-end; /* Right align */
-    height: 100%;
-    min-height: 140px; /* Ensure space for distribution */
-    border-top: none;
-    padding-top: 0;
-    gap: 16px;
-  }
-}
+/* =========================================
+   2. QUANTITY PILL (Shared: Mini-Cart + Main Cart)
+   ========================================= */
 
-/* Pax Control - Compact Pill */
-.wiwa-pax-control {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end; /* Align right on desktop */
-  gap: 4px;
-}
-@media (max-width: 767px) {
-  .wiwa-pax-control {
-    align-items: flex-start;
-  }
-}
-
-/* Actual Pill Container */
-.wiwa-qty-pill {
+/* Mini cart quantity - pill shape */
+.wiwa-mini-cart-qty,
+.wiwa-main-cart-qty {
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 0;
   background: #ffffff;
   border: 1px solid var(--wiwa-border);
-  border-radius: 9999px; /* Full pill */
+  border-radius: 9999px;
   padding: 2px;
   height: 32px;
-  width: 90px; /* Fixed width */
+  width: 90px;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
   overflow: hidden;
 }
 
-/* Minus/Plus Buttons */
+/* Quantity buttons */
 .wiwa-qty-btn {
   width: 28px;
   height: 28px;
@@ -257,7 +129,7 @@ body.woocommerce-cart {
   border: none !important;
   background: transparent !important;
   color: var(--wiwa-text-gray);
-  font-weight: 400; /* Lighter font */
+  font-weight: 400;
   font-size: 18px;
   line-height: 1;
   cursor: pointer;
@@ -273,7 +145,7 @@ body.woocommerce-cart {
   color: var(--wiwa-primary);
 }
 
-/* Input Field */
+/* Quantity input */
 .wiwa-qty-input {
   flex: 1;
   width: 100%;
@@ -300,285 +172,78 @@ body.woocommerce-cart {
   margin: 0;
 }
 
-.wiwa-pax-label {
-  font-size: 10px; /* Tiny label */
-  text-transform: uppercase;
-  letter-spacing: 0.05em;
-  color: var(--wiwa-text-gray);
-  font-weight: 700;
-  text-align: center;
-  margin-right: 4px;
-}
-
-/* Price Block - Hierarchy Fix */
-.wiwa-card-price-block {
-  text-align: right;
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-}
-
-.wiwa-unit-price {
-  font-size: 0.75rem;
-  color: var(--wiwa-text-gray);
-  font-weight: 500;
-}
-
-.wiwa-card-subtotal {
-  font-size: 1.25rem;
-  font-weight: 800;
-  color: var(--wiwa-primary);
-  line-height: 1.1;
-  margin: 2px 0;
-}
-
-.wiwa-deposit-info {
-  font-size: 0.75rem;
-  color: var(--wiwa-text-gray);
-  display: flex;
-  flex-direction: column;
-  gap: 1px;
-}
-.wiwa-deposit-info span {
-  display: block;
-}
-/* Specifically target the 'Remaining' text to be bold but standard color unless overdue */
-.wiwa-deposit-info .red {
-  color: var(--wiwa-red);
-  font-weight: 700;
-  font-size: 0.8rem;
-}
-
 /* =========================================
-   3. SIDEBAR (TOTALS)
+   3. CART PAGE - ADDITIONAL POLISH
    ========================================= */
-.wiwa-cart-collaterals {
-  width: 100%;
-}
-@media (min-width: 1024px) {
-  .wiwa-cart-collaterals {
-    width: 350px; /* lg:w-1/3 roughly */
-    flex-shrink: 0;
-    position: sticky;
-    top: 128px; /* top-32 */
-  }
+
+/* Card hover effect */
+.wiwa-cart-page article:hover {
+  box-shadow:
+    0 8px 30px -4px rgba(0, 0, 0, 0.08),
+    0 4px 8px -2px rgba(0, 0, 0, 0.04) !important;
 }
 
-/* Sidebar Card Container */
-.wiwa-summary-card {
-  background: var(--wiwa-bg-card);
-  border-radius: var(--wiwa-radius-2xl);
-  box-shadow: var(--wiwa-card-shadow);
-  padding: 32px; /* p-8 */
-  border: 1px solid var(--wiwa-border-light);
+/* Stepper button inline in the Stitch design */
+.wiwa-cart-page .stepper-btn {
+  transition: all 0.2s ease;
+}
+.wiwa-cart-page .stepper-btn:hover {
+  background: white !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky sidebar */
+.wiwa-sticky-sidebar {
+  position: sticky;
+  top: 8rem; /* ~128px, matching top-32 */
+}
+
+/* Ensure WC notices still look decent */
+.wiwa-cart-page .woocommerce-message,
+.wiwa-cart-page .woocommerce-info,
+.wiwa-cart-page .woocommerce-error {
+  border-radius: 12px;
   margin-bottom: 24px;
+  font-family: var(--wiwa-font-main);
 }
 
-/* Header */
-.wiwa-summary-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: var(--wiwa-primary);
-  text-transform: uppercase;
-  letter-spacing: 0.2em;
-  border-bottom: 1px solid var(--wiwa-border-light); /* border-gray-100 */
-  padding-bottom: 24px; /* pb-6 */
-  margin-bottom: 32px; /* mb-8 */
-  margin-top: 0;
-}
-
-/* Rows Container */
-.wiwa-summary-rows {
-  display: flex;
-  flex-direction: column;
-  gap: 24px; /* space-y-6 */
-  margin-bottom: 40px; /* mb-10 */
-}
-
-/* Individual Row */
-.wiwa-summary-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 15px;
-  color: var(--wiwa-text-gray);
-}
-.wiwa-summary-row.subtotal {
-  color: var(--wiwa-text-gray);
-}
-.wiwa-summary-row.subtotal .amount {
-  font-weight: 600;
-  color: var(--wiwa-text);
-}
-
-.wiwa-summary-row.deposit {
-  color: var(--wiwa-primary);
-}
-.wiwa-summary-row.deposit .label {
-  font-weight: 500;
-}
-.wiwa-summary-row.deposit .amount {
-  font-weight: 700;
-}
-
-/* Pending Section (Dashed Border Top) */
-.wiwa-summary-pending-group {
-  padding-top: 24px;
-  border-top: 1px dashed var(--wiwa-border);
-}
-.wiwa-summary-row.pending {
-  color: var(--wiwa-red);
-}
-.wiwa-summary-row.pending .amount {
-  font-weight: 700;
-}
-.wiwa-pending-note {
-  font-size: 11px;
-  color: var(--wiwa-text-light); /* text-gray-400 */
-  margin-top: 8px;
-  line-height: 1.6;
-  font-style: italic;
-}
-
-/* Total Block */
-.wiwa-summary-total-block {
-  padding-top: 32px;
-  border-top: 1px solid var(--wiwa-border-light);
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-  margin-bottom: 32px;
-}
-.wiwa-summary-total-label {
-  font-size: 14px;
-  color: var(--wiwa-text-gray);
-  font-weight: 500;
-}
-.wiwa-summary-total-amount {
-  font-size: 3rem; /* text-5xl equivalent roughly */
-  font-weight: 700;
-  color: var(--wiwa-primary);
-  line-height: 1;
-  letter-spacing: -0.025em; /* tracking-tight */
-}
-
-/* Proceed Button */
-.wiwa-checkout-btn-container {
-  width: 100%;
-}
-.wiwa-checkout-btn {
-  width: 100%;
-  display: block;
-  background-color: var(--wiwa-primary);
-  color: white;
-  font-weight: 700;
-  padding: 20px; /* py-5 */
-  border-radius: var(--wiwa-radius-xl);
-  text-align: center;
-  text-transform: uppercase;
-  letter-spacing: 0.1em; /* tracking-widest */
-  font-size: 14px;
-  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05); /* shadow-lg */
-  transition: all 0.3s ease;
-  text-decoration: none !important;
-  border: none;
-  cursor: pointer;
-}
-.wiwa-checkout-btn:hover {
-  background-color: var(--wiwa-primary-light);
-  transform: translateY(-4px);
-  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); /* shadow-xl */
-  color: white;
-}
-
-/* Secure Badge */
-.wiwa-secure-badge {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-top: 24px;
-}
-.wiwa-secure-text {
-  font-size: 11px;
-  color: var(--wiwa-text-light);
-  text-transform: uppercase;
-  font-weight: 500;
-  letter-spacing: 0.05em;
-}
-
-/* Coupon Card */
-.wiwa-coupon-card {
-  margin-top: 24px;
-  background-color: var(--wiwa-cream);
-  padding: 24px;
-  border-radius: var(--wiwa-radius-2xl);
-  border: 1px solid rgba(229, 231, 235, 0.4);
-}
-.wiwa-coupon-label {
-  font-size: 13px;
-  font-weight: 600;
-  color: var(--wiwa-primary);
-  margin-bottom: 12px;
-}
-.wiwa-coupon-form {
-  display: flex;
-  gap: 8px;
-}
-.wiwa-coupon-input {
-  flex-grow: 1;
-  background: white;
-  border: 1px solid var(--wiwa-border);
-  border-radius: 8px;
-  font-size: 14px;
-  padding: 8px 16px;
-  outline: none;
-}
-.wiwa-coupon-input:focus {
-  border-color: var(--wiwa-primary);
-  box-shadow: 0 0 0 1px var(--wiwa-primary);
-}
-.wiwa-coupon-btn {
-  background: var(--wiwa-primary);
-  color: white;
-  padding: 8px 16px;
-  border-radius: 8px;
-  font-size: 12px;
-  font-weight: 700;
-  text-transform: uppercase;
-  border: none;
-  cursor: pointer;
-  transition: opacity 0.2s;
-}
-.wiwa-coupon-btn:hover {
-  opacity: 0.9;
+/* Coupon success/error highlight */
+.wiwa-cart-page .woocommerce-message {
+  border-left-color: var(--wiwa-primary) !important;
 }
 
 /* =========================================
-   4. RESPONSIVE UTILS
+   4. MINI-CART WIDGET (sidebar/dropdown)
    ========================================= */
-.wiwa-bg-hidden {
+
+/* Mini cart: hide default quantity text */
+.wiwa-mini-cart-qty + .quantity {
   display: none !important;
 }
 
+/* Keep the mini-cart looking tidy */
+.widget_shopping_cart .wiwa-mini-cart-qty {
+  margin: 8px 0;
+}
+
+/* =========================================
+   5. RESPONSIVE POLISH
+   ========================================= */
 @media (max-width: 767px) {
-  .wiwa-cart-card {
-    grid-template-columns: 1fr;
-    gap: 16px;
+  /* On mobile, the price block aligns left instead of right */
+  .wiwa-cart-page article .text-right {
+    text-align: left;
   }
-  .wiwa-card-image {
-    width: 100%;
-    height: 200px;
-  }
-  .wiwa-card-actions {
-    flex-direction: row;
-    justify-content: space-between;
+
+  /* Quantity stepper center on mobile */
+  .wiwa-cart-page article .flex.flex-col.items-center {
     align-items: flex-start;
   }
-  .wiwa-pax-control {
-    align-items: flex-start;
-  }
-  .wiwa-card-price-block {
-    text-align: right;
+}
+
+/* Print styles */
+@media print {
+  .wiwa-cart-page aside {
+    page-break-before: always;
   }
 }

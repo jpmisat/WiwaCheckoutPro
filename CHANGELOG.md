@@ -1,11 +1,21 @@
 # Changelog
 
-## [2.10.10] - 2026-02-12
+## [2.11.0] - 2026-02-12
 
 ### Added
 
-- **Tailwind Integration:** Enqueued Tailwind CSS CDN to ensure robust styling across all environments, critical for the new design.
-- **Cart Refinement:** Updated `cart.php` structure and versioning for immediate deployment.
+- **Pixel-Perfect Stitch Cart:** Complete rewrite of `templates/cart/cart.php` to exactly match the Stitch HTML design (`code-stich.html`).
+- **Material Symbols Icons:** Integrated Google Material Symbols for calendar, schedule, group, delete, and lock icons.
+- **Montserrat Font:** Loaded via Google Fonts CDN for typography matching.
+- **OvaTourBooking Meta Extraction:** Smart helper function `wiwa_extract_tour_meta()` to pull check-in date, duration, and traveler count from booking metadata.
+- **Deposit & Pending Balance:** Per-item and sidebar-level deposit (30%) and pending balance calculations.
+
+### Changed
+
+- **Tailwind Scoped to Cart Page:** Tailwind CDN now only loads on `is_cart()` to avoid breaking other pages.
+- **Tailwind Config Injected Inline:** Custom color tokens (`wiwa-green`, `wiwa-bg`, etc.) injected via `wp_add_inline_script` so utility classes work correctly.
+- **CSS Rewritten:** `wiwa-cart-styles.css` cleaned up — removed unused old classes, focused on WC overrides, qty pill, and responsive polish.
+- **Plugin Version:** Bumped to `2.11.0`.
 
 ## [2.10.9] - 2026-02-12
 
