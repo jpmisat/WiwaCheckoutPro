@@ -38,42 +38,54 @@ class Wiwa_Cart_Handler
 
     /**
      * Emergency Sanitize: Fix malformed ovatb_guest_info in session
+     * Refactored to be granular: Clean specific corrupt entries instead of nuking everything.
      */
     public function sanitize_cart_session_data() {
         if ( is_admin() || ! function_exists( 'WC' ) || ! WC()->cart ) {
             return;
         }
 
-        $cart = WC()->cart->get_cart();
+        // Access raw cart contents to modify in place
+        $cart_contents = WC()->cart->get_cart_contents();
         $changes = false;
 
-        foreach ( $cart as $key => $item ) {
-            if ( isset( $item['ovatb_guest_info'] ) && is_array( $item['ovatb_guest_info'] ) ) {
-                $is_corrupted = false;
-                foreach ( $item['ovatb_guest_info'] as $guest_type => $guest_data ) {
-                    // Level 1: Guest Types (adults, children) - should be array
-                    if ( ! is_array( $guest_data ) ) {
-                        // FIX: If it's not array, it's definitely broken. Remove it.
-                        $is_corrupted = true; 
-                        break;
-                    }
+        foreach ( $cart_contents as $key => $item ) {
+            if ( ! isset( $item['ovatb_guest_info'] ) || ! is_array( $item['ovatb_guest_info'] ) ) {
+                continue;
+            }
 
-                    // Level 2: List of guests - should be array of arrays
-                    foreach ( $guest_data as $index => $info_fields ) {
-                        if ( ! is_array( $info_fields ) ) {
-                             // This is the error: foreach() on string
-                             // Found a string where an array of fields should be
-                             $is_corrupted = true;
-                             break 2;
-                        }
+            $guest_info = $item['ovatb_guest_info'];
+            $item_changed = false;
+
+            foreach ( $guest_info as $guest_type => $guest_data ) {
+                // Level 1: Guest Types (adults, children) - should be array
+                if ( ! is_array( $guest_data ) ) {
+                    // FIX: If it's not array, it's definitely broken. Remove it.
+                    unset( $guest_info[$guest_type] );
+                    $item_changed = true;
+                    if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                        error_log( "Wiwa Checkout: Removed corrupt guest_type '$guest_type' (not array) from cart item $key" );
                     }
+                    continue;
                 }
 
-                if ( $is_corrupted ) {
-                    // Remove the bad data to stop the fatal error/warning
-                    unset( WC()->cart->cart_contents[$key]['ovatb_guest_info'] );
-                    $changes = true;
+                // Level 2: List of guests - should be array of arrays
+                foreach ( $guest_data as $index => $info_fields ) {
+                    if ( ! is_array( $info_fields ) ) {
+                         // This is the error: foreach() on string
+                         // Found a string where an array of fields should be
+                         unset( $guest_info[$guest_type][$index] );
+                         $item_changed = true;
+                         if ( defined( 'WP_DEBUG' ) && WP_DEBUG ) {
+                            error_log( "Wiwa Checkout: Removed corrupt guest index '$index' in '$guest_type' (not array) from cart item $key" );
+                         }
+                    }
                 }
+            }
+
+            if ( $item_changed ) {
+                WC()->cart->cart_contents[$key]['ovatb_guest_info'] = $guest_info;
+                $changes = true;
             }
         }
 

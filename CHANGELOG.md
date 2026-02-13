@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.12.0] - 2026-02-13
+
+### Changed
+
+- **JS Migration:** Completely refactored `side-cart.js`, `hide-guest-form.js`, and `checkout.js` to Vanilla JS, removing jQuery dependencies where possible for better performance and modern browser compatibility.
+- **Session Safety:** Refactored `sanitize_cart_session_data` (PHP) to be granular, removing only corrupt data instead of entire guest sessions.
+- **Documentation:** Added `CHANGELOG_FORK.md` for the included `woocommerce-currency-switcher` fork.
+
 ## [2.11.13] - 2026-02-13
 
 ### Changed

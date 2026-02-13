@@ -141,12 +141,12 @@ document.addEventListener('DOMContentLoaded', () => {
     // Note: WC triggers events on document.body using jQuery. 
     // We can listen to it via jQuery if available, or try native custom event integration.
     // For safety with WC, we'll use a lightweight jQuery listener if available, otherwise fallback.
-    if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div', function() {
-            // Small delay to allow DOM to settle
-            setTimeout(checkEmptyState, 50);
-        });
-    }
+    // Hook into WooCommerce fragments refresh
+    // We rely on MutationObserver (above) to detect changes, so we don't need jQuery here.
+    // However, if we want to be extra safe with native events:
+    document.body.addEventListener('wc_fragments_refreshed', () => { // Some modern WC themes dispatch native events too
+         setTimeout(checkEmptyState, 50);
+    });
 
     // Also run on window resize/load to be safe
     window.addEventListener('load', checkEmptyState);

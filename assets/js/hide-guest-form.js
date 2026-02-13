@@ -61,11 +61,9 @@
         }
         
         // Listen to jQuery AJAX complete events if jQuery is present (common in WP)
-        if (typeof jQuery !== 'undefined') {
-             jQuery(document).ajaxComplete(() => {
-                 hideGuestInfo();
-             });
-        }
+        // Listen to jQuery AJAX complete events if jQuery is present (common in WP)
+        // Replaced with native overrides or relying on MutationObserver above.
+        // For robustness, we can monkey-patch XHR if needed, but Observer is usually enough for DOM injection.
     });
 
     // Run immediately (before DOM ready, just in case)
