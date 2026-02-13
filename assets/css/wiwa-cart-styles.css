@@ -647,7 +647,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     font-size: 20px;
 }
 
-/* Meta Data - Compact */
+/* Meta Data Rows */
 .wiwa-mini-cart-meta, .wiwa-mini-cart-meta-row-2 {
     font-size: 13px;
     color: var(--wiwa-text-gray);
@@ -661,14 +661,23 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .wiwa-mini-cart-meta-row-2 {
     margin-bottom: 12px;
 }
-.wiwa-mini-cart-meta .meta-row, .wiwa-mini-cart-meta-row-2 .meta-row {
+.wiwa-mini-cart-meta .meta-item, 
+.wiwa-mini-cart-meta-row-2 .meta-item {
     display: flex;
     align-items: center;
-    gap: 6px;
+    gap: 4px;
 }
-.wiwa-mini-cart-meta .meta-sep {
+.wiwa-mini-cart-meta .meta-item svg,
+.wiwa-mini-cart-meta-row-2 .meta-item svg {
+    /* SVG Icon styles */
+    width: 14px;
+    height: 14px;
+    color: var(--wiwa-primary); 
+    flex-shrink: 0;
+}
+.wiwa-mini-cart-meta .meta-separator {
     color: #E5E7EB;
-    font-size: 10px;
+    margin: 0 4px;
 }
 .wiwa-mini-cart-meta .material-symbols-outlined, .wiwa-mini-cart-meta-row-2 .material-symbols-outlined {
     font-size: 16px;

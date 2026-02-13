@@ -37,13 +37,46 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                 if (wc_tax_enabled() && WC()->cart->display_prices_including_tax()) {
                     $line_subtotal_raw += floatval($cart_item['line_subtotal_tax']);
                 }
-                $pax_count  = (isset($tour_meta['travelers']) && $tour_meta['travelers'] > 0) ? $tour_meta['travelers'] : 1;
-                $unit_price = $line_subtotal_raw / $pax_count;
+                <?php
+                // --- CUSTOM: Extract Tour Meta ---
+                // We restart logic to get date, duration, travelers
+                $security_deposit = get_post_meta( $product_id, 'ovabrw_security_deposit_amount', true );
+                
+                // Get check-in (Date)
+                $date_check_in = '';
+                if ( isset( $cart_item['ovabrw_checkin'] ) && ! empty( $cart_item['ovabrw_checkin'] ) ) {
+                    $date_check_in = date( get_option( 'date_format' ), strtotime( $cart_item['ovabrw_checkin'] ) );
+                } elseif ( isset( $cart_item['checkin'] ) && ! empty( $cart_item['checkin'] ) ) {
+                    $date_check_in = date( get_option( 'date_format' ), strtotime( $cart_item['checkin'] ) );
+                }
 
-                // Primary Guest Key for AJAX
-                $primary_guest_key = '';
-                if (!empty($tour_meta['guests_detail'])) {
-                    $primary_guest_key = $tour_meta['guests_detail'][0]['name'];
+                // Get Duration
+                $duration = '';
+                if ( isset( $cart_item['duration_label'] ) && ! empty( $cart_item['duration_label'] ) ) {
+                    $duration = $cart_item['duration_label'];
+                } elseif ( isset( $cart_item['ovabrw_duration'] ) ) {
+                    $duration = $cart_item['ovabrw_duration'];
+                }
+
+                // Get Travelers (Adults + Kids + Babies)
+                $travelers_label = '';
+                $guest_keys = array(
+                    'adults' => esc_html__( 'Adultos', 'wiwa-tour-checkout' ),
+                    'kids'   => esc_html__( 'Niños', 'wiwa-tour-checkout' ),
+                    'babies' => esc_html__( 'Bebés', 'wiwa-tour-checkout' ),
+                );
+                $guests_list = array();
+                
+                // Try to find the keys in cart item
+                foreach( $guest_keys as $key => $label ) {
+                     if ( isset( $cart_item[$key] ) && intval( $cart_item[$key] ) > 0 ) {
+                         $guests_list[] = intval( $cart_item[$key] ) . ' ' . $label;
+                     } elseif ( isset( $cart_item['ovabrw_'.$key] ) && intval( $cart_item['ovabrw_'.$key] ) > 0 ) {
+                         $guests_list[] = intval( $cart_item['ovabrw_'.$key] ) . ' ' . $label;
+                     }
+                }
+                if ( ! empty( $guests_list ) ) {
+                    $travelers_label = implode( ', ', $guests_list );
                 }
                 ?>
                 <li class="woocommerce-mini-cart-item <?php echo esc_attr( apply_filters( 'woocommerce_mini_cart_item_class', 'mini_cart_item', $cart_item, $cart_item_key ) ); ?>">
@@ -62,22 +95,17 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                         <!-- 2. Content -->
                         <div class="wiwa-mini-cart-content">
-                            <!-- 1. Top Section: Title & Remove -->
+                            <!-- ROW 1: Title + Remove -->
                             <div class="wiwa-mini-cart-header">
-                                <h4 class="wiwa-mini-cart-title">
-                                    <?php if ( ! empty( $product_permalink ) ) : ?>
-                                        <a href="<?php echo esc_url( $product_permalink ); ?>"><?php echo wp_kses_post( $product_name ); ?></a>
-                                    <?php else : ?>
-                                        <?php echo wp_kses_post( $product_name ); ?>
-                                    <?php endif; ?>
-                                </h4>
-                                
-                                <!-- Absolute Remove Button -->
+                                <a href="<?php echo esc_url( $product_permalink ); ?>">
+                                    <?php echo $product_name; // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped ?>
+                                </a>
+
                                 <?php
                                 echo apply_filters( // phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
-                                        '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s"><span class="material-symbols-outlined">close</span></a>',
+                                        '<a href="%s" class="remove remove_from_cart_button" aria-label="%s" data-product_id="%s" data-cart_item_key="%s" data-product_sku="%s"><span class="material-symbols-rounded">close</span></a>',
                                         esc_url( wc_get_cart_remove_url( $cart_item_key ) ),
                                         esc_attr__( 'Remove this item', 'woocommerce' ),
                                         esc_attr( $product_id ),
@@ -89,57 +117,39 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 ?>
                             </div>
 
-                            <!-- 2. Meta Data (Compact) -->
+                            <!-- ROW 2: Date | Duration -->
                             <div class="wiwa-mini-cart-meta">
-                                <?php if (!empty($tour_meta['checkin'])) : ?>
-                                <div class="meta-row">
-                                    <span class="material-symbols-outlined">calendar_today</span>
-                                    <span><?php echo esc_html($tour_meta['checkin']); ?></span>
-                                </div>
+                                <?php if ( $date_check_in ) : ?>
+                                    <span class="meta-item">
+                                        <!-- SVG Calendar -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"></rect><line x1="16" y1="2" x2="16" y2="6"></line><line x1="8" y1="2" x2="8" y2="6"></line><line x1="3" y1="10" x2="21" y2="10"></line></svg>
+                                        <?php echo esc_html( $date_check_in ); ?>
+                                    </span>
                                 <?php endif; ?>
 
-                                <?php if (!empty($tour_meta['duration_label'])) : ?>
-                                <span class="meta-sep">•</span>
-                                <div class="meta-row">
-                                    <span class="material-symbols-outlined">schedule</span>
-                                    <span><?php echo esc_html($tour_meta['duration_label']); ?></span>
-                                </div>
+                                <?php if ( $duration ) : ?>
+                                    <span class="meta-separator">|</span>
+                                    <span class="meta-item">
+                                        <!-- SVG Clock -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                        <?php echo esc_html( $duration ); ?>
+                                    </span>
                                 <?php endif; ?>
                             </div>
-                            
-                            <?php if ($pax_count > 0) : ?>
-                            <div class="wiwa-mini-cart-meta-row-2">
-                                <div class="meta-row">
-                                    <span class="material-symbols-outlined">group</span>
-                                    <span><?php echo esc_html($pax_count); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?></span>
+
+                            <!-- ROW 3: Travelers -->
+                            <?php if ( $travelers_label ) : ?>
+                                <div class="wiwa-mini-cart-meta-row-2">
+                                     <span class="meta-item">
+                                        <!-- SVG User -->
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        <?php echo esc_html( $travelers_label ); ?>
+                                    </span>
                                 </div>
-                            </div>
                             <?php endif; ?>
 
-                            <!-- 3. Footer: Stepper (Left) & Price (Right) -->
+                            <!-- ROW 4: Footer (Stepper + Price) -->
                             <div class="wiwa-mini-cart-footer">
-                                
-                                <!-- Quantity Stepper -->
-                                <div class="wiwa-mini-cart-stepper">
-                                    <?php if ($_product->is_sold_individually()) : ?>
-                                        <div class="wiwa-stepper-pill disabled">
-                                            <span class="wiwa-qty-static">1</span>
-                                        </div>
-                                    <?php else : ?>
-                                        <div class="wiwa-stepper-pill">
-                                            <button type="button" class="wiwa-qty-minus" aria-label="<?php esc_attr_e('Decrease quantity', 'wiwa-checkout'); ?>">−</button>
-                                            <input type="number" 
-                                                class="wiwa-qty-input" 
-                                                value="<?php echo esc_attr($qty_valid_value); ?>" 
-                                                min="1" 
-                                                step="1"
-                                                data-cart-key="<?php echo esc_attr($cart_item_key); ?>"
-                                                data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
-                                                data-guest-key="<?php echo esc_attr($primary_guest_key); ?>"
-                                                readonly />
-                                            <button type="button" class="wiwa-qty-plus" aria-label="<?php esc_attr_e('Increase quantity', 'wiwa-checkout'); ?>">+</button>
-                                        </div>
-                                    <?php endif; ?>
                                 </div>
 
                                 <!-- Price -->

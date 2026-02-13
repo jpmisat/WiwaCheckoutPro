@@ -55,7 +55,6 @@ document.addEventListener('DOMContentLoaded', () => {
         let hasProducts = false;
         
         // Check for actual list items
-        // Check for actual list items
         const listItems = document.querySelectorAll('.woocommerce-mini-cart-item, .elementor-menu-cart__product');
         
         // Also check if the generic list container is effectively empty (contains only text nodes or whitespace)
@@ -83,10 +82,12 @@ document.addEventListener('DOMContentLoaded', () => {
             });
             
             // Inject our branded content if missing
+            // Force inject even if widgetContent looks empty/cleared by WC
             if (!document.querySelector('.wiwa-empty-cart-content')) {
                 // Clear out potential residual text nodes (often "No products in cart" raw text)
-                // specific to how some widgets render
-                 // Note: we append, we don't clear innerHTML to avoid breaking hidden inputs if any
+                // specific to how some widgets render. Be aggressive if it looks like just text.
+                 // Note: we append, we don't clear innerHTML completely to avoid breaking hidden inputs if any
+                 // BUT if it's acting weird, we might need to check children.
                 widgetContent.insertAdjacentHTML('beforeend', emptyCartHTML);
             }
             
