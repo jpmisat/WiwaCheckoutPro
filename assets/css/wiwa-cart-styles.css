@@ -641,8 +641,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 /* Remove Button (Absolute Top Right) */
 .wiwa-mini-cart-header .remove {
     position: absolute !important;
-    top: -4px;
-    right: -8px; 
+    top: 0;
+    right: 0; 
     width: 28px;
     height: 28px;
     background: transparent !important;

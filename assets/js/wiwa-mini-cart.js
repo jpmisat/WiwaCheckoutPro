@@ -140,10 +140,12 @@ jQuery(function ($) {
     }
 
     /**
-     * Remove Loading State after Fragments Refresh
+     * Remove Loading State and Re-check Empty View
      */
     $(document.body).on('wc_fragments_refreshed updated_cart_totals', function () {
         $('.wiwa-loading').removeClass('wiwa-loading');
+        // Force side-cart.js to re-check empty state via resize trigger
+        window.dispatchEvent(new Event('resize')); 
     });
 
     /**
