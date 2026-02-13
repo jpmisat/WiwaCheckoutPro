@@ -1,5 +1,22 @@
 # Changelog
 
+## [2.11.1] - 2026-02-12
+
+### Fixed
+
+- **Remove "Popular" badge:** Removed the floating "Popular" badge from cart item cards.
+- **Wider container:** Expanded cart page max-width to 1440px with proper padding for a fuller layout.
+- **CTA "Proceder al Pago" contrast:** Changed to gradient green background with white text for proper UX contrast.
+- **Price text sizing:** Tamed `woocs_special_price_code` font size to inherit from parent for harmonious proportions.
+- **Stepper pill clean borders:** Removed red border artifacts from +/- buttons; now uses clean gray/transparent styling.
+- **Quantity stepper AJAX for tours:** Fixed stepper to use custom `wiwa_update_tour_pax` AJAX handler for OvaTourBooking tour items (WC quantity is always 1 for tours, pax is stored in `numberof_{guest}` metadata).
+
+### Added
+
+- **Tour date & duration display:** Reads `checkin_date` and `checkout_date` from OvaTourBooking cart item data to show check-in date and calculated duration (days) with calendar/clock icons.
+- **Currency code in sidebar total:** Shows the active WooCommerce currency code (e.g., COP) subtly next to the "Total de la reserva" price.
+- **Guest detail extraction:** Extracts per-guest-type breakdown from OvaTourBooking for future use.
+
 ## [2.11.0] - 2026-02-12
 
 ### Added

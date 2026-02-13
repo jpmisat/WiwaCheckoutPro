@@ -1,13 +1,17 @@
 /**
  * Wiwa Tour Checkout - Cart Frontend Logic
- * Version: 2.10.2
- * Refactored for Robust AJAX Updates & Card UI Support
+ * Version: 2.11.1
+ * Handles quantity stepper + AJAX cart updates for WooCommerce & OvaTourBooking
+ *
+ * For OvaTourBooking tours, WC quantity is always 1.
+ * The actual traveler count is stored in cart_item['numberof_{guest}'] metadata.
+ * We must use our custom AJAX handler (wiwa_update_tour_pax) to update it.
  */
 
 jQuery(function ($) {
     'use strict';
 
-    // Debounce function to limit AJAX calls
+    // Debounce function
     function debounce(func, wait) {
         var timeout;
         return function () {
@@ -21,7 +25,7 @@ jQuery(function ($) {
     }
 
     /**
-     * Update Quantity Logic
+     * Update Quantity on click
      */
     function updateQuantity($input, action) {
         var current = parseInt($input.val(), 10) || 1;
@@ -43,12 +47,24 @@ jQuery(function ($) {
     /**
      * Handle Click on +/- Buttons
      */
-    $(document.body).on('click', '.wiwa-qty-btn', function (e) {
+    $(document.body).on('click', '.wiwa-qty-minus, .wiwa-qty-plus', function (e) {
         e.preventDefault();
-        var $btn = $(this);
-        var $input = $btn.siblings('.wiwa-qty-input');
-        var action = $btn.hasClass('wiwa-qty-plus') ? 'increase' : 'decrease';
+        e.stopPropagation();
 
+        var $btn = $(this);
+
+        // Find input: either inside same stepper pill parent, or as sibling
+        var $pill = $btn.closest('.wiwa-stepper-pill');
+        var $input;
+        if ($pill.length) {
+            $input = $pill.find('.wiwa-qty-input');
+        } else {
+            $input = $btn.siblings('.wiwa-qty-input');
+        }
+
+        if (!$input.length) return;
+
+        var action = $btn.hasClass('wiwa-qty-plus') ? 'increase' : 'decrease';
         updateQuantity($input, action);
     });
 
@@ -56,32 +72,27 @@ jQuery(function ($) {
      * Handle Input Change - Trigger Cart Update
      */
     var triggerCartUpdate = debounce(function ($input) {
-        var isMainCart = $('.woocommerce-cart-form').length > 0;
-        var $row = $input.closest('tr.cart_item, .wiwa-cart-card, .elementor-menu-cart__product');
+        var cartKey  = $input.data('cart-key');
+        var isTour   = $input.data('is-tour');
+        var guestKey = $input.data('guest-key');
+        var qty      = parseInt($input.val(), 10);
+        var $article = $input.closest('article');
 
         // Visual Feedback
-        $row.addClass('wiwa-loading');
+        if ($article.length) {
+            $article.addClass('wiwa-loading');
+        }
 
-        if (isMainCart) {
-            // STRATEGY: Click the hidden "Update Cart" button
-            // This forces WooCommerce to handle the recalculation logic natively
-            var $updateBtn = $('[name="update_cart"]');
-            
-            // Enable button just in case it was disabled
-            $updateBtn.prop('disabled', false).trigger('click');
-        } else {
-            // For Sidebar/Mini-Cart: Use custom AJAX or existing WC fragments
-            // Here we fallback to the custom AJAX handler for tour pax if needed
-            // But if it's a standard mini-cart, we might need a different approach.
-            // For now, let's try to refresh fragments if possible.
-            
-            var cartKey = $input.data('cart-key');
-            var qty = $input.val();
-            
-            // If it is a tour item in sidebar, we use our custom handler
-             if ($input.data('is-tour')) {
-                updateTourPaxSidebar(cartKey, qty, $input.data('guest-key'), $row);
-             }
+        if (isTour && cartKey) {
+            // OvaTourBooking: Use custom AJAX handler to update numberof_{guest} metadata
+            // (WC quantity stays at 1 for tours — we update pax via their metadata keys)
+            updateTourPaxAjax(cartKey, qty, guestKey || 'adult', $article);
+        } else if ($('form.woocommerce-cart-form').length > 0) {
+            // Standard WC product on main cart page: Click hidden "Update Cart" button
+            var $updateBtn = $('button[name="update_cart"]');
+            if ($updateBtn.length) {
+                $updateBtn.prop('disabled', false).trigger('click');
+            }
         }
     }, 500);
 
@@ -90,9 +101,11 @@ jQuery(function ($) {
     });
 
     /**
-     * Custom AJAX for Sidebar Tour Pax Update
+     * Custom AJAX for Tour Pax Update
+     * Updates the OvaTourBooking numberof_{guest} metadata in the cart session.
+     * On success, reloads the page so that all totals, prices, and line items refresh.
      */
-    function updateTourPaxSidebar(cartKey, qty, guestKey, $row) {
+    function updateTourPaxAjax(cartKey, qty, guestKey, $el) {
         $.ajax({
             type: 'POST',
             url: wiwa_vars.ajax_url,
@@ -105,14 +118,21 @@ jQuery(function ($) {
             },
             success: function (response) {
                 if (response.success) {
-                    $(document.body).trigger('wc_fragment_refresh');
+                    // Reload the page to reflect updated OvaTourBooking pricing
+                    // (OvaTourBooking recalculates price per total guests in before_calculate_totals)
+                    window.location.reload();
                 } else {
-                    // Revert on error
-                    console.error(response.data.message);
+                    console.error('[Wiwa] Tour pax update error:', response.data ? response.data.message : 'Unknown');
+                    if ($el && $el.length) {
+                        $el.removeClass('wiwa-loading');
+                    }
                 }
             },
-            complete: function() {
-                $row.removeClass('wiwa-loading');
+            error: function (xhr, status, err) {
+                console.error('[Wiwa] AJAX error:', err);
+                if ($el && $el.length) {
+                    $el.removeClass('wiwa-loading');
+                }
             }
         });
     }
@@ -136,7 +156,7 @@ jQuery(function ($) {
             }
         }
     }
-    
+
     // Run injection on load and popup open
     injectAddToCart();
     $(window).on('jet-popup/show', injectAddToCart);
