@@ -1,5 +1,13 @@
 # Changelog
 
+## [2.12.8] - 2026-02-22
+
+### Fixed
+- **Empty Cart Centering:** `.wiwa-empty-cart` now uses `flex: 1` and fills the drawer height so the message/icon/button block is genuinely centered in the panel (both desktop and mobile).
+- **Close Button Position:** Moved to `top: 20px` / `right: 18px` for better breathing room from the top edge.
+- **Cart Title Spacing:** Title padding increased to `16px` top so it naturally clears the X button.
+- **"Finalizar compra" Cut-off:** Button section padding on mobile bumped to `4rem` (was `3rem`) to guarantee the button is fully visible above the Android nav bar.
+
 ## [2.12.7] - 2026-02-22
 
 ### Fixed

@@ -500,10 +500,15 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    ========================================= */
 .wiwa-empty-cart {
   max-width: 600px;
-  margin: 60px auto;
+  margin: auto;          /* let flexbox do vertical centering */
   padding: 0 20px;
   text-align: center;
   font-family: "Montserrat", sans-serif;
+  /* Fill drawer so margin:auto centers vertically */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .wiwa-empty-cart-content {
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
@@ -606,6 +611,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   flex-direction: column;
   height: 100vh;
   max-height: 100%;
+  /* center empty-cart state vertically */
+  justify-content: flex-start; /* default: let header+items fill from top */
 }
 .elementor-menu-cart__main {
   height: 100%;
@@ -627,12 +634,12 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    ----------------------------------------------- */
 .elementor-menu-cart__close-button {
   position: absolute !important;
-  top: 16px !important;
-  right: 16px !important;
+  top: 20px !important;   /* a little lower so there's breathing room from edge */
+  right: 18px !important;
   width: 32px !important;
   height: 32px !important;
-  background: transparent !important;   /* No background pill */
-  border: none !important;              /* No border */
+  background: transparent !important;
+  border: none !important;
   border-radius: 50% !important;
   display: flex !important;
   align-items: center !important;
@@ -657,10 +664,10 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    Cart Header — Title row with safe top spacing
    ----------------------------------------------- */
 .wiwa-mini-cart-header-title {
-  padding: 12px 44px 16px 0; /* extra 4px of bottom padding = separator sits lower */
+  padding: 16px 48px 16px 0; /* top 16px gives the title room below close btn */
   margin-top: 0;
   border-bottom: 1px solid var(--wiwa-border);
-  margin-bottom: 16px;  /* was 14px */
+  margin-bottom: 16px;
   flex-shrink: 0;
   position: relative;
 }
@@ -999,12 +1006,13 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   flex-direction: column;
   gap: 12px;
   margin: 0 !important;
-  /* 1.2rem extra clearance so button is never half-hidden */
-  padding: 0 0 max(3.2rem, calc(1.2rem + env(safe-area-inset-bottom))) !important;
+  /* Desktop: 2rem clear from edge */
+  padding: 0 0 max(2rem, calc(1rem + env(safe-area-inset-bottom))) !important;
 }
 @media screen and (max-width: 768px) {
   p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
-    padding: 0 0 max(3rem, calc(1.2rem + env(safe-area-inset-bottom))) !important;
+    /* Mobile: 4rem = ~64px, keeps button well above nav bar */
+    padding: 0 0 max(4rem, calc(2rem + env(safe-area-inset-bottom))) !important;
     gap: 10px;
   }
 }
