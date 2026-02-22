@@ -58,7 +58,6 @@ jQuery(function ($) {
         var $input;
         if ($pill.length) {
             $input = $pill.find('.wiwa-qty-input');
-            $pill.addClass('wiwa-is-loading'); // Instant feedback
         } else {
             $input = $btn.siblings('.wiwa-qty-input');
         }
@@ -66,6 +65,19 @@ jQuery(function ($) {
         if (!$input.length) return;
 
         var action = $btn.hasClass('wiwa-qty-plus') ? 'increase' : 'decrease';
+
+        // Check limits to prevent stuck loading state
+        var current = parseInt($input.val(), 10) || 1;
+        var min = parseInt($input.attr('min'), 10) || 1;
+        var max = parseInt($input.attr('max'), 10) || 99;
+
+        if (action === 'decrease' && current <= min) return;
+        if (action === 'increase' && current >= max) return;
+
+        if ($pill.length) {
+            $pill.addClass('wiwa-is-loading'); // Instant feedback
+        }
+
         updateQuantity($input, action);
     });
 

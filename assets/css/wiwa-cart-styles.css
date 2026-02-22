@@ -638,10 +638,10 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 }
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-header-title {
-    padding: 0 0 4px;
-    margin-top: -32px !important; /* Pull aggressively towards the top */
-    margin-bottom: 4px;
-    border-bottom: none; /* remove line to save space */
+    padding: 0 0 8px;
+    margin-top: -24px !important;
+    margin-bottom: 8px;
+    border-bottom: 1px solid var(--wiwa-border);
   }
   .wiwa-cart-main-title {
     font-size: 18px;
@@ -963,8 +963,8 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
 }
 @media screen and (max-width: 480px) {
   p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
-    padding: 0 0 calc(16px + env(safe-area-inset-bottom)) !important;
-    gap: 8px;
+    padding: 0 0 calc(24px + env(safe-area-inset-bottom)) !important;
+    gap: 12px;
   }
 }
 @media screen and (max-width: 768px) and (min-width: 481px) {
@@ -991,13 +991,14 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
 }
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-buttons .button {
-    padding: 10px !important;
+    padding: 12px !important;
+    min-height: 48px;
     font-size: 14px;
   }
   .wiwa-subtotal-amount,
   .wiwa-subtotal-amount .woocs_special_price_code,
   .wiwa-subtotal-amount .woocommerce-Price-amount {
-    font-size: 20px !important; /* Reduce from 24px */
+    font-size: 22px !important; /* Slightly increased */
   }
 }
 .wiwa-mini-cart-buttons .button:active {
