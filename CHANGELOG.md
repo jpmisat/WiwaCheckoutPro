@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.13] - 2026-02-22
+
+### Changed
+- Refactored cart header and cart item padding, gaps, and sizes to use relative, responsive `clamp()` functions instead of fixed `px` sizes or specific media queries.
+
 ## [2.12.12] - 2026-02-22
 
 ### Changed
