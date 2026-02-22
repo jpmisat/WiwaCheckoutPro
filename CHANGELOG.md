@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.4] - 2026-02-21
+
+### Changed
+- **Mobile Cart Layout:** Aggressively optimized vertical spacing in the mini-cart for screens under 480px.
+- **Cart Stepper Removal:** Completely removed the quantity stepper (+/- buttons) from the mini-cart overlay to prevent users from bypassing the required passenger detail validation on the main checkout page.
+
 ## [2.12.3] - 2026-02-21
 
 ### Fixed
