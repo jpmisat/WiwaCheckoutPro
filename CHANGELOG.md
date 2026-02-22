@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.1] - 2026-02-13
+
+### Fixed
+- **Mini-Cart Duplication:** Replaced custom subtotal wrappers with standard `woocommerce-mini-cart__total` to prevent theme/plugin conflicts appending elements.
+- **Empty Cart Fallback:** Updated JS to target `querySelectorAll` to handle themes mapping multiple empty carts correctly.
+- **Visuals:** Increased cart item separation and subtotal font sizes. Removed price icon for cleaner display.
+
 ## [2.12.0] - 2026-02-13
 
 ### Changed

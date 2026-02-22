@@ -11,8 +11,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
 <?php if ( ! WC()->cart->is_empty() ) : ?>
 
-    <h3 class="wiwa-mini-cart-main-title"><?php esc_html_e( 'Tus Tours', 'wiwa-tour-checkout' ); ?></h3>
-
     <ul class="woocommerce-mini-cart cart_list product_list_widget <?php echo esc_attr( $args['list_class'] ); ?>">
         <?php
         do_action( 'woocommerce_before_mini_cart_contents' );
@@ -170,7 +168,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 </div>
                             </div>
                         </div>
-                        </div>
                     </div>
                 </li>
                 <?php
@@ -181,29 +178,29 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
         ?>
     </ul>
 
-    <div class="wiwa-mini-cart-bottom">
-        <div class="wiwa-mini-cart-subtotal">
-            <span><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></span>
-            <span class="wiwa-subtotal-amount">
-                <?php echo WC()->cart->get_cart_subtotal(); ?>
-                <span class="wiwa-currency-code-large"><?php echo get_woocommerce_currency(); ?></span>
-            </span>
-        </div>
+    <p class="woocommerce-mini-cart__total total wiwa-mini-cart-subtotal">
+        <span><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></span>
+        <span class="wiwa-subtotal-amount">
+            <?php echo WC()->cart->get_cart_subtotal(); ?>
+            <span class="wiwa-currency-code-large"><?php echo get_woocommerce_currency(); ?></span>
+        </span>
+    </p>
 
-        <!-- Removed generic before_buttons action to prevent duplication -->
+    <!-- Removed generic before_buttons action to prevent duplication -->
 
-        <div class="wiwa-mini-cart-buttons">
-            <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
-                <?php esc_html_e( 'Ver carrito', 'woocommerce' ); ?>
-            </a>
-            <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wiwa-btn-primary">
-                <?php esc_html_e( 'Finalizar compra', 'woocommerce' ); ?>
-            </a>
-        </div>
+    <p class="woocommerce-mini-cart__buttons buttons wiwa-mini-cart-buttons">
+        <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
+            <?php esc_html_e( 'Ver carrito', 'woocommerce' ); ?>
+        </a>
+        <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wiwa-btn-primary">
+            <?php esc_html_e( 'Finalizar compra', 'woocommerce' ); ?>
+        </a>
+    </p>
 
-        <!-- Removed generic after_buttons action to prevent duplication -->
-    </div>
+<?php else : ?>
+
+    <p class="woocommerce-mini-cart__empty-message"><?php esc_html_e( 'No products in the cart.', 'woocommerce' ); ?></p>
 
 <?php endif; ?>
 
-<?php // do_action( 'woocommerce_after_mini_cart' ); ?>
+<?php do_action( 'woocommerce_after_mini_cart' ); ?>
