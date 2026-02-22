@@ -676,7 +676,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    Cart Header — Title row with safe top spacing
    ----------------------------------------------- */
 .wiwa-mini-cart-header-title {
-  padding: 16px 48px 16px 0; /* top 16px gives the title room below close btn */
+  padding: 24px 48px 16px 0; /* top 24px pushes the title lower below close btn */
   margin-top: 0;
   border-bottom: 1px solid var(--wiwa-border);
   margin-bottom: 16px;
@@ -693,7 +693,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 }
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-header-title {
-    padding: 10px 44px 10px 0;
+    padding: 16px 44px 10px 0; /* Slightly more top padding on mobile too */
     margin-bottom: 10px;
   }
   .wiwa-cart-main-title {
@@ -747,18 +747,18 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
 .wiwa-mini-cart-item-grid {
   display: grid;
   grid-template-columns: 80px 1fr; /* Fixed thumb width */
-  gap: 16px;
+  gap: 24px; /* Default gap increased from 16px */
   align-items: start;
-  padding: 24px 0; /* Reduced from 32px to save space */
+  padding: 32px 0; /* Restored to 32px for more space */
   border-bottom: 1px solid var(--wiwa-border); /* Item separator */
   width: 100%;
   position: relative;
 }
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-item-grid {
-    padding: 12px 0;
+    padding: 20px 0; /* Increased mobile vertical padding */
     grid-template-columns: 60px 1fr;
-    gap: 12px;
+    gap: 16px; /* Increased mobile horizontal gap */
   }
 }
 .woocommerce-mini-cart-item:last-child .wiwa-mini-cart-item-grid {

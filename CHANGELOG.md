@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.12] - 2026-02-22
+
+### Changed
+- Increased top padding on the "Tu carrito" header title to move the separator down.
+- Increased gap and padding inside cart item grid elements for a more spacious layout.
+
 ## [2.12.11] - 2026-02-22
 
 ### Changed
