@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.15] - 2026-02-22
+
+### Changed
+- Refined mini-cart content container height (switched to `95%`).
+
 ## [2.12.14] - 2026-02-22
 
 ### Changed

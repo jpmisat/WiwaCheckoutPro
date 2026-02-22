@@ -611,7 +611,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   display: flex !important;
   flex-direction: column;
   height: 100vh;
-  max-height: 100%;
+  max-height: 95%;
   /* center empty-cart state vertically */
   justify-content: flex-start; /* default: let header+items fill from top */
 }
@@ -620,7 +620,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .elementor-menu-cart__main .widget_shopping_cart_content {
   display: flex !important;
   flex-direction: column;
-  height: 100% !important;
+  height: 95% !important;
   margin: auto !important;
 }
 
