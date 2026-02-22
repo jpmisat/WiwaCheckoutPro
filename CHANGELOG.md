@@ -1,8 +1,16 @@
 # Changelog
 
+## [2.12.7] - 2026-02-22
+
+### Fixed
+- **Close Button:** Removed gray pill background and border — now fully transparent, just the icon fades on hover.
+- **Cart Title Separator:** Title has slightly more bottom padding (`16px`) and margin below (`16px`) so the line sits a bit lower.
+- **"Finalizar compra" cut-off:** Bottom padding on the buttons container bumped to `3rem` (`~1.2rem` more) so the button is never half-visible on mobile.
+
 ## [2.12.6] - 2026-02-22
 
 ### Changed
+
 - **Cart Header Redesign:** The "Tu carrito" title now has proper top padding so it sits clearly below the close button without overlapping.
 - **Close Button:** Redesigned to a clean `32px` circular pill with a subtle gray background and border, replacing the dropped-shadow white circle.
 - **Footer Safe Padding:** Replaced fixed `calc()` with CSS `max()` so the bottom padding always gives at least 28-32px of space above the screen edge, regardless of device.
@@ -10,24 +18,28 @@
 ## [2.12.5] - 2026-02-21
 
 ### Fixed
+
 - **Mobile Cart Close Button:** Forced the Elementor mini-cart close button (the X) to position absolutely inside the viewport so it doesn't get clipped or pushed out of bounds on mobile screens.
 
 ## [2.12.4] - 2026-02-21
 
 ### Changed
+
 - **Mobile Cart Layout:** Aggressively optimized vertical spacing in the mini-cart for screens under 480px.
 - **Cart Stepper Removal:** Completely removed the quantity stepper (+/- buttons) from the mini-cart overlay to prevent users from bypassing the required passenger detail validation on the main checkout page.
 
 ## [2.12.3] - 2026-02-21
 
 ### Fixed
-- **Mobile Cart Margins:** Improved the spacing of the "Tu carrito" header to look better on smaller screens. 
-- **Cart Button Bottom Margin:** Fixed an issue where the `padding-bottom` on the cart buttons was sometimes overridden, causing them to sit too close to the bottom edge on some mobile browsers. 
+
+- **Mobile Cart Margins:** Improved the spacing of the "Tu carrito" header to look better on smaller screens.
+- **Cart Button Bottom Margin:** Fixed an issue where the `padding-bottom` on the cart buttons was sometimes overridden, causing them to sit too close to the bottom edge on some mobile browsers.
 - **Quantity Loader:** Added instant visual feedback (animated spinner) when adjusting the number of travelers before the AJAX refresh finishes.
 
 ## [2.12.2] - 2026-02-21
 
 ### Fixed
+
 - **Empty Cart Duplication:** Fixed `side-cart.js` fallback logic to prevent duplicating empty states in nested Elementor modals.
 - **Cart Drawer Scroll:** Added Shopify-style scrolling container to the cart items list, keeping subtotal and checkout buttons fixed at the bottom.
 - **Cart Drawer Title:** Added elegant "Tu carrito" header when items are present.
@@ -35,6 +47,7 @@
 ## [2.12.1] - 2026-02-13
 
 ### Fixed
+
 - **Mini-Cart Duplication:** Replaced custom subtotal wrappers with standard `woocommerce-mini-cart__total` to prevent theme/plugin conflicts appending elements.
 - **Empty Cart Fallback:** Updated JS to target `querySelectorAll` to handle themes mapping multiple empty carts correctly.
 - **Visuals:** Increased cart item separation and subtotal font sizes. Removed price icon for cleaner display.
