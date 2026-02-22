@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.20] - 2026-02-22
+
+### Fixed
+- **Form Persistence**: Select2 fields (like "Tipo de Documento" and "Nacionalidad") now properly save their values on change and correctly update their UI visually when restored upon page reload.
+- **Nationality Storage**: Passenger "Nacionalidad" now saves the full country name (e.g. "Colombia") instead of standard 2-letter country codes ("CO") in the order meta data.
+
 ## [2.12.19] - 2026-02-22
 
 ### Fixed

@@ -332,6 +332,14 @@ class Wiwa_Ajax_Handler
                                     }
                                 }
 
+                                // Special handling for Country / Nationality (Map code to name)
+                                if ($field_key === 'guest_nationality' && class_exists('WC_Countries')) {
+                                    $countries = WC()->countries->get_countries();
+                                    if (isset($countries[$val])) {
+                                        $val = $countries[$val];
+                                    }
+                                }
+
                                 if ($val !== '') {
                                     $guest_info[$guest_type][$i][$field_key] = [
                                         'label' => isset($field_config['label']) ? $field_config['label'] : ucfirst($field_key),

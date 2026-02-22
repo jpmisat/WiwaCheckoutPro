@@ -19,6 +19,9 @@ jQuery(document).ready(function($) {
             const savedVal = sessionStorage.getItem(STORAGE_PREFIX + name);
             if (savedVal !== null) {
                 $(input).val(savedVal);
+                if ($(input).hasClass('select2-hidden-accessible') || $(input).hasClass('ovatb-select2')) {
+                    $(input).trigger('change.select2');
+                }
             }
         }
     }

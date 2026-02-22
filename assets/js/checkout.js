@@ -391,11 +391,19 @@ document.addEventListener('DOMContentLoaded', function () {
                 const saved = sessionStorage.getItem('wiwa_' + input.name);
                 if (saved && !input.value) {
                     input.value = saved;
+                    // For select elements, we need to trigger change visually if they use Select2
+                    if (input.tagName === 'SELECT' && window.jQuery) {
+                        jQuery(input).trigger('change');
+                    }
                 }
             }
 
-            // Save on blur
+            // Save on change/blur/input
             input.addEventListener('blur', () => saveInput(input));
+            input.addEventListener('change', () => saveInput(input));
+            if (input.tagName !== 'SELECT') {
+                input.addEventListener('input', () => saveInput(input));
+            }
         });
     }
 
