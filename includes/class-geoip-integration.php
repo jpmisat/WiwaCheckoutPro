@@ -18,22 +18,38 @@ class Wiwa_GeoIP_Integration
      */
     public static function detect_city()
     {
-        // Estrategia 1: WooCommerce MaxMind
-        if (self::is_wc_maxmind_configured()) {
-            return self::get_city_from_woocommerce();
-        }
-
-        // Estrategia 2: MaxMind API Directa
-        if (self::is_plugin_maxmind_configured()) {
-            return self::get_city_from_maxmind_api();
-        }
-
-        // Fallback: Retornar vacío
-        return array(
-            'city' => '',
-            'state' => '',
+        $city_data = array(
+            'city'    => '',
+            'state'   => '',
             'country' => '',
         );
+
+        // Estrategia 1: WooCommerce MaxMind
+        if (self::is_wc_maxmind_configured()) {
+            $wc_data = self::get_city_from_woocommerce();
+            $city_data['country'] = $wc_data['country'] ?? '';
+            $city_data['state']   = $wc_data['state'] ?? '';
+            $city_data['city']    = $wc_data['city'] ?? '';
+        }
+
+        // Si WooCommerce no devuelve la ciudad (usualmente solo baja la BD de países)
+        // Intentamos con la API directa si está configurada
+        if (empty($city_data['city']) && self::is_plugin_maxmind_configured()) {
+            $api_data = self::get_city_from_maxmind_api();
+            
+            // Rellenar lo que falte
+            if (empty($city_data['city'])) {
+                $city_data['city'] = $api_data['city'] ?? '';
+            }
+            if (empty($city_data['state'])) {
+                $city_data['state'] = $api_data['state'] ?? '';
+            }
+            if (empty($city_data['country'])) {
+                $city_data['country'] = $api_data['country'] ?? '';
+            }
+        }
+
+        return $city_data;
     }
 
     /**

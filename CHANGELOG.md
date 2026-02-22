@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.23] - 2025-02-22
+
+### Fixed
+- Corregido el problema donde el campo `Ciudad` (`billing_city`) no se autocompletaba al usar la integración nativa de WooCommerce con MaxMind (ya que la mayoría de descargas gratuitas de WC solo incluyen datos a nivel país). Se añadió un "fallback" que, si la ciudad está vacía y el usuario ha ingresado las API keys de MaxMind propias en la pestaña "Integraciones" de Wiwa Checkout, consulta la de MaxMind API para rellenarlo.
+
 ## [2.12.22] - 2025-02-22
 
 ### Changed
