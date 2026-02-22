@@ -5,6 +5,7 @@
 ### Fixed
 - Eliminados los textos "fallback" quemados en `side-cart.js` (`Tu carrito está vacío`, etc.) para garantizar que el script dependa 100% de la versión traducida inyectada por PHP.
 - Añadido archivo de configuración `wpml-config.xml` para mejorar la compatibilidad y escaneo de cadenas por parte de WPML.
+- Test: Verificación de acceso a consola para commits.
 
 ## [2.12.24] - 2026-02-22
 
