@@ -288,36 +288,59 @@ class Wiwa_Ajax_Handler
                 $total_pax = isset($tour_data['total_pax']) ? intval($tour_data['total_pax']) : 1;
                 $guest_info = [];
 
-                // Reconstruct guest_info array: [ 'field_key' => [ 'val_pax_1', 'val_pax_2' ] ]
+                // Reconstruct guest_info array to match Ova Tour Booking expected structure
                 if ($guest_fields_config) {
-                    foreach ($guest_fields_config as $field_key => $field_config) {
-                        $guest_info[$field_key] = [];
+                    $guest_breakdown = $this->get_cart_item_guest_breakdown($cart[$cart_key]);
+                    
+                    // If no breakdown found, fallback to 'pax' with total_pax
+                    if (empty($guest_breakdown)) {
+                        $guest_breakdown['pax'] = [
+                            'key' => 'numberof_pax',
+                            'label' => 'Pax',
+                            'count' => $total_pax
+                        ];
+                    }
 
-                        for ($pax = 1; $pax <= $total_pax; $pax++) {
+                    $global_pax_index = 1;
+
+                    foreach ($guest_breakdown as $guest_type => $type_data) {
+                        $count = $type_data['count'];
+                        $guest_info[$guest_type] = [];
+
+                        for ($i = 0; $i < $count; $i++) {
+                            $guest_info[$guest_type][$i] = [];
                             // Calculate global guest index as used in form (e.g. 101, 001)
-                            // In form: $guest_index = ($tour_index * 100) + $pax;
-                            $guest_index = ($tour_index * 100) + $pax;
-                            $input_name = "guest_{$field_key}_{$guest_index}";
+                            $guest_index = ($tour_index * 100) + $global_pax_index;
 
-                            $val = isset($_POST[$input_name]) ? sanitize_text_field($_POST[$input_name]) : '';
+                            foreach ($guest_fields_config as $field_key => $field_config) {
+                                $input_name = "guest_{$field_key}_{$guest_index}";
+                                $val = isset($_POST[$input_name]) ? sanitize_text_field($_POST[$input_name]) : '';
 
-                            // Special handling for Country Code + Phone
-                            if (isset($_POST[$input_name . '_code'])) {
-                                $code = sanitize_text_field($_POST[$input_name . '_code']);
-                                if ($val) {
-                                    $val = $code . ' ' . $val;
+                                // Special handling for Country Code + Phone
+                                if (isset($_POST[$input_name . '_code'])) {
+                                    $code = sanitize_text_field($_POST[$input_name . '_code']);
+                                    if ($val) {
+                                        $val = $code . ' ' . $val;
+                                    }
+                                }
+
+                                // Special handling for Document Type + Number
+                                if (isset($_POST[$input_name . '_type'])) {
+                                    $doc_type = sanitize_text_field($_POST[$input_name . '_type']);
+                                    if ($val) {
+                                        $val = $doc_type . ': ' . $val;
+                                    }
+                                }
+
+                                if ($val !== '') {
+                                    $guest_info[$guest_type][$i][$field_key] = [
+                                        'label' => isset($field_config['label']) ? $field_config['label'] : ucfirst($field_key),
+                                        'type' => isset($field_config['type']) ? $field_config['type'] : 'text',
+                                        'value' => $val
+                                    ];
                                 }
                             }
-
-                            // Special handling for Document Type + Number
-                            if (isset($_POST[$input_name . '_type'])) {
-                                $type = sanitize_text_field($_POST[$input_name . '_type']);
-                                if ($val) {
-                                    $val = $type . ': ' . $val; // OVA format usually just strings, we concatenate
-                                }
-                            }
-
-                            $guest_info[$field_key][] = $val;
+                            $global_pax_index++;
                         }
                     }
                 }

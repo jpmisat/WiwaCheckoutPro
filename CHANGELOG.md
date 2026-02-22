@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.18] - 2026-02-22
+
+### Fixed
+- Passenger information not saving correctly to backend orders. The guest data is now appropriately formatted and grouped by passenger type (e.g. `Adult`, `Child`, `Pax`) instead of as a flat array, mapping perfectly to Ova Tour Booking.
+
 ## [2.12.17] - 2026-02-22
 
 ### Changed
