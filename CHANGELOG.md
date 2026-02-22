@@ -1,5 +1,15 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.26] - 2026-02-22
+
+### Changed
+- Refactorización completa de la integración de GeoIP: Se eliminó la dependencia paralela directa con MaxMind en el backend de PHP a favor de consumir de manera nativa la API de JavaScript inyectada por el plugin "GeoIP Detect" de YellowTree. 
+- Modificado el script `geoip.js` para consultar la función `geoip2.city()` en lugar de consumir nuestro propio endpoint AJAX.
+
+### Removed
+- Eliminados los endpoints `wiwa_get_geoip` y `test_maxmind` orientados a retornar el país/ciudad vía Ajax, debido a que el Frontend maneja estas validaciones de manera local con la caché manejada por GeoIP Detect.
+- Removida la lógica compleja de `Wiwa_GeoIP_Integration::detect_city` enfocada a MaxMind API directa.
+
 ## [2.12.25] - 2026-02-22
 
 ### Fixed
