@@ -513,7 +513,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .wiwa-empty-cart-content {
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   border-radius: 24px;
-  padding: 60px 40px;
+  padding: 20px 20px;
+  margin: auto;
   border: 1px solid #e5e7eb;
   display: flex !important;
   flex-direction: column;
@@ -1012,7 +1013,7 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
 @media screen and (max-width: 768px) {
   p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
     /* Mobile: 4rem = ~64px, keeps button well above nav bar */
-    padding: 0 0 max(4rem, calc(2rem + env(safe-area-inset-bottom))) !important;
+    padding: 0 0 max(1rem, calc(2rem + env(safe-area-inset-bottom))) !important;
     gap: 10px;
   }
 }

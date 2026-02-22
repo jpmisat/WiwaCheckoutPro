@@ -1,5 +1,11 @@
 # Changelog
 
+## [2.12.9] - 2026-02-22
+
+### Changed
+- Refined empty cart content padding and margins.
+- Adjusted mobile mini-cart button bottom clearance.
+
 ## [2.12.8] - 2026-02-22
 
 ### Fixed
