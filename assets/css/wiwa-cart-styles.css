@@ -614,14 +614,14 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 
 /* Elegant Title */
 .wiwa-mini-cart-header-title {
-  padding: 0 0 16px;
-  margin-top: -10px;
+  padding: 0 0 12px;
+  margin-top: -16px; /* Pull up closer to the X */
   border-bottom: 1px solid var(--wiwa-border);
-  margin-bottom: 16px;
+  margin-bottom: 12px;
   flex-shrink: 0;
 }
 .wiwa-cart-main-title {
-  font-size: 22px;
+  font-size: 20px;
   font-weight: 800;
   margin: 0;
   color: var(--wiwa-text);
@@ -658,6 +658,11 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
 p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   padding-top: 16px !important;
 }
+@media screen and (max-width: 480px) {
+  p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+    padding-top: 8px !important;
+  }
+}
 
 /* Grid Layout for Item */
 .wiwa-mini-cart-item-grid {
@@ -669,6 +674,11 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   border-bottom: 1px solid var(--wiwa-border); /* Item separator */
   width: 100%;
   position: relative;
+}
+@media screen and (max-width: 480px) {
+  .wiwa-mini-cart-item-grid {
+    padding: 16px 0;
+  }
 }
 .woocommerce-mini-cart-item:last-child .wiwa-mini-cart-item-grid {
   border-bottom: none;
@@ -881,14 +891,20 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   display: flex !important;
   justify-content: space-between;
   align-items: center;
-  margin: 0 0 24px !important; /* Margin override */
-  padding: 20px 0 10px !important; /* Minimal vertical padding */
+  margin: 0 0 12px !important; /* Margin override - reduced */
+  padding: 12px 0 8px !important; /* Minimal vertical padding */
   border-top: 1px solid #e5e7eb; /* Move top border here */
   border-bottom: 1px dashed #e5e7eb; /* Subtle divider instead of box */
   background: transparent !important;
   border-radius: 0;
   border-left: none;
   border-right: none;
+}
+@media screen and (max-width: 480px) {
+  p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+    margin: 0 0 8px !important;
+    padding: 8px 0 6px !important;
+  }
 }
 p.wiwa-mini-cart-subtotal span:first-child {
   font-size: 15px;
