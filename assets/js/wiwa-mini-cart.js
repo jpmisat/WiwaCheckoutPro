@@ -58,6 +58,7 @@ jQuery(function ($) {
         var $input;
         if ($pill.length) {
             $input = $pill.find('.wiwa-qty-input');
+            $pill.addClass('wiwa-is-loading'); // Instant feedback
         } else {
             $input = $btn.siblings('.wiwa-qty-input');
         }

@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.3] - 2026-02-21
+
+### Fixed
+- **Mobile Cart Margins:** Improved the spacing of the "Tu carrito" header to look better on smaller screens. 
+- **Cart Button Bottom Margin:** Fixed an issue where the `padding-bottom` on the cart buttons was sometimes overridden, causing them to sit too close to the bottom edge on some mobile browsers. 
+- **Quantity Loader:** Added instant visual feedback (animated spinner) when adjusting the number of travelers before the AJAX refresh finishes.
+
 ## [2.12.2] - 2026-02-21
 
 ### Fixed
