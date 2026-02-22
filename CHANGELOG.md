@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.6] - 2026-02-22
+
+### Changed
+- **Cart Header Redesign:** The "Tu carrito" title now has proper top padding so it sits clearly below the close button without overlapping.
+- **Close Button:** Redesigned to a clean `32px` circular pill with a subtle gray background and border, replacing the dropped-shadow white circle.
+- **Footer Safe Padding:** Replaced fixed `calc()` with CSS `max()` so the bottom padding always gives at least 28-32px of space above the screen edge, regardless of device.
+
 ## [2.12.5] - 2026-02-21
 
 ### Fixed

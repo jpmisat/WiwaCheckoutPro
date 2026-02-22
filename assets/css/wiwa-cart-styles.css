@@ -622,49 +622,61 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   }
 }
 
-/* Fix Elementor Close Button Position */
+/* -----------------------------------------------
+   Close Button — Redesigned (pill style, premium)
+   ----------------------------------------------- */
 .elementor-menu-cart__close-button {
-  top: 15px !important;
-  right: 15px !important;
-  background: #ffffff !important;
+  position: absolute !important;
+  top: 16px !important;
+  right: 16px !important;
+  width: 32px !important;
+  height: 32px !important;
+  background: #f3f4f6 !important;
+  border: 1px solid #e5e7eb !important;
   border-radius: 50% !important;
-  width: 36px !important;
-  height: 36px !important;
   display: flex !important;
   align-items: center !important;
   justify-content: center !important;
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  cursor: pointer !important;
   z-index: 9999 !important;
-  position: absolute !important;
+  transition: background 0.2s, border-color 0.2s !important;
+  box-shadow: none !important;
 }
-
+.elementor-menu-cart__close-button:hover {
+  background: #e5e7eb !important;
+  border-color: #d1d5db !important;
+}
 .elementor-menu-cart__close-button svg {
-  width: 14px;
-  height: 14px;
-  fill: #4b5563;
+  width: 13px !important;
+  height: 13px !important;
+  fill: #374151 !important;
+  display: block !important;
 }
 
-/* Elegant Title */
+/* -----------------------------------------------
+   Cart Header — Title row with safe top spacing
+   ----------------------------------------------- */
 .wiwa-mini-cart-header-title {
-  padding: 0 0 12px;
-  margin-top: -16px; /* Pull up closer to the X */
+  /* Push down so the title clears the close button */
+  padding: 12px 44px 12px 0; /* right padding = close-btn width + gap */
+  margin-top: 0;
   border-bottom: 1px solid var(--wiwa-border);
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   flex-shrink: 0;
+  position: relative;
 }
 .wiwa-cart-main-title {
   font-size: 20px;
   font-weight: 800;
   margin: 0;
   color: var(--wiwa-text);
-  letter-spacing: -0.5px;
+  letter-spacing: -0.3px;
+  line-height: 1.2;
 }
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-header-title {
-    padding: 0 0 8px;
-    margin-top: 0 !important; /* Reset negative margin to prevent top overflow */
-    margin-bottom: 8px;
-    border-bottom: 1px solid var(--wiwa-border);
+    padding: 10px 44px 10px 0;
+    margin-bottom: 10px;
   }
   .wiwa-cart-main-title {
     font-size: 18px;
@@ -988,17 +1000,14 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   flex-direction: column;
   gap: 12px;
   margin: 0 !important;
-  padding: 0 0 calc(24px + env(safe-area-inset-bottom)) !important;
+  /* 32px bottom + safe area so buttons never hit the screen edge */
+  padding: 0 0 max(32px, calc(20px + env(safe-area-inset-bottom))) !important;
 }
-@media screen and (max-width: 480px) {
+@media screen and (max-width: 768px) {
   p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
-    padding: 0 0 calc(12px + env(safe-area-inset-bottom)) !important;
-    gap: 8px;
-  }
-}
-@media screen and (max-width: 768px) and (min-width: 481px) {
-  p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
-    padding: 0 0 calc(32px + env(safe-area-inset-bottom)) !important;
+    /* Mobile: a bit less, but still well above nav bar */
+    padding: 0 0 max(28px, calc(16px + env(safe-area-inset-bottom))) !important;
+    gap: 10px;
   }
 }
 .wiwa-mini-cart-buttons .button {
