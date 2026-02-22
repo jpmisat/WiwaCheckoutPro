@@ -1,5 +1,12 @@
 # Changelog
 
+## [2.12.2] - 2026-02-21
+
+### Fixed
+- **Empty Cart Duplication:** Fixed `side-cart.js` fallback logic to prevent duplicating empty states in nested Elementor modals.
+- **Cart Drawer Scroll:** Added Shopify-style scrolling container to the cart items list, keeping subtotal and checkout buttons fixed at the bottom.
+- **Cart Drawer Title:** Added elegant "Tu carrito" header when items are present.
+
 ## [2.12.1] - 2026-02-13
 
 ### Fixed

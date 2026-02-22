@@ -35,9 +35,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Function to check and inject/replace layout
     const checkEmptyState = () => {
-        // Find ALL containers - support multiple common selectors
-        // Themes often have mobile/desktop hidden duplicates
-        const widgetContents = document.querySelectorAll('.widget_shopping_cart_content, .elementor-menu-cart__container');
+        // Find ALL containers - prevent elementor duplication by prioritizing standard WC container
+        let widgetContents = document.querySelectorAll('.widget_shopping_cart_content');
+        
+        // If theme completely removes the .widget_shopping_cart_content, fallback to Elementor's container
+        if (widgetContents.length === 0) {
+            widgetContents = document.querySelectorAll('.elementor-menu-cart__container');
+        }
         
         if (!widgetContents.length) return;
 

@@ -11,6 +11,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
 <?php if ( ! WC()->cart->is_empty() ) : ?>
 
+    <div class="wiwa-mini-cart-header-title">
+        <h3 class="wiwa-cart-main-title"><?php esc_html_e( 'Tu carrito', 'wiwa-checkout' ); ?></h3>
+    </div>
+
     <ul class="woocommerce-mini-cart cart_list product_list_widget <?php echo esc_attr( $args['list_class'] ); ?>">
         <?php
         do_action( 'woocommerce_before_mini_cart_contents' );

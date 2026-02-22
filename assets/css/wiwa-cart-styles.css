@@ -574,14 +574,65 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    8. MINI CART CUSTOM LAYOUT
    ========================================= */
 
-/* Main Mini Cart Title */
-.wiwa-mini-cart-main-title {
-  font-size: 16px;
-  font-weight: 700;
+/* Drawer scrollable section (Shopify Style) */
+.widget_shopping_cart_content {
+  display: flex !important;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 100%;
+}
+.elementor-menu-cart__main {
+  height: 100%;
+  max-height: 100vh;
+}
+
+/* Elegant Title */
+.wiwa-mini-cart-header-title {
+  padding: 10px 0 16px;
+  border-bottom: 1px solid var(--wiwa-border);
+  margin-bottom: 16px;
+  flex-shrink: 0;
+}
+.wiwa-cart-main-title {
+  font-size: 22px;
+  font-weight: 800;
+  margin: 0;
   color: var(--wiwa-text);
-  padding-bottom: 12px;
-  margin-bottom: 8px;
-  border-bottom: 2px solid var(--wiwa-border); /* Distinct separator for header */
+  letter-spacing: -0.5px;
+}
+
+/* Scrollable Cart List */
+.woocommerce-mini-cart.cart_list {
+  flex-grow: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding-right: 12px !important; 
+  margin-right: -12px !important; 
+}
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar {
+  width: 6px;
+}
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar-track {
+  background: transparent;
+}
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* Fixed Bottom section */
+p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal,
+p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
+  flex-shrink: 0;
+  background: #fff;
+  z-index: 10;
+  position: relative;
+}
+p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+  padding-top: 24px !important;
+}
+p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
+  padding-bottom: 24px !important; /* Extra padding for bottom spacing */
 }
 
 /* Grid Layout for Item */
