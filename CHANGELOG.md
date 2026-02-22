@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.16] - 2026-02-22
+
+### Changed
+- Refined mini-cart content container height to `90%` and reset list max-height to `100vh` base.
+
 ## [2.12.15] - 2026-02-22
 
 ### Changed

@@ -611,7 +611,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   display: flex !important;
   flex-direction: column;
   height: 100vh;
-  max-height: 95%;
+  max-height: 90%;
   /* center empty-cart state vertically */
   justify-content: flex-start; /* default: let header+items fill from top */
 }
@@ -620,7 +620,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .elementor-menu-cart__main .widget_shopping_cart_content {
   display: flex !important;
   flex-direction: column;
-  height: 95% !important;
+  height: 90% !important;
   margin: auto !important;
 }
 
@@ -699,11 +699,11 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   overflow-x: hidden;
   padding-right: 12px !important; 
   margin-right: -12px !important;
-  max-height: calc(95vh - 220px); /* Ensure there is room for the footer */
+  max-height: calc(100vh - 220px); /* Ensure there is room for the footer */
 }
 @media screen and (max-width: 480px) {
   .woocommerce-mini-cart.cart_list {
-    max-height: calc(95vh - 220px) !important; /* Force more room for tight mobile footer */
+    max-height: calc(100vh - 220px) !important; /* Force more room for tight mobile footer */
   }
 }
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar {
