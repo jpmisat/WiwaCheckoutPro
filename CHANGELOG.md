@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.10] - 2026-02-22
+
+### Changed
+- Added `margin: auto` to mini-cart main container for improved centering.
+
 ## [2.12.9] - 2026-02-22
 
 ### Changed
