@@ -151,26 +151,9 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
                                 </div>
                             <?php endif; ?>
 
-                            <!-- ROW 4: Footer (Stepper ONLY) -->
-                            <div class="wiwa-mini-cart-footer">
-                                <!-- Stepper -->
-                                <div class="wiwa-qty-stepper">
-                                    <div class="wiwa-stepper-pill">
-                                        <button type="button" class="wiwa-qty-minus">−</button>
-                                        <input type="number" 
-                                            class="wiwa-qty-input" 
-                                            value="<?php echo esc_attr( $qty_display_value ); ?>" 
-                                            min="1" 
-                                            step="1"
-                                            data-cart-key="<?php echo esc_attr( $cart_item_key ); ?>"
-                                            data-is-tour="<?php echo $is_tour ? '1' : '0'; ?>"
-                                            data-guest-key="<?php echo esc_attr( $primary_guest_key ); ?>"
-                                            readonly 
-                                        />
-                                        <button type="button" class="wiwa-qty-plus">+</button>
-                                    </div>
-                                </div>
-                            </div>
+                            <!-- ROW 4: Footer (Removed Stepper) -->
+                            <!-- Stepper removed to prevent validation bypass of participant details on the checkout page -->
+                            <div class="wiwa-mini-cart-footer" style="display: none;"></div>
                         </div>
                     </div>
                 </li>

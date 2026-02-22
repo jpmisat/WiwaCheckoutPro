@@ -812,7 +812,7 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
 }
 
 .wiwa-mini-cart-meta-row-2 {
-  margin-bottom: 8px; /* More space before footer */
+  margin-bottom: 0px; /* Stepper is dead, we don't need extra space here */
 }
 
 /* Price Per Person Text (New) */
