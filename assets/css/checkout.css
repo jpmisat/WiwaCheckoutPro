@@ -164,7 +164,7 @@
 
 .form-grid-2 {
     grid-template-columns: repeat(2, 1fr);
-    grid-auto-flow: dense;
+    /* grid-auto-flow: dense Removed to respect DOM order */
 }
 
 .form-field {
@@ -177,13 +177,9 @@
     grid-column: 1 / -1 !important;
 }
 
-.form-field.field-left {
-    grid-column: 1 !important;
-    width: 100%;
-}
-
+.form-field.field-left,
 .form-field.field-right {
-    grid-column: 2 !important;
+    grid-column: span 1 !important;
     width: 100%;
 }
 
