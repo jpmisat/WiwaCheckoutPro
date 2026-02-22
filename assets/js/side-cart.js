@@ -6,10 +6,10 @@ document.addEventListener('DOMContentLoaded', () => {
     
     // Configuration
     const config = window.wiwaSideCart || {
-        homeUrl: '/tours/', // User requested '/tours/'
-        emptyText: 'Tu carrito está vacío',
-        emptyDesc: 'Parece que aún no has agregado ningún tour. ¡Es hora de planear tu aventura!',
-        btnText: 'Explorar Tours'
+        homeUrl: '/tours/', // Default fallback just in case
+        emptyText: '',
+        emptyDesc: '',
+        btnText: ''
     };
 
     // The branded empty cart HTML structure

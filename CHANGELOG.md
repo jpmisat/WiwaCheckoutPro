@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.25] - 2026-02-22
+
+### Fixed
+- Eliminados los textos "fallback" quemados en `side-cart.js` (`Tu carrito está vacío`, etc.) para garantizar que el script dependa 100% de la versión traducida inyectada por PHP.
+- Añadido archivo de configuración `wpml-config.xml` para mejorar la compatibilidad y escaneo de cadenas por parte de WPML.
+
 ## [2.12.24] - 2026-02-22
 
 ### Changed
