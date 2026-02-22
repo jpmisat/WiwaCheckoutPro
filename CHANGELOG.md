@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.17] - 2026-02-22
+
+### Changed
+- Massively improved the mobile UI for the main cart page (`cart.php`), restructuring item cards into a compact grid layout on small screens, preventing the giant full-width images and fixing spacing to fit significantly more information comfortably.
+
 ## [2.12.16] - 2026-02-22
 
 ### Changed

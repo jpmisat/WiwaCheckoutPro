@@ -89,32 +89,31 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         }
                 ?>
 
-                <article class="bg-white rounded-2xl card-shadow p-5 md:p-8 flex flex-col md:flex-row gap-6 md:gap-8 items-start border border-gray-50 <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
+                <article class="bg-white rounded-2xl card-shadow p-4 md:p-8 flex flex-col md:flex-row md:gap-8 items-start border border-gray-50 <?php echo esc_attr(apply_filters('woocommerce_cart_item_class', 'cart_item', $cart_item, $cart_item_key)); ?>" data-cart-key="<?php echo esc_attr($cart_item_key); ?>">
 
-                    <!-- ===== IMAGE ===== -->
-                    <div class="w-full md:w-44 lg:w-48 h-44 lg:h-48 flex-shrink-0 relative overflow-hidden rounded-xl wiwa-thumb-wrap">
-                        <?php
-                        $thumbnail = apply_filters(
-                            'woocommerce_cart_item_thumbnail',
-                            $_product->get_image('woocommerce_thumbnail'),
-                            $cart_item,
-                            $cart_item_key
-                        );
-                        if (!$product_permalink) {
-                            echo $thumbnail;
-                        } else {
-                            printf('<a href="%s">%s</a>', esc_url($product_permalink), $thumbnail);
-                        }
-                        ?>
-                    </div>
+                    <!-- ===== TOP ROW FOR MOBILE: IMAGE + BASIC INFO ===== -->
+                    <div class="flex flex-row w-full gap-4 md:contents">
+                        <!-- ===== IMAGE ===== -->
+                        <div class="w-24 h-24 sm:w-28 sm:h-28 md:w-44 lg:w-48 md:h-44 lg:h-48 flex-shrink-0 relative overflow-hidden rounded-xl wiwa-thumb-wrap">
+                            <?php
+                            $thumbnail = apply_filters(
+                                'woocommerce_cart_item_thumbnail',
+                                $_product->get_image('woocommerce_thumbnail'),
+                                $cart_item,
+                                $cart_item_key
+                            );
+                            if (!$product_permalink) {
+                                echo $thumbnail;
+                            } else {
+                                printf('<a href="%s">%s</a>', esc_url($product_permalink), $thumbnail);
+                            }
+                            ?>
+                        </div>
 
-                    <!-- ===== CONTENT (details + qty/price) ===== -->
-                    <div class="flex flex-col md:flex-row flex-grow justify-between w-full gap-6">
-
-                        <!-- LEFT: Name, Meta, Delete -->
-                        <div class="flex flex-col justify-between md:w-[55%]">
+                        <!-- ===== INFO COLUMN (Name & Meta) ===== -->
+                        <div class="flex flex-col justify-between flex-grow md:w-[55%]">
                             <div>
-                                <h2 class="text-xl md:text-2xl font-bold text-[#1a3c28] mb-4 leading-tight">
+                                <h2 class="text-base sm:text-lg md:text-2xl font-bold text-[#1a3c28] mb-2 md:mb-4 leading-tight">
                                     <?php
                                     if (!$product_permalink) {
                                         echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $product_name, $cart_item, $cart_item_key));
@@ -125,32 +124,32 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 </h2>
 
                                 <!-- Meta: Calendar / Duration / Travelers -->
-                                <div class="space-y-2.5 text-[13px] text-gray-500">
+                                <div class="space-y-1 md:space-y-2.5 text-[12px] md:text-[13px] text-gray-500">
                                     <?php if (!empty($tour_meta['checkin'])) : ?>
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">calendar_today</span>
+                                    <div class="flex items-center gap-1.5 md:gap-2.5">
+                                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-gray-400">calendar_today</span>
                                         <span class="font-medium text-gray-700"><?php echo esc_html($tour_meta['checkin']); ?></span>
                                     </div>
                                     <?php endif; ?>
 
                                     <?php if (!empty($tour_meta['duration_label'])) : ?>
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">schedule</span>
+                                    <div class="flex items-center gap-1.5 md:gap-2.5">
+                                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-gray-400">schedule</span>
                                         <span class="font-medium text-gray-700"><?php echo esc_html($tour_meta['duration_label']); ?></span>
                                     </div>
                                     <?php endif; ?>
 
-                                    <div class="flex items-center gap-2.5">
-                                        <span class="material-symbols-outlined text-[16px] text-gray-400">group</span>
+                                    <div class="flex items-center gap-1.5 md:gap-2.5">
+                                        <span class="material-symbols-outlined text-[14px] md:text-[16px] text-gray-400">group</span>
                                         <span class="font-medium text-gray-700">
                                             <?php echo esc_html($tour_meta['travelers']); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?>
                                         </span>
                                     </div>
                                 </div>
                             </div>
-
-                            <!-- DELETE BUTTON -->
-                            <div class="mt-5">
+                            
+                            <!-- DESKTOP DELETE BUTTON (Hidden on mobile) -->
+                            <div class="hidden md:block mt-5">
                                 <?php
                                 echo apply_filters(
                                     'woocommerce_cart_item_remove_link',
@@ -167,19 +166,43 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 ?>
                             </div>
                         </div>
+                    </div>
 
-                        <!-- RIGHT: Quantity Stepper + Price Block -->
-                        <div class="md:w-[45%] flex flex-col items-end justify-between">
+                    <!-- ===== BOTTOM DIVIDER FOR MOBILE ===== -->
+                    <div class="w-full block md:hidden border-b border-gray-100 my-4"></div>
 
-                            <!-- QUANTITY STEPPER (Pill - clean, no red border) -->
+                    <!-- ===== CONTENT COLUMN (Qty, Price, Actions) ===== -->
+                    <div class="w-full md:w-[45%] flex flex-col items-center md:items-end justify-between">
+                        
+                        <!-- Mobile Flex Row: Delete on left, Stepper on right / Desktop: Stepper top right -->
+                        <div class="flex flex-row md:flex-col justify-between items-center md:items-end w-full">
+                            <!-- MOBILE DELETE BUTTON -->
+                            <div class="block md:hidden">
+                                <?php
+                                echo apply_filters(
+                                    'woocommerce_cart_item_remove_link',
+                                    sprintf(
+                                        '<a href="%s" class="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:text-red-700 text-[12px] font-medium transition-colors border border-red-100" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[18px]" style="color: #ef4444 !important;">delete</span></a>',
+                                        esc_url(wc_get_cart_remove_url($cart_item_key)),
+                                        esc_html__('Remove this item', 'woocommerce'),
+                                        esc_attr($product_id),
+                                        esc_attr($_product->get_sku())
+                                    ),
+                                    $cart_item_key
+                                );
+                                ?>
+                            </div>
+
+                            <!-- QUANTITY STEPPER -->
                             <div class="flex flex-col items-center">
                                 <?php if ($_product->is_sold_individually()) : ?>
-                                    <div class="wiwa-stepper-pill" style="width:auto;padding:8px 16px;">
-                                        <span class="font-bold text-[#1a3c28] text-sm">1</span>
+                                    <div class="wiwa-stepper-pill" style="width:auto;padding:6px 16px;">
+                                        <span class="font-bold text-[#1a3c28] text-sm lg:text-base">1</span>
                                     </div>
                                     <input type="hidden" name="cart[<?php echo esc_attr($cart_item_key); ?>][qty]" value="1" />
                                 <?php else : ?>
-                                    <div class="wiwa-stepper-pill">
+                                    <!-- Use scale to make it slightly smaller on mobile without changing the CSS component logic -->
+                                    <div class="wiwa-stepper-pill transform scale-[0.85] md:scale-100 origin-center md:origin-right">
                                         <button type="button"
                                                 aria-label="<?php esc_attr_e('Decrease quantity', 'wiwa-checkout'); ?>"
                                                 class="wiwa-qty-minus"
@@ -200,47 +223,52 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                                 data-cart-key="<?php echo esc_attr($cart_item_key); ?>">+</button>
                                     </div>
                                 <?php endif; ?>
-                                <span class="text-[9px] text-gray-400 mt-1.5 uppercase tracking-[0.15em] font-semibold">
+                                <span class="text-[8px] md:text-[9px] text-gray-400 mt-1 uppercase tracking-[0.15em] font-semibold">
                                     <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?>
                                 </span>
                             </div>
+                        </div>
 
-                            <!-- PRICE BLOCK — harmonious sizing -->
-                            <div class="text-right mt-4">
-                                <p class="wiwa-price-per-person mb-0.5">
+                        <!-- PRICE BLOCK -->
+                        <div class="text-right mt-4 w-full md:w-auto">
+                            <div class="flex flex-row md:flex-col items-end justify-between md:justify-end border-t border-gray-100 pt-3 md:border-0 md:pt-0">
+                                <p class="wiwa-price-per-person mb-0.5 text-[12px] md:text-sm text-gray-500 font-medium whitespace-nowrap hidden md:block">
                                     <?php echo wc_price($unit_price); ?>
                                     <span class="opacity-70">/ persona</span>
                                 </p>
-                                <p class="wiwa-price-subtotal mb-0">
+                                <p class="wiwa-price-subtotal leading-none mb-0 text-xl font-bold flex flex-col md:block text-[#1a3c28]">
+                                    <span class="block md:hidden text-[10px] text-gray-400 font-normal uppercase tracking-wide mb-1"><?php esc_html_e('Total Viajeros:', 'wiwa-checkout'); ?></span>
                                     <?php 
                                     $subtotal_html = apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);
-                                    // Split deposit/extra text (usually in parenthesis) to smaller line
                                     if (strpos($subtotal_html, '(') !== false) {
-                                        // Regex to find first occurrence of ( and wrap till end or matching )
-                                        // Simpler: Split at first (
                                         $parts = explode('(', $subtotal_html, 2);
                                         echo $parts[0];
-                                        echo '<small class="block text-[11px] text-gray-400 font-normal mt-1 leading-tight">(' . $parts[1] . '</small>';
+                                        echo '<small class="block text-[10px] md:text-[11px] text-gray-400 font-normal mt-1 leading-tight">(' . $parts[1] . '</small>';
                                     } else {
                                         echo $subtotal_html;
                                     }
                                     ?>
                                 </p>
-                                <div class="mt-3 space-y-1.5">
-                                    <div class="flex justify-end gap-2 text-[12px] text-gray-500">
-                                        <span><?php esc_html_e('Depósito:', 'wiwa-checkout'); ?></span>
-                                        <span class="font-semibold text-[#1a3c28]"><?php echo wc_price($deposit_val); ?></span>
-                                    </div>
-                                    <div class="flex justify-end gap-2 text-[12px]">
-                                        <span class="text-gray-500"><?php esc_html_e('Saldo pendiente:', 'wiwa-checkout'); ?></span>
-                                        <span class="font-bold text-red-600"><?php echo wc_price($pending_val); ?></span>
-                                    </div>
+                            </div>
+                            
+                            <!-- Mobile-only Unit Price (below total if needed, or hidden) -->
+                            <p class="wiwa-price-per-person block md:hidden text-[11px] text-gray-500 font-medium text-right mt-1">
+                                <?php echo wc_price($unit_price); ?> <span class="opacity-70">/ persona</span>
+                            </p>
+
+                            <div class="mt-3 md:mt-4 space-y-1 md:space-y-1.5 p-3 md:p-0 bg-gray-50 md:bg-transparent rounded-lg md:rounded-none">
+                                <div class="flex justify-between md:justify-end gap-2 text-[11px] md:text-[12px] text-gray-500">
+                                    <span><?php esc_html_e('Depósito:', 'wiwa-checkout'); ?></span>
+                                    <span class="font-semibold text-[#1a3c28] md:text-[13px]"><?php echo wc_price($deposit_val); ?></span>
+                                </div>
+                                <div class="flex justify-between md:justify-end gap-2 text-[11px] md:text-[12px]">
+                                    <span class="text-gray-500"><?php esc_html_e('Saldo pendiente:', 'wiwa-checkout'); ?></span>
+                                    <span class="font-bold text-red-600 md:text-[13px]"><?php echo wc_price($pending_val); ?></span>
                                 </div>
                             </div>
-
                         </div>
-                    </div>
 
+                    </div>
                 </article>
 
                 <?php
