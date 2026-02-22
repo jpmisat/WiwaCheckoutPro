@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.11] - 2026-02-22
+
+### Changed
+- Added Elementor mini-cart CSS override to force `margin: auto` and perfectly center the empty cart container vertically.
+
 ## [2.12.10] - 2026-02-22
 
 ### Changed

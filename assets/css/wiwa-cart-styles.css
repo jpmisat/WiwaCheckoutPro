@@ -615,6 +615,15 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   /* center empty-cart state vertically */
   justify-content: flex-start; /* default: let header+items fill from top */
 }
+
+/* Overwrite Elementor default to force centering of empty cart */
+.elementor-menu-cart__main .widget_shopping_cart_content {
+  display: flex !important;
+  flex-direction: column;
+  height: 100% !important;
+  margin: auto !important;
+}
+
 .elementor-menu-cart__main {
   height: 100%;
   margin: auto;
