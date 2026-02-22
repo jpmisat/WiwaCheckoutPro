@@ -699,11 +699,11 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   overflow-x: hidden;
   padding-right: 12px !important; 
   margin-right: -12px !important;
-  max-height: calc(100vh - 220px); /* Ensure there is room for the footer */
+  max-height: calc(95vh - 220px); /* Ensure there is room for the footer */
 }
 @media screen and (max-width: 480px) {
   .woocommerce-mini-cart.cart_list {
-    max-height: calc(100vh - 220px) !important; /* Force more room for tight mobile footer */
+    max-height: calc(95vh - 220px) !important; /* Force more room for tight mobile footer */
   }
 }
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar {

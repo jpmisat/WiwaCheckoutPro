@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.14] - 2026-02-22
+
+### Changed
+- Refined cart list maximal height calculation (switched from `100vh` to `95vh` base).
+
 ## [2.12.13] - 2026-02-22
 
 ### Changed
