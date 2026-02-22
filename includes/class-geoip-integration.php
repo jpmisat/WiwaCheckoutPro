@@ -41,7 +41,17 @@ class Wiwa_GeoIP_Integration
      */
     public static function is_wc_maxmind_configured()
     {
-        $license_key = get_option('woocommerce_maxmind_license_key');
+        // WooCommerce >= 3.9 stores license key in woocommerce_maxmind_geolocation_settings
+        $wc_geoip_settings = get_option('woocommerce_maxmind_geolocation_settings');
+        $license_key = '';
+        
+        if (is_array($wc_geoip_settings) && !empty($wc_geoip_settings['license_key'])) {
+            $license_key = $wc_geoip_settings['license_key'];
+        } else {
+            // Fallback to older versions
+            $license_key = get_option('woocommerce_maxmind_license_key');
+        }
+
         return !empty($license_key) && class_exists('WC_Geolocation');
     }
 

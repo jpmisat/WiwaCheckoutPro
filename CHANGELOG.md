@@ -1,6 +1,13 @@
-# Changelog
+# Changelog Wiwa Tour Checkout Pro
 
-## [2.12.20] - 2026-02-22
+## [2.12.21] - 2025-02-22
+
+### Fixed
+- Corregida la detección de llaves de MaxMind para versiones de WooCommerce >= 3.9 (`woocommerce_maxmind_geolocation_settings`).
+- Eliminado error 404 en la consola relacionado al archivo `geoip.js` faltante en el checkout.
+- Creada función AJAX dinámica (`wiwa_get_geoip`) y archivo `geoip.js` para auto-completar los campos de ciudad y país en el frontend de forma segura contra cachés de página.
+
+## [2.12.20] - 2025-02-22
 
 ### Fixed
 - **Form Persistence**: Select2 fields (like "Tipo de Documento" and "Nacionalidad") now properly save their values on change and correctly update their UI visually when restored upon page reload.

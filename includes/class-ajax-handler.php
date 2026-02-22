@@ -24,6 +24,10 @@ class Wiwa_Ajax_Handler
         add_action('wp_ajax_wiwa_save_fields', [$this, 'save_fields']);
         add_action('wp_ajax_wiwa_test_maxmind', [$this, 'test_maxmind']);
 
+        // Frontend GeoIP auto-fill
+        add_action('wp_ajax_wiwa_get_geoip', [$this, 'get_geoip_data']);
+        add_action('wp_ajax_nopriv_wiwa_get_geoip', [$this, 'get_geoip_data']);
+
         // Update order data (Step 1 -> Session)
         add_action('wp_ajax_wiwa_update_order_data', [$this, 'update_order_data']);
         add_action('wp_ajax_nopriv_wiwa_update_order_data', [$this, 'update_order_data']);
@@ -180,6 +184,21 @@ class Wiwa_Ajax_Handler
         else {
             wp_send_json_error(['message' => __('No se pudo detectar la ciudad', 'wiwa-checkout')]);
         }
+    }
+
+    /**
+     * Get GeoIP Data for frontend auto-fill (Frontend AJAX)
+     */
+    public function get_geoip_data()
+    {
+        check_ajax_referer('wiwa_checkout_nonce', 'nonce');
+
+        if (!class_exists('Wiwa_GeoIP_Integration')) {
+            wp_send_json_error(['message' => __('GeoIP no disponible', 'wiwa-checkout')]);
+        }
+
+        $city_data = Wiwa_GeoIP_Integration::detect_city();
+        wp_send_json_success($city_data);
     }
 
     /**
