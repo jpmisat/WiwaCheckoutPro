@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.22] - 2025-02-22
+
+### Changed
+- Modificada la persistencia de datos del checkout de contacto (Paso 1) para usar `localStorage` en lugar de `sessionStorage`, garantizando que la información del cliente persista entre sesiones del navegador.
+- Añadido un script en la página de agradecimiento (Thank You) que borra automáticamente las llaves temporales de pasajeros (`sessionStorage`) tras una orden exitosa.
+
 ## [2.12.21] - 2025-02-22
 
 ### Fixed
