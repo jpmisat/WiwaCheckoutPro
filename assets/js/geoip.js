@@ -21,23 +21,41 @@ jQuery(document).ready(function($) {
         // Use YellowTree GeoIP Detect JS API
         if (typeof geoip2 !== 'undefined' && typeof geoip2.city === 'function') {
             geoip2.city(function(response) {
+                // To help with debugging in the browser console
+                console.log('Wiwa GeoIP Detect Response:', response);
+
                 // Determine Country
-                if (detectCountry === '1' && $countrySelect.length && !$countrySelect.val() && response.country && response.country.iso_code) {
-                    $countrySelect.val(response.country.iso_code);
+                if (detectCountry === '1' && $countrySelect.length && !$countrySelect.val() && response.country) {
+                    // Check standard MaxMind JS API formats and PHP serialized objects
+                    const countryCode = response.country.iso_code || response.country.isoCode || '';
                     
-                    // Trigger change for Select2 update
-                    if ($countrySelect.hasClass('select2-hidden-accessible')) {
-                        $countrySelect.trigger('change.select2');
-                    } else {
-                        $countrySelect.trigger('change');
+                    if (countryCode) {
+                        $countrySelect.val(countryCode);
+                        
+                        // Trigger change for Select2 update
+                        if ($countrySelect.hasClass('select2-hidden-accessible')) {
+                            $countrySelect.trigger('change.select2');
+                        } else {
+                            $countrySelect.trigger('change');
+                        }
                     }
                 }
 
-                // Determine City (prefer Spanish, fallback to English)
-                if (autoComplete === '1' && $cityInput.length && !$cityInput.val() && response.city && response.city.names) {
-                    const cityName = response.city.names.es || response.city.names.en || '';
+                // Determine City (prefer Spanish, fallback to English or default name)
+                if (autoComplete === '1' && $cityInput.length && !$cityInput.val() && response.city) {
+                    let cityName = '';
+                    
+                    if (response.city.names) {
+                        cityName = response.city.names.es || response.city.names.en || '';
+                    }
+                    
+                    // Fallback to direct name property if Yellowtree serializes it linearly
+                    if (!cityName && response.city.name) {
+                        cityName = response.city.name;
+                    }
+
                     if (cityName) {
-                        $cityInput.val(cityName).trigger('input').trigger('blur');
+                        $cityInput.val(cityName).trigger('input').trigger('change').trigger('blur');
                     }
                 }
             }, function(error) {

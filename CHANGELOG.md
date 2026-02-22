@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.27] - 2026-02-22
+
+### Fixed
+- Corregido el mapeo de los datos geográficos en el frontend (`geoip.js`) para soportar la serialización especifica de la API JS de GeoIP Detect YellowTree (ej: `response.city.name` y `response.country.isoCode`).
+
 ## [2.12.26] - 2026-02-22
 
 ### Changed
