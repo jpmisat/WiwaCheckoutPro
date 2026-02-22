@@ -615,10 +615,33 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   .elementor-menu-cart__container .elementor-menu-cart__main {
     padding-top: 0px !important;
     padding-bottom: 0px !important;
+    height: 100vh !important;
   }
   .elementor-menu-cart__container {
     padding: 10px !important; /* Reduce outer padding */
   }
+}
+
+/* Fix Elementor Close Button Position */
+.elementor-menu-cart__close-button {
+  top: 15px !important;
+  right: 15px !important;
+  background: #ffffff !important;
+  border-radius: 50% !important;
+  width: 36px !important;
+  height: 36px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15) !important;
+  z-index: 9999 !important;
+  position: absolute !important;
+}
+
+.elementor-menu-cart__close-button svg {
+  width: 14px;
+  height: 14px;
+  fill: #4b5563;
 }
 
 /* Elegant Title */
@@ -659,7 +682,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 }
 @media screen and (max-width: 480px) {
   .woocommerce-mini-cart.cart_list {
-    max-height: calc(100vh - 200px); /* Leave room for tight mobile footer */
+    max-height: calc(100vh - 220px) !important; /* Force more room for tight mobile footer */
   }
 }
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar {

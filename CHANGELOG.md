@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.12.5] - 2026-02-21
+
+### Fixed
+- **Mobile Cart Close Button:** Forced the Elementor mini-cart close button (the X) to position absolutely inside the viewport so it doesn't get clipped or pushed out of bounds on mobile screens.
+
 ## [2.12.4] - 2026-02-21
 
 ### Changed
