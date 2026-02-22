@@ -168,7 +168,8 @@ jQuery(function ($) {
         if ($('#btn-add-to-cart-soft').length === 0) {
             var $form = $('.ovatb_booking_form, #booking-form');
             if ($form.length) {
-                var btnHtml = '<button type="button" id="btn-add-to-cart-soft" class="button alt">Agregar al carrito</button>';
+                var btnText = (typeof wiwa_vars !== 'undefined' && wiwa_vars.strings) ? wiwa_vars.strings.addToCart : 'Agregar al carrito';
+                var btnHtml = '<button type="button" id="btn-add-to-cart-soft" class="button alt">' + btnText + '</button>';
                 $form.find('button[type="submit"]').after(btnHtml);
             }
         }

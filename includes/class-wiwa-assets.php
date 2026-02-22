@@ -19,7 +19,13 @@ class Wiwa_Assets
             wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
             wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
+                'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
+                'strings'  => [
+                    'processing' => __('Procesando...', 'wiwa-checkout'),
+                    'addError'   => __('Error al agregar al carrito.', 'wiwa-checkout'),
+                    'connError'  => __('Ocurrió un error de conexión. Intente nuevamente.', 'wiwa-checkout'),
+                    'addToCart'  => __('<span class="icon-cart"></span> Agregar al Carrito', 'wiwa-checkout'),
+                ]
             ]);
         }
 
@@ -66,7 +72,10 @@ class Wiwa_Assets
             wp_enqueue_script('wiwa-mini-cart', WIWA_CHECKOUT_URL . 'assets/js/wiwa-mini-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
             wp_localize_script('wiwa-mini-cart', 'wiwa_vars', [
                 'ajax_url' => admin_url('admin-ajax.php'),
-                'nonce'    => wp_create_nonce('wiwa_checkout_nonce')
+                'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
+                'strings'  => [
+                    'addToCart' => __('Agregar al carrito', 'wiwa-checkout')
+                ]
             ]);
         }
     }

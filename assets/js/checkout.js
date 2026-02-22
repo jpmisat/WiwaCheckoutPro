@@ -259,7 +259,9 @@ document.addEventListener('DOMContentLoaded', function () {
                 if (data.success) {
                     window.location.href = this.getAttribute('action');
                 } else {
-                    alert('Error guardando datos: ' + (data.data || 'Error desconocido'));
+                    const errorMessage = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.errorSavingData ? wiwaCheckout.strings.errorSavingData : 'Error guardando datos: ';
+                    const unknownError = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.unknownError ? wiwaCheckout.strings.unknownError : 'Error desconocido';
+                    alert(errorMessage + (data.data || unknownError));
                     if (submitBtn) {
                         submitBtn.disabled = false;
                         submitBtn.innerText = originalText;
@@ -268,7 +270,8 @@ document.addEventListener('DOMContentLoaded', function () {
             })
             .catch(err => {
                 console.error(err);
-                alert('Error de conexión.');
+                const connectionError = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.connectionError ? wiwaCheckout.strings.connectionError : 'Error de conexión.';
+                alert(connectionError);
                 if (submitBtn) {
                     submitBtn.disabled = false;
                     submitBtn.innerText = originalText;

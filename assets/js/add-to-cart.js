@@ -57,7 +57,7 @@ jQuery(document).ready(function($) {
         $btn.addClass('loading');
         $originalBtn.prop('disabled', true);
         var originalText = $btn.html();
-        $btn.prop('disabled', true).html('<span class="wiwa-spinner"></span> Procesando...');
+        $btn.prop('disabled', true).html('<span class="wiwa-spinner"></span> ' + (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings ? wiwaAjax.strings.processing : 'Procesando...'));
 
         // 3. AJAX Request
         var ajaxUrl = (typeof wiwaAjax !== 'undefined') ? wiwaAjax.ajax_url : ((typeof ovatbAjaxObject !== 'undefined') ? ovatbAjaxObject.ajax_url : '/wp-admin/admin-ajax.php');
@@ -84,14 +84,15 @@ jQuery(document).ready(function($) {
                 if (res.success) {
                     handleSuccess(res && res.data ? res.data : res);
                 } else {
-                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || 'Error al agregar al carrito.');
+                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings ? wiwaAjax.strings.addError : 'Error al agregar al carrito.'));
                     alert(msg);
                     resetButtons($btn, originalText);
                 }
             },
             error: function(err) {
                 console.error(err);
-                alert('Ocurrió un error de conexión. Intente nuevamente.');
+                var connErr = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.connError : 'Ocurrió un error de conexión. Intente nuevamente.';
+                alert(connErr);
                 resetButtons($btn, originalText);
             }
         });
@@ -118,7 +119,8 @@ jQuery(document).ready(function($) {
     }
 
     function resetButtons($btn, originalText) {
-        $btn.prop('disabled', false).html(originalText || '<span class="icon-cart"></span> Agregar al Carrito');
+        var fallbackText = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.addToCart : '<span class="icon-cart"></span> Agregar al Carrito';
+        $btn.prop('disabled', false).html(originalText || fallbackText);
         $('button[name="add-to-cart"]').prop('disabled', false);
     }
 
@@ -142,7 +144,8 @@ jQuery(document).ready(function($) {
                 
                 // Resetear botones
                 var $btn = $('#btn-add-to-cart-soft');
-                resetButtons($btn, '<span class="icon-cart"></span> Agregar al Carrito');
+                var btnText = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.addToCart : '<span class="icon-cart"></span> Agregar al Carrito';
+                resetButtons($btn, btnText);
                 $btn.removeClass('loading');
             }
         }, 300);

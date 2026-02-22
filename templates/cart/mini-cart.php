@@ -46,9 +46,9 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                 // Travelers Label
                 $travelers_label = '';
-                if ( ! empty( $tour_meta['adults'] ) ) $travelers_label .= $tour_meta['adults'] . ' ' . __( 'Adultos', 'wiwa-tour-checkout' );
-                if ( ! empty( $tour_meta['kids'] ) )   $travelers_label .= ', ' . $tour_meta['kids'] . ' ' . __( 'Niños', 'wiwa-tour-checkout' );
-                if ( ! empty( $tour_meta['babies'] ) ) $travelers_label .= ', ' . $tour_meta['babies'] . ' ' . __( 'Bebés', 'wiwa-tour-checkout' );
+                if ( ! empty( $tour_meta['adults'] ) ) $travelers_label .= $tour_meta['adults'] . ' ' . __( 'Adultos', 'wiwa-checkout' );
+                if ( ! empty( $tour_meta['kids'] ) )   $travelers_label .= ', ' . $tour_meta['kids'] . ' ' . __( 'Niños', 'wiwa-checkout' );
+                if ( ! empty( $tour_meta['babies'] ) ) $travelers_label .= ', ' . $tour_meta['babies'] . ' ' . __( 'Bebés', 'wiwa-checkout' );
 
                 // Stepper Logic
                 // For tours, "quantity" in WC is 1, but we want to show travelers or just the pax count?

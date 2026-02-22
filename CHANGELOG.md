@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.24] - 2026-02-22
+
+### Changed
+- Internacionalización completa de JavaScript y PHP templates: Se agregaron las funciones y variables localizadas de traducción de WordPress (`wiwa-checkout`) a los textos duros previamente encontrados en `checkout.js`, `add-to-cart.js` y `wiwa-mini-cart.js`.
+- Corrección del *text domain* en `mini-cart.php` pasando de `wiwa-tour-checkout` a `wiwa-checkout` para compatibilidad con WPML.
+
 ## [2.12.23] - 2025-02-22
 
 ### Fixed

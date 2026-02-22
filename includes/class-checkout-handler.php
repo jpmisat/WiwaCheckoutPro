@@ -244,7 +244,12 @@ class Wiwa_Checkout_Handler
             'homeUrl' => home_url('/'),
             'strings' => [
                 'processing' => __('Procesando...', 'wiwa-checkout'),
-                'error' => __('Error en la solicitud', 'wiwa-checkout')
+                'error' => __('Error en la solicitud', 'wiwa-checkout'),
+                'continueToPayment' => __('Continúa al pago para finalizar.', 'wiwa-checkout'),
+                'selectTour' => __('Selecciona tu tour', 'wiwa-checkout'),
+                'adult' => __('Adulto', 'wiwa-checkout'),
+                'child' => __('Niño', 'wiwa-checkout'),
+                'infant' => __('Infante', 'wiwa-checkout'),
             ],
             'geoIp' => [
                 'autoComplete' => get_option('wiwa_geoip_autocomplete_city'),
