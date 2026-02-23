@@ -3,7 +3,7 @@ jQuery(document).ready(function($) {
         return;
     }
 
-    const { autoComplete, detectCountry } = wiwaCheckout.geoIp;
+    const { autoComplete, detectCountry, strategy } = wiwaCheckout.geoIp;
 
     // We only execute if at least one of these settings is on
     if (autoComplete !== '1' && detectCountry !== '1') {
@@ -17,52 +17,72 @@ jQuery(document).ready(function($) {
     const shouldFetch = ($cityInput.length && !$cityInput.val() && autoComplete === '1') || 
                         ($countrySelect.length && !$countrySelect.val() && detectCountry === '1');
 
-    if (shouldFetch) {
+    if (!shouldFetch) {
+        return;
+    }
+
+    // Function to populate fields based on found data
+    function populateFields(countryCode, cityName) {
+        if (detectCountry === '1' && $countrySelect.length && !$countrySelect.val() && countryCode) {
+            $countrySelect.val(countryCode);
+            // Trigger change for Select2 update
+            if ($countrySelect.hasClass('select2-hidden-accessible')) {
+                $countrySelect.trigger('change.select2');
+            } else {
+                $countrySelect.trigger('change');
+            }
+        }
+
+        if (autoComplete === '1' && $cityInput.length && !$cityInput.val() && cityName) {
+            $cityInput.val(cityName).trigger('input').trigger('change').trigger('blur');
+        }
+    }
+
+    if (strategy === 'yellowtree') {
         // Use YellowTree GeoIP Detect JS API
-        if (typeof geoip2 !== 'undefined' && typeof geoip2.city === 'function') {
-            geoip2.city(function(response) {
-                // To help with debugging in the browser console
-                console.log('Wiwa GeoIP Detect Response:', response);
+        if (typeof geoip_detect !== 'undefined' && typeof geoip_detect.get_info === 'function') {
+            geoip_detect.get_info().then(function(record) {
+                console.log('Wiwa GeoIP Detect Response:', record);
 
-                // Determine Country
-                if (detectCountry === '1' && $countrySelect.length && !$countrySelect.val() && response.country) {
-                    // Check standard MaxMind JS API formats and PHP serialized objects
-                    const countryCode = response.country.iso_code || response.country.isoCode || '';
-                    
-                    if (countryCode) {
-                        $countrySelect.val(countryCode);
-                        
-                        // Trigger change for Select2 update
-                        if ($countrySelect.hasClass('select2-hidden-accessible')) {
-                            $countrySelect.trigger('change.select2');
-                        } else {
-                            $countrySelect.trigger('change');
-                        }
+                let countryCode = '';
+                let cityName = '';
+
+                // Record object from GeoIP Detect
+                if (record && typeof record.get === 'function') {
+                    countryCode = record.get('country.iso_code') || record.get('country.isoCode') || '';
+                    cityName = record.get_with_locales('city.name', ['es', 'en']) || record.get('city.name') || '';
+                } else if (record && record.country) { // Fallback to raw object format just in case
+                    countryCode = record.country.iso_code || record.country.isoCode || '';
+                    if (record.city) {
+                        cityName = (record.city.names && (record.city.names.es || record.city.names.en)) || record.city.name || '';
                     }
                 }
 
-                // Determine City (prefer Spanish, fallback to English or default name)
-                if (autoComplete === '1' && $cityInput.length && !$cityInput.val() && response.city) {
-                    let cityName = '';
-                    
-                    if (response.city.names) {
-                        cityName = response.city.names.es || response.city.names.en || '';
-                    }
-                    
-                    // Fallback to direct name property if Yellowtree serializes it linearly
-                    if (!cityName && response.city.name) {
-                        cityName = response.city.name;
-                    }
+                populateFields(countryCode, cityName);
 
-                    if (cityName) {
-                        $cityInput.val(cityName).trigger('input').trigger('change').trigger('blur');
-                    }
-                }
-            }, function(error) {
+            }).catch(function(error) {
                 console.error('Wiwa GeoIP Detect JS API Error:', error);
             });
         } else {
-            console.warn('Wiwa GeoIP: geoip2 object is not available. Ensure YellowTree GeoIP Detect is active and JS API is enabled.');
+            console.warn('Wiwa GeoIP: geoip_detect object is not available. Ensure YellowTree GeoIP Detect is active and JS API is enabled.');
         }
+    } else {
+        // Fallback to internal MaxMind via AJAX endpoint
+        $.ajax({
+            url: wiwaCheckout.ajaxUrl,
+            type: 'POST',
+            data: {
+                action: 'wiwa_get_geoip',
+                nonce: wiwaCheckout.nonce
+            },
+            success: function(response) {
+                if (response.success && response.data) {
+                    populateFields(response.data.country || '', response.data.city || '');
+                }
+            },
+            error: function(xhr, status, error) {
+                console.error('Wiwa Internal GeoIP Error:', error);
+            }
+        });
     }
 });

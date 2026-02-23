@@ -36,6 +36,12 @@ endif; ?>
                     </label>
                 </div>
                 <div class="wiwa-radio-row">
+                    <input type="radio" name="wiwa_geoip_strategy" id="geoip-yellowtree" value="yellowtree" <?php checked('yellowtree', get_option('wiwa_geoip_strategy')); ?>>
+                    <label for="geoip-yellowtree">
+                        <?php _e('Usar YellowTree (GeoIP Detect / JS API)', 'wiwa-checkout'); ?>
+                    </label>
+                </div>
+                <div class="wiwa-radio-row">
                     <input type="radio" name="wiwa_geoip_strategy" id="geoip-direct" value="direct" <?php checked('direct', get_option('wiwa_geoip_strategy')); ?>>
                     <label for="geoip-direct"><?php _e('Usar API propia de MaxMind', 'wiwa-checkout'); ?></label>
                 </div>

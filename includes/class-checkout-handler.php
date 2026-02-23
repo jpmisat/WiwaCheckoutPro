@@ -253,7 +253,8 @@ class Wiwa_Checkout_Handler
             ],
             'geoIp' => [
                 'autoComplete' => get_option('wiwa_geoip_autocomplete_city'),
-                'detectCountry' => get_option('wiwa_geoip_detect_country')
+                'detectCountry' => get_option('wiwa_geoip_detect_country'),
+                'strategy' => get_option('wiwa_geoip_strategy', 'woocommerce')
             ]
         ]);
     }

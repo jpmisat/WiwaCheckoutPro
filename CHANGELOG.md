@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.28] - 2026-02-22
+
+### Added
+- Agregada opción en el menú de Opciones de Integración para poder alternar de forma explícita entre usar la API JS de GeoIP Detect de YellowTree, la API interna de MaxMind antigua o la configuración de base de datos de WooCommerce. 
+- Integración condicional en `geoip.js` que escucha el parámetro `wiwaCheckout.geoIp.strategy` e invoca `geoip_detect.get_info()` dinámicamente según la preferencia del administrador, mapeando los campos automáticamente del nodo devuelto (`record.get('city.name')`).
+
 ## [2.12.27] - 2026-02-22
 
 ### Fixed
