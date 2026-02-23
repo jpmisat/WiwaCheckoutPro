@@ -37,29 +37,7 @@ $class = function_exists('ovatb_get_meta_data') ? ovatb_get_meta_data( 'class', 
 		</button>
 	</div>
 
-	<div id="ova-booking-success-layer" style="display:none;" class="wiwa-success-layer">
-		<div class="wiwa-success-header">
-			<div class="wiwa-success-image-col">
-				<img id="success-tour-image" src="" alt="Tour" />
-			</div>
-			<div class="wiwa-success-details-col">
-				<span class="success-message-text"><?php esc_html_e( '¡Agregado al carrito!', 'wiwa-checkout' ); ?></span>
-				<h3 id="success-tour-name"><?php echo get_the_title( $product->get_id() ); ?></h3>
-                <p id="success-tour-date" class="success-tour-meta"></p>
-                <div class="success-actions">
-                    <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="btn-view-cart"><?php esc_html_e( 'Ver carrito', 'wiwa-checkout' ); ?></a>
-                    <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="btn-reserve-now"><?php esc_html_e( 'Reservar ahora', 'wiwa-checkout' ); ?></a>
-                </div>
-			</div>
-		</div>
-		
-		<div class="success-cross-sell">
-			<h4><?php esc_html_e( 'Más actividades para explorar', 'wiwa-checkout' ); ?></h4>
-            <div class="wiwa-cross-sell-wrapper">
-			    <?php echo do_shortcode( '[products limit="3" columns="3" orderby="rand" visibility="visible"]' ); ?>
-            </div>
-		</div>
-	</div>
+	<?php /* Success overlay is injected dynamically by add-to-cart.js into <body> */ ?>
 
     <input
         type="hidden"

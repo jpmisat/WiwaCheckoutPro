@@ -1,5 +1,14 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.14.0] - 2026-02-22
+
+### Added
+- **Standalone Success Popup**: The success message after "Agregar al carrito" is now a full-screen overlay appended to `<body>` instead of an in-modal layer. Features animated card entrance, backdrop blur, close on ESC/click/button, and responsive mobile layout.
+
+### Changed
+- **Modal Auto-Close**: The JetPopup/Elementor booking modal now closes automatically before displaying the success overlay, resolving layout and z-index constraints.
+- **Success Overlay Design**: Premium card-based design with tour image, checkmark animation, branded badge, and dual action buttons (Ver carrito / Reservar ahora).
+
 ## [2.13.1] - 2026-02-22
 
 ### Fixed

@@ -1,334 +1,322 @@
-/* ============================================
-   Wiwa Tour Booking Modal — Action Buttons & Success Layer
-   Brand Palette: Deep Forest Green #1a3015, Gold/Amber #c8972e, Warm Cream #f0dfcd
-   ============================================ */
+/**
+ * Wiwa Add-to-Cart Styles v2.14.0
+ * Styles for booking form buttons + standalone success overlay.
+ */
 
-/* Container de acciones principal */
+/* ==================== VARIABLES ==================== */
+:root {
+    --wiwa-green-dark: #1a3015;
+    --wiwa-green-mid: #2a5120;
+    --wiwa-green-light: #e8f0e6;
+    --wiwa-green-accent: #22c55e;
+    --wiwa-overlay-z: 2147483647;
+}
+
+/* ==================== BUTTON CONTAINER ==================== */
 .wiwa-modal-actions {
-  display: flex;
-  gap: 12px;
-  align-items: center;
-  margin-top: 25px;
-  flex-wrap: wrap;
+    display: flex !important;
+    flex-wrap: wrap;
+    gap: 10px;
+    padding: 16px 0 8px;
+    justify-content: center;
 }
 
 .wiwa-modal-actions button {
-  flex: 1;
-  min-width: 150px;
-  padding: 15px 22px;
-  border-radius: 50px;
-  font-weight: 700;
-  cursor: pointer;
-  transition: all 0.3s cubic-bezier(.4,0,.2,1);
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  text-transform: uppercase;
-  font-size: 13px;
-  letter-spacing: 0.8px;
-  position: relative;
-  overflow: hidden;
-  line-height: normal;
+    min-width: 140px;
+    padding: 13px 24px !important;
+    border-radius: 50px !important;
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    letter-spacing: 0.02em;
+    cursor: pointer;
+    transition: all 0.25s ease !important;
+    text-transform: none !important;
+    line-height: 1.3 !important;
+    display: inline-flex !important;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
 }
 
 /* —— "Agregar al carrito" (Secondary — LEFT side, outline style) —— */
 .wiwa-modal-actions .wiwa-btn-secondary {
-  background-color: transparent !important;
-  color: var(--ova-primary, #1a3015) !important;
-  border: 2px solid var(--ova-primary, #1a3015) !important;
-  order: 1; /* LEFT */
+    background-color: transparent !important;
+    color: var(--wiwa-green-dark) !important;
+    border: 2px solid var(--wiwa-green-dark) !important;
+    order: 1; /* LEFT */
 }
 .wiwa-modal-actions .wiwa-btn-secondary:hover {
-  background-color: rgba(26, 48, 21, 0.06) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 14px rgba(26, 48, 21, 0.12);
+    background-color: var(--wiwa-green-light) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 48, 21, 0.15);
 }
 
 /* —— "Reservar" (Primary — RIGHT side, solid brand green) —— */
 .wiwa-modal-actions .wiwa-btn-primary {
-  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
-  color: #ffffff !important;
-  border: 2px solid transparent !important;
-  order: 2; /* RIGHT */
-  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+    background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
+    color: #ffffff !important;
+    border: 2px solid transparent !important;
+    order: 2; /* RIGHT */
+    box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
 }
 .wiwa-modal-actions .wiwa-btn-primary:hover {
-  background: linear-gradient(135deg, #2a5120 0%, #367a2b 100%) !important;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
-}
-
-.wiwa-modal-actions button.loading {
-  opacity: 0.8;
-  pointer-events: none;
+    background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
 }
 
 /* Spinner */
-.wiwa-spinner:before {
-  content: "\f110";
-  font-family: "FontAwesome";
-  animation: fa-spin 1s infinite steps(8);
-  display: inline-block;
+.wiwa-spinner {
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255,255,255,0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: wiwa-spin 0.6s linear infinite;
+}
+.wiwa-btn-secondary .wiwa-spinner {
+    border-color: rgba(26,48,21,0.2);
+    border-top-color: var(--wiwa-green-dark);
+}
+@keyframes wiwa-spin {
+    to { transform: rotate(360deg); }
 }
 
-@keyframes fa-spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
-}
-
-/* ============================================
-   Success Layer
-   ============================================ */
-.wiwa-success-layer {
-  background: #f7f9f6;
-  border-radius: 12px;
-  margin-top: 20px;
-  overflow: hidden;
-  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
-  animation: wiwa-fadeInUp 0.4s ease-out forwards;
-}
-
-.wiwa-success-header {
-  display: flex;
-  padding: 24px;
-  gap: 24px;
-  background: #ffffff;
-  align-items: center;
-}
-
-.wiwa-success-image-col {
-  flex: 0 0 120px;
-}
-
-.wiwa-success-image-col img {
-  width: 100%;
-  height: 120px;
-  object-fit: cover;
-  border-radius: 8px;
-  display: block;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-}
-
-.wiwa-success-details-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-}
-
-.success-message-text {
-  font-size: 13px;
-  color: #2a5120;
-  font-weight: 700;
-  line-height: 1;
-  margin-bottom: 6px;
-  display: flex;
-  align-items: center;
-  gap: 5px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-}
-
-.wiwa-success-details-col h3 {
-  margin: 0 0 4px 0;
-  font-size: 20px;
-  font-weight: 800;
-  color: #222;
-  line-height: 1.3;
-}
-
-.success-tour-meta {
-  font-size: 14px;
-  color: #666;
-  margin: 0 0 15px 0;
-}
-
-/* Acciones en el Success Layer */
-.wiwa-success-details-col .success-actions {
-  display: flex;
-  gap: 12px;
-}
-
-.wiwa-success-details-col .success-actions a {
-  text-decoration: none;
-  padding: 10px 22px;
-  border-radius: 50px;
-  font-size: 13px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  text-transform: uppercase;
-  transition: all 0.3s ease;
-  text-align: center;
-  cursor: pointer;
-}
-
-/* Boton "Ver Carrito" (Outline Green) */
-.wiwa-success-details-col .btn-view-cart {
-  background: transparent;
-  color: var(--ova-primary, #1a3015) !important;
-  border: 2px solid var(--ova-primary, #1a3015);
-}
-.wiwa-success-details-col .btn-view-cart:hover {
-  background: rgba(26, 48, 21, 0.06);
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(26, 48, 21, 0.12);
-}
-
-/* Boton "Reservar Ahora" (Solid Green) */
-.wiwa-success-details-col .btn-reserve-now {
-  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%);
-  color: #ffffff !important;
-  border: 2px solid transparent;
-  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
-}
-.wiwa-success-details-col .btn-reserve-now:hover {
-  background: linear-gradient(135deg, #2a5120 0%, #367a2b 100%);
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
-}
-
-/* Cross Sell */
-.success-cross-sell {
-  padding: 24px;
-  border-top: 1px solid #e8ede5;
-  background: #f5f8f3;
-}
-
-.success-cross-sell h4 {
-  font-size: 16px;
-  margin-top: 0;
-  margin-bottom: 20px;
-  color: #333;
-  font-weight: 700;
-}
-
-.wiwa-cross-sell-wrapper ul.products {
-  display: grid !important;
-  grid-template-columns: repeat(3, 1fr) !important;
-  gap: 15px !important;
-  margin: 0 !important;
-  padding: 0 !important;
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product {
-  width: 100% !important;
-  margin: 0 !important;
-  float: none !important;
-  background: #fff;
-  border-radius: 8px;
-  padding: 10px;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product img {
-  border-radius: 6px;
-  margin-bottom: 8px;
-  transition: transform 0.3s ease;
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product:hover img {
-  transform: scale(1.03);
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product h2 {
-  font-size: 13px !important;
-  line-height: 1.3;
-  margin-bottom: 5px !important;
-  font-weight: 600;
-  color: #222;
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product .price {
-  font-size: 13px !important;
-  color: #444;
-  font-weight: 700;
-}
-
-.wiwa-cross-sell-wrapper ul.products li.product .button {
-  display: none !important;
-}
-
-/* Validation */
-.error-field {
-  border: 1px solid #c53030 !important;
-  box-shadow: 0 0 5px rgba(197, 48, 48, 0.2);
-}
-
-.shake {
-  animation: shake 0.5s;
-}
-
+/* Shake animation */
 @keyframes shake {
-  0%   { transform: translateX(0); }
-  25%  { transform: translateX(-5px); }
-  50%  { transform: translateX(5px); }
-  75%  { transform: translateX(-5px); }
-  100% { transform: translateX(0); }
+    0%, 100% { transform: translateX(0); }
+    20%, 60% { transform: translateX(-6px); }
+    40%, 80% { transform: translateX(6px); }
+}
+.shake { animation: shake 0.4s ease; }
+
+/* Error field */
+.error-field {
+    border-color: #ef4444 !important;
+    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
 }
 
-@keyframes wiwa-fadeInUp {
-  from { opacity: 0; transform: translateY(15px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
+/* ==================== SUCCESS OVERLAY ==================== */
 
-/* ============================================
-   Responsive
-   ============================================ */
-@media (max-width: 650px) {
-  .wiwa-modal-actions {
-    flex-direction: column;
-  }
-
-  /* On mobile, stack: Primary (Reservar) on top, Secondary below */
-  .wiwa-modal-actions .wiwa-btn-primary {
-    order: 1;
-    width: 100%;
-  }
-  .wiwa-modal-actions .wiwa-btn-secondary {
-    order: 2;
-    width: 100%;
-  }
-
-  .wiwa-modal-actions button {
-    width: 100%;
-    margin: 0 !important;
-  }
-
-  .wiwa-success-header {
-    flex-direction: column;
-    align-items: flex-start;
-    text-align: center;
-    gap: 15px;
-  }
-
-  .wiwa-success-image-col {
-    width: 100%;
-    flex: 0 0 auto;
-  }
-
-  .wiwa-success-image-col img {
-    height: 180px;
-  }
-
-  .success-message-text {
+/* Overlay container */
+.wiwa-so {
+    position: fixed;
+    inset: 0;
+    z-index: var(--wiwa-overlay-z);
+    display: flex;
+    align-items: center;
     justify-content: center;
-  }
+    padding: 20px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+.wiwa-so--visible {
+    opacity: 1;
+    visibility: visible;
+}
 
-  .wiwa-success-details-col {
+/* Backdrop */
+.wiwa-so-backdrop {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    -webkit-backdrop-filter: blur(4px);
+}
+
+/* Card */
+.wiwa-so-card {
+    position: relative;
+    background: #ffffff;
+    border-radius: 20px;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+    max-width: 520px;
     width: 100%;
-  }
+    overflow: hidden;
+    transform: translateY(20px) scale(0.97);
+    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.wiwa-so--visible .wiwa-so-card {
+    transform: translateY(0) scale(1);
+}
 
-  .wiwa-success-details-col .success-actions {
+/* Close button */
+.wiwa-so-close {
+    position: absolute;
+    top: 12px;
+    right: 12px;
+    z-index: 10;
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.05);
+    border: none;
+    border-radius: 50%;
+    font-size: 22px;
+    color: #6b7280;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    line-height: 1;
+}
+.wiwa-so-close:hover {
+    background: rgba(0, 0, 0, 0.1);
+    color: #1f2937;
+}
+
+/* Content layout */
+.wiwa-so-content {
+    display: flex;
     flex-direction: column;
+}
+
+/* Image section */
+.wiwa-so-image {
     width: 100%;
-  }
+    max-height: 220px;
+    overflow: hidden;
+    background: #f3f4f6;
+}
+.wiwa-so-image img {
+    width: 100%;
+    height: 220px;
+    object-fit: cover;
+    display: block;
+}
 
-  .wiwa-cross-sell-wrapper ul.products {
-    grid-template-columns: repeat(2, 1fr) !important;
-  }
+/* Details section */
+.wiwa-so-details {
+    padding: 28px 32px 32px;
+    text-align: center;
+}
 
-  .wiwa-cross-sell-wrapper ul.products li.product:last-child {
-    display: none;
-  }
+/* Checkmark */
+.wiwa-so-check {
+    margin-bottom: 12px;
+}
+.wiwa-so-check svg {
+    display: inline-block;
+}
+
+/* Badge */
+.wiwa-so-badge {
+    display: inline-block;
+    background: var(--wiwa-green-light);
+    color: var(--wiwa-green-dark);
+    font-size: 12px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+    padding: 5px 14px;
+    border-radius: 20px;
+    margin-bottom: 14px;
+}
+
+/* Title */
+.wiwa-so-title {
+    font-size: 22px;
+    font-weight: 800;
+    color: var(--wiwa-green-dark);
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+/* Date */
+.wiwa-so-date {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 14px;
+    color: #6b7280;
+    margin: 0 0 24px;
+}
+.wiwa-so-date svg {
+    flex-shrink: 0;
+    color: #9ca3af;
+}
+
+/* Action buttons */
+.wiwa-so-actions {
+    display: flex;
+    gap: 12px;
+    justify-content: center;
+}
+
+.wiwa-so-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 12px 28px;
+    border-radius: 50px;
+    font-size: 14px;
+    font-weight: 700;
+    text-decoration: none !important;
+    cursor: pointer;
+    transition: all 0.25s ease;
+    min-width: 140px;
+}
+
+/* Outline (Ver carrito) */
+.wiwa-so-btn-outline {
+    background: transparent;
+    color: var(--wiwa-green-dark);
+    border: 2px solid var(--wiwa-green-dark);
+}
+.wiwa-so-btn-outline:hover {
+    background: var(--wiwa-green-light);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(26, 48, 21, 0.12);
+    color: var(--wiwa-green-dark);
+}
+
+/* Solid (Reservar ahora) */
+.wiwa-so-btn-solid {
+    background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%);
+    color: #ffffff !important;
+    border: 2px solid transparent;
+    box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+}
+.wiwa-so-btn-solid:hover {
+    background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
+    color: #ffffff !important;
+}
+
+/* ==================== RESPONSIVE ==================== */
+
+@media (max-width: 480px) {
+    .wiwa-so-card {
+        max-width: 100%;
+        border-radius: 16px;
+    }
+    .wiwa-so-image {
+        max-height: 160px;
+    }
+    .wiwa-so-image img {
+        height: 160px;
+    }
+    .wiwa-so-details {
+        padding: 20px 20px 24px;
+    }
+    .wiwa-so-title {
+        font-size: 18px;
+    }
+    .wiwa-so-actions {
+        flex-direction: column;
+    }
+    .wiwa-so-btn {
+        width: 100%;
+        min-width: unset;
+    }
+    .wiwa-modal-actions {
+        flex-direction: column;
+    }
+    .wiwa-modal-actions button {
+        width: 100%;
+        min-width: unset;
+    }
 }
