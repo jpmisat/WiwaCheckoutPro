@@ -1,22 +1,13 @@
 jQuery(document).ready(function($) {
-    // Escuchar el botón suave de agregar al carrito
-    $(document).on('click', '#btn-add-to-cart-soft', function(e) {
-        e.preventDefault();
-        
-        var $form = $('#booking-form');
-        var $btn = $(this);
-        var $originalBtn = $form.find('button[name="add-to-cart"]');
-        
-        // 1. Validación
+
+    function validateForm($form) {
         var isValid = true;
 
-        // Validación nativa HTML5
         if ($form[0].checkValidity && !$form[0].checkValidity()) {
             $form[0].reportValidity();
-            return;
+            return false;
         }
 
-        // Validación manual de campos requeridos (backup)
         $form.find('[required]').each(function() {
             if (!$(this).val()) {
                 isValid = false;
@@ -26,10 +17,8 @@ jQuery(document).ready(function($) {
             }
         });
 
-        // Validación de fechas (OvaTourBooking suele usar campos hidden para fechas reales)
         var checkin = $form.find('input[name="checkin_date"]').val();
         if (!checkin && $form.find('.ovatb-datepicker').length) {
-             // Si hay datepicker y no hay fecha, intentar validar el input visible
              var visibleDate = $form.find('.ovatb-datepicker').val();
              if(!visibleDate) {
                  isValid = false;
@@ -38,13 +27,17 @@ jQuery(document).ready(function($) {
         }
         
         if (!isValid) {
-            // Animación de shake u otro feedback visual
             $form.addClass('shake');
             setTimeout(function(){ $form.removeClass('shake'); }, 500);
+        }
+        return isValid;
+    }
+
+    function doAjaxAddToCart($form, $btn, isDirectCheckout) {
+        if (!validateForm($form)) {
             return;
         }
 
-        // 2. Preparar Datos
         var formData = new FormData($form[0]);
         formData.append('action', 'wiwa_ajax_add_to_cart');
         formData.append('is_ajax_cart', '1');
@@ -54,12 +47,12 @@ jQuery(document).ready(function($) {
         }
         
         // UI Loading
-        $btn.addClass('loading');
-        $originalBtn.prop('disabled', true);
         var originalText = $btn.html();
-        $btn.prop('disabled', true).html('<span class="wiwa-spinner"></span> ' + (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings ? wiwaAjax.strings.processing : 'Procesando...'));
+        var loadingText = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings ? wiwaAjax.strings.processing : 'Procesando...');
+        
+        $form.find('button').prop('disabled', true);
+        $btn.addClass('loading').html('<span class="wiwa-spinner"></span> ' + loadingText);
 
-        // 3. AJAX Request
         var ajaxUrl = (typeof wiwaAjax !== 'undefined') ? wiwaAjax.ajax_url : ((typeof ovatbAjaxObject !== 'undefined') ? ovatbAjaxObject.ajax_url : '/wp-admin/admin-ajax.php');
 
         $.ajax({
@@ -71,92 +64,106 @@ jQuery(document).ready(function($) {
             success: function(response) {
                 $btn.removeClass('loading');
                 
-                // Parse response if string
-                var res = response;
-                if (typeof response === 'string') {
-                    try {
-                        res = JSON.parse(response);
-                    } catch (e) {
-                        console.log('Error parsing JSON:', e);
-                    }
-                }
+                var res = typeof response === 'string' ? JSON.parse(response) : response;
 
                 if (res.success) {
-                    handleSuccess(res && res.data ? res.data : res);
+                    var data = res.data || {};
+                    if (isDirectCheckout && data.checkout_url) {
+                        window.location.href = data.checkout_url;
+                    } else {
+                        handleSoftAddSuccess(data);
+                    }
                 } else {
-                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings ? wiwaAjax.strings.addError : 'Error al agregar al carrito.'));
+                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || 'Error al agregar al carrito.');
                     alert(msg);
-                    resetButtons($btn, originalText);
+                    resetButtons($form, $btn, originalText);
                 }
             },
             error: function(err) {
                 console.error(err);
-                var connErr = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.connError : 'Ocurrió un error de conexión. Intente nuevamente.';
-                alert(connErr);
-                resetButtons($btn, originalText);
+                alert('Ocurrió un error de conexión. Intente nuevamente.');
+                resetButtons($form, $btn, originalText);
             }
         });
-    });
+    }
 
-    function handleSuccess(data) {
-        // Ocultar formulario y mostrar success
+    function handleSoftAddSuccess(data) {
         $('#ova-booking-actions-container').slideUp();
-        // Opcional: Ocultar todo el form
-        // $('.ova-booking-form-fields').slideUp(); 
         
         var $successLayer = $('#ova-booking-success-layer');
-        
-        // Actualizar datos dinámicos
         if (data.product_title) {
             $('#success-tour-name').text(data.product_title);
+        }
+        if (data.product_image) {
+            $('#success-tour-image').attr('src', data.product_image).show();
+        } else {
+            $('#success-tour-image').hide();
+        }
+        if (data.product_date) {
+            $('#success-tour-date').text(data.product_date).show();
+        } else {
+            $('#success-tour-date').hide();
+        }
+        // Update view cart link if provided
+        if (data.cart_url) {
+            $('.btn-view-cart').attr('href', data.cart_url);
+        }
+        if (data.checkout_url) {
+            $('.btn-reserve-now').attr('href', data.checkout_url);
         }
         
         $successLayer.fadeIn();
 
-        // Actualizar fragmentos de WooCommerce
         $(document.body).trigger('wc_fragment_refresh');
-        $(document.body).trigger('added_to_cart', [data.fragments, data.cart_hash, $]);
+        $(document.body).trigger('added_to_cart', [data.fragments || {}, data.cart_hash || '', $]);
     }
 
-    function resetButtons($btn, originalText) {
-        var fallbackText = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.addToCart : '<span class="icon-cart"></span> Agregar al Carrito';
-        $btn.prop('disabled', false).html(originalText || fallbackText);
-        $('button[name="add-to-cart"]').prop('disabled', false);
+    function resetButtons($form, $btn, originalText) {
+        $btn.html(originalText);
+        $form.find('button').prop('disabled', false);
     }
 
-    // Lógica de Reinicio al cerrar JetPopup
+    // Flujo "Reservar" (Direct Checkout)
+    $(document).on('submit', '#booking-form', function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var $btn = $form.find('#btn-direct-checkout');
+        if(!$btn.length) $btn = $form.find('button[type="submit"]');
+        doAjaxAddToCart($form, $btn, true);
+    });
+
+    // Flujo "Agregar al Carrito" (Soft Add)
+    $(document).on('click', '#btn-add-to-cart-soft', function(e) {
+        e.preventDefault();
+        var $form = $('#booking-form');
+        var $btn = $(this);
+        doAjaxAddToCart($form, $btn, false);
+    });
+
+    // Reset Modal when JetPopup hides
     $(window).on('jet-popup/hide', function() {
         setTimeout(function() {
             var $form = $('#booking-form');
             if ($form.length) {
                 $form[0].reset();
-                // Resetear selects de Select2 si existen
                 $form.find('select').val(null).trigger('change');
-                
-                // Limpiar inputs hidden de fecha si es necesario
                 $form.find('input[name="checkin_date"]').val('');
                 $form.find('input[name="checkout_date"]').val('');
                 
-                // Mostrar formulario de nuevo
                 $('#ova-booking-actions-container').show();
                 $('.ova-booking-form-fields').show();
                 $('#ova-booking-success-layer').hide();
                 
-                // Resetear botones
-                var $btn = $('#btn-add-to-cart-soft');
-                var btnText = (typeof wiwaAjax !== 'undefined' && wiwaAjax.strings) ? wiwaAjax.strings.addToCart : '<span class="icon-cart"></span> Agregar al Carrito';
-                resetButtons($btn, btnText);
-                $btn.removeClass('loading');
+                $form.find('button').prop('disabled', false);
             }
         }, 300);
     });
 
-    // Cerrar popup manual
+    // Cerrar popup manual usando la "X" custom
     $(document).on('click', '.btn-close-popup', function(e) {
         e.preventDefault();
-        // Trigger de cierre de JetPopup
         $(this).closest('.jet-popup').find('.jet-popup__close-button').trigger('click');
-        // Fallback
         $('.jet-popup-close-button').trigger('click');
     });
+
 });

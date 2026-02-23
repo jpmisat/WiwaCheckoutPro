@@ -1,235 +1,331 @@
-/* Container de acciones */
-#ova-booking-actions-container {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    margin-top: 20px;
-    flex-wrap: wrap;
+/* Container de acciones principal */
+.wiwa-modal-actions {
+  display: flex;
+  gap: 15px;
+  align-items: center;
+  margin-top: 25px;
+  flex-wrap: wrap;
 }
 
-#ova-booking-actions-container button {
-    flex: 1;
-    min-width: 140px;
+.wiwa-modal-actions button {
+  flex: 1;
+  min-width: 160px;
+  padding: 14px 20px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  text-transform: uppercase;
+  font-size: 14px;
+  position: relative;
+  overflow: hidden;
+  line-height: normal;
 }
 
-/* Botón fantasma (Agregar al Carrito) */
-.btn-secondary-ghost {
-    background-color: transparent !important;
-    border: 2px solid var(--ova-primary, #e8604c); /* Color primario fallback */
-    color: var(--ova-primary, #e8604c) !important;
-    padding: 12px 20px;
-    border-radius: 5px;
-    font-weight: 600;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    text-transform: uppercase;
-    font-size: 14px;
-    position: relative;
-    overflow: hidden;
+/* Botón Reservar (Primary) */
+.wiwa-modal-actions .wiwa-btn-primary {
+  background-color: var(--ova-primary, #1a3114) !important; /* Dark Green */
+  color: #ffffff !important;
+  border: 2px solid var(--ova-primary, #1a3114) !important;
+}
+.wiwa-modal-actions .wiwa-btn-primary:hover {
+  background-color: #2c4a23 !important;
+  border-color: #2c4a23 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
 }
 
-.btn-secondary-ghost:hover {
-    background-color: var(--ova-primary, #e8604c) !important;
-    color: #fff !important;
-    box-shadow: 0 4px 10px rgba(232, 96, 76, 0.2);
+/* Botón Agregar al Carrito (Secondary) */
+.wiwa-modal-actions .wiwa-btn-secondary {
+  background-color: #8b3dff !important; /* Premium Purple */
+  color: #ffffff !important;
+  border: 2px solid #8b3dff !important;
+}
+.wiwa-modal-actions .wiwa-btn-secondary:hover {
+  background-color: #792fe6 !important;
+  border-color: #792fe6 !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(139, 61, 255, 0.3);
 }
 
-.btn-secondary-ghost .icon-cart:before {
-    content: '\f07a'; /* FontAwesome cart icon fallback */
-    font-family: 'FontAwesome';
-}
-
-.btn-secondary-ghost.loading {
-    opacity: 0.8;
-    pointer-events: none;
+.wiwa-modal-actions button.loading {
+  opacity: 0.8;
+  pointer-events: none;
 }
 
 /* Spinner */
 .wiwa-spinner:before {
-    content: '\f110';
-    font-family: 'FontAwesome';
-    animation: fa-spin 1s infinite steps(8);
-    display: inline-block;
+  content: "\f110";
+  font-family: "FontAwesome";
+  animation: fa-spin 1s infinite steps(8);
+  display: inline-block;
 }
 
 @keyframes fa-spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
-/* Success Layer */
-#ova-booking-success-layer {
-    text-align: center;
-    padding: 30px 20px;
-    animation: fadeIn 0.5s;
-    background: #fff;
-    border-radius: 8px;
-    box-shadow: 0 5px 20px rgba(0,0,0,0.05); /* Sombra sutil */
-    margin-top: 10px;
-    display: none; /* Asegurar oculto inicialmente */
+/* Success Layer Base */
+.wiwa-success-layer {
+  background: #f7f9fc;
+  border-radius: 12px;
+  margin-top: 20px;
+  overflow: hidden;
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.06);
+  animation: wiwa-fadeInUp 0.4s ease-out forwards;
 }
 
-.success-header h3 {
-    color: #27ae60;
-    margin-bottom: 10px;
-    font-size: 24px;
-    font-weight: 700;
+/* Success Header / Layout 2-col */
+.wiwa-success-header {
+  display: flex;
+  padding: 24px;
+  gap: 24px;
+  background: #ffffff;
+  align-items: center;
 }
 
-.success-header p {
-    color: #555;
-    font-size: 16px;
-    margin-bottom: 20px;
+.wiwa-success-image-col {
+  flex: 0 0 120px;
 }
 
-#success-tour-name {
-    font-weight: 800;
-    color: #333;
+.wiwa-success-image-col img {
+  width: 100%;
+  height: 120px;
+  object-fit: cover;
+  border-radius: 8px;
+  display: block;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.wiwa-success-details-col {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.success-message-text {
+  font-size: 13px;
+  color: #27ae60;
+  font-weight: 700;
+  line-height: 1;
+  margin-bottom: 6px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.wiwa-success-details-col h3 {
+  margin: 0 0 4px 0;
+  font-size: 20px;
+  font-weight: 800;
+  color: #222;
+  line-height: 1.3;
+}
+
+.success-tour-meta {
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 15px 0;
+}
+
+/* Acciones en el Success Layer */
+.wiwa-success-details-col .success-actions {
+  display: flex;
+  gap: 12px;
+}
+
+.wiwa-success-details-col .success-actions a {
+  text-decoration: none;
+  padding: 10px 20px;
+  border-radius: 30px;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-align: center;
+  cursor: pointer;
+}
+
+/* Boton Ver Carrito (Background Purple) */
+.wiwa-success-details-col .btn-view-cart {
+  background: #8b3dff;
+  color: #fff !important;
+  border: 2px solid #8b3dff;
+}
+.wiwa-success-details-col .btn-view-cart:hover {
+  background: #792fe6;
+  border-color: #792fe6;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 10px rgba(139, 61, 255, 0.25);
+}
+
+/* Boton Reservar Ahora (Border Purple) */
+.wiwa-success-details-col .btn-reserve-now {
+  background: transparent;
+  color: #8b3dff !important;
+  border: 2px solid #8b3dff;
+}
+.wiwa-success-details-col .btn-reserve-now:hover {
+  background: rgba(139, 61, 255, 0.05);
+  transform: translateY(-2px);
 }
 
 /* Cross Sell */
 .success-cross-sell {
-    margin: 30px 0;
-    text-align: left;
-    border-top: 1px dashed #eee;
-    padding-top: 20px;
+  padding: 24px;
+  border-top: 1px solid #edf0f5;
+  background: #fafbfc;
 }
 
 .success-cross-sell h4 {
-    font-size: 16px;
-    margin-bottom: 20px;
-    text-transform: uppercase;
-    letter-spacing: 1px;
-    color: #888;
-    text-align: center;
+  font-size: 16px;
+  margin-top: 0;
+  margin-bottom: 20px;
+  color: #333;
+  font-weight: 700;
 }
 
-.success-cross-sell ul.products {
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 15px !important;
-    margin: 0 !important;
-    padding: 0 !important;
+.wiwa-cross-sell-wrapper ul.products {
+  display: grid !important;
+  grid-template-columns: repeat(3, 1fr) !important;
+  gap: 15px !important;
+  margin: 0 !important;
+  padding: 0 !important;
 }
 
-.success-cross-sell ul.products li.product {
-    width: 100% !important;
-    margin: 0 !important;
-    float: none !important;
+.wiwa-cross-sell-wrapper ul.products li.product {
+  width: 100% !important;
+  margin: 0 !important;
+  float: none !important;
+  background: #fff;
+  border-radius: 8px;
+  padding: 10px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
-.success-cross-sell ul.products li.product img {
-    border-radius: 6px;
-    margin-bottom: 8px;
-    transition: transform 0.3s ease;
+.wiwa-cross-sell-wrapper ul.products li.product img {
+  border-radius: 6px;
+  margin-bottom: 8px;
+  transition: transform 0.3s ease;
 }
 
-.success-cross-sell ul.products li.product:hover img {
-    transform: scale(1.05);
+.wiwa-cross-sell-wrapper ul.products li.product:hover img {
+  transform: scale(1.03);
 }
 
-.success-cross-sell ul.products li.product h2 {
-    font-size: 13px !important;
-    line-height: 1.3;
-    margin-bottom: 5px !important;
-    font-weight: 600;
+.wiwa-cross-sell-wrapper ul.products li.product h2 {
+  font-size: 13px !important;
+  line-height: 1.3;
+  margin-bottom: 5px !important;
+  font-weight: 600;
+  color: #222;
 }
 
-.success-cross-sell ul.products li.product .price {
-    font-size: 12px !important;
-    color: #777;
-    font-weight: 500;
+.wiwa-cross-sell-wrapper ul.products li.product .price {
+  font-size: 13px !important;
+  color: #444;
+  font-weight: 700;
 }
 
-.success-cross-sell ul.products li.product .button {
-    display: none !important; 
-}
-
-/* Actions */
-.success-actions {
-    display: flex;
-    gap: 15px;
-    justify-content: center;
-    margin-top: 25px;
-}
-
-.btn-close-popup {
-    background: #f1f1f1;
-    color: #555;
-    border: 1px solid #ddd;
-    padding: 12px 25px;
-    border-radius: 4px;
-    cursor: pointer;
-    font-weight: 600;
-    transition: all 0.2s;
-}
-
-.btn-close-popup:hover {
-    background: #e1e1e1;
-    color: #333;
-}
-
-.btn-go-checkout {
-    background: #27ae60;
-    color: #fff !important;
-    padding: 12px 30px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    display: inline-block;
-    border: 1px solid #27ae60;
-    transition: all 0.2s;
-}
-
-.btn-go-checkout:hover {
-    background: #219150;
-    border-color: #219150;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 10px rgba(39, 174, 96, 0.3);
+.wiwa-cross-sell-wrapper ul.products li.product .button {
+  display: none !important;
 }
 
 /* Validation */
 .error-field {
-    border: 1px solid #e74c3c !important;
-    box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+  border: 1px solid #e74c3c !important;
+  box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
 }
 
 .shake {
-    animation: shake 0.5s;
+  animation: shake 0.5s;
 }
 
 @keyframes shake {
-    0% { transform: translateX(0); }
-    25% { transform: translateX(-5px); }
-    50% { transform: translateX(5px); }
-    75% { transform: translateX(-5px); }
-    100% { transform: translateX(0); }
+  0% {
+    transform: translateX(0);
+  }
+  25% {
+    transform: translateX(-5px);
+  }
+  50% {
+    transform: translateX(5px);
+  }
+  75% {
+    transform: translateX(-5px);
+  }
+  100% {
+    transform: translateX(0);
+  }
 }
 
-@keyframes fadeIn {
-    from { opacity: 0; transform: translateY(10px); }
-    to { opacity: 1; transform: translateY(0); }
+@keyframes wiwa-fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 /* Responsive */
-@media (max-width: 600px) {
-    #ova-booking-actions-container {
-        flex-direction: column;
-    }
-    
-    #ova-booking-actions-container button {
-        width: 100%;
-    }
-    
-    .success-cross-sell ul.products {
-        grid-template-columns: repeat(2, 1fr) !important;
-    }
-    
-    .success-cross-sell ul.products li.product:last-child {
-        display: none; /* Show only 2 on mobile if space is tight */
-    }
+@media (max-width: 650px) {
+  .wiwa-modal-actions {
+    flex-direction: column;
+  }
+
+  .wiwa-modal-actions button {
+    width: 100%;
+    margin: 0 !important;
+  }
+
+  .wiwa-success-header {
+    flex-direction: column;
+    align-items: flex-start;
+    text-align: center;
+    gap: 15px;
+  }
+
+  .wiwa-success-image-col {
+    width: 100%;
+    flex: 0 0 auto;
+  }
+
+  .wiwa-success-image-col img {
+    height: 180px;
+  }
+
+  .success-message-text {
+    justify-content: center;
+  }
+
+  .wiwa-success-details-col {
+    width: 100%;
+  }
+
+  .wiwa-success-details-col .success-actions {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .wiwa-cross-sell-wrapper ul.products {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
+  .wiwa-cross-sell-wrapper ul.products li.product:last-child {
+    display: none;
+  }
 }

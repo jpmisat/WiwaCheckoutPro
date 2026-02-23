@@ -618,10 +618,21 @@ class Wiwa_Ajax_Handler
         $added = WC()->cart->add_to_cart($product_id, 1);
 
         if ($added) {
+            $image_id  = $product->get_image_id();
+            $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : wc_placeholder_img_src('thumbnail');
+            $date_formatted = '';
+            if ($checkin_date) {
+                // Return date as formatted in WP or a standard format like "j de F de Y"
+                $date_formatted = date_i18n(get_option('date_format'), $checkin_date);
+            }
+
             wp_send_json_success([
-                'message' => 'Producto agregado al carrito',
+                'message'       => 'Producto agregado al carrito',
                 'product_title' => $product->get_name(),
-                'cart_url' => wc_get_cart_url()
+                'product_image' => $image_url,
+                'product_date'  => $date_formatted,
+                'cart_url'      => wc_get_cart_url(),
+                'checkout_url'  => wc_get_checkout_url(),
             ]);
         } else {
             // Recopilar errores de WC

@@ -1,5 +1,17 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.13.0] - 2026-02-22
+
+### Added
+- **Dual Button Action**: Splitted the tour booking modal into two explicit actions: "Reservar" (Primary) and "Agregar al carrito" (Secondary).
+- **Direct Checkout Flow**: The main "Reservar" button now skips the cart entirely and redirects instantly to the checkout page via AJAX, bypassing WooCommerce standard cart notices.
+- **Premium Success View**: The "Agregar al carrito" button now triggers an elegant, modal-bound success layer featuring the tour's image, date, and a cross-selling section.
+- **Template Override Architecture**: Added `ovatb_locate_template` filter in the main plugin file. Refactored the modal form HTML layout out of the core OvaTheme folder into `templates/ova-tour-booking/forms/booking-form.php` for safe updates.
+
+### Changed
+- **Tour Booking Form JS**: Completely rewrote `assets/js/add-to-cart.js` to intelligently handle `submit` intercepts for direct checkout and `click` for soft-adds, alongside modal resetting and success data population.
+- **AJAX Response Payload**: Enhanced `wiwa_ajax_add_to_cart` response payload in `class-ajax-handler.php` with dynamic properties: `product_image`, `checkout_url`, and `product_date` to feed the new JavaScript success UI.
+
 ## [2.12.33] - 2026-02-22
 
 ### Fixed
