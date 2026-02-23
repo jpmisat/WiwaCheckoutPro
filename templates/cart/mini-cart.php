@@ -177,10 +177,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
     <p class="woocommerce-mini-cart__buttons buttons wiwa-mini-cart-buttons">
         <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
-            <?php esc_html_e( 'Ver carrito', 'woocommerce' ); ?>
+            <?php esc_html_e( 'Ver carrito', 'wiwa-checkout' ); ?>
         </a>
         <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wiwa-btn-primary">
-            <?php esc_html_e( 'Finalizar compra', 'woocommerce' ); ?>
+            <?php esc_html_e( 'Finalizar compra', 'wiwa-checkout' ); ?>
         </a>
     </p>
 

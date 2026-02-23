@@ -331,7 +331,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                     <!-- SHIPPING / FEES / COUPONS / TAXES (WC Standard) -->
                     <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
                         <div class="flex justify-between items-center text-gray-500 text-[14px] mb-3">
-                            <span><?php esc_html_e('Envío', 'woocommerce'); ?></span>
+                            <span><?php esc_html_e('Envío', 'wiwa-checkout'); ?></span>
                             <span class="font-semibold text-gray-800"><?php wc_cart_totals_shipping_html(); ?></span>
                         </div>
                     <?php endif; ?>
@@ -386,12 +386,12 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         <input type="text"
                                name="coupon_code"
                                class="flex-grow bg-white border-gray-200 rounded-lg text-sm px-4 py-2 focus:ring-[#1a3c28] focus:border-[#1a3c28]"
-                               placeholder="<?php esc_attr_e('Ingresa tu código', 'woocommerce'); ?>" />
+                               placeholder="<?php esc_attr_e('Ingresa tu código', 'wiwa-checkout'); ?>" />
                         <button type="submit"
                                 class="bg-[#1a3c28] text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase hover:opacity-90 transition"
                                 name="apply_coupon"
                                 value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>">
-                            <?php esc_html_e('Aplicar', 'woocommerce'); ?>
+                            <?php esc_html_e('Aplicar', 'wiwa-checkout'); ?>
                         </button>
                     </div>
                 </div>

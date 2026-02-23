@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.33] - 2026-02-22
+
+### Fixed
+- **Translation Domains:** Fixed multiple strings in `cart.php` and `mini-cart.php` (such as "Ver carrito", "Finalizar compra", "Envío", "Aplicar", "Ingresa tu código") that were incorrectly assigned to the base `woocommerce` text domain while actually containing Spanish source texts. This caused Loco Translate and WPML to overlook them, breaking translations. They are now correctly assigned to the `wiwa-checkout` domain.
+
 ## [2.12.32] - 2026-02-22
 
 ### Fixed
