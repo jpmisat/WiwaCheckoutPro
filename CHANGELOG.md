@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.14.2] - 2026-02-23
+
+### Fixed
+- **CRITICAL: Broken Add-to-Cart Buttons**: Fixed wrong AJAX action name in `add-to-cart.js` — was sending `wiwa_add_to_cart` instead of the registered `wiwa_ajax_add_to_cart`, causing 400 Bad Request errors. Both "Reservar" and "Agregar al carrito" buttons now work again.
+
 ## [2.14.1] - 2026-02-23
 
 ### Fixed

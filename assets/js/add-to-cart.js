@@ -73,7 +73,7 @@ jQuery(function ($) {
         $.ajax({
             url: wc_add_to_cart_params.ajax_url || '/wp-admin/admin-ajax.php',
             type: 'POST',
-            data: collectFormData($form) + '&action=wiwa_add_to_cart',
+            data: collectFormData($form) + '&action=wiwa_ajax_add_to_cart',
             success: function (res) {
                 if (res.success) {
                     // Redirect to checkout
@@ -109,7 +109,7 @@ jQuery(function ($) {
         $.ajax({
             url: wc_add_to_cart_params.ajax_url || '/wp-admin/admin-ajax.php',
             type: 'POST',
-            data: collectFormData($form) + '&action=wiwa_add_to_cart',
+            data: collectFormData($form) + '&action=wiwa_ajax_add_to_cart',
             success: function (res) {
                 if (res.success) {
                     handleSoftAddSuccess(res.data);
