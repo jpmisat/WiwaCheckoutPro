@@ -1,7 +1,12 @@
+/* ============================================
+   Wiwa Tour Booking Modal — Action Buttons & Success Layer
+   Brand Palette: Deep Forest Green #1a3015, Gold/Amber #c8972e, Warm Cream #f0dfcd
+   ============================================ */
+
 /* Container de acciones principal */
 .wiwa-modal-actions {
   display: flex;
-  gap: 15px;
+  gap: 12px;
   align-items: center;
   margin-top: 25px;
   flex-wrap: wrap;
@@ -9,47 +14,49 @@
 
 .wiwa-modal-actions button {
   flex: 1;
-  min-width: 160px;
-  padding: 14px 20px;
-  border-radius: 6px;
+  min-width: 150px;
+  padding: 15px 22px;
+  border-radius: 50px;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s cubic-bezier(.4,0,.2,1);
   display: inline-flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
   text-transform: uppercase;
-  font-size: 14px;
+  font-size: 13px;
+  letter-spacing: 0.8px;
   position: relative;
   overflow: hidden;
   line-height: normal;
 }
 
-/* Botón Reservar (Primary) */
-.wiwa-modal-actions .wiwa-btn-primary {
-  background-color: var(--ova-primary, #1a3114) !important; /* Dark Green */
-  color: #ffffff !important;
-  border: 2px solid var(--ova-primary, #1a3114) !important;
-}
-.wiwa-modal-actions .wiwa-btn-primary:hover {
-  background-color: #2c4a23 !important;
-  border-color: #2c4a23 !important;
-  transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
-}
-
-/* Botón Agregar al Carrito (Secondary) */
+/* —— "Agregar al carrito" (Secondary — LEFT side, outline style) —— */
 .wiwa-modal-actions .wiwa-btn-secondary {
-  background-color: #8b3dff !important; /* Premium Purple */
-  color: #ffffff !important;
-  border: 2px solid #8b3dff !important;
+  background-color: transparent !important;
+  color: var(--ova-primary, #1a3015) !important;
+  border: 2px solid var(--ova-primary, #1a3015) !important;
+  order: 1; /* LEFT */
 }
 .wiwa-modal-actions .wiwa-btn-secondary:hover {
-  background-color: #792fe6 !important;
-  border-color: #792fe6 !important;
+  background-color: rgba(26, 48, 21, 0.06) !important;
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(139, 61, 255, 0.3);
+  box-shadow: 0 4px 14px rgba(26, 48, 21, 0.12);
+}
+
+/* —— "Reservar" (Primary — RIGHT side, solid brand green) —— */
+.wiwa-modal-actions .wiwa-btn-primary {
+  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
+  color: #ffffff !important;
+  border: 2px solid transparent !important;
+  order: 2; /* RIGHT */
+  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+}
+.wiwa-modal-actions .wiwa-btn-primary:hover {
+  background: linear-gradient(135deg, #2a5120 0%, #367a2b 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
 }
 
 .wiwa-modal-actions button.loading {
@@ -66,17 +73,15 @@
 }
 
 @keyframes fa-spin {
-  0% {
-    transform: rotate(0deg);
-  }
-  100% {
-    transform: rotate(360deg);
-  }
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
 }
 
-/* Success Layer Base */
+/* ============================================
+   Success Layer
+   ============================================ */
 .wiwa-success-layer {
-  background: #f7f9fc;
+  background: #f7f9f6;
   border-radius: 12px;
   margin-top: 20px;
   overflow: hidden;
@@ -84,7 +89,6 @@
   animation: wiwa-fadeInUp 0.4s ease-out forwards;
 }
 
-/* Success Header / Layout 2-col */
 .wiwa-success-header {
   display: flex;
   padding: 24px;
@@ -115,7 +119,7 @@
 
 .success-message-text {
   font-size: 13px;
-  color: #27ae60;
+  color: #2a5120;
   font-weight: 700;
   line-height: 1;
   margin-bottom: 6px;
@@ -148,44 +152,47 @@
 
 .wiwa-success-details-col .success-actions a {
   text-decoration: none;
-  padding: 10px 20px;
-  border-radius: 30px;
-  font-size: 14px;
-  font-weight: 600;
+  padding: 10px 22px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
   transition: all 0.3s ease;
   text-align: center;
   cursor: pointer;
 }
 
-/* Boton Ver Carrito (Background Purple) */
+/* Boton "Ver Carrito" (Outline Green) */
 .wiwa-success-details-col .btn-view-cart {
-  background: #8b3dff;
-  color: #fff !important;
-  border: 2px solid #8b3dff;
+  background: transparent;
+  color: var(--ova-primary, #1a3015) !important;
+  border: 2px solid var(--ova-primary, #1a3015);
 }
 .wiwa-success-details-col .btn-view-cart:hover {
-  background: #792fe6;
-  border-color: #792fe6;
+  background: rgba(26, 48, 21, 0.06);
   transform: translateY(-2px);
-  box-shadow: 0 4px 10px rgba(139, 61, 255, 0.25);
+  box-shadow: 0 4px 10px rgba(26, 48, 21, 0.12);
 }
 
-/* Boton Reservar Ahora (Border Purple) */
+/* Boton "Reservar Ahora" (Solid Green) */
 .wiwa-success-details-col .btn-reserve-now {
-  background: transparent;
-  color: #8b3dff !important;
-  border: 2px solid #8b3dff;
+  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%);
+  color: #ffffff !important;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
 }
 .wiwa-success-details-col .btn-reserve-now:hover {
-  background: rgba(139, 61, 255, 0.05);
+  background: linear-gradient(135deg, #2a5120 0%, #367a2b 100%);
   transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
 }
 
 /* Cross Sell */
 .success-cross-sell {
   padding: 24px;
-  border-top: 1px solid #edf0f5;
-  background: #fafbfc;
+  border-top: 1px solid #e8ede5;
+  background: #f5f8f3;
 }
 
 .success-cross-sell h4 {
@@ -244,8 +251,8 @@
 
 /* Validation */
 .error-field {
-  border: 1px solid #e74c3c !important;
-  box-shadow: 0 0 5px rgba(231, 76, 60, 0.2);
+  border: 1px solid #c53030 !important;
+  box-shadow: 0 0 5px rgba(197, 48, 48, 0.2);
 }
 
 .shake {
@@ -253,38 +260,34 @@
 }
 
 @keyframes shake {
-  0% {
-    transform: translateX(0);
-  }
-  25% {
-    transform: translateX(-5px);
-  }
-  50% {
-    transform: translateX(5px);
-  }
-  75% {
-    transform: translateX(-5px);
-  }
-  100% {
-    transform: translateX(0);
-  }
+  0%   { transform: translateX(0); }
+  25%  { transform: translateX(-5px); }
+  50%  { transform: translateX(5px); }
+  75%  { transform: translateX(-5px); }
+  100% { transform: translateX(0); }
 }
 
 @keyframes wiwa-fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(15px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(15px); }
+  to   { opacity: 1; transform: translateY(0); }
 }
 
-/* Responsive */
+/* ============================================
+   Responsive
+   ============================================ */
 @media (max-width: 650px) {
   .wiwa-modal-actions {
     flex-direction: column;
+  }
+
+  /* On mobile, stack: Primary (Reservar) on top, Secondary below */
+  .wiwa-modal-actions .wiwa-btn-primary {
+    order: 1;
+    width: 100%;
+  }
+  .wiwa-modal-actions .wiwa-btn-secondary {
+    order: 2;
+    width: 100%;
   }
 
   .wiwa-modal-actions button {

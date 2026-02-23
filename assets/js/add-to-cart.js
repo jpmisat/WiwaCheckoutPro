@@ -17,7 +17,10 @@ jQuery(document).ready(function($) {
             }
         });
 
-        var checkin = $form.find('input[name="checkin_date"]').val();
+        // Check for checkin date — OvaTour names its fields with the 'ovatb_' prefix
+        var checkin = $form.find('input[name="ovatb_checkin_date"]').val()
+                   || $form.find('input[name="checkin_date"]').val();
+
         if (!checkin && $form.find('.ovatb-datepicker').length) {
              var visibleDate = $form.find('.ovatb-datepicker').val();
              if(!visibleDate) {
@@ -88,7 +91,9 @@ jQuery(document).ready(function($) {
     }
 
     function handleSoftAddSuccess(data) {
+        // Hide the form fields and action buttons
         $('#ova-booking-actions-container').slideUp();
+        $('.ova-booking-form-fields, .field-wrap').slideUp();
         
         var $successLayer = $('#ova-booking-success-layer');
         if (data.product_title) {
@@ -124,11 +129,10 @@ jQuery(document).ready(function($) {
     }
 
     // Flujo "Reservar" (Direct Checkout)
-    $(document).on('submit', '#booking-form', function(e) {
+    $(document).on('click', '#btn-direct-checkout', function(e) {
         e.preventDefault();
-        var $form = $(this);
-        var $btn = $form.find('#btn-direct-checkout');
-        if(!$btn.length) $btn = $form.find('button[type="submit"]');
+        var $form = $('#booking-form');
+        var $btn = $(this);
         doAjaxAddToCart($form, $btn, true);
     });
 
@@ -140,6 +144,15 @@ jQuery(document).ready(function($) {
         doAjaxAddToCart($form, $btn, false);
     });
 
+    // Also intercept native form submit (fallback)
+    $(document).on('submit', '#booking-form', function(e) {
+        e.preventDefault();
+        var $form = $(this);
+        var $btn = $form.find('#btn-direct-checkout');
+        if(!$btn.length) $btn = $form.find('button[type="submit"]');
+        doAjaxAddToCart($form, $btn, true);
+    });
+
     // Reset Modal when JetPopup hides
     $(window).on('jet-popup/hide', function() {
         setTimeout(function() {
@@ -147,11 +160,13 @@ jQuery(document).ready(function($) {
             if ($form.length) {
                 $form[0].reset();
                 $form.find('select').val(null).trigger('change');
+                $form.find('input[name="ovatb_checkin_date"]').val('');
+                $form.find('input[name="ovatb_checkout_date"]').val('');
                 $form.find('input[name="checkin_date"]').val('');
                 $form.find('input[name="checkout_date"]').val('');
                 
                 $('#ova-booking-actions-container').show();
-                $('.ova-booking-form-fields').show();
+                $('.ova-booking-form-fields, .field-wrap').show();
                 $('#ova-booking-success-layer').hide();
                 
                 $form.find('button').prop('disabled', false);

@@ -1,5 +1,16 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.13.1] - 2026-02-22
+
+### Fixed
+- **Check-in Date Validation**: Fixed "Check-in date is required" error that occurred even when a date was selected. Root cause: OvaTour Booking names its field `ovatb_checkin_date`, but our JS/PHP was looking for `checkin_date`. Added fallback support for `ovatb_` prefixed POST variables (`ovatb_checkin_date`, `ovatb_checkout_date`, `ovatb_start_time`) in both the frontend validation and the AJAX handler.
+- **Button Click Handler**: Changed "Reservar" button from relying on native form `submit` to an explicit `click` handler, preventing conflicts with the OvaTour Booking plugin's own form handling.
+- **Modal Reset**: Fixed modal not fully resetting `.field-wrap` visibility when closing and reopening.
+
+### Changed
+- **Button Visual Redesign**: Removed off-brand purple color scheme. Both buttons now use the Wiwa brand green palette (`#1a3015`). "Reservar" is a solid gradient pill (primary CTA), "Agregar al carrito" is an outlined pill (secondary). Used CSS `order` to place "Reservar" on the right side for correct UX hierarchy.
+- **Success Layer Colors**: Updated success layer buttons and accents from purple to brand green, matching the overall site identity.
+
 ## [2.13.0] - 2026-02-22
 
 ### Added

@@ -551,8 +551,17 @@ class Wiwa_Ajax_Handler
         
         // 1. Fechas y Horas
         $checkin_date_str = isset($_POST['checkin_date']) ? sanitize_text_field($_POST['checkin_date']) : '';
+        if (empty($checkin_date_str) && isset($_POST['ovatb_checkin_date'])) {
+            $checkin_date_str = sanitize_text_field($_POST['ovatb_checkin_date']);
+        }
         $checkout_date_str = isset($_POST['checkout_date']) ? sanitize_text_field($_POST['checkout_date']) : '';
+        if (empty($checkout_date_str) && isset($_POST['ovatb_checkout_date'])) {
+            $checkout_date_str = sanitize_text_field($_POST['ovatb_checkout_date']);
+        }
         $start_time_str = isset($_POST['start_time']) ? sanitize_text_field($_POST['start_time']) : '';
+        if (empty($start_time_str) && isset($_POST['ovatb_start_time'])) {
+            $start_time_str = sanitize_text_field($_POST['ovatb_start_time']);
+        }
 
         $checkin_date = strtotime($checkin_date_str);
         $checkout_date = strtotime($checkout_date_str);
