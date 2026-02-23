@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.32] - 2026-02-22
+
+### Fixed
+- **Empty Cart on Translated Pages:** Added explicit filters `woocommerce_cart_item_visible` and `woocommerce_widget_cart_item_visible` set to `true` to override Polylang/WPML behaviors that hide products in the Cart page when switching languages. This fixes the issue where the cart appeared empty on the Spanish/English cart page specifically.
+- **Language Switch Ajax Drop:** Added `lang` query parameters to the AJAX url in `step-2.php` to prevent FOX currency switchers from losing the active WooCommerce translated session.
+
 ## [2.12.31] - 2026-02-22
 
 ### Fixed

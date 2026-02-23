@@ -25,6 +25,11 @@ class Wiwa_Cart_Handler
         // EMERGENCY FIX: Sanitize Cart Session on Load to remove bad data causing warnings
         add_action('wp_loaded', [$this, 'sanitize_cart_session_data']);
 
+        // EMERGENCY FIX: Force cart items to be visible across translations (Multi-language Fix)
+        // Solves the empty cart on translated pages bug.
+        add_filter('woocommerce_cart_item_visible', '__return_true', 9999);
+        add_filter('woocommerce_widget_cart_item_visible', '__return_true', 9999);
+
         // Custom Quantity Inputs
         add_filter('woocommerce_widget_cart_item_quantity', [$this, 'custom_mini_cart_item_quantity'], 10, 3);
         add_filter('woocommerce_cart_item_quantity', [$this, 'custom_cart_item_quantity'], 10, 3);

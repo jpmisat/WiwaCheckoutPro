@@ -199,8 +199,19 @@ jQuery(document).ready(function($) {
             woocs_redirect(currency);
         } else if (typeof window.woocs_current_currency !== 'undefined' && typeof window.woocs_ajax_url !== 'undefined') {
             // FOX AJAX method
+            <?php
+            // Construct context-aware AJAX URL
+            $ajax_url = admin_url('admin-ajax.php');
+            $lang = apply_filters('wpml_current_language', null);
+            if (!$lang && function_exists('pll_current_language')) {
+                $lang = pll_current_language();
+            }
+            if ($lang) {
+                $ajax_url = add_query_arg('lang', $lang, $ajax_url);
+            }
+            ?>
             $.ajax({
-                url: window.woocs_ajax_url || '<?php echo admin_url('admin-ajax.php'); ?>',
+                url: window.woocs_ajax_url || '<?php echo esc_url($ajax_url); ?>',
                 type: 'POST',
                 data: {
                     action: 'woocs_set_currency',
