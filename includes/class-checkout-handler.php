@@ -243,8 +243,18 @@ class Wiwa_Checkout_Handler
             true
         );
 
+        // Contextualize AJAX URL with Language if WPML/Polylang is active
+        $ajax_url = admin_url('admin-ajax.php');
+        $lang = apply_filters('wpml_current_language', null);
+        if (!$lang && function_exists('pll_current_language')) {
+            $lang = pll_current_language();
+        }
+        if ($lang) {
+            $ajax_url = add_query_arg('lang', $lang, $ajax_url);
+        }
+
         wp_localize_script('wiwa-checkout-js', 'wiwaCheckout', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'ajaxUrl' => $ajax_url,
             'nonce' => wp_create_nonce('wiwa_checkout_nonce'),
             'homeUrl' => home_url('/'),
             'strings' => [

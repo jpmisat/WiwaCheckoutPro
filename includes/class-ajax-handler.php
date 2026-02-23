@@ -612,6 +612,9 @@ class Wiwa_Ajax_Handler
         }
 
         // --- AGREGAR AL CARRITO ---
+        if (isset(WC()->session) && !WC()->session->has_session()) {
+            WC()->session->set_customer_session_cookie(true);
+        }
         $added = WC()->cart->add_to_cart($product_id, 1);
 
         if ($added) {

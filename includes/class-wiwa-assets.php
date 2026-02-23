@@ -17,8 +17,18 @@ class Wiwa_Assets
         if ( !is_admin() ) {
             wp_enqueue_style('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/css/add-to-cart.css', [], WIWA_CHECKOUT_VERSION);
             wp_enqueue_script('wiwa-add-to-cart', WIWA_CHECKOUT_URL . 'assets/js/add-to-cart.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+            // Support Multilingual Plugins (WPML, Polylang) for admin-ajax
+            $ajax_url = admin_url('admin-ajax.php');
+            $lang = apply_filters('wpml_current_language', null);
+            if (!$lang && function_exists('pll_current_language')) {
+                $lang = pll_current_language();
+            }
+            if ($lang) {
+                $ajax_url = add_query_arg('lang', $lang, $ajax_url);
+            }
+
             wp_localize_script('wiwa-add-to-cart', 'wiwaAjax', [
-                'ajax_url' => admin_url('admin-ajax.php'),
+                'ajax_url' => $ajax_url,
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
                 'strings'  => [
                     'processing' => __('Procesando...', 'wiwa-checkout'),

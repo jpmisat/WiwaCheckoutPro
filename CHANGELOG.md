@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.12.31] - 2026-02-22
+
+### Fixed
+- **Multilingual Cart Preservation:** Added explicit `lang` query parameters to `wiwaAjax.ajaxUrl` and `wiwaCheckout.ajaxUrl` scripts to ensure WPML/Polylang plugins load the correct WooCommerce session on translated checkout pages.
+- **Session Initialization:** Forced `WC()->session->set_customer_session_cookie(true)` during the Add to Cart AJAX handler when a session doesn't exist to guarantee cart persistence across cross-domain language switchers.
+
 ## [2.12.30] - 2026-02-22
 
 ### Changed
