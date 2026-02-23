@@ -1,22 +1,23 @@
+/**
+ * Wiwa Cart Persistence
+ * Persists pax and guest info inputs on the cart page via sessionStorage.
+ */
 jQuery(document).ready(function($) {
-    console.log('Wiwa Cart Persistence Loaded v2.8.5');
-    // Prefix for storage keys to avoid conflicts
-    const STORAGE_PREFIX = 'wiwa_cart_data_';
-    
-    // Function to save input value
+    'use strict';
+
+    var STORAGE_PREFIX = 'wiwa_cart_data_';
+
     function saveInputValue(input) {
-        const name = $(input).attr('name');
-        const val = $(input).val();
+        var name = $(input).attr('name');
         if (name) {
-            sessionStorage.setItem(STORAGE_PREFIX + name, val);
+            sessionStorage.setItem(STORAGE_PREFIX + name, $(input).val() || '');
         }
     }
 
-    // Function to restore input value
     function restoreInputValue(input) {
-        const name = $(input).attr('name');
+        var name = $(input).attr('name');
         if (name) {
-            const savedVal = sessionStorage.getItem(STORAGE_PREFIX + name);
+            var savedVal = sessionStorage.getItem(STORAGE_PREFIX + name);
             if (savedVal !== null) {
                 $(input).val(savedVal);
                 if ($(input).hasClass('select2-hidden-accessible') || $(input).hasClass('ovatb-select2')) {
@@ -26,10 +27,8 @@ jQuery(document).ready(function($) {
         }
     }
 
-    // Identify inputs to persist
-    // 1. Pax inputs
-    // 2. Any guest info inputs (OvaTourBooking often uses name="ovatb_guest_info[...]")
-    const selector = '.wiwa-pax-input, input[name*="guest_info"], select[name*="guest_info"], textarea[name*="guest_info"]';
+    // Selectors for cart-page inputs to persist
+    var selector = '.wiwa-pax-input, input[name*="guest_info"], select[name*="guest_info"], textarea[name*="guest_info"]';
 
     // Restore on load
     $(selector).each(function() {
@@ -41,10 +40,12 @@ jQuery(document).ready(function($) {
         saveInputValue(this);
     });
 
-    // Optional: Clear storage on successful checkout (hook into form submit?)
-    // For now, we prefer keeping it just in case. 
-    // Maybe clear if cart is empty? 
-    if ($('.cart-empty').length > 0) {
-       // Ideally clear relevant keys, but simple approach is fine for now
+    // Clear storage when cart is empty (e.g. after checkout or manual removal)
+    if ($('.cart-empty').length > 0 || $('.woocommerce-info').text().indexOf('vacío') > -1) {
+        Object.keys(sessionStorage).forEach(function(key) {
+            if (key.startsWith(STORAGE_PREFIX)) {
+                sessionStorage.removeItem(key);
+            }
+        });
     }
 });

@@ -1,5 +1,13 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.14.1] - 2026-02-23
+
+### Fixed
+- **Checkout Persistence — Stale Data**: `saveInput` now persists empty values so cleared fields stay cleared after page reload instead of restoring stale data.
+- **Checkout Persistence — Ghost Data**: sessionStorage keys are now cleaned up after successful step-1 submit, preventing old form data from auto-filling on subsequent bookings.
+- **Cart Persistence — Empty Cart Cleanup**: `cart-persistence.js` now clears all stored cart input data when the cart page shows an empty cart state.
+- **Cart Persistence — Hardcoded Version**: Removed outdated `v2.8.5` console log from `cart-persistence.js`.
+
 ## [2.14.0] - 2026-02-22
 
 ### Added

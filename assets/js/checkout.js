@@ -257,6 +257,10 @@ document.addEventListener('DOMContentLoaded', function () {
             .then(res => res.json())
             .then(data => {
                 if (data.success) {
+                    // Clear all wiwa_ sessionStorage keys — data is now saved server-side
+                    Object.keys(sessionStorage).forEach(k => {
+                        if (k.startsWith('wiwa_')) sessionStorage.removeItem(k);
+                    });
                     window.location.href = this.getAttribute('action');
                 } else {
                     const errorMessage = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.errorSavingData ? wiwaCheckout.strings.errorSavingData : 'Error guardando datos: ';
@@ -390,8 +394,8 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         const saveInput = (input) => {
-            if (input.name && input.value) {
-                sessionStorage.setItem('wiwa_' + input.name, input.value);
+            if (input.name) {
+                sessionStorage.setItem('wiwa_' + input.name, input.value || '');
             }
         };
 
