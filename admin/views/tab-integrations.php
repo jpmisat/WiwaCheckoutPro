@@ -86,10 +86,12 @@ endif; ?>
             </div>
             <div class="wiwa-setting-control">
                 <div class="wiwa-checkbox-row">
+                    <input type="hidden" name="wiwa_geoip_autocomplete_city" value="0">
                     <input type="checkbox" name="wiwa_geoip_autocomplete_city" id="geoip-city" value="1" <?php checked(1, get_option('wiwa_geoip_autocomplete_city'), true); ?>>
                     <label for="geoip-city"><?php _e('Autocompletar campo de ciudad al cargar checkout', 'wiwa-checkout'); ?></label>
                 </div>
                 <div class="wiwa-checkbox-row">
+                    <input type="hidden" name="wiwa_geoip_detect_country" value="0">
                     <input type="checkbox" name="wiwa_geoip_detect_country" id="geoip-country" value="1" <?php checked(1, get_option('wiwa_geoip_detect_country'), true); ?>>
                     <label for="geoip-country"><?php _e('Detectar país automáticamente', 'wiwa-checkout'); ?></label>
                 </div>
@@ -156,6 +158,7 @@ endif; ?>
                 </div>
                 <div class="wiwa-setting-control">
                     <div class="wiwa-checkbox-row">
+                        <input type="hidden" name="wiwa_show_currency_selector" value="0">
                         <input type="checkbox" name="wiwa_show_currency_selector" id="show-currency" value="1" <?php checked(1, get_option('wiwa_show_currency_selector'), true); ?>>
                         <label for="show-currency"><?php _e('Activar selector en checkout', 'wiwa-checkout'); ?></label>
                     </div>
@@ -184,6 +187,7 @@ endif; ?>
                 </div>
                 <div class="wiwa-setting-control">
                     <div class="wiwa-checkbox-row">
+                        <input type="hidden" name="wiwa_currency_auto_update" value="0">
                         <input type="checkbox" name="wiwa_currency_auto_update" id="auto-update" value="1" <?php checked(1, get_option('wiwa_currency_auto_update'), true); ?>>
                         <label for="auto-update"><?php _e('Actualizar precios automáticamente al cambiar moneda', 'wiwa-checkout'); ?></label>
                     </div>

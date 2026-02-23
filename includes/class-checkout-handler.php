@@ -230,10 +230,15 @@ class Wiwa_Checkout_Handler
         }
 
         // GeoIP integration
+        $geoip_deps = ['jquery'];
+        if (get_option('wiwa_geoip_strategy', 'woocommerce') === 'yellowtree') {
+            $geoip_deps[] = 'geoip_detect'; // Native handle for YellowTree script
+        }
+
         wp_enqueue_script(
             'wiwa-geoip-js',
             WIWA_CHECKOUT_URL . 'assets/js/geoip.js',
-        ['jquery'],
+            $geoip_deps,
             WIWA_CHECKOUT_VERSION,
             true
         );
