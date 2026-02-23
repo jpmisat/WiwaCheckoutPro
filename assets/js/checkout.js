@@ -380,18 +380,25 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ==================== AUTO SAVE ====================
     
-    // Autosave inputs to local storage (for returning customers)
+    // Autosave inputs to session storage (for returning customers & reloads)
     if (form1) {
+        // Cleanup old localStorage items from previous versions
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('wiwa_')) {
+                localStorage.removeItem(key);
+            }
+        });
+
         const saveInput = (input) => {
             if (input.name && input.value) {
-                localStorage.setItem('wiwa_' + input.name, input.value);
+                sessionStorage.setItem('wiwa_' + input.name, input.value);
             }
         };
 
         $$('input, select', form1).forEach(input => {
             // Restore
             if (input.name) {
-                const saved = localStorage.getItem('wiwa_' + input.name);
+                const saved = sessionStorage.getItem('wiwa_' + input.name);
                 if (saved && !input.value) {
                     input.value = saved;
                     // For select elements, we need to trigger change visually if they use Select2

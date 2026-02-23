@@ -1,10 +1,17 @@
 # Changelog Wiwa Tour Checkout Pro
 
-## [2.12.28] - 2026-02-22
+## [2.12.30] - 2026-02-22
 
-### Added
-- Agregada opción en el menú de Opciones de Integración para poder alternar de forma explícita entre usar la API JS de GeoIP Detect de YellowTree, la API interna de MaxMind antigua o la configuración de base de datos de WooCommerce. 
-- Integración condicional en `geoip.js` que escucha el parámetro `wiwaCheckout.geoIp.strategy` e invoca `geoip_detect.get_info()` dinámicamente según la preferencia del administrador, mapeando los campos automáticamente del nodo devuelto (`record.get('city.name')`).
+### Changed
+- Refactorización de la persistencia de datos frontend en `checkout.js`: Se migró de `localStorage` a `sessionStorage`. Esto soluciona un problema crítico donde los campos del checkout persistían indefinidamente en el navegador bloqueando subsecuentes cargas de ciudad/país vía GeoIP. Ahora, los campos en caché se destruyen al cerrar la pestaña o el navegador, permitiendo iniciar nuevas compras de forma limpia. Se agregó script de limpieza para borrar rastros de implementaciones previas en `localStorage`.
+
+## [2.12.29] - 2026-02-22
+
+### Fixed
+- Agregada corrección al panel de configuración de integraciones donde las casillas de verificación (checkboxes) deseleccionadas no se guardaban debido a la falta de inputs ocultos que pasaran el valor `0` a las opciones de WordPress.
+- Se añadió un delay/retry recursivo en `geoip.js` cuando elegimos la estrategia YellowTree, asegurando un máximo de 10 reintentos si `geoip_detect` carga después de que la página haya levantado (arregla *"Wiwa GeoIP: geoip_detect object is not available"*).
+
+## [2.12.28] - 2026-02-22
 
 ## [2.12.27] - 2026-02-22
 
