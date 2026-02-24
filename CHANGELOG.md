@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.4] - 2026-02-24
+
+### Fixed
+- **Side Cart Ghost Item:** Fixed an issue where removing an item directly from the Main Cart page left a "ghost" item in the side cart. Added a script that detects the standard WooCommerce `?removed_item=1` parameter on page load, clears the stale `sessionStorage` fragments, and forces an immediate side cart sync.
+
 ## [2.15.3] - 2026-02-24
 
 ### Fixed

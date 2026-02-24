@@ -103,6 +103,26 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hook into WooCommerce fragments refresh and other relevant events
     if (typeof jQuery !== 'undefined') {
+        // FIX: Force side-cart sync if page loaded after a cart removal
+        if (window.location.search.indexOf('removed_item=') !== -1 || window.location.search.indexOf('remove_item=') !== -1) {
+            try {
+                var keysToRemove = [];
+                for (var i = 0; i < sessionStorage.length; i++) {
+                    var key = sessionStorage.key(i);
+                    if (key && key.indexOf('wc_fragments') !== -1) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
+                sessionStorage.removeItem('wc_cart_hash_' + (typeof wc_cart_fragments_params !== 'undefined' ? wc_cart_fragments_params.ajax_url : ''));
+            } catch(e) {}
+            
+            // Wait for WC to init, then force refresh
+            setTimeout(function() {
+                jQuery(document.body).trigger('wc_fragment_refresh');
+            }, 100);
+        }
+
         jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function(e) {
             // Small delay to allow WC to finish its DOM writes
             setTimeout(checkEmptyState, 50);
