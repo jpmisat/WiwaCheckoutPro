@@ -1,18 +1,18 @@
 <?php defined('ABSPATH') or exit; ?>
 
 <div class="wiwa-tab-general">
-    <h3><?php _e('Configuración General', 'wiwa-checkout'); ?></h3>
+    <h3><?php _e('General Configuration', 'wiwa-checkout'); ?></h3>
     
     <form id="wiwa-general-settings" method="post">
         <?php wp_nonce_field('wiwa_save_settings', 'wiwa_settings_nonce'); ?>
         
         <!-- Activar Checkout Section -->
         <div class="wiwa-settings-section">
-            <h4><?php _e('Estado del Checkout', 'wiwa-checkout'); ?></h4>
+            <h4><?php _e('Checkout status', 'wiwa-checkout'); ?></h4>
             
             <div class="wiwa-setting-row">
                 <div class="wiwa-setting-label">
-                    <?php _e('Activar Checkout Wiwa', 'wiwa-checkout'); ?>
+                    <?php _e('Activate Wiwa Checkout', 'wiwa-checkout'); ?>
                 </div>
                 <div class="wiwa-setting-control">
                     <label class="wiwa-toggle-large">
@@ -20,7 +20,7 @@
                         <span class="wiwa-toggle-slider-large"></span>
                     </label>
                     <p class="description">
-                        <?php _e('Activa el checkout personalizado de Wiwa Tours. Esto reemplazará el checkout y carrito de WooCommerce.', 'wiwa-checkout'); ?>
+                        <?php _e('Activate Wiwa Tours custom checkout. This will replace the WooCommerce checkout and cart.', 'wiwa-checkout'); ?>
                     </p>
                 </div>
             </div>
@@ -32,35 +32,35 @@
             
             <div class="wiwa-shortcode-card">
                 <code id="wiwa-shortcode">[wiwa_checkout]</code>
-                <button type="button" class="wiwa-copy-btn" id="copy-shortcode" title="<?php esc_attr_e('Copiar', 'wiwa-checkout'); ?>">
+                <button type="button" class="wiwa-copy-btn" id="copy-shortcode" title="<?php esc_attr_e('Copy', 'wiwa-checkout'); ?>">
                     <span class="dashicons dashicons-clipboard"></span>
                 </button>
             </div>
             <p class="description" style="margin-top: 12px;">
-                <?php _e('Usa este shortcode para mostrar el checkout en cualquier página.', 'wiwa-checkout'); ?>
+                <?php _e('Use this shortcode to show the checkout on any page.', 'wiwa-checkout'); ?>
             </p>
         </div>
         
         <!-- Página de Checkout Section -->
         <div class="wiwa-settings-section">
-            <h4><?php _e('Página de Checkout', 'wiwa-checkout'); ?></h4>
+            <h4><?php _e('Checkout Page', 'wiwa-checkout'); ?></h4>
             
             <div class="wiwa-setting-row">
                 <div class="wiwa-setting-label">
-                    <?php _e('Página del Checkout', 'wiwa-checkout'); ?>
+                    <?php _e('Checkout Page', 'wiwa-checkout'); ?>
                 </div>
                 <div class="wiwa-setting-control">
                     <?php
 wp_dropdown_pages([
     'name' => 'wiwa_checkout_page_id',
     'selected' => get_option('wiwa_checkout_page_id'),
-    'show_option_none' => __('— Seleccionar —', 'wiwa-checkout'),
+    'show_option_none' => __('— Select —', 'wiwa-checkout'),
     'option_none_value' => '',
     'class' => 'wiwa-select-styled'
 ]);
 ?>
                     <p class="description">
-                        <?php _e('Página donde se mostrará el checkout. Asegúrate de que contenga el shortcode [wiwa_checkout].', 'wiwa-checkout'); ?>
+                        <?php _e('Page where the checkout will be displayed. Make sure it contains the [wiwa_checkout] shortcode.', 'wiwa-checkout'); ?>
                     </p>
                 </div>
             </div>
@@ -69,7 +69,7 @@ wp_dropdown_pages([
         <p class="submit">
             <button type="submit" class="wiwa-submit-btn">
                 <span class="dashicons dashicons-saved"></span>
-                <?php _e('Guardar Cambios', 'wiwa-checkout'); ?>
+                <?php _e('Save Changes', 'wiwa-checkout'); ?>
             </button>
             <span class="wiwa-save-status"></span>
         </p>

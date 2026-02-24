@@ -31,10 +31,10 @@ class Wiwa_Assets
                 'ajax_url' => $ajax_url,
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
                 'strings'  => [
-                    'processing' => __('Procesando...', 'wiwa-checkout'),
-                    'addError'   => __('Error al agregar al carrito.', 'wiwa-checkout'),
-                    'connError'  => __('Ocurrió un error de conexión. Intente nuevamente.', 'wiwa-checkout'),
-                    'addToCart'  => __('<span class="icon-cart"></span> Agregar al Carrito', 'wiwa-checkout'),
+                    'processing' => __('Processing...', 'wiwa-checkout'),
+                    'addError'   => __('Error adding to cart.', 'wiwa-checkout'),
+                    'connError'  => __('A connection error occurred. Try again.', 'wiwa-checkout'),
+                    'addToCart'  => __('<span class="icon-cart"></span> Add to Cart', 'wiwa-checkout'),
                 ]
             ]);
         }
@@ -84,7 +84,7 @@ class Wiwa_Assets
                 'ajax_url' => admin_url('admin-ajax.php'),
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
                 'strings'  => [
-                    'addToCart' => __('Agregar al carrito', 'wiwa-checkout')
+                    'addToCart' => __('Add to cart', 'wiwa-checkout')
                 ]
             ]);
         }

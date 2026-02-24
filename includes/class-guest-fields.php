@@ -34,7 +34,7 @@ class Wiwa_Guest_Fields
         else {
             $this->guest_types = [
                 'adult' => [
-                    'label' => __('Adulto', 'wiwa-checkout'),
+                    'label' => __('Adult', 'wiwa-checkout'),
                     'fields' => $this->get_default_fields()
                 ]
             ];

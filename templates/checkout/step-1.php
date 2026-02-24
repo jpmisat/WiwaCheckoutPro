@@ -71,13 +71,13 @@ $billing_fields = Wiwa_Fields_Manager::get_fields()['billing'] ?? [];
 <form id="wiwa-checkout-step-1" class="wiwa-checkout-form" method="post" action="<?php echo esc_url(add_query_arg('step', '2', $checkout_url)); ?>" novalidate>
     <?php wp_nonce_field('wiwa_checkout_step_1', 'wiwa_step_1_nonce'); ?>
     
-    <h2><?php _e('Detalles de tu reserva', 'wiwa-checkout'); ?></h2>
+    <h2><?php _e('Booking details', 'wiwa-checkout'); ?></h2>
     
     <!-- Contact Section -->
     <div class="contact-section">
         <div class="section-header">
-            <h3><?php _e('Datos de contacto', 'wiwa-checkout'); ?></h3>
-            <p class="description"><?php _e('Aquí enviaremos la confirmación y podrás gestionar tus reservas', 'wiwa-checkout'); ?></p>
+            <h3><?php _e('Contact details', 'wiwa-checkout'); ?></h3>
+            <p class="description"><?php _e('We will send the confirmation here and you can manage your bookings', 'wiwa-checkout'); ?></p>
         </div>
         <div class="form-grid form-grid-2">
                         <?php
@@ -137,7 +137,7 @@ foreach ($billing_fields as $field_key => $field):
                         <input type="text" name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" 
                                <?php echo $is_required ? 'required' : ''; ?> 
                                class="wiwa-input" 
-                               placeholder="<?php echo esc_attr($field_placeholder ?: __('Número de documento', 'wiwa-checkout')); ?>">
+                               placeholder="<?php echo esc_attr($field_placeholder ?: __('Document number', 'wiwa-checkout')); ?>">
                     </div>
                 </div>
                 
@@ -175,7 +175,7 @@ foreach ($billing_fields as $field_key => $field):
                     </label>
                     <select name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" 
                             <?php echo $is_required ? 'required' : ''; ?> class="wiwa-select wiwa-country-select">
-                        <option value=""><?php _e('Seleccionar', 'wiwa-checkout'); ?></option>
+                        <option value=""><?php _e('Select', 'wiwa-checkout'); ?></option>
                         <?php foreach ($countries as $code => $name):
             // Add flag if available in our list
             $flag = '';
@@ -200,7 +200,7 @@ foreach ($billing_fields as $field_key => $field):
                     </label>
                     <select name="<?php echo esc_attr($field_key); ?>" id="<?php echo esc_attr($field_key); ?>" 
                             <?php echo $is_required ? 'required' : ''; ?> class="wiwa-select">
-                        <option value=""><?php _e('Seleccionar', 'wiwa-checkout'); ?></option>
+                        <option value=""><?php _e('Select', 'wiwa-checkout'); ?></option>
                         <?php foreach ($field_options as $opt_value => $opt_label): ?>
                             <option value="<?php echo esc_attr($opt_value); ?>"><?php echo esc_html($opt_label); ?></option>
                         <?php
@@ -232,12 +232,12 @@ endforeach; ?>
     </div>
     
     <!-- Passengers Section Divider -->
-    <div class="section-divider-text"><span><?php _e('Datos de los viajeros', 'wiwa-checkout'); ?></span></div>
+    <div class="section-divider-text"><span><?php _e('Travelers\' details', 'wiwa-checkout'); ?></span></div>
     
     <!-- Tours Passengers Section -->
     <div class="tours-passengers-section">
         <div class="section-header">
-            <h3><?php _e('*Necesitamos información sobre los pasajeros para poder confirmar estos tours.', 'wiwa-checkout'); ?></h3>
+            <h3><?php _e('*We need passenger information to confirm these tours.', 'wiwa-checkout'); ?></h3>
         </div>
         
         <div class="tours-accordion">
@@ -268,7 +268,7 @@ endforeach; ?>
                             </div>
                         </div>
                     </div>
-                    <span class="accordion-error-badge"><?php _e('Campos pendientes', 'wiwa-checkout'); ?></span>
+                    <span class="accordion-error-badge"><?php _e('Pending fields', 'wiwa-checkout'); ?></span>
                     <button type="button" class="tour-accordion-toggle">
                         <svg class="chevron" width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
                     </button>
@@ -288,7 +288,7 @@ endforeach; ?>
                             <span class="passenger-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>
                             </span>
-                            <h5><?php printf(__('Pasajero %d', 'wiwa-checkout'), $pax); ?></h5>
+                            <h5><?php printf(__('Passenger %d', 'wiwa-checkout'), $pax); ?></h5>
                         </div>
                         
                         <div class="form-grid form-grid-2">
@@ -320,7 +320,7 @@ endforeach; ?>
                                 
                                 <?php if ($is_country): ?>
                                     <select name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_id); ?>" class="wiwa-select wiwa-country-select" <?php echo $required_attr; ?>>
-                                        <option value=""><?php _e('Seleccionar', 'wiwa-checkout'); ?></option>
+                                        <option value=""><?php _e('Select', 'wiwa-checkout'); ?></option>
                                         <?php foreach ($countries as $code => $name): ?>
                                             <option value="<?php echo esc_attr($code); ?>" <?php selected($code, 'CO'); ?>><?php echo esc_html($name); ?></option>
                                         <?php
@@ -351,13 +351,13 @@ endforeach; ?>
                                             <?php
                 endforeach; ?>
                                         </select>
-                                        <input type="text" name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_id); ?>" class="wiwa-input" <?php echo $required_attr; ?> placeholder="<?php esc_attr_e('Número de documento', 'wiwa-checkout'); ?>">
+                                        <input type="text" name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_id); ?>" class="wiwa-input" <?php echo $required_attr; ?> placeholder="<?php esc_attr_e('Document number', 'wiwa-checkout'); ?>">
                                     </div>
                                 
                                 <?php
             elseif ($is_document_type): ?>
                                     <select name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_id); ?>" class="wiwa-select" <?php echo $required_attr; ?>>
-                                        <option value=""><?php _e('Seleccionar', 'wiwa-checkout'); ?></option>
+                                        <option value=""><?php _e('Select', 'wiwa-checkout'); ?></option>
                                         <?php $doc_types = Wiwa_Fields_Manager::get_document_types(); ?>
                                         <?php foreach ($doc_types as $doc_key => $doc_label): ?>
                                             <option value="<?php echo esc_attr($doc_key); ?>"><?php echo esc_html($doc_label); ?></option>
@@ -368,7 +368,7 @@ endforeach; ?>
                                 <?php
             elseif ($field_type === 'select' && !empty($field_options)): ?>
                                     <select name="<?php echo esc_attr($field_name); ?>" id="<?php echo esc_attr($field_id); ?>" class="wiwa-select" <?php echo $required_attr; ?>>
-                                        <option value=""><?php _e('Seleccionar', 'wiwa-checkout'); ?></option>
+                                        <option value=""><?php _e('Select', 'wiwa-checkout'); ?></option>
                                         <?php foreach ($field_options as $opt_val => $opt_label): ?>
                                             <option value="<?php echo esc_attr($opt_val); ?>"><?php echo esc_html($opt_label); ?></option>
                                         <?php
@@ -393,7 +393,7 @@ endforeach; ?>
                                 <?php
             endif; ?>
                                 
-                                <span class="error-message"><?php _e('Este campo es requerido', 'wiwa-checkout'); ?></span>
+                                <span class="error-message"><?php _e('This field is required', 'wiwa-checkout'); ?></span>
                             </div>
                             <?php
         endforeach; ?>
@@ -417,7 +417,7 @@ endforeach; ?>
             <input type="checkbox" name="accept_terms" id="accept_terms" required>
             <span>
                 <?php printf(
-    __('Aceptar %sTérminos y Condiciones%s y %sPolítica de Privacidad%s', 'wiwa-checkout'),
+    __('Accept %sTerms and Conditions%s and %sPrivacy Policy%s', 'wiwa-checkout'),
     '<a href="' . esc_url(get_permalink(get_option('woocommerce_terms_page_id'))) . '" target="_blank">',
     '</a>',
     '<a href="' . esc_url(get_privacy_policy_url()) . '" target="_blank">',
@@ -425,10 +425,10 @@ endforeach; ?>
 ); ?>
             </span>
         </label>
-        <span class="error-message" id="terms-error"><?php _e('Debes aceptar los términos y condiciones', 'wiwa-checkout'); ?></span>
+        <span class="error-message" id="terms-error"><?php _e('You must accept the terms and conditions', 'wiwa-checkout'); ?></span>
         
         <button type="submit" class="btn-primary btn-continue">
-            <?php _e('Ir al pago', 'wiwa-checkout'); ?>
+            <?php _e('Go to payment', 'wiwa-checkout'); ?>
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
         </button>
     </div>

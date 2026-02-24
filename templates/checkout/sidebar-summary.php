@@ -55,7 +55,7 @@ $currency_flags = [
         <?php if ($show_currency && $woocs_active && count($woocs_currencies) > 1): ?>
         <!-- Currency Section -->
         <div class="currency-section">
-            <span class="currency-section-title"><?php _e('Moneda', 'wiwa-checkout'); ?></span>
+            <span class="currency-section-title"><?php _e('Currency', 'wiwa-checkout'); ?></span>
             <div class="wiwa-currency-switcher style-<?php echo esc_attr($currency_style); ?>">
                 <?php if ($currency_style === 'buttons'): ?>
                     <div class="currency-buttons">
@@ -90,7 +90,7 @@ $currency_flags = [
         <?php
 endif; ?>
         
-        <h3 class="summary-title"><?php _e('Resumen', 'wiwa-checkout'); ?></h3>
+        <h3 class="summary-title"><?php _e('Summary', 'wiwa-checkout'); ?></h3>
         
         <div class="summary-products">
             <?php foreach ($cart->get_cart() as $cart_item_key => $cart_item):
@@ -188,7 +188,7 @@ printf(_n('Subtotal (%d tour)', 'Subtotal (%d tours)', $count, 'wiwa-checkout'),
                     <svg width="14" height="14" fill="currentColor" viewBox="0 0 16 16">
                         <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2H2zm6 1a1 1 0 0 1 1 1v5h3a1 1 0 1 1 0 2H8a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1z"/>
                     </svg>
-                    <?php _e('Descuento', 'wiwa-checkout'); ?>
+                    <?php _e('Discount', 'wiwa-checkout'); ?>
                 </span>
                 <span class="price-value discount-value">-<?php echo wc_price($cart->get_discount_total()); ?></span>
             </div>
@@ -197,7 +197,7 @@ endif; ?>
             
             <?php if ($cart->get_total_tax() > 0): ?>
             <div class="price-row">
-                <span class="price-label"><?php _e('Impuestos', 'wiwa-checkout'); ?></span>
+                <span class="price-label"><?php _e('Taxes', 'wiwa-checkout'); ?></span>
                 <span class="price-value"><?php echo wc_price($cart->get_total_tax()); ?></span>
             </div>
             <?php
@@ -227,9 +227,9 @@ endif; ?>
                     <path d="M3.5 9.5a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1-.5-.5V10a.5.5 0 0 1 .5-.5h2zm0-3a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-.5.5h-2A.5.5 0 0 1 1 8V6.5a.5.5 0 0 1 .5-.5h2zm0-3a.5.5 0 0 1 .5.5v1.5a.5.5 0 0 1-.5.5h-2A.5.5 0 0 1 1 5V3.5a.5.5 0 0 1 .5-.5h2z"/>
                     <path d="M3 0a1 1 0 0 0-1 1v14a1 1 0 0 0 1 1h10a1 1 0 0 0 1-1V1a1 1 0 0 0-1-1H3zm0 1h10v14H3V1z"/>
                 </svg>
-                <input type="text" id="coupon_code" placeholder="<?php esc_attr_e('Código de descuento', 'wiwa-checkout'); ?>" class="coupon-input">
+                <input type="text" id="coupon_code" placeholder="<?php esc_attr_e('Discount code', 'wiwa-checkout'); ?>" class="coupon-input">
             </div>
-            <button type="button" class="btn-apply-coupon" id="apply_coupon"><?php _e('Aplicar', 'wiwa-checkout'); ?></button>
+            <button type="button" class="btn-apply-coupon" id="apply_coupon"><?php _e('Apply', 'wiwa-checkout'); ?></button>
         </div>
         <div id="coupon-message" class="coupon-message" style="display: none;"></div>
         <?php

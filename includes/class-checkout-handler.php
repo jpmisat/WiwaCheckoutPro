@@ -145,7 +145,7 @@ class Wiwa_Checkout_Handler
     public function render_checkout()
     {
         if (!class_exists('WooCommerce')) {
-            return '<div class="woocommerce-error">' . __('WooCommerce no está activo.', 'wiwa-checkout') . '</div>';
+            return '<div class="woocommerce-error">' . __('WooCommerce is not active.', 'wiwa-checkout') . '</div>';
         }
 
         if (WC()->cart->is_empty()) {
@@ -258,13 +258,13 @@ class Wiwa_Checkout_Handler
             'nonce' => wp_create_nonce('wiwa_checkout_nonce'),
             'homeUrl' => home_url('/'),
             'strings' => [
-                'processing' => __('Procesando...', 'wiwa-checkout'),
-                'error' => __('Error en la solicitud', 'wiwa-checkout'),
-                'continueToPayment' => __('Continúa al pago para finalizar.', 'wiwa-checkout'),
-                'selectTour' => __('Selecciona tu tour', 'wiwa-checkout'),
-                'adult' => __('Adulto', 'wiwa-checkout'),
-                'child' => __('Niño', 'wiwa-checkout'),
-                'infant' => __('Infante', 'wiwa-checkout'),
+                'processing' => __('Processing...', 'wiwa-checkout'),
+                'error' => __('Request error', 'wiwa-checkout'),
+                'continueToPayment' => __('Continue to payment to finish.', 'wiwa-checkout'),
+                'selectTour' => __('Select your tour', 'wiwa-checkout'),
+                'adult' => __('Adult', 'wiwa-checkout'),
+                'child' => __('Child', 'wiwa-checkout'),
+                'infant' => __('Infant', 'wiwa-checkout'),
             ],
             'geoIp' => [
                 'autoComplete' => get_option('wiwa_geoip_autocomplete_city'),

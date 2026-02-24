@@ -29,11 +29,11 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
     <!-- HEADER -->
     <div class="mb-12">
         <h1 class="text-3xl md:text-5xl font-bold text-[#1a3c28] mb-4 tracking-tight">
-            <?php esc_html_e('Tu Carrito de Aventuras', 'wiwa-checkout'); ?>
+            <?php esc_html_e('Your Adventure Cart', 'wiwa-checkout'); ?>
         </h1>
         <div class="h-1 w-20 bg-[#1a3c28] mb-6"></div>
         <p class="text-gray-500 text-lg max-w-2xl font-light">
-            <?php esc_html_e('Revisa tus próximas experiencias antes de confirmar tu reserva.', 'wiwa-checkout'); ?>
+            <?php esc_html_e('Review your upcoming experiences before confirming your booking.', 'wiwa-checkout'); ?>
         </p>
     </div>
 
@@ -142,7 +142,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     <div class="flex items-center gap-1.5 md:gap-2.5">
                                         <span class="material-symbols-outlined text-[14px] md:text-[16px] text-gray-400">group</span>
                                         <span class="font-medium text-gray-700">
-                                            <?php echo esc_html($tour_meta['travelers']); ?> <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?>
+                                            <?php echo esc_html($tour_meta['travelers']); ?> <?php esc_html_e('Travelers', 'wiwa-checkout'); ?>
                                         </span>
                                     </div>
                                 </div>
@@ -159,7 +159,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                         esc_html__('Remove this item', 'woocommerce'),
                                         esc_attr($product_id),
                                         esc_attr($_product->get_sku()),
-                                        esc_html__('Eliminar', 'wiwa-checkout')
+                                        esc_html__('Delete', 'wiwa-checkout')
                                     ),
                                     $cart_item_key
                                 );
@@ -224,7 +224,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     </div>
                                 <?php endif; ?>
                                 <span class="text-[8px] md:text-[9px] text-gray-400 mt-1 uppercase tracking-[0.15em] font-semibold">
-                                    <?php esc_html_e('Viajeros', 'wiwa-checkout'); ?>
+                                    <?php esc_html_e('Travelers', 'wiwa-checkout'); ?>
                                 </span>
                             </div>
                         </div>
@@ -237,7 +237,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     <span class="opacity-70">/ persona</span>
                                 </p>
                                 <p class="wiwa-price-subtotal leading-none mb-0 text-xl font-bold flex flex-col md:block text-[#1a3c28]">
-                                    <span class="block md:hidden text-[10px] text-gray-400 font-normal uppercase tracking-wide mb-1"><?php esc_html_e('Total Viajeros:', 'wiwa-checkout'); ?></span>
+                                    <span class="block md:hidden text-[10px] text-gray-400 font-normal uppercase tracking-wide mb-1"><?php esc_html_e('Total Travelers:', 'wiwa-checkout'); ?></span>
                                     <?php 
                                     $subtotal_html = apply_filters('woocommerce_cart_item_subtotal', WC()->cart->get_product_subtotal($_product, $cart_item['quantity']), $cart_item, $cart_item_key);
                                     if (strpos($subtotal_html, '(') !== false) {
@@ -258,11 +258,11 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
 
                             <div class="mt-3 md:mt-4 space-y-1 md:space-y-1.5 p-3 md:p-0 bg-gray-50 md:bg-transparent rounded-lg md:rounded-none">
                                 <div class="flex justify-between md:justify-end gap-2 text-[11px] md:text-[12px] text-gray-500">
-                                    <span><?php esc_html_e('Depósito:', 'wiwa-checkout'); ?></span>
+                                    <span><?php esc_html_e('Deposit:', 'wiwa-checkout'); ?></span>
                                     <span class="font-semibold text-[#1a3c28] md:text-[13px]"><?php echo wc_price($deposit_val); ?></span>
                                 </div>
                                 <div class="flex justify-between md:justify-end gap-2 text-[11px] md:text-[12px]">
-                                    <span class="text-gray-500"><?php esc_html_e('Saldo pendiente:', 'wiwa-checkout'); ?></span>
+                                    <span class="text-gray-500"><?php esc_html_e('Pending balance:', 'wiwa-checkout'); ?></span>
                                     <span class="font-bold text-red-600 md:text-[13px]"><?php echo wc_price($pending_val); ?></span>
                                 </div>
                             </div>
@@ -292,13 +292,13 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                 <div class="bg-white rounded-2xl card-shadow p-8 wiwa-sticky-sidebar border border-gray-50">
 
                     <h3 class="text-[12px] font-bold text-[#1a3c28] uppercase tracking-[0.2em] border-b border-gray-100 pb-5 mb-7">
-                        <?php esc_html_e('Totales del Carrito', 'wiwa-checkout'); ?>
+                        <?php esc_html_e('Cart Totals', 'wiwa-checkout'); ?>
                     </h3>
 
                     <div class="space-y-5 mb-8">
                         <!-- Subtotal -->
                         <div class="flex justify-between items-center text-gray-500 text-[14px]">
-                            <span><?php esc_html_e('Subtotal experiencias', 'wiwa-checkout'); ?></span>
+                            <span><?php esc_html_e('Experiences subtotal', 'wiwa-checkout'); ?></span>
                             <span class="font-semibold text-gray-800"><?php wc_cart_totals_subtotal_html(); ?></span>
                         </div>
 
@@ -312,18 +312,18 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
 
                         <!-- Total pay today (Deposit) -->
                         <div class="flex justify-between items-center text-[#1a3c28] text-[14px]">
-                            <span class="font-medium"><?php esc_html_e('Total a pagar hoy (Depósito)', 'wiwa-checkout'); ?></span>
+                            <span class="font-medium"><?php esc_html_e('Total to pay today (Deposit)', 'wiwa-checkout'); ?></span>
                             <span class="font-bold"><?php echo wc_price($sidebar_deposit); ?></span>
                         </div>
 
                         <!-- Pending -->
                         <div class="pt-5 border-t border-dashed border-gray-200">
                             <div class="flex justify-between items-center text-red-600 text-[14px]">
-                                <span><?php esc_html_e('Pendiente por pagar', 'wiwa-checkout'); ?></span>
+                                <span><?php esc_html_e('Pending payment', 'wiwa-checkout'); ?></span>
                                 <span class="font-bold"><?php echo wc_price($sidebar_pending); ?></span>
                             </div>
                             <p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed italic">
-                                <?php esc_html_e('El saldo restante se pagará directamente en nuestras oficinas el día del tour.', 'wiwa-checkout'); ?>
+                                <?php esc_html_e('The remaining balance will be paid directly at our offices on the day of the tour.', 'wiwa-checkout'); ?>
                             </p>
                         </div>
                     </div>
@@ -331,7 +331,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                     <!-- SHIPPING / FEES / COUPONS / TAXES (WC Standard) -->
                     <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
                         <div class="flex justify-between items-center text-gray-500 text-[14px] mb-3">
-                            <span><?php esc_html_e('Envío', 'wiwa-checkout'); ?></span>
+                            <span><?php esc_html_e('Shipping', 'wiwa-checkout'); ?></span>
                             <span class="font-semibold text-gray-800"><?php wc_cart_totals_shipping_html(); ?></span>
                         </div>
                     <?php endif; ?>
@@ -360,19 +360,19 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                     <!-- BIG TOTAL + CTA -->
                     <div class="pt-7 border-t border-gray-100">
                         <div class="flex flex-col gap-1 mb-7">
-                            <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total de la reserva', 'wiwa-checkout'); ?></span>
+                            <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total booking', 'wiwa-checkout'); ?></span>
                             <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight">
                                 <?php echo wp_kses_post(WC()->cart->get_total()); ?><span class="wiwa-currency-code"><?php echo esc_html($wiwa_currency_code); ?></span>
                             </span>
                         </div>
 
                         <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="wiwa-cta-pay">
-                            <?php esc_html_e('Proceder al Pago', 'wiwa-checkout'); ?>
+                            <?php esc_html_e('Proceed to Payment', 'wiwa-checkout'); ?>
                         </a>
 
                         <div class="flex items-center justify-center gap-2 mt-5">
                             <span class="material-symbols-outlined text-[14px] text-gray-400">lock</span>
-                            <span class="text-[10px] text-gray-400 uppercase font-medium tracking-wider"><?php esc_html_e('Pago Seguro SSL', 'wiwa-checkout'); ?></span>
+                            <span class="text-[10px] text-gray-400 uppercase font-medium tracking-wider"><?php esc_html_e('Secure SSL Payment', 'wiwa-checkout'); ?></span>
                         </div>
                     </div>
 
@@ -381,17 +381,17 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                 <!-- COUPON CODE Box -->
                 <?php if (wc_coupons_enabled()) : ?>
                 <div class="mt-5 bg-[#fdfbf7] p-5 rounded-2xl border border-[#e5e7eb]/40">
-                    <p class="text-[12px] font-semibold text-[#1a3c28] mb-2.5"><?php esc_html_e('¿Tienes un código de descuento?', 'wiwa-checkout'); ?></p>
+                    <p class="text-[12px] font-semibold text-[#1a3c28] mb-2.5"><?php esc_html_e('Have a discount code?', 'wiwa-checkout'); ?></p>
                     <div class="flex gap-2">
                         <input type="text"
                                name="coupon_code"
                                class="flex-grow bg-white border-gray-200 rounded-lg text-sm px-4 py-2 focus:ring-[#1a3c28] focus:border-[#1a3c28]"
-                               placeholder="<?php esc_attr_e('Ingresa tu código', 'wiwa-checkout'); ?>" />
+                               placeholder="<?php esc_attr_e('Enter your code', 'wiwa-checkout'); ?>" />
                         <button type="submit"
                                 class="bg-[#1a3c28] text-white px-4 py-2 rounded-lg text-[11px] font-bold uppercase hover:opacity-90 transition"
                                 name="apply_coupon"
                                 value="<?php esc_attr_e('Apply coupon', 'woocommerce'); ?>">
-                            <?php esc_html_e('Aplicar', 'wiwa-checkout'); ?>
+                            <?php esc_html_e('Apply', 'wiwa-checkout'); ?>
                         </button>
                     </div>
                 </div>

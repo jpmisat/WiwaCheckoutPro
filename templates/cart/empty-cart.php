@@ -21,11 +21,11 @@ defined('ABSPATH') || exit;
         </div>
         
         <h2 class="wiwa-empty-title">
-            <?php esc_html_e('Tu carrito está vacío', 'wiwa-checkout'); ?>
+            <?php esc_html_e('Your cart is empty', 'wiwa-checkout'); ?>
         </h2>
         
         <p class="wiwa-empty-description">
-            <?php esc_html_e('Parece que aún no has agregado ningún tour a tu carrito. ¡Explora nuestros increíbles destinos y vive una aventura única!', 'wiwa-checkout'); ?>
+            <?php esc_html_e('It looks like you haven\'t added any tours to your cart yet. Explore our amazing destinations and live a unique adventure!', 'wiwa-checkout'); ?>
         </p>
         
         <div class="wiwa-empty-cta">
@@ -33,22 +33,22 @@ defined('ABSPATH') || exit;
                 <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
                 </svg>
-                <span><?php esc_html_e('Explorar Tours', 'wiwa-checkout'); ?></span>
+                <span><?php esc_html_e('Explore Tours', 'wiwa-checkout'); ?></span>
             </a>
         </div>
         
         <div class="wiwa-empty-features">
             <div class="feature-item">
                 <div class="feature-icon" aria-hidden="true">🌴</div>
-                <span><?php esc_html_e('Destinos únicos', 'wiwa-checkout'); ?></span>
+                <span><?php esc_html_e('Unique destinations', 'wiwa-checkout'); ?></span>
             </div>
             <div class="feature-item">
                 <div class="feature-icon" aria-hidden="true">🎒</div>
-                <span><?php esc_html_e('Tours de aventura', 'wiwa-checkout'); ?></span>
+                <span><?php esc_html_e('Adventure tours', 'wiwa-checkout'); ?></span>
             </div>
             <div class="feature-item">
                 <div class="feature-icon" aria-hidden="true">⭐</div>
-                <span><?php esc_html_e('Experiencias 5 estrellas', 'wiwa-checkout'); ?></span>
+                <span><?php esc_html_e('5-star experiences', 'wiwa-checkout'); ?></span>
             </div>
         </div>
     </div>

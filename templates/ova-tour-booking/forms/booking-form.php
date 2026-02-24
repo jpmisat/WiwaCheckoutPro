@@ -29,11 +29,11 @@ $class = function_exists('ovatb_get_meta_data') ? ovatb_get_meta_data( 'class', 
 	
 	<div id="ova-booking-actions-container" class="wiwa-modal-actions">
 		<button type="button" id="btn-direct-checkout" name="add-to-cart" value="<?php echo esc_attr( $product->get_id() ); ?>" class="single_add_to_cart_button ovatb-btn-submit wiwa-btn-primary ladda-button" data-style="zoom-in">
-			<?php esc_html_e( 'Reservar', 'wiwa-checkout' ); ?>
+			<?php esc_html_e('Book', 'wiwa-checkout'); ?>
 		</button>
 		
 		<button type="button" id="btn-add-to-cart-soft" class="wiwa-btn-secondary ladda-button" data-product_id="<?php echo esc_attr( $product->get_id() ); ?>" data-style="zoom-in">
-			<span class="icon-cart"></span> <?php esc_html_e( 'Agregar al carrito', 'wiwa-checkout' ); ?>
+			<span class="icon-cart"></span> <?php esc_html_e('Add to cart', 'wiwa-checkout'); ?>
 		</button>
 	</div>
 

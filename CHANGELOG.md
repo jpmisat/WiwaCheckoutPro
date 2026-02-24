@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.13] - 2026-02-24
+
+### Changed
+- **Internacionalización (i18n):** Se refactorizaron 263 instancias de cadenas estáticas locales a nivel de código base (PHP), pasando del Español al Inglés nativo para alinear el plugin con las mejores prácticas de WordPress ("English-First development").
+- Se generaron los archivos de catálogo de traducción de WordPress (`.pot`, `.po` y `.mo`) dentro de la carpeta `languages/` para brindar soporte automático en Español (`es_ES` y `es_CO`) y Francés (`fr_FR`). WPML y Polylang ahora podrán interceptar de manera nativa sin fallos y detectar estos strings base en inglés y aplicar los `.mo` proporcionados sin recurrir a trucos de refactorización visual.
+
 ## [2.15.12] - 2026-02-24
 
 ### Fixed

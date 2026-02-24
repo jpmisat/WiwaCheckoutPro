@@ -12,7 +12,7 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 <?php if ( ! WC()->cart->is_empty() ) : ?>
 
     <div class="wiwa-mini-cart-header-title">
-        <h3 class="wiwa-cart-main-title"><?php esc_html_e( 'Tu carrito', 'wiwa-checkout' ); ?></h3>
+        <h3 class="wiwa-cart-main-title"><?php esc_html_e('Your cart', 'wiwa-checkout'); ?></h3>
     </div>
 
     <ul class="woocommerce-mini-cart cart_list product_list_widget <?php echo esc_attr( $args['list_class'] ); ?>">
@@ -46,9 +46,9 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
                 // Travelers Label
                 $travelers_label = '';
-                if ( ! empty( $tour_meta['adults'] ) ) $travelers_label .= $tour_meta['adults'] . ' ' . __( 'Adultos', 'wiwa-checkout' );
-                if ( ! empty( $tour_meta['kids'] ) )   $travelers_label .= ', ' . $tour_meta['kids'] . ' ' . __( 'Niños', 'wiwa-checkout' );
-                if ( ! empty( $tour_meta['babies'] ) ) $travelers_label .= ', ' . $tour_meta['babies'] . ' ' . __( 'Bebés', 'wiwa-checkout' );
+                if ( ! empty( $tour_meta['adults'] ) ) $travelers_label .= $tour_meta['adults'] . ' ' . __('Adults', 'wiwa-checkout');
+                if ( ! empty( $tour_meta['kids'] ) )   $travelers_label .= ', ' . $tour_meta['kids'] . ' ' . __('Children', 'wiwa-checkout');
+                if ( ! empty( $tour_meta['babies'] ) ) $travelers_label .= ', ' . $tour_meta['babies'] . ' ' . __('Infants', 'wiwa-checkout');
 
                 // Stepper Logic
                 // For tours, "quantity" in WC is 1, but we want to show travelers or just the pax count?
@@ -177,10 +177,10 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
 
     <p class="woocommerce-mini-cart__buttons buttons wiwa-mini-cart-buttons">
         <a href="<?php echo esc_url( wc_get_cart_url() ); ?>" class="button wiwa-btn-outline">
-            <?php esc_html_e( 'Ver carrito', 'wiwa-checkout' ); ?>
+            <?php esc_html_e('View cart', 'wiwa-checkout'); ?>
         </a>
         <a href="<?php echo esc_url( wc_get_checkout_url() ); ?>" class="button checkout wiwa-btn-primary">
-            <?php esc_html_e( 'Finalizar compra', 'wiwa-checkout' ); ?>
+            <?php esc_html_e('Complete purchase', 'wiwa-checkout'); ?>
         </a>
     </p>
 

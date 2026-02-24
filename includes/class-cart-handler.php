@@ -292,9 +292,9 @@ class Wiwa_Cart_Handler
         // Localize script with data
         wp_localize_script('wiwa-side-cart', 'wiwaSideCart', [
             'homeUrl' => esc_url(home_url('/tours/')),
-            'emptyText' => __('Tu carrito está vacío', 'wiwa-checkout'),
-            'emptyDesc' => __('Parece que aún no has agregado ningún tour. ¡Explora nuestros destinos!', 'wiwa-checkout'),
-            'btnText' => __('Explorar Tours', 'wiwa-checkout'),
+            'emptyText' => __('Your cart is empty', 'wiwa-checkout'),
+            'emptyDesc' => __('Looks like you haven\'t added a tour yet. Explore our destinations!', 'wiwa-checkout'),
+            'btnText' => __('Explore Tours', 'wiwa-checkout'),
             'iconUrl' => WIWA_CHECKOUT_URL . 'assets/images/empty-cart.svg'
         ]);
         

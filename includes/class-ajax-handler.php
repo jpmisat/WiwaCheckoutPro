@@ -58,7 +58,7 @@ class Wiwa_Ajax_Handler
             wp_send_json_success(['currency' => $currency]);
         }
         else {
-            wp_send_json_error(['message' => __('Moneda no válida', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Invalid currency', 'wiwa-checkout')]);
         }
     }
 
@@ -72,19 +72,19 @@ class Wiwa_Ajax_Handler
         $coupon_code = sanitize_text_field($_POST['coupon_code']);
 
         if (empty($coupon_code)) {
-            wp_send_json_error(['message' => __('Ingresa un código de cupón', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Enter a coupon code', 'wiwa-checkout')]);
         }
 
         $result = WC()->cart->apply_coupon($coupon_code);
 
         if ($result) {
             wp_send_json_success([
-                'message' => __('¡Cupón aplicado!', 'wiwa-checkout'),
+                'message' => __('Coupon applied!', 'wiwa-checkout'),
                 'new_total' => wc_price(WC()->cart->get_total('edit'))
             ]);
         }
         else {
-            wp_send_json_error(['message' => __('Cupón no válido', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Invalid coupon', 'wiwa-checkout')]);
         }
     }
 
@@ -94,7 +94,7 @@ class Wiwa_Ajax_Handler
     public function save_general_settings()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin autorización', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Unauthorized', 'wiwa-checkout')]);
         }
 
         check_ajax_referer('wiwa_save_settings', 'nonce');
@@ -105,7 +105,7 @@ class Wiwa_Ajax_Handler
         update_option('wiwa_override_wc_cart', isset($_POST['wiwa_override_wc_cart']) ? 1 : 0);
         update_option('wiwa_checkout_page_id', absint($_POST['wiwa_checkout_page_id']));
 
-        wp_send_json_success(['message' => __('Configuración guardada', 'wiwa-checkout')]);
+        wp_send_json_success(['message' => __('Configuration saved', 'wiwa-checkout')]);
     }
 
     /**
@@ -114,13 +114,13 @@ class Wiwa_Ajax_Handler
     public function save_fields()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin autorización', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Unauthorized', 'wiwa-checkout')]);
         }
 
         check_ajax_referer('wiwa_save_fields', 'wiwa_fields_nonce');
 
         if (!isset($_POST['wiwa_fields'])) {
-            wp_send_json_error(['message' => __('No se recibieron campos', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('No fields received', 'wiwa-checkout')]);
         }
 
         $fields_data = $_POST['wiwa_fields'];
@@ -160,7 +160,7 @@ class Wiwa_Ajax_Handler
             update_option('wiwa_passenger_required', []);
         }
 
-        wp_send_json_success(['message' => __('Campos guardados', 'wiwa-checkout')]);
+        wp_send_json_success(['message' => __('Fields saved', 'wiwa-checkout')]);
     }
 
     /**
@@ -169,11 +169,11 @@ class Wiwa_Ajax_Handler
     public function test_maxmind()
     {
         if (!current_user_can('manage_options')) {
-            wp_send_json_error(['message' => __('Sin autorización', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Unauthorized', 'wiwa-checkout')]);
         }
 
         if (!class_exists('Wiwa_GeoIP_Integration')) {
-            wp_send_json_error(['message' => __('GeoIP no disponible', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('GeoIP not available', 'wiwa-checkout')]);
         }
 
         $city_data = Wiwa_GeoIP_Integration::detect_city();
@@ -182,7 +182,7 @@ class Wiwa_Ajax_Handler
             wp_send_json_success($city_data);
         }
         else {
-            wp_send_json_error(['message' => __('No se pudo detectar la ciudad', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('Could not detect city', 'wiwa-checkout')]);
         }
     }
 
@@ -194,7 +194,7 @@ class Wiwa_Ajax_Handler
         check_ajax_referer('wiwa_checkout_nonce', 'nonce');
 
         if (!class_exists('Wiwa_GeoIP_Integration')) {
-            wp_send_json_error(['message' => __('GeoIP no disponible', 'wiwa-checkout')]);
+            wp_send_json_error(['message' => __('GeoIP not available', 'wiwa-checkout')]);
         }
 
         $city_data = Wiwa_GeoIP_Integration::detect_city();
@@ -212,7 +212,7 @@ class Wiwa_Ajax_Handler
         if (!wp_verify_nonce($_POST['nonce'] ?? '', 'wiwa_checkout_nonce')) {
             wp_send_json([
                 'result' => 'failure',
-                'messages' => __('Sesión expirada. Por favor recarga la página.', 'wiwa-checkout')
+                'messages' => __('Session expired. Please reload the page.', 'wiwa-checkout')
             ]);
             return;
         }
@@ -276,7 +276,7 @@ class Wiwa_Ajax_Handler
         // If we get here without redirect, something went wrong
         wp_send_json([
             'result' => 'failure',
-            'messages' => __('Error procesando el pago. Por favor intenta de nuevo.', 'wiwa-checkout')
+            'messages' => __('Error processing payment. Please try again.', 'wiwa-checkout')
         ]);
     }
 

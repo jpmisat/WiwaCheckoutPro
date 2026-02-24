@@ -239,28 +239,28 @@ class Wiwa_Tour_Booking_Integration
         return [
             'guest_first_name' => [
                 'key' => 'guest_first_name',
-                'label' => __('Nombre', 'wiwa-checkout'),
+                'label' => __('Name', 'wiwa-checkout'),
                 'type' => 'text',
                 'required' => true,
                 'enabled' => true,
             ],
             'guest_last_name' => [
                 'key' => 'guest_last_name',
-                'label' => __('Apellido', 'wiwa-checkout'),
+                'label' => __('Last Name', 'wiwa-checkout'),
                 'type' => 'text',
                 'required' => true,
                 'enabled' => true,
             ],
             'guest_passport' => [
                 'key' => 'guest_passport',
-                'label' => __('Documento', 'wiwa-checkout'),
+                'label' => __('Document', 'wiwa-checkout'),
                 'type' => 'text',
                 'required' => true,
                 'enabled' => true,
             ],
             'guest_nationality' => [
                 'key' => 'guest_nationality',
-                'label' => __('Nacionalidad', 'wiwa-checkout'),
+                'label' => __('Nationality', 'wiwa-checkout'),
                 'type' => 'select',
                 'required' => true,
                 'enabled' => true,
