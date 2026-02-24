@@ -123,20 +123,41 @@ document.addEventListener('DOMContentLoaded', () => {
             }, 100);
         }
 
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function(e) {
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart elementor/menu-cart/product-removed elementor/menu-cart/fragments-updated', function(e) {
             // Small delay to allow WC to finish its DOM writes
             setTimeout(checkEmptyState, 50);
 
-            // FIX: If an item was removed from side-cart and we are on cart/checkout, force reload to sync main page
-            if (e.type === 'removed_from_cart') {
-                var isCart = document.body.classList.contains('woocommerce-cart');
-                var isCheckout = document.body.classList.contains('woocommerce-checkout');
+            var isCart = document.body.classList.contains('woocommerce-cart');
+            var isCheckout = document.body.classList.contains('woocommerce-checkout');
+
+            // --- CROSS-SYNC LOGIC ---
+            // 1. If an item was removed from the side-cart (WC native or Elementor), reload main page
+            if (e.type === 'removed_from_cart' || e.type === 'elementor/menu-cart/product-removed') {
                 if (isCart || isCheckout) {
                     var url = new URL(window.location.href);
                     // Add timestamp to bypass Varnish cache
                     url.searchParams.set('t', new Date().getTime());
                     window.location.href = url.toString();
                 }
+            }
+
+            // 2. If the main cart page was updated (updated_wc_div), force the side-cart to refresh its fragments
+            // This happens when deleting an item from the main cart table
+            if (e.type === 'updated_wc_div') {
+                // Remove stale sessionStorage
+                try {
+                    var keysToRemove = [];
+                    for (var i = 0; i < sessionStorage.length; i++) {
+                        var key = sessionStorage.key(i);
+                        if (key && key.indexOf('wc_fragments') !== -1) {
+                            keysToRemove.push(key);
+                        }
+                    }
+                    keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
+                } catch(err) {}
+                
+                // Do not cause an infinite loop. We trigger fragment refresh, which shouldn't re-trigger updated_wc_div
+                jQuery(document.body).trigger('wc_fragment_refresh');
             }
         });
     }

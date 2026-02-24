@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.6] - 2026-02-24
+
+### Fixed
+- **Elementor Cart vs Native Cart Sync:** Fixed the bug where the Custom Elementor Side Cart Widget was not synchronizing when users deleted items natively via the main `/cart/` table, and vice-versa. Integrated specific listeners for `elementor/menu-cart/product-removed` and `updated_wc_div` events to forcefully purge stale `sessionStorage` fragments and trigger two-way visual refreshes or hard reloads as needed.
+
 ## [2.15.5] - 2026-02-24
 
 ### Fixed
