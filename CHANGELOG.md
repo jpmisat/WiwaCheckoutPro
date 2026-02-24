@@ -1,5 +1,14 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.10] - 2026-02-24
+
+### Fixed
+- **Mobile Booking Buttons Equal Size:** Both "Reservar" and "Agregar al carrito" buttons now have identical padding (14px), font-size (15px), and min-height (50px) on mobile for perfectly matched sizing.
+
+### Changed
+- **Close Button (Brand Colors):** The success overlay close button (×) now uses brand dark green background with white icon, always visible (no more invisible-until-hover behavior). Increased to 42px for better touch targets.
+- **Mobile Success Overlay UX:** Tightened spacing in the topbar, reduced hero image height to 160px, added explicit min-height (46px) and padding to action buttons ("Ver carrito" / "Reservar ahora"), and improved tour card grid spacing on mobile.
+
 ## [2.15.9] - 2026-02-24
 
 ### Changed
