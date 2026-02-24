@@ -1,5 +1,12 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.2] - 2026-02-24
+
+### Fixed
+- **Add to Cart Modal Error:** Fixed an `Uncaught TypeError: o.removeClass is not a function` in WooCommerce core by providing a dummy `$('<button/>')` object instead of the global `$` when triggering `added_to_cart`. This prevented the date selection from reopening.
+- **Side Cart Removal Desync:** Side cart now explicitly reloads the Cart and Checkout pages with a cache-busting timestamp `?t=` when an item is removed, ensuring the main page view stays synchronized.
+- **Language Switch Cache Issues:** Added a footer script specifically for Cart and Checkout pages that appends a cache-busting timestamp `?t=` to all language switcher links. This forces Varnish to serve a fresh page when changing languages.
+
 ## [2.15.1] - 2026-02-24
 
 ### Fixed

@@ -103,9 +103,21 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hook into WooCommerce fragments refresh and other relevant events
     if (typeof jQuery !== 'undefined') {
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function() {
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart', function(e) {
             // Small delay to allow WC to finish its DOM writes
             setTimeout(checkEmptyState, 50);
+
+            // FIX: If an item was removed from side-cart and we are on cart/checkout, force reload to sync main page
+            if (e.type === 'removed_from_cart') {
+                var isCart = document.body.classList.contains('woocommerce-cart');
+                var isCheckout = document.body.classList.contains('woocommerce-checkout');
+                if (isCart || isCheckout) {
+                    var url = new URL(window.location.href);
+                    // Add timestamp to bypass Varnish cache
+                    url.searchParams.set('t', new Date().getTime());
+                    window.location.href = url.toString();
+                }
+            }
         });
     }
 

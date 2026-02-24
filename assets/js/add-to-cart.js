@@ -153,7 +153,8 @@ jQuery(function ($) {
 
         // 4. Refresh WooCommerce fragments (updates mini-cart count + side cart)
         $(document.body).trigger('wc_fragment_refresh');
-        $(document.body).trigger('added_to_cart', [data.fragments || {}, data.cart_hash || '', $]);
+        $(document.body).trigger('added_to_cart', [data.fragments || {}, data.cart_hash || '', $('<button/>')]);
+
 
         // 5. Secondary delayed refresh to catch race conditions with Varnish
         setTimeout(function() {

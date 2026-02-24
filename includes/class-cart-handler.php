@@ -44,6 +44,9 @@ class Wiwa_Cart_Handler
 
         // Metadata Persistence (Add to Cart)
         add_filter('woocommerce_add_cart_item_data', [$this, 'aggregate_guest_info_for_cart'], 10, 3);
+
+        // Varnish / CloudPanel: Prevent cache issues on language switch
+        add_action('wp_footer', [$this, 'prevent_varnish_cache_on_lang_switch'], 99);
     }
 
 
