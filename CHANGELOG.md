@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.8] - 2026-02-24
+
+### Fixed
+- **Phantom Pax Updates (Self-Healing):** Fixed the bug where clicking the `+` or `-` passenger buttons on a "ghost" cart item would throw an `Item not found` console error and freeze the button. The AJAX failure handler in `wiwa-mini-cart.js` now implements a self-healing contingency that automatically forces a `wc_fragment_refresh` (or a full page reload if on the cart/checkout page) to instantly sweep away the phantom item and resync the UI.
+
 ## [2.15.7] - 2026-02-24
 
 ### Added

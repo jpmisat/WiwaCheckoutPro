@@ -141,6 +141,20 @@ jQuery(function ($) {
                     if ($el && $el.length) {
                         $el.removeClass('wiwa-loading');
                     }
+                    
+                    // SELF-HEALING CONTINGENCY: 
+                    // If the item wasn't found (phantom item), force the cart to fetch the real server state
+                    // This will naturally delete the phantom item from the screen and resync the cart.
+                    jQuery(document.body).trigger('wc_fragment_refresh');
+                    
+                    // If on checkout/cart page, force a reload to prevent desync
+                    var isCart = document.body.classList.contains('woocommerce-cart');
+                    var isCheckout = document.body.classList.contains('woocommerce-checkout');
+                    if (isCart || isCheckout) {
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('t', new Date().getTime());
+                        window.location.href = url.toString();
+                    }
                 }
             },
             error: function (xhr, status, err) {
