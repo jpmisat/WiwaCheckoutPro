@@ -1,5 +1,11 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.1] - 2026-02-24
+
+### Fixed
+- **Suggested Tours Intermittent:** Added fallback when `product_cat` taxonomy is empty — now also tries `tour_cat`, and if no categories found, queries any published product. Wrapped in try/catch to prevent modal breakage.
+- **Side Cart Stale Cache (Varnish):** Added `no-store` + `Vary: Cookie` headers to WC fragment AJAX responses. Client-side: clear `wc_fragments` sessionStorage before triggering refresh, plus a delayed secondary refresh.
+
 ## [2.15.0] - 2026-02-24
 
 ### Added

@@ -136,9 +136,29 @@ jQuery(function ($) {
         // 2. Build and show the standalone overlay
         showSuccessOverlay(data);
 
-        // 3. Refresh WooCommerce fragments (updates mini-cart count)
+        // 3. Bust WooCommerce fragment cache (prevents Varnish/sessionStorage stale data)
+        try {
+            // Clear WC fragment sessionStorage so it forces a fresh server fetch
+            var keysToRemove = [];
+            for (var i = 0; i < sessionStorage.length; i++) {
+                var key = sessionStorage.key(i);
+                if (key && key.indexOf('wc_fragments') !== -1) {
+                    keysToRemove.push(key);
+                }
+            }
+            keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
+            // Also clear the cart hash so WC doesn't skip the refresh
+            sessionStorage.removeItem('wc_cart_hash_' + (wc_cart_fragments_params ? wc_cart_fragments_params.ajax_url : ''));
+        } catch(e) { /* sessionStorage may not be available */ }
+
+        // 4. Refresh WooCommerce fragments (updates mini-cart count + side cart)
         $(document.body).trigger('wc_fragment_refresh');
         $(document.body).trigger('added_to_cart', [data.fragments || {}, data.cart_hash || '', $]);
+
+        // 5. Secondary delayed refresh to catch race conditions with Varnish
+        setTimeout(function() {
+            $(document.body).trigger('wc_fragment_refresh');
+        }, 1500);
     }
 
     function closeBookingModal() {

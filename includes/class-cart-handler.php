@@ -37,8 +37,24 @@ class Wiwa_Cart_Handler
         // Metadata Cleanup (Display)
         add_filter('woocommerce_get_item_data', [$this, 'clean_cart_item_data'], 10, 2);
 
+        // Varnish / CloudPanel: Prevent caching of WC cart fragments
+        add_action('wc_ajax_get_refreshed_fragments', [$this, 'set_nocache_headers'], 1);
+        add_action('wp_ajax_woocommerce_get_refreshed_fragments', [$this, 'set_nocache_headers'], 1);
+        add_action('wp_ajax_nopriv_woocommerce_get_refreshed_fragments', [$this, 'set_nocache_headers'], 1);
+
         // Metadata Persistence (Add to Cart)
         add_filter('woocommerce_add_cart_item_data', [$this, 'aggregate_guest_info_for_cart'], 10, 3);
+    }
+
+
+    /**
+     * Prevent Varnish / CloudPanel from caching WC cart fragment AJAX responses.
+     * Ensures the side cart always shows fresh data.
+     */
+    public function set_nocache_headers() {
+        nocache_headers();
+        header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+        header('Vary: Cookie');
     }
 
     /**

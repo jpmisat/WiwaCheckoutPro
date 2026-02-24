@@ -636,22 +636,32 @@ class Wiwa_Ajax_Handler
                 $date_formatted = date_i18n(get_option('date_format'), $checkin_date);
             }
 
-            // --- Suggested Tours (random, same category) ---
+            // --- Suggested Tours (random, same category with fallback) ---
             $suggested_tours = [];
-            $product_cats = wp_get_post_terms($product_id, 'product_cat', ['fields' => 'ids']);
-            if (!is_wp_error($product_cats) && !empty($product_cats)) {
+            try {
+                // Try product_cat first, then tour_cat as fallback for OvaTour
+                $product_cats = wp_get_post_terms($product_id, 'product_cat', ['fields' => 'ids']);
+                if (is_wp_error($product_cats) || empty($product_cats)) {
+                    $product_cats = wp_get_post_terms($product_id, 'tour_cat', ['fields' => 'ids']);
+                }
+
                 $args = [
                     'post_type'      => 'product',
                     'posts_per_page' => 4,
                     'post_status'    => 'publish',
                     'post__not_in'   => [$product_id],
                     'orderby'        => 'rand',
-                    'tax_query'      => [[
+                ];
+
+                // Add tax_query only if we have categories
+                if (!is_wp_error($product_cats) && !empty($product_cats)) {
+                    $args['tax_query'] = [[
                         'taxonomy' => 'product_cat',
                         'field'    => 'term_id',
                         'terms'    => $product_cats,
-                    ]],
-                ];
+                    ]];
+                }
+
                 $query = new \WP_Query($args);
                 if ($query->have_posts()) {
                     while ($query->have_posts()) {
@@ -672,6 +682,9 @@ class Wiwa_Ajax_Handler
                     }
                     wp_reset_postdata();
                 }
+            } catch (\Exception $e) {
+                // Silently fail — don't break the modal
+                $suggested_tours = [];
             }
 
             // Varnish / CloudPanel cache-safe headers
