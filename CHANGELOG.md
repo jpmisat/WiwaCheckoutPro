@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.12] - 2026-02-24
+
+### Fixed
+- Hid the standard WooCommerce "Item removed. Undo?" notice on non-cart pages to avoid UI clutter when using the side cart and prevent unwanted redirects back to the cart page.
+
 ## [2.15.11] - 2026-02-24
 
 ### Fixed

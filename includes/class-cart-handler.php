@@ -409,7 +409,12 @@ class Wiwa_Cart_Handler
         ?>
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
-            /* CRITICAL: Side Cart Z-Index & Visibility */
+            
+            /* Hide the standard WooCommerce "Item removed. Undo?" notice on non-cart pages 
+               to avoid UI clutter and unwanted redirects when using the side cart. */
+            body:not(.woocommerce-cart) .woocommerce-message:has(.restore-item) {
+                display: none !important;
+            }
             
             /* 1. CONTAINER (The Panel) */
             body .elementor-menu-cart__container {

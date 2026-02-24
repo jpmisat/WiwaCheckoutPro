@@ -1,12 +1,10 @@
 const fs = require('fs');
 const content = fs.readFileSync('CHANGELOG.md', 'utf8');
 
-const newEntry = `## [2.15.11] - ${new Date().toISOString().split('T')[0]}
+const newEntry = `## [2.15.12] - ${new Date().toISOString().split('T')[0]}
 
 ### Fixed
-- Fixed mobile booking button matching widths (Reservar vs Agregar).
-- Replaced missing CSS variables in the success modal close button with literal hex colors to ensure the intended design is applied.
-- Prevented JetPopup and Elementor popup close buttons from overlapping modal titles on mobile devices by adding appropriate padding.
+- Hid the standard WooCommerce "Item removed. Undo?" notice on non-cart pages to avoid UI clutter when using the side cart and prevent unwanted redirects back to the cart page.
 
 `;
 
