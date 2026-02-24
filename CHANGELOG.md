@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.5] - 2026-02-24
+
+### Fixed
+- **Dynamic Varnish Bypass:** Added a PHP dynamic handler in `class-cart-handler.php` connected to the `template_redirect` hook. It forces Varnish and caching plugins to skip caching the Cart and Checkout pages, regardless of the URL slug or language (`is_cart()`, `is_checkout()`). This drastically reduces the need for manual URL excludes.
+
 ## [2.15.4] - 2026-02-24
 
 ### Fixed

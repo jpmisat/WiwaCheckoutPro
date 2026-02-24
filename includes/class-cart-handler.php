@@ -47,6 +47,9 @@ class Wiwa_Cart_Handler
 
         // Varnish / CloudPanel: Prevent cache issues on language switch
         add_action('wp_footer', [$this, 'prevent_varnish_cache_on_lang_switch'], 99);
+
+        // Varnish: Dynamic bypass for Cart and Checkout pages
+        add_action('template_redirect', [$this, 'prevent_varnish_on_checkout_pages'], 9);
     }
 
 
@@ -58,6 +61,22 @@ class Wiwa_Cart_Handler
         nocache_headers();
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
         header('Vary: Cookie');
+    }
+
+    /**
+     * Dynamically prevent Varnish / Caching plugins from caching Cart and Checkout pages
+     * regardless of their URL or language.
+     */
+    public function prevent_varnish_on_checkout_pages() {
+        // Run only for WooCommerce cart and checkout pages
+        if ( is_cart() || is_checkout() || is_checkout_pay_page() ) {
+            if ( ! defined( 'DONOTCACHEPAGE' ) ) {
+                define( 'DONOTCACHEPAGE', true );
+            }
+            nocache_headers();
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Vary: Cookie');
+        }
     }
 
     /**
