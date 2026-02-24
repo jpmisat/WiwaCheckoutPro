@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.3] - 2026-02-24
+
+### Fixed
+- **Fatal Error Hotfix:** Added missing `prevent_varnish_cache_on_lang_switch()` method in `class-cart-handler.php` that was causing a fatal error.
+
 ## [2.15.2] - 2026-02-24
 
 ### Fixed

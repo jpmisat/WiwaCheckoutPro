@@ -61,6 +61,46 @@ class Wiwa_Cart_Handler
     }
 
     /**
+     * Appends a timestamp to language switcher links on Cart and Checkout pages
+     * to prevent Varnish from serving cached HTML that doesn't reflect the current cart state.
+     */
+    public function prevent_varnish_cache_on_lang_switch() {
+        // Only run on cart and checkout pages
+        if ( ! is_cart() && ! is_checkout() && ! is_checkout_pay_page() ) {
+            return;
+        }
+
+        ?>
+        <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Find common WPML / Polylang language switcher links
+            var langLinks = document.querySelectorAll('.wpml-ls-item a, .lang-item a, .elementor-widget-wpml-ls a, .elementor-nav-menu--main a[href*="?lang="]');
+            if (!langLinks.length) return;
+
+            var timestamp = new Date().getTime();
+            langLinks.forEach(function(link) {
+                var url = new URL(link.href);
+                // Don't append if it's a hash link or JS
+                if (url.href.indexOf('javascript:') === 0 || url.hash === link.getAttribute('href')) {
+                    return;
+                }
+                
+                // Add or update the 't' parameter
+                if (window.URLSearchParams) {
+                    url.searchParams.set('t', timestamp);
+                    link.href = url.toString();
+                } else {
+                    // Fallback for very old browsers
+                    var separator = link.href.indexOf('?') !== -1 ? '&' : '?';
+                    link.href = link.href + separator + 't=' + timestamp;
+                }
+            });
+        });
+        </script>
+        <?php
+    }
+
+    /**
      * Emergency Sanitize: Fix malformed ovatb_guest_info in session
      * Refactored to be granular: Clean specific corrupt entries instead of nuking everything.
      */
