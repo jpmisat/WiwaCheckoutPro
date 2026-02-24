@@ -87,12 +87,13 @@ class Wiwa_FOX_Integration
     {
         global $WOOCS;
 
-        if (!self::is_active()) {
+        if (!self::is_active() || !is_object($WOOCS)) {
             return wc_price($price);
         }
 
-        // Usar método de FOX para aplicar conversión y formato
-        return $WOOCS->woocommerce_price($price);
+        // Convert using exchange rate, then format with wc_price
+        $converted = self::convert_price(floatval($price));
+        return wc_price($converted);
     }
 
     /**
