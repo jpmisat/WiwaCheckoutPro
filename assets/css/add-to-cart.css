@@ -15,17 +15,20 @@
 /* ==================== BUTTON CONTAINER ==================== */
 .wiwa-modal-actions {
   display: flex !important;
-  flex-wrap: wrap;
-  gap: 10px;
-  padding: 16px 0 8px;
+  flex-wrap: nowrap;
+  gap: 12px;
+  padding: 18px 0 10px;
   justify-content: center;
+  align-items: stretch;
 }
 
 .wiwa-modal-actions button {
-  min-width: 140px;
-  padding: 13px 24px !important;
+  flex: 1;
+  min-width: 0;
+  min-height: 48px;
+  padding: 13px 20px !important;
   border-radius: 50px !important;
-  font-size: 14px !important;
+  font-size: 15px !important;
   font-weight: 700 !important;
   letter-spacing: 0.02em;
   cursor: pointer;
@@ -51,6 +54,18 @@
   box-shadow: 0 4px 12px rgba(26, 48, 21, 0.15);
 }
 
+/* Cart icon inside secondary button */
+.wiwa-modal-actions .wiwa-btn-secondary .icon-cart::before {
+  content: '';
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%231a3015' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Ccircle cx='9' cy='21' r='1'/%3E%3Ccircle cx='20' cy='21' r='1'/%3E%3Cpath d='M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6'/%3E%3C/svg%3E");
+  background-size: contain;
+  background-repeat: no-repeat;
+  vertical-align: middle;
+}
+
 /* —— "Reservar" (Primary) —— */
 .wiwa-modal-actions .wiwa-btn-primary {
   background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
@@ -58,11 +73,23 @@
   border: 2px solid transparent !important;
   order: 2;
   box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+  animation: wiwa-btn-pulse 2.5s ease-in-out infinite;
 }
 .wiwa-modal-actions .wiwa-btn-primary:hover {
   background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%) !important;
   transform: translateY(-2px);
   box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
+  animation: none;
+}
+
+/* Subtle pulse glow for primary CTA */
+@keyframes wiwa-btn-pulse {
+  0%, 100% {
+    box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+  }
+  50% {
+    box-shadow: 0 4px 22px rgba(34, 81, 32, 0.45);
+  }
 }
 
 /* Spinner */
@@ -508,13 +535,21 @@
     font-size: 12px;
   }
 
-  /* Modal buttons */
+  /* Modal buttons: stack vertically, Reservar on TOP */
   .wiwa-modal-actions {
     flex-direction: column;
+    gap: 10px;
   }
   .wiwa-modal-actions button {
     width: 100%;
     min-width: unset;
+    flex: unset;
+  }
+  .wiwa-modal-actions .wiwa-btn-primary {
+    order: 1; /* Reservar goes FIRST (top) on mobile */
+  }
+  .wiwa-modal-actions .wiwa-btn-secondary {
+    order: 2; /* Agregar al carrito goes SECOND (bottom) on mobile */
   }
 }
 

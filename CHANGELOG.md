@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.9] - 2026-02-24
+
+### Changed
+- **Booking Modal Buttons Redesign:** Desktop buttons now always display inline (never stacked) with equal widths via `flex: 1` and `flex-wrap: nowrap`. On mobile, "Reservar" appears on top and "Agregar al carrito" on bottom via CSS `order` swap. Added subtle pulse glow animation on the primary CTA, inline SVG cart icon on the secondary button, increased font size to 15px, and improved touch targets with `min-height: 48px`.
+
 ## [2.15.8] - 2026-02-24
 
 ### Fixed
