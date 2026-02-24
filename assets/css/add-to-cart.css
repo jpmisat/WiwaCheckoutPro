@@ -212,7 +212,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  background: var(--wiwa-green-dark) !important;
+  background: #1a3015 !important;
   border: 2px solid rgba(255, 255, 255, 0.3) !important;
   border-radius: 50%;
   color: #ffffff !important;
@@ -225,7 +225,7 @@
   visibility: visible !important;
 }
 .wiwa-so-close:hover {
-  background: var(--wiwa-green-mid) !important;
+  background: #2a5120 !important;
   color: #ffffff !important;
   box-shadow: 0 4px 16px rgba(26, 48, 21, 0.4);
   transform: scale(1.1);
@@ -574,15 +574,27 @@
   /* Booking modal buttons: stack vertically, Reservar on TOP, EQUAL sizes */
   .wiwa-modal-actions {
     flex-direction: column;
+    align-items: stretch !important;
     gap: 10px;
   }
-  .wiwa-modal-actions button {
-    width: 100%;
-    min-width: unset;
-    flex: unset;
+  .wiwa-modal-actions button,
+  .wiwa-modal-actions .wiwa-btn-primary,
+  .wiwa-modal-actions .wiwa-btn-secondary {
+    display: block !important;
+    width: 100% !important;
+    box-sizing: border-box !important;
+    min-width: unset !important;
+    flex: unset !important;
     padding: 14px 20px !important;
     font-size: 15px !important;
-    min-height: 50px;
+    min-height: 50px !important;
+    margin: 0 !important;
+  }
+  
+  /* Fix: JetPopup / Elementor Popup close button overlap on mobile devices */
+  .jet-popup__container-inner,
+  .dialog-message {
+	padding-right: 36px !important;
   }
   .wiwa-modal-actions .wiwa-btn-primary {
     order: 1; /* Reservar goes FIRST (top) on mobile */

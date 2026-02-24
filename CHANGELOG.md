@@ -1,5 +1,12 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.11] - 2026-02-24
+
+### Fixed
+- Fixed mobile booking button matching widths (Reservar vs Agregar).
+- Replaced missing CSS variables in the success modal close button with literal hex colors to ensure the intended design is applied.
+- Prevented JetPopup and Elementor popup close buttons from overlapping modal titles on mobile devices by adding appropriate padding.
+
 ## [2.15.10] - 2026-02-24
 
 ### Fixed
