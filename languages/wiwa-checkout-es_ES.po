@@ -709,3 +709,9 @@ msgstr "Volver"
 
 msgid "WooCommerce is not active."
 msgstr "WooCommerce no está activo."
+
+msgid "Book from %s"
+msgstr "Reserva desde %s"
+
+msgid "From %s"
+msgstr "Desde %s"

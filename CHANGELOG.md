@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.0] - 2026-02-24
+
+### Added
+- **Dynamic Deposit Currency Shortcode:** Añadido shortcode `[dynamic_deposit_currency]` para mostrar dinámicamente el porcentaje o monto fijo del depósito configurado en Ova Tour Booking, aplicando conversión automática de moneda mediante WOOCS (FOX) y traducciones vía WPML.
+
 ## [2.15.13] - 2026-02-24
 
 ### Changed

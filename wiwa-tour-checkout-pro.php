@@ -1,9 +1,8 @@
-<?php
 /**
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.15.13
+ * Version: 2.16.0
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +29,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.15.13');
+define('WIWA_CHECKOUT_VERSION', '2.16.0');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -86,6 +85,7 @@ final class Wiwa_Tour_Checkout
         require_once WIWA_CHECKOUT_PATH . 'includes/class-thankyou-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-cart-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-ajax-handler.php';
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-shortcodes.php';
 
         // Admin
         if (is_admin()) {
@@ -97,6 +97,9 @@ final class Wiwa_Tour_Checkout
     {
         // Inicializar internacionalización
         add_action('plugins_loaded', ['Wiwa_I18n', 'load_plugin_textdomain']);
+
+        // Registrar shortcodes
+        add_action('init', ['Wiwa_Shortcodes', 'init']);
 
         // Hooks de activación/desactivación
         register_activation_hook(WIWA_CHECKOUT_FILE, [$this, 'activate']);

@@ -690,3 +690,9 @@ msgstr ""
 
 msgid "WooCommerce is not active."
 msgstr ""
+
+msgid "Book from %s"
+msgstr ""
+
+msgid "From %s"
+msgstr ""
