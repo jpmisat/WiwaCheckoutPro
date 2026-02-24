@@ -1,3 +1,4 @@
+<?php
 /**
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
