@@ -1,5 +1,17 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.0] - 2026-02-24
+
+### Added
+- **Suggested Tours in Add-to-Cart Modal:** After adding a tour, the success overlay now shows 4 random tours from the same category with images, ratings, and prices.
+- **Varnish Cache Compatibility:** AJAX add-to-cart responses now include `no-store` and `Vary: Cookie` headers to prevent CloudPanel Varnish from caching personalized data.
+
+### Changed
+- **Larger Product Image:** The success overlay image now uses `medium_large` (768px) instead of `thumbnail` (150px) for a crisp hero image.
+- **Redesigned Overlay Layout:** New horizontal top bar with product info + CTA buttons, and a 4-column suggested tours grid below.
+- **Premium Close Button:** Replaced `×` character with SVG X icon, white background, subtle border and shadow.
+- **Responsive Design:** Modal slides up as a bottom sheet on mobile with 2-column tour grid.
+
 ## [2.14.2] - 2026-02-23
 
 ### Fixed

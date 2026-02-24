@@ -1,322 +1,525 @@
 /**
- * Wiwa Add-to-Cart Styles v2.14.0
- * Styles for booking form buttons + standalone success overlay.
+ * Wiwa Add-to-Cart Styles v2.15.0
+ * Styles for booking form buttons + standalone success overlay with suggested tours.
  */
 
 /* ==================== VARIABLES ==================== */
 :root {
-    --wiwa-green-dark: #1a3015;
-    --wiwa-green-mid: #2a5120;
-    --wiwa-green-light: #e8f0e6;
-    --wiwa-green-accent: #22c55e;
-    --wiwa-overlay-z: 2147483647;
+  --wiwa-green-dark: #1a3015;
+  --wiwa-green-mid: #2a5120;
+  --wiwa-green-light: #e8f0e6;
+  --wiwa-green-accent: #22c55e;
+  --wiwa-overlay-z: 2147483647;
 }
 
 /* ==================== BUTTON CONTAINER ==================== */
 .wiwa-modal-actions {
-    display: flex !important;
-    flex-wrap: wrap;
-    gap: 10px;
-    padding: 16px 0 8px;
-    justify-content: center;
+  display: flex !important;
+  flex-wrap: wrap;
+  gap: 10px;
+  padding: 16px 0 8px;
+  justify-content: center;
 }
 
 .wiwa-modal-actions button {
-    min-width: 140px;
-    padding: 13px 24px !important;
-    border-radius: 50px !important;
-    font-size: 14px !important;
-    font-weight: 700 !important;
-    letter-spacing: 0.02em;
-    cursor: pointer;
-    transition: all 0.25s ease !important;
-    text-transform: none !important;
-    line-height: 1.3 !important;
-    display: inline-flex !important;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
+  min-width: 140px;
+  padding: 13px 24px !important;
+  border-radius: 50px !important;
+  font-size: 14px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0.02em;
+  cursor: pointer;
+  transition: all 0.25s ease !important;
+  text-transform: none !important;
+  line-height: 1.3 !important;
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
 }
 
-/* —— "Agregar al carrito" (Secondary — LEFT side, outline style) —— */
+/* —— "Agregar al carrito" (Secondary) —— */
 .wiwa-modal-actions .wiwa-btn-secondary {
-    background-color: transparent !important;
-    color: var(--wiwa-green-dark) !important;
-    border: 2px solid var(--wiwa-green-dark) !important;
-    order: 1; /* LEFT */
+  background-color: transparent !important;
+  color: var(--wiwa-green-dark) !important;
+  border: 2px solid var(--wiwa-green-dark) !important;
+  order: 1;
 }
 .wiwa-modal-actions .wiwa-btn-secondary:hover {
-    background-color: var(--wiwa-green-light) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(26, 48, 21, 0.15);
+  background-color: var(--wiwa-green-light) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 48, 21, 0.15);
 }
 
-/* —— "Reservar" (Primary — RIGHT side, solid brand green) —— */
+/* —— "Reservar" (Primary) —— */
 .wiwa-modal-actions .wiwa-btn-primary {
-    background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
-    color: #ffffff !important;
-    border: 2px solid transparent !important;
-    order: 2; /* RIGHT */
-    box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%) !important;
+  color: #ffffff !important;
+  border: 2px solid transparent !important;
+  order: 2;
+  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
 }
 .wiwa-modal-actions .wiwa-btn-primary:hover {
-    background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%) !important;
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
+  background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
 }
 
 /* Spinner */
 .wiwa-spinner {
-    display: inline-block;
-    width: 18px;
-    height: 18px;
-    border: 2px solid rgba(255,255,255,0.3);
-    border-top-color: #fff;
-    border-radius: 50%;
-    animation: wiwa-spin 0.6s linear infinite;
+  display: inline-block;
+  width: 18px;
+  height: 18px;
+  border: 2px solid rgba(255, 255, 255, 0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: wiwa-spin 0.6s linear infinite;
 }
 .wiwa-btn-secondary .wiwa-spinner {
-    border-color: rgba(26,48,21,0.2);
-    border-top-color: var(--wiwa-green-dark);
+  border-color: rgba(26, 48, 21, 0.2);
+  border-top-color: var(--wiwa-green-dark);
 }
 @keyframes wiwa-spin {
-    to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 /* Shake animation */
 @keyframes shake {
-    0%, 100% { transform: translateX(0); }
-    20%, 60% { transform: translateX(-6px); }
-    40%, 80% { transform: translateX(6px); }
+  0%,
+  100% {
+    transform: translateX(0);
+  }
+  20%,
+  60% {
+    transform: translateX(-6px);
+  }
+  40%,
+  80% {
+    transform: translateX(6px);
+  }
 }
-.shake { animation: shake 0.4s ease; }
+.shake {
+  animation: shake 0.4s ease;
+}
 
 /* Error field */
 .error-field {
-    border-color: #ef4444 !important;
-    box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
+  border-color: #ef4444 !important;
+  box-shadow: 0 0 0 2px rgba(239, 68, 68, 0.15) !important;
 }
 
-/* ==================== SUCCESS OVERLAY ==================== */
+/* ========================================================================
+   SUCCESS OVERLAY — New Design v2.15.0
+   Hero image + top bar with product info + suggested tours grid
+   ======================================================================== */
 
 /* Overlay container */
 .wiwa-so {
-    position: fixed;
-    inset: 0;
-    z-index: var(--wiwa-overlay-z);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 20px;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.3s ease, visibility 0.3s ease;
+  position: fixed;
+  inset: 0;
+  z-index: var(--wiwa-overlay-z);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  opacity: 0;
+  visibility: hidden;
+  transition:
+    opacity 0.3s ease,
+    visibility 0.3s ease;
 }
 .wiwa-so--visible {
-    opacity: 1;
-    visibility: visible;
+  opacity: 1;
+  visibility: visible;
 }
 
 /* Backdrop */
 .wiwa-so-backdrop {
-    position: absolute;
-    inset: 0;
-    background: rgba(0, 0, 0, 0.55);
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.55);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
 }
 
-/* Card */
+/* Card — wider to accommodate the tour grid */
 .wiwa-so-card {
-    position: relative;
-    background: #ffffff;
-    border-radius: 20px;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
-    max-width: 520px;
-    width: 100%;
-    overflow: hidden;
-    transform: translateY(20px) scale(0.97);
-    transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+  position: relative;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
+  max-width: 900px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  overflow-x: hidden;
+  transform: translateY(20px) scale(0.97);
+  transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
 }
 .wiwa-so--visible .wiwa-so-card {
-    transform: translateY(0) scale(1);
+  transform: translateY(0) scale(1);
 }
 
-/* Close button */
+/* Custom scrollbar */
+.wiwa-so-card::-webkit-scrollbar {
+  width: 6px;
+}
+.wiwa-so-card::-webkit-scrollbar-track {
+  background: transparent;
+}
+.wiwa-so-card::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 3px;
+}
+
+/* ==================== CLOSE BUTTON ==================== */
 .wiwa-so-close {
-    position: absolute;
-    top: 12px;
-    right: 12px;
-    z-index: 10;
-    width: 36px;
-    height: 36px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: rgba(0, 0, 0, 0.05);
-    border: none;
-    border-radius: 50%;
-    font-size: 22px;
-    color: #6b7280;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    line-height: 1;
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  z-index: 20;
+  width: 38px;
+  height: 38px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.92);
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 50%;
+  color: #374151;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  line-height: 1;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+  padding: 0;
 }
 .wiwa-so-close:hover {
-    background: rgba(0, 0, 0, 0.1);
-    color: #1f2937;
+  background: #ffffff;
+  color: #111827;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, 0.18);
+  transform: scale(1.08);
+}
+.wiwa-so-close svg {
+  display: block;
 }
 
-/* Content layout */
-.wiwa-so-content {
-    display: flex;
-    flex-direction: column;
+/* ==================== HERO IMAGE ==================== */
+.wiwa-so-hero {
+  width: 100%;
+  max-height: 260px;
+  overflow: hidden;
+  background: #f3f4f6;
+  border-radius: 20px 20px 0 0;
+}
+.wiwa-so-hero img {
+  width: 100%;
+  height: 260px;
+  object-fit: cover;
+  display: block;
 }
 
-/* Image section */
-.wiwa-so-image {
-    width: 100%;
-    max-height: 220px;
-    overflow: hidden;
-    background: #f3f4f6;
-}
-.wiwa-so-image img {
-    width: 100%;
-    height: 220px;
-    object-fit: cover;
-    display: block;
+/* ==================== TOP BAR ==================== */
+.wiwa-so-topbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px 28px;
+  border-bottom: 1px solid #f0f0f0;
 }
 
-/* Details section */
-.wiwa-so-details {
-    padding: 28px 32px 32px;
-    text-align: center;
+.wiwa-so-topbar-left {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  min-width: 0;
+  flex: 1;
 }
 
-/* Checkmark */
-.wiwa-so-check {
-    margin-bottom: 12px;
-}
-.wiwa-so-check svg {
-    display: inline-block;
-}
-
-/* Badge */
-.wiwa-so-badge {
-    display: inline-block;
-    background: var(--wiwa-green-light);
-    color: var(--wiwa-green-dark);
-    font-size: 12px;
-    font-weight: 700;
-    letter-spacing: 0.04em;
-    text-transform: uppercase;
-    padding: 5px 14px;
-    border-radius: 20px;
-    margin-bottom: 14px;
+.wiwa-so-topbar-thumb {
+  width: 56px;
+  height: 56px;
+  border-radius: 12px;
+  object-fit: cover;
+  flex-shrink: 0;
+  border: 1px solid #e5e7eb;
 }
 
-/* Title */
-.wiwa-so-title {
-    font-size: 22px;
-    font-weight: 800;
-    color: var(--wiwa-green-dark);
-    margin: 0 0 8px;
-    line-height: 1.3;
+.wiwa-so-topbar-info {
+  min-width: 0;
 }
 
-/* Date */
+.wiwa-so-topbar-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--wiwa-green-accent);
+  margin-bottom: 2px;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+}
+
+.wiwa-so-topbar-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0;
+  line-height: 1.3;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 360px;
+}
+
 .wiwa-so-date {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 14px;
-    color: #6b7280;
-    margin: 0 0 24px;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 13px;
+  color: #6b7280;
+  margin-top: 2px;
 }
 .wiwa-so-date svg {
-    flex-shrink: 0;
-    color: #9ca3af;
+  flex-shrink: 0;
+  color: #9ca3af;
 }
 
-/* Action buttons */
-.wiwa-so-actions {
-    display: flex;
-    gap: 12px;
-    justify-content: center;
+.wiwa-so-topbar-actions {
+  display: flex;
+  gap: 10px;
+  flex-shrink: 0;
 }
 
+/* ==================== ACTION BUTTONS ==================== */
 .wiwa-so-btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: 12px 28px;
-    border-radius: 50px;
-    font-size: 14px;
-    font-weight: 700;
-    text-decoration: none !important;
-    cursor: pointer;
-    transition: all 0.25s ease;
-    min-width: 140px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 11px 24px;
+  border-radius: 50px;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none !important;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  white-space: nowrap;
 }
 
 /* Outline (Ver carrito) */
 .wiwa-so-btn-outline {
-    background: transparent;
-    color: var(--wiwa-green-dark);
-    border: 2px solid var(--wiwa-green-dark);
+  background: transparent;
+  color: var(--wiwa-green-dark);
+  border: 2px solid var(--wiwa-green-dark);
 }
 .wiwa-so-btn-outline:hover {
-    background: var(--wiwa-green-light);
-    transform: translateY(-2px);
-    box-shadow: 0 4px 12px rgba(26, 48, 21, 0.12);
-    color: var(--wiwa-green-dark);
+  background: var(--wiwa-green-light);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(26, 48, 21, 0.12);
+  color: var(--wiwa-green-dark);
 }
 
 /* Solid (Reservar ahora) */
 .wiwa-so-btn-solid {
-    background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%);
-    color: #ffffff !important;
-    border: 2px solid transparent;
-    box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
+  background: linear-gradient(135deg, #1f3b18 0%, #2a5120 100%);
+  color: #ffffff !important;
+  border: 2px solid transparent;
+  box-shadow: 0 4px 14px rgba(26, 49, 20, 0.25);
 }
 .wiwa-so-btn-solid:hover {
-    background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%);
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
-    color: #ffffff !important;
+  background: linear-gradient(135deg, #2a5120 0%, #357a2a 100%);
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(26, 49, 20, 0.35);
+  color: #ffffff !important;
+}
+
+/* ==================== SUGGESTED TOURS SECTION ==================== */
+.wiwa-so-suggested {
+  padding: 24px 28px 28px;
+}
+
+.wiwa-so-suggested-header {
+  margin-bottom: 18px;
+}
+.wiwa-so-suggested-header h3 {
+  font-size: 18px;
+  font-weight: 800;
+  color: #111827;
+  margin: 0;
+}
+
+/* Tour grid — 4 columns */
+.wiwa-so-tour-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+}
+
+/* Tour card */
+.wiwa-so-tour-card {
+  display: flex;
+  flex-direction: column;
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #f0f0f0;
+  overflow: hidden;
+  text-decoration: none !important;
+  color: inherit;
+  transition: all 0.25s ease;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+}
+.wiwa-so-tour-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  border-color: #e0e0e0;
+}
+
+/* Tour image */
+.wiwa-so-tour-img-wrap {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  overflow: hidden;
+  background: #f3f4f6;
+}
+.wiwa-so-tour-img-wrap img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  transition: transform 0.3s ease;
+}
+.wiwa-so-tour-card:hover .wiwa-so-tour-img-wrap img {
+  transform: scale(1.06);
+}
+
+/* Tour body */
+.wiwa-so-tour-body {
+  padding: 12px 14px 14px;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.wiwa-so-tour-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #1f2937;
+  margin: 0 0 8px;
+  line-height: 1.35;
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.wiwa-so-tour-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: auto;
+  flex-wrap: wrap;
+}
+
+.wiwa-so-tour-rating {
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  font-size: 12px;
+  font-weight: 600;
+  color: #92400e;
+}
+
+.wiwa-so-tour-price {
+  font-size: 12px;
+  color: #6b7280;
+}
+.wiwa-so-tour-price del {
+  opacity: 0.5;
+}
+.wiwa-so-tour-price ins {
+  text-decoration: none;
+  font-weight: 700;
+  color: #111827;
 }
 
 /* ==================== RESPONSIVE ==================== */
 
-@media (max-width: 480px) {
-    .wiwa-so-card {
-        max-width: 100%;
-        border-radius: 16px;
-    }
-    .wiwa-so-image {
-        max-height: 160px;
-    }
-    .wiwa-so-image img {
-        height: 160px;
-    }
-    .wiwa-so-details {
-        padding: 20px 20px 24px;
-    }
-    .wiwa-so-title {
-        font-size: 18px;
-    }
-    .wiwa-so-actions {
-        flex-direction: column;
-    }
-    .wiwa-so-btn {
-        width: 100%;
-        min-width: unset;
-    }
-    .wiwa-modal-actions {
-        flex-direction: column;
-    }
-    .wiwa-modal-actions button {
-        width: 100%;
-        min-width: unset;
-    }
+/* Tablet */
+@media (max-width: 960px) {
+  .wiwa-so-card {
+    max-width: 680px;
+  }
+  .wiwa-so-tour-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+/* Mobile */
+@media (max-width: 640px) {
+  .wiwa-so {
+    padding: 0;
+    align-items: flex-end;
+  }
+  .wiwa-so-card {
+    max-width: 100%;
+    border-radius: 20px 20px 0 0;
+    max-height: 92vh;
+  }
+  .wiwa-so-hero {
+    max-height: 180px;
+    border-radius: 20px 20px 0 0;
+  }
+  .wiwa-so-hero img {
+    height: 180px;
+  }
+
+  /* Topbar stacks vertically */
+  .wiwa-so-topbar {
+    flex-direction: column;
+    align-items: flex-start;
+    padding: 16px 20px;
+    gap: 14px;
+  }
+  .wiwa-so-topbar-title {
+    white-space: normal;
+    max-width: none;
+  }
+  .wiwa-so-topbar-actions {
+    width: 100%;
+  }
+  .wiwa-so-topbar-actions .wiwa-so-btn {
+    flex: 1;
+    text-align: center;
+  }
+
+  /* Suggested section */
+  .wiwa-so-suggested {
+    padding: 20px 20px 24px;
+  }
+  .wiwa-so-tour-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+  .wiwa-so-tour-title {
+    font-size: 12px;
+  }
+
+  /* Modal buttons */
+  .wiwa-modal-actions {
+    flex-direction: column;
+  }
+  .wiwa-modal-actions button {
+    width: 100%;
+    min-width: unset;
+  }
+}
+
+@media (max-width: 380px) {
+  .wiwa-so-tour-grid {
+    grid-template-columns: 1fr;
+  }
 }

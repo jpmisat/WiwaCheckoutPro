@@ -628,20 +628,66 @@ class Wiwa_Ajax_Handler
 
         if ($added) {
             $image_id  = $product->get_image_id();
-            $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : wc_placeholder_img_src('thumbnail');
+            $image_url = $image_id ? wp_get_attachment_image_url($image_id, 'medium_large') : wc_placeholder_img_src('medium_large');
+            // Also get a small thumbnail for the top bar
+            $thumb_url = $image_id ? wp_get_attachment_image_url($image_id, 'thumbnail') : wc_placeholder_img_src('thumbnail');
             $date_formatted = '';
             if ($checkin_date) {
-                // Return date as formatted in WP or a standard format like "j de F de Y"
                 $date_formatted = date_i18n(get_option('date_format'), $checkin_date);
             }
 
+            // --- Suggested Tours (random, same category) ---
+            $suggested_tours = [];
+            $product_cats = wp_get_post_terms($product_id, 'product_cat', ['fields' => 'ids']);
+            if (!is_wp_error($product_cats) && !empty($product_cats)) {
+                $args = [
+                    'post_type'      => 'product',
+                    'posts_per_page' => 4,
+                    'post_status'    => 'publish',
+                    'post__not_in'   => [$product_id],
+                    'orderby'        => 'rand',
+                    'tax_query'      => [[
+                        'taxonomy' => 'product_cat',
+                        'field'    => 'term_id',
+                        'terms'    => $product_cats,
+                    ]],
+                ];
+                $query = new \WP_Query($args);
+                if ($query->have_posts()) {
+                    while ($query->have_posts()) {
+                        $query->the_post();
+                        $s_product = wc_get_product(get_the_ID());
+                        if (!$s_product) continue;
+                        $s_image_id = $s_product->get_image_id();
+                        $s_image    = $s_image_id ? wp_get_attachment_image_url($s_image_id, 'medium') : wc_placeholder_img_src('medium');
+                        $s_rating   = $s_product->get_average_rating();
+                        $suggested_tours[] = [
+                            'id'         => $s_product->get_id(),
+                            'title'      => $s_product->get_name(),
+                            'image'      => $s_image,
+                            'url'        => get_permalink($s_product->get_id()),
+                            'rating'     => $s_rating ? floatval($s_rating) : null,
+                            'price_html' => $s_product->get_price_html(),
+                        ];
+                    }
+                    wp_reset_postdata();
+                }
+            }
+
+            // Varnish / CloudPanel cache-safe headers
+            nocache_headers();
+            header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0');
+            header('Vary: Cookie');
+
             wp_send_json_success([
-                'message'       => 'Producto agregado al carrito',
-                'product_title' => $product->get_name(),
-                'product_image' => $image_url,
-                'product_date'  => $date_formatted,
-                'cart_url'      => wc_get_cart_url(),
-                'checkout_url'  => wc_get_checkout_url(),
+                'message'         => 'Producto agregado al carrito',
+                'product_title'   => $product->get_name(),
+                'product_image'   => $image_url,
+                'product_thumb'   => $thumb_url,
+                'product_date'    => $date_formatted,
+                'cart_url'        => wc_get_cart_url(),
+                'checkout_url'    => wc_get_checkout_url(),
+                'suggested_tours' => $suggested_tours,
             ]);
         } else {
             // Recopilar errores de WC

@@ -163,68 +163,108 @@ jQuery(function ($) {
         // Remove any existing overlay
         $('#wiwa-success-overlay').remove();
 
-        var imageHtml = '';
-        if (data.product_image) {
-            imageHtml = '<div class="wiwa-so-image"><img src="' + data.product_image + '" alt="Tour" /></div>';
-        }
+        var thumbSrc = data.product_thumb || data.product_image || '';
+        var heroSrc = data.product_image || '';
+        var title = data.product_title || 'Tour';
+        var cartUrl = data.cart_url || '/carrito/';
+        var checkoutUrl = data.checkout_url || '/checkout/';
 
         var dateHtml = '';
         if (data.product_date) {
-            dateHtml = '<p class="wiwa-so-date"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' + data.product_date + '</p>';
+            dateHtml = '<span class="wiwa-so-date">' +
+                '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg> ' +
+                data.product_date + '</span>';
         }
 
-        var cartUrl = data.cart_url || '/carrito/';
-        var checkoutUrl = data.checkout_url || '/checkout/';
-        var title = data.product_title || 'Tour';
+        // === Top bar (product info + actions) ===
+        var topBarHtml = '' +
+            '<div class="wiwa-so-topbar">' +
+                '<div class="wiwa-so-topbar-left">' +
+                    (thumbSrc ? '<img src="' + thumbSrc + '" alt="" class="wiwa-so-topbar-thumb" />' : '') +
+                    '<div class="wiwa-so-topbar-info">' +
+                        '<div class="wiwa-so-topbar-badge">' +
+                            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#22c55e" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
+                            ' <span>¡Agregado al carrito!</span>' +
+                        '</div>' +
+                        '<h3 class="wiwa-so-topbar-title">' + title + '</h3>' +
+                        dateHtml +
+                    '</div>' +
+                '</div>' +
+                '<div class="wiwa-so-topbar-actions">' +
+                    '<a href="' + cartUrl + '" class="wiwa-so-btn wiwa-so-btn-outline">Ver carrito</a>' +
+                    '<a href="' + checkoutUrl + '" class="wiwa-so-btn wiwa-so-btn-solid">Reservar ahora</a>' +
+                '</div>' +
+            '</div>';
 
+        // === Suggested tours grid ===
+        var suggestedHtml = '';
+        var tours = data.suggested_tours || [];
+        if (tours.length > 0) {
+            var cardsHtml = '';
+            for (var i = 0; i < tours.length; i++) {
+                var t = tours[i];
+                var ratingHtml = '';
+                if (t.rating && t.rating > 0) {
+                    ratingHtml = '<span class="wiwa-so-tour-rating">' +
+                        '<svg width="12" height="12" viewBox="0 0 24 24" fill="#f59e0b"><path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/></svg> ' +
+                        t.rating.toFixed(1) + '</span>';
+                }
+                cardsHtml += '' +
+                    '<a href="' + t.url + '" class="wiwa-so-tour-card">' +
+                        '<div class="wiwa-so-tour-img-wrap">' +
+                            '<img src="' + t.image + '" alt="' + t.title + '" loading="lazy" />' +
+                        '</div>' +
+                        '<div class="wiwa-so-tour-body">' +
+                            '<h4 class="wiwa-so-tour-title">' + t.title + '</h4>' +
+                            '<div class="wiwa-so-tour-meta">' +
+                                ratingHtml +
+                                '<span class="wiwa-so-tour-price">' + t.price_html + '</span>' +
+                            '</div>' +
+                        '</div>' +
+                    '</a>';
+            }
+            suggestedHtml = '' +
+                '<div class="wiwa-so-suggested">' +
+                    '<div class="wiwa-so-suggested-header">' +
+                        '<h3>Más actividades que te pueden gustar</h3>' +
+                    '</div>' +
+                    '<div class="wiwa-so-tour-grid">' + cardsHtml + '</div>' +
+                '</div>';
+        }
+
+        // === Assemble full overlay ===
         var overlayHtml = '' +
             '<div id="wiwa-success-overlay" class="wiwa-so">' +
                 '<div class="wiwa-so-backdrop"></div>' +
                 '<div class="wiwa-so-card">' +
-                    '<button type="button" class="wiwa-so-close" aria-label="Cerrar">&times;</button>' +
-                    '<div class="wiwa-so-content">' +
-                        imageHtml +
-                        '<div class="wiwa-so-details">' +
-                            '<div class="wiwa-so-check">' +
-                                '<svg width="28" height="28" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#22c55e" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-                            '</div>' +
-                            '<span class="wiwa-so-badge">¡Agregado al carrito!</span>' +
-                            '<h3 class="wiwa-so-title">' + title + '</h3>' +
-                            dateHtml +
-                            '<div class="wiwa-so-actions">' +
-                                '<a href="' + cartUrl + '" class="wiwa-so-btn wiwa-so-btn-outline">Ver carrito</a>' +
-                                '<a href="' + checkoutUrl + '" class="wiwa-so-btn wiwa-so-btn-solid">Reservar ahora</a>' +
-                            '</div>' +
-                        '</div>' +
-                    '</div>' +
+                    '<button type="button" class="wiwa-so-close" aria-label="Cerrar">' +
+                        '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>' +
+                    '</button>' +
+                    (heroSrc ? '<div class="wiwa-so-hero"><img src="' + heroSrc + '" alt="' + title + '" /></div>' : '') +
+                    topBarHtml +
+                    suggestedHtml +
                 '</div>' +
             '</div>';
 
         $('body').append(overlayHtml);
 
-        // Trigger animation (slight delay for DOM insertion)
+        // Trigger animation
         requestAnimationFrame(function () {
             requestAnimationFrame(function () {
                 $('#wiwa-success-overlay').addClass('wiwa-so--visible');
             });
         });
 
-        // Bind close events
         bindOverlayClose();
     }
 
     function bindOverlayClose() {
-        // Close button click
         $(document).on('click.wiwaOverlay', '.wiwa-so-close', function () {
             closeOverlay();
         });
-
-        // Backdrop click
         $(document).on('click.wiwaOverlay', '.wiwa-so-backdrop', function () {
             closeOverlay();
         });
-
-        // ESC key
         $(document).on('keydown.wiwaOverlay', function (e) {
             if (e.key === 'Escape' || e.keyCode === 27) {
                 closeOverlay();
@@ -238,7 +278,6 @@ jQuery(function ($) {
         setTimeout(function () {
             $overlay.remove();
         }, 300);
-        // Unbind events
         $(document).off('.wiwaOverlay');
     }
 
