@@ -103,7 +103,23 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Hook into WooCommerce fragments refresh and other relevant events
     if (typeof jQuery !== 'undefined') {
-        // FIX: Force side-cart sync if page loaded after a cart removal
+        
+        // ==========================================
+        // 🛡️ SYNC GUARDIAN: Cross-Tab & Two-Way Sync
+        // ==========================================
+        
+        var isCart = document.body.classList.contains('woocommerce-cart');
+        var isCheckout = document.body.classList.contains('woocommerce-checkout');
+        var initialCartHash = '';
+        
+        // 1. Capture the initial cart hash on page load
+        try {
+            var ajaxUrl = typeof wc_cart_fragments_params !== 'undefined' ? wc_cart_fragments_params.ajax_url : '';
+            var hashKey = 'wc_cart_hash_' + ajaxUrl;
+            initialCartHash = sessionStorage.getItem(hashKey) || localStorage.getItem(hashKey) || '';
+        } catch(e) {}
+
+        // FIX 1: If page loaded fresh after a cart removal via URL parameters, drop cache and sync
         if (window.location.search.indexOf('removed_item=') !== -1 || window.location.search.indexOf('remove_item=') !== -1) {
             try {
                 var keysToRemove = [];
@@ -114,51 +130,92 @@ document.addEventListener('DOMContentLoaded', () => {
                     }
                 }
                 keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
-                sessionStorage.removeItem('wc_cart_hash_' + (typeof wc_cart_fragments_params !== 'undefined' ? wc_cart_fragments_params.ajax_url : ''));
+                if(hashKey) sessionStorage.removeItem(hashKey);
             } catch(e) {}
             
-            // Wait for WC to init, then force refresh
             setTimeout(function() {
                 jQuery(document.body).trigger('wc_fragment_refresh');
             }, 100);
         }
 
-        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded updated_wc_div removed_from_cart elementor/menu-cart/product-removed elementor/menu-cart/fragments-updated', function(e) {
+        // FIX 2: Cross-Language / Cross-Tab Storage Sync
+        // Intercept any changes to other localStorage/sessionStorage from different tabs/languages
+        window.addEventListener('storage', function(e) {
+            if (e.key && e.key.indexOf('wc_cart_hash_') === 0 && e.newValue) {
+                try {
+                    var currentAjaxUrl = typeof wc_cart_fragments_params !== 'undefined' ? wc_cart_fragments_params.ajax_url : '';
+                    var localHashKey = 'wc_cart_hash_' + currentAjaxUrl;
+                    var localHash = sessionStorage.getItem(localHashKey) || localStorage.getItem(localHashKey) || '';
+                    
+                    // Only trigger refresh if the newly broadcast hash is DIFFERENT from our current local hash
+                    // AND avoiding infinite loops by checking the hash value.
+                    if (e.key !== localHashKey && e.newValue !== localHash) {
+                        if (window.wiwaIsSyncing) return;
+                        window.wiwaIsSyncing = true;
+                        
+                        jQuery(document.body).trigger('wc_fragment_refresh');
+                        
+                        setTimeout(function() {
+                            window.wiwaIsSyncing = false;
+                        }, 2000); // Cooldown to prevent ping-pong loops
+                    }
+                } catch(err) {}
+            }
+        });
+
+        // FIX 3: Event Listeners for Intra-Page Sync and Elementor
+        jQuery(document.body).on('wc_fragments_refreshed wc_fragments_loaded elementor/menu-cart/fragments-updated', function(e) {
             // Small delay to allow WC to finish its DOM writes
             setTimeout(checkEmptyState, 50);
 
-            var isCart = document.body.classList.contains('woocommerce-cart');
-            var isCheckout = document.body.classList.contains('woocommerce-checkout');
-
-            // --- CROSS-SYNC LOGIC ---
-            // 1. If an item was removed from the side-cart (WC native or Elementor), reload main page
-            if (e.type === 'removed_from_cart' || e.type === 'elementor/menu-cart/product-removed') {
-                if (isCart || isCheckout) {
-                    var url = new URL(window.location.href);
-                    // Add timestamp to bypass Varnish cache
-                    url.searchParams.set('t', new Date().getTime());
-                    window.location.href = url.toString();
-                }
-            }
-
-            // 2. If the main cart page was updated (updated_wc_div), force the side-cart to refresh its fragments
-            // This happens when deleting an item from the main cart table
-            if (e.type === 'updated_wc_div') {
-                // Remove stale sessionStorage
-                try {
-                    var keysToRemove = [];
-                    for (var i = 0; i < sessionStorage.length; i++) {
-                        var key = sessionStorage.key(i);
-                        if (key && key.indexOf('wc_fragments') !== -1) {
-                            keysToRemove.push(key);
-                        }
-                    }
-                    keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
-                } catch(err) {}
+            // Did the hash change during this refresh? 
+            try {
+                var currentAjaxUrl = typeof wc_cart_fragments_params !== 'undefined' ? wc_cart_fragments_params.ajax_url : '';
+                var localHashKey = 'wc_cart_hash_' + currentAjaxUrl;
+                var currentHash = sessionStorage.getItem(localHashKey) || localStorage.getItem(localHashKey) || '';
                 
-                // Do not cause an infinite loop. We trigger fragment refresh, which shouldn't re-trigger updated_wc_div
-                jQuery(document.body).trigger('wc_fragment_refresh');
+                if (currentHash !== initialCartHash && initialCartHash !== '') {
+                    // Hash drifted! Something changed the cart behind the scenes.
+                    initialCartHash = currentHash;
+                    
+                    // If we are staring at the cart or checkout, we MUST update the main UI.
+                    if (isCheckout) {
+                        jQuery(document.body).trigger('update_checkout');
+                    } else if (isCart) {
+                        // The safest way to cleanly update the Cart table is a hard reload with cache-bust
+                        var url = new URL(window.location.href);
+                        url.searchParams.set('t', new Date().getTime());
+                        window.location.href = url.toString();
+                    }
+                }
+            } catch (err) {}
+        });
+
+        // 4. Force synchronization if user explicitly deletes an item from side-cart
+        jQuery(document.body).on('removed_from_cart elementor/menu-cart/product-removed', function(e) {
+            if (isCart || isCheckout) {
+                var url = new URL(window.location.href);
+                url.searchParams.set('t', new Date().getTime());
+                window.location.href = url.toString();
             }
+        });
+
+        // 5. If main cart page table was updated via standard WC (e.g. deleting item from table)
+        jQuery(document.body).on('updated_wc_div', function(e) {
+            // Remove stale sessionStorage
+            try {
+                var keysToRemove = [];
+                for (var i = 0; i < sessionStorage.length; i++) {
+                    var key = sessionStorage.key(i);
+                    if (key && key.indexOf('wc_fragments') !== -1) {
+                        keysToRemove.push(key);
+                    }
+                }
+                keysToRemove.forEach(function(k) { sessionStorage.removeItem(k); });
+            } catch(err) {}
+            
+            // Do not cause an infinite loop. We trigger fragment refresh, which side-cart listens to.
+            jQuery(document.body).trigger('wc_fragment_refresh');
         });
     }
 

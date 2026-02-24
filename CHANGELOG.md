@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.15.7] - 2026-02-24
+
+### Added
+- **Sync Guardian for WooCommerce:** Completely overhauled JS cart sync logic in `side-cart.js`. The DOM now listens to raw browser `storage` events to detect and synchronize cross-tab and cross-language cart modifications (bypassing WPML's localized AJAX constraints). Additionally acts as a safety net observing `wc_cart_hash` drifts to force native Checkout/Cart refreshes when the side-cart injects items quietly in the background.
+
 ## [2.15.6] - 2026-02-24
 
 ### Fixed
