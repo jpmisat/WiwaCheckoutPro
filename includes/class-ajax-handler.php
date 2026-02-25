@@ -693,7 +693,7 @@ class Wiwa_Ajax_Handler
             header('Vary: Cookie');
 
             wp_send_json_success([
-                'message'         => 'Producto agregado al carrito',
+                'message'         => __('Producto agregado al carrito', 'wiwa-checkout'),
                 'product_title'   => $product->get_name(),
                 'product_image'   => $image_url,
                 'product_thumb'   => $thumb_url,
@@ -707,9 +707,9 @@ class Wiwa_Ajax_Handler
             $errors = wc_get_notices('error');
             wc_clear_notices(); 
             
-            $msg = 'No se pudo agregar al carrito.';
+            $msg = __('No se pudo agregar al carrito.', 'wiwa-checkout');
             if (!empty($errors)) {
-                 $msg .= ' Verifique los datos.';
+                 $msg .= ' ' . __('Verifique los datos.', 'wiwa-checkout');
             }
             wp_send_json_error(['message' => $msg]);
         }

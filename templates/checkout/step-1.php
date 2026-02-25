@@ -435,6 +435,8 @@ endforeach; ?>
 </form>
 
 <script>
+window.wiwaStep1Data = <?php echo json_encode(WC()->session->get('wiwa_step_1_data') ?: []); ?>;
+
 jQuery(document).ready(function($) {
     // Initialize Select2 for country and phone code selects
     if ($.fn.select2) {

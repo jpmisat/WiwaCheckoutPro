@@ -79,13 +79,13 @@ jQuery(function ($) {
                     // Redirect to checkout
                     window.location.href = res.data.checkout_url || wc_add_to_cart_params.cart_url;
                 } else {
-                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || 'Error al agregar al carrito.');
+                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || wiwaAjax.strings.addError);
                     alert(msg);
                     resetButtons($form, $btn, originalText);
                 }
             },
             error: function () {
-                alert('Ocurrió un error de conexión. Intente nuevamente.');
+                alert(wiwaAjax.strings.connError);
                 resetButtons($form, $btn, originalText);
             }
         });
@@ -115,13 +115,13 @@ jQuery(function ($) {
                     handleSoftAddSuccess(res.data);
                     resetButtons($form, $btn, originalText);
                 } else {
-                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || 'Error al agregar al carrito.');
+                    var msg = (res.data && res.data.message) ? res.data.message : (res.message || wiwaAjax.strings.addError);
                     alert(msg);
                     resetButtons($form, $btn, originalText);
                 }
             },
             error: function () {
-                alert('Ocurrió un error de conexión. Intente nuevamente.');
+                alert(wiwaAjax.strings.connError);
                 resetButtons($form, $btn, originalText);
             }
         });
@@ -205,15 +205,15 @@ jQuery(function ($) {
                     '<div class="wiwa-so-topbar-info">' +
                         '<div class="wiwa-so-topbar-badge">' +
                             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="11" stroke="#22c55e" stroke-width="2"/><path d="M7 12.5l3 3 7-7" stroke="#22c55e" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg>' +
-                            ' <span>¡Agregado al carrito!</span>' +
+                            ' <span>' + wiwaAjax.strings.addedToCart + '</span>' +
                         '</div>' +
                         '<h3 class="wiwa-so-topbar-title">' + title + '</h3>' +
                         dateHtml +
                     '</div>' +
                 '</div>' +
                 '<div class="wiwa-so-topbar-actions">' +
-                    '<a href="' + cartUrl + '" class="wiwa-so-btn wiwa-so-btn-outline">Ver carrito</a>' +
-                    '<a href="' + checkoutUrl + '" class="wiwa-so-btn wiwa-so-btn-solid">Reservar ahora</a>' +
+                    '<a href="' + cartUrl + '" class="wiwa-so-btn wiwa-so-btn-outline">' + wiwaAjax.strings.viewCart + '</a>' +
+                    '<a href="' + checkoutUrl + '" class="wiwa-so-btn wiwa-so-btn-solid">' + wiwaAjax.strings.bookNow + '</a>' +
                 '</div>' +
             '</div>';
 
@@ -247,7 +247,7 @@ jQuery(function ($) {
             suggestedHtml = '' +
                 '<div class="wiwa-so-suggested">' +
                     '<div class="wiwa-so-suggested-header">' +
-                        '<h3>Más actividades que te pueden gustar</h3>' +
+                        '<h3>' + wiwaAjax.strings.moreActivities + '</h3>' +
                     '</div>' +
                     '<div class="wiwa-so-tour-grid">' + cardsHtml + '</div>' +
                 '</div>';

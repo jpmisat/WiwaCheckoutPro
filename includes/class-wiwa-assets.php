@@ -31,10 +31,14 @@ class Wiwa_Assets
                 'ajax_url' => $ajax_url,
                 'nonce'    => wp_create_nonce('wiwa_checkout_nonce'),
                 'strings'  => [
-                    'processing' => __('Processing...', 'wiwa-checkout'),
-                    'addError'   => __('Error adding to cart.', 'wiwa-checkout'),
-                    'connError'  => __('A connection error occurred. Try again.', 'wiwa-checkout'),
-                    'addToCart'  => __('<span class="icon-cart"></span> Add to Cart', 'wiwa-checkout'),
+                    'processing'     => __('Processing...', 'wiwa-checkout'),
+                    'addError'       => __('Error adding to cart.', 'wiwa-checkout'),
+                    'connError'      => __('A connection error occurred. Try again.', 'wiwa-checkout'),
+                    'addToCart'      => __('<span class="icon-cart"></span> Add to Cart', 'wiwa-checkout'),
+                    'addedToCart'    => __('¡Agregado al carrito!', 'wiwa-checkout'),
+                    'viewCart'       => __('Ver carrito', 'wiwa-checkout'),
+                    'bookNow'        => __('Reservar ahora', 'wiwa-checkout'),
+                    'moreActivities' => __('Más actividades que te pueden gustar', 'wiwa-checkout'),
                 ]
             ]);
         }

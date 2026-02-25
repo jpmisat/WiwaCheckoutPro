@@ -384,7 +384,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // ==================== AUTO SAVE ====================
     
-    // Autosave inputs to session storage (for returning customers & reloads)
+    // Autosave inputs to session storage & restore from server (for returning customers & reloads)
     if (form1) {
         // Cleanup old localStorage items from previous versions
         Object.keys(localStorage).forEach(key => {
@@ -394,20 +394,43 @@ document.addEventListener('DOMContentLoaded', function () {
         });
 
         const saveInput = (input) => {
-            if (input.name) {
+            if (!input.name) return;
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                sessionStorage.setItem('wiwa_' + input.name, input.checked ? 'true' : 'false');
+            } else {
                 sessionStorage.setItem('wiwa_' + input.name, input.value || '');
             }
         };
 
-        $$('input, select', form1).forEach(input => {
-            // Restore
-            if (input.name) {
-                const saved = sessionStorage.getItem('wiwa_' + input.name);
-                if (saved && !input.value) {
+        const serverData = window.wiwaStep1Data || {};
+
+        $$('input, select, textarea', form1).forEach(input => {
+            if (!input.name || input.type === 'hidden') return;
+
+            let saved = sessionStorage.getItem('wiwa_' + input.name);
+
+            if (saved === null) {
+                // Not in session storage, try server data (if arriving via 'Back' from Step 2)
+                if (serverData[input.name] !== undefined) {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = true; // If key exists in POST data, it was checked
+                        saveInput(input); // Sync immediately to sessionStorage
+                    } else {
+                        input.value = serverData[input.name];
+                        saveInput(input);
+                        if (input.tagName === 'SELECT' && window.jQuery) {
+                            jQuery(input).trigger('change.select2');
+                        }
+                    }
+                }
+            } else {
+                // Restore from SessionStorage
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = (saved === 'true');
+                } else {
                     input.value = saved;
-                    // For select elements, we need to trigger change visually if they use Select2
                     if (input.tagName === 'SELECT' && window.jQuery) {
-                        jQuery(input).trigger('change');
+                        jQuery(input).trigger('change.select2');
                     }
                 }
             }
@@ -415,7 +438,7 @@ document.addEventListener('DOMContentLoaded', function () {
             // Save on change/blur/input
             input.addEventListener('blur', () => saveInput(input));
             input.addEventListener('change', () => saveInput(input));
-            if (input.tagName !== 'SELECT') {
+            if (input.tagName !== 'SELECT' && input.type !== 'checkbox' && input.type !== 'radio') {
                 input.addEventListener('input', () => saveInput(input));
             }
         });

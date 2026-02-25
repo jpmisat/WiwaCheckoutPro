@@ -1,5 +1,15 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.3] - 2026-02-25
+
+### Changed
+- **Add to Cart Translations:** Replaced hardcoded Spanish strings in the "Agregar al carrito" modal (`add-to-cart.js`) with localized WordPress variables passed from `class-wiwa-assets.php`. Also wrapped backend AJAX response strings in `class-ajax-handler.php` with the `__()` translation function using the `wiwa-checkout` domain. This ensures compatibility with WPML String Translation for multilingual setups.
+
+## [2.16.2] - 2026-02-25
+
+### Fixed
+- **Step 1 Persistence:** Falla crítica donde los datos ingresados en el Paso 1 se borraban permanentemente al recargar la página o al navegar hacia atrás desde el Paso 2. Se implementó una solución de persistencia de datos híbrida (precarga de sesión en PHP + `sessionStorage` en el cliente como respaldo en tiempo real) para garantizar retención infalible de reservas y pasajeros.
+
 ## [2.16.1] - 2026-02-25
 
 ### Fixed
