@@ -47,16 +47,18 @@ class Wiwa_Shortcodes {
         $deposit_type = get_post_meta($product_id, 'ovatb_deposit_type', true);
         $deposit_amount = get_post_meta($product_id, 'ovatb_deposit_amount', true);
 
+        // Get active currency code (e.g. USD, COP, EUR)
+        $currency_code = Wiwa_FOX_Integration::get_current_currency();
+
         // If no deposit is configured, display the regular "From" price
         if (!$regular_price || $deposit_type === 'none' || empty($deposit_amount)) {
             $formatted_price = Wiwa_FOX_Integration::format_price($regular_price);
             
-            // Render without wrapper CSS as requested
             ob_start();
             ?>
             <span class="wiwa-dynamic-deposit">
                 <?php printf(esc_html__('From %s', 'wiwa-checkout'), $formatted_price); ?>
-                <span class="wiwa-dynamic-deposit-icon">&#x2197;</span>
+                <span class="wiwa-dynamic-deposit-currency"><?php echo esc_html($currency_code); ?></span>
             </span>
             <?php
             return ob_get_clean();
@@ -76,7 +78,7 @@ class Wiwa_Shortcodes {
         ?>
         <span class="wiwa-dynamic-deposit">
             <?php printf(esc_html__('Book from %s', 'wiwa-checkout'), $formatted_deposit); ?>
-            <span class="wiwa-dynamic-deposit-icon">&#x2197;</span>
+            <span class="wiwa-dynamic-deposit-currency"><?php echo esc_html($currency_code); ?></span>
         </span>
         <?php
         return ob_get_clean();
