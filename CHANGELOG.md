@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.17] - 2026-02-25
+
+### Added
+
+- Soporte WPML para labels de campos de pasajero de OvaTourBooking (`class-tour-booking-integration.php`): los labels ("First Name", "Identity document", "Food preferences", etc.) y opciones de select ahora se registran automáticamente en WPML String Translation bajo el dominio `wiwa-checkout`.
+
 ## [2.16.16] - 2026-02-25
 
 ### Fixed

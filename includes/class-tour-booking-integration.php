@@ -205,21 +205,40 @@ class Wiwa_Tour_Booking_Integration
             $options = [];
             if (isset($field['option_ids']) && isset($field['option_names'])) {
                 $ids = is_string($field['option_ids']) ? explode(',', $field['option_ids']) : (array)$field['option_ids'];
-                $names = is_array($field['option_names']) ? $field['option_names'] : explode(',', $field['option_names']); // Typically array in recent versions
+                $names = is_array($field['option_names']) ? $field['option_names'] : explode(',', $field['option_names']);
 
-                // If names are array (from repeater), they might be indexed
                 if (count($ids) > 0) {
                     foreach ($ids as $i => $id) {
-                        $name = isset($names[$i]) ? $names[$i] : $id;
-                        $options[trim($id)] = trim($name);
+                        $name = isset($names[$i]) ? trim($names[$i]) : trim($id);
+
+                        // Register option with WPML
+                        do_action('wpml_register_single_string', 'wiwa-checkout', 'guest_field_' . sanitize_key($key) . '_opt_' . sanitize_key($id), $name);
+
+                        // Translate on frontend
+                        if (!is_admin()) {
+                            $name = apply_filters('wpml_translate_single_string', $name, 'wiwa-checkout', 'guest_field_' . sanitize_key($key) . '_opt_' . sanitize_key($id));
+                        }
+
+                        $options[trim($id)] = $name;
                     }
                 }
+            }
+
+            // Get label
+            $label = isset($field['label']) ? $field['label'] : ucfirst($key);
+
+            // Register label with WPML for translation
+            do_action('wpml_register_single_string', 'wiwa-checkout', 'guest_field_' . sanitize_key($key), $label);
+
+            // Translate label on frontend
+            if (!is_admin()) {
+                $label = apply_filters('wpml_translate_single_string', $label, 'wiwa-checkout', 'guest_field_' . sanitize_key($key));
             }
 
             // Map to Wiwa structure
             $formatted_fields[$key] = [
                 'key' => $key,
-                'label' => isset($field['label']) ? $field['label'] : ucfirst($key),
+                'label' => $label,
                 'type' => isset($field['type']) ? $field['type'] : 'text',
                 'required' => isset($field['required']) && $field['required'] === 'on',
                 'enabled' => true,
