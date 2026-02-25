@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.6] - 2026-02-25
+
+### Fixed
+- **Guest Label Translation:** The "Cantidad de viajeros" label in the booking modal was hardcoded from product meta and never translated. Created a template override (`templates/ova-tour-booking/forms/booking/guests.php`) that wraps guest-type labels with `wpml_translate_single_string`, and added an auto-registration hook that scans all tour products and registers guest labels with WPML String Translation. Also expanded the cart metadata cleanup in `clean_cart_item_data` to include French and English variants.
+
 ## [2.16.5] - 2026-02-25
 
 ### Fixed

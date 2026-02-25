@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.16.5
+ * Version: 2.16.6
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.16.5');
+define('WIWA_CHECKOUT_VERSION', '2.16.6');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -126,6 +126,9 @@ final class Wiwa_Tour_Checkout
         // Bridge WOOCS/FOX currency conversion into OvaTourBooking
         add_filter('ovatb_convert_price', ['Wiwa_FOX_Integration', 'ovatb_convert_price'], 10, 4);
 
+        // Register OvaTourBooking guest labels for WPML String Translation
+        add_action('init', [$this, 'register_guest_labels_for_wpml']);
+
         // DEBUG PATH HOOK
         add_action('wp_head', [$this, 'debug_paths']);
     }
@@ -137,6 +140,59 @@ final class Wiwa_Tour_Checkout
             return $plugin_path;
         }
         return $template;
+    }
+
+    /**
+     * Register OvaTourBooking guest-type labels with WPML String Translation.
+     * This allows labels like "Cantidad de viajeros" (stored in product meta)
+     * to appear in WPML > String Translation and be translated to any language.
+     */
+    public function register_guest_labels_for_wpml()
+    {
+        // Only run in admin or on first front-end load after flush
+        if (!function_exists('OVATB') || !is_callable([OVATB(), 'options'])) {
+            return;
+        }
+
+        // Use a transient to avoid running this on every page load
+        $cache_key = 'wiwa_guest_labels_registered';
+        if (get_transient($cache_key)) {
+            return;
+        }
+
+        // Query all tour products
+        $products = wc_get_products([
+            'type'   => 'tour',
+            'limit'  => -1,
+            'status' => 'publish',
+            'return' => 'ids',
+        ]);
+
+        foreach ($products as $product_id) {
+            $product = wc_get_product($product_id);
+            if (!$product || !method_exists($product, 'get_guests')) {
+                continue;
+            }
+
+            $guests = $product->get_guests();
+            if (!is_array($guests)) {
+                continue;
+            }
+
+            foreach ($guests as $guest) {
+                if (!empty($guest['label'])) {
+                    do_action(
+                        'wpml_register_single_string',
+                        'wiwa-checkout',                              // context
+                        'guest_label_' . sanitize_key($guest['label']), // name
+                        $guest['label']                                // value
+                    );
+                }
+            }
+        }
+
+        // Cache for 12 hours — re-registers on product save via transient flush
+        set_transient($cache_key, true, 12 * HOUR_IN_SECONDS);
     }
 
     public function check_dependencies()

@@ -618,12 +618,16 @@ class Wiwa_Cart_Handler
     {
         // Keys/labels to hide from cart item metadata display
         // These are redundant because our custom quantity pill handles pax count
+        // Include translations so filtering works in any language
         $hidden_keys = [
             'numberof_adult', 'numberof_adults', 'numberof_child', 'numberof_children',
             'numberof_pax', 'numberof_guests', 'numberof_infant', 'numberof_infants',
-            'Cantidad de viajeros', 'cantidad de viajeros',
-            'adults', 'children', 'enfants', 'niños', 'infants',
-            'Adultos', 'Niños', 'Infantes',
+            // ES
+            'cantidad de viajeros', 'adultos', 'niños', 'infantes',
+            // EN
+            'number of travelers', 'number of guests', 'adults', 'children', 'infants',
+            // FR
+            'nombre de voyageurs', 'nombre de participants', 'adultes', 'enfants', 'bébés',
         ];
 
         foreach ($item_data as $key => $data) {
