@@ -153,6 +153,41 @@ class Wiwa_FOX_Integration
     }
 
     /**
+     * Hook into OvaTourBooking's price conversion to add WOOCS support.
+     *
+     * OvaTourBooking's ovatb_convert_price() only handles CURCY and WPML-MC.
+     * This filter callback applies the WOOCS exchange rate so prices in the
+     * booking modal (total, calendar day-prices, deposits) display correctly
+     * in the user-selected currency.
+     *
+     * @param float $new_price  The (possibly already converted) price.
+     * @param float $price      The original base-currency price.
+     * @param array $args       Extra args (may contain 'currency').
+     * @param bool  $convert    Whether conversion was requested.
+     * @return float
+     */
+    public static function ovatb_convert_price($new_price, $price, $args, $convert)
+    {
+        // Skip if WOOCS is not active
+        if (!self::is_active()) {
+            return $new_price;
+        }
+
+        // Skip if caller explicitly disabled conversion
+        if (!$convert) {
+            return $new_price;
+        }
+
+        // Skip if another converter (CURCY / WPML-MC) already changed the price
+        if ((float) $new_price !== (float) $price) {
+            return $new_price;
+        }
+
+        global $WOOCS;
+        return (float) $WOOCS->woocs_exchange_value($price);
+    }
+
+    /**
      * Banderas de monedas comunes
      */
     private static function get_currency_flags()

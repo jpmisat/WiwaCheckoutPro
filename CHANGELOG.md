@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.5] - 2026-02-25
+
+### Fixed
+- **Booking Modal Currency:** OvaTourBooking's price conversion (`ovatb_convert_price`) only supported CURCY and WPML-MC plugins. Added a filter hook in `Wiwa_FOX_Integration` to bridge WOOCS/FOX currency exchange rates into the booking modal, so that calendar day-prices, totals, deposits, and extra-service prices now display in the user-selected currency (e.g. GBP, EUR) instead of always showing base COP.
+
 ## [2.16.4] - 2026-02-25
 
 ### Fixed
