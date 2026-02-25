@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.13] - 2026-02-25
+
+### Changed
+
+- Rediseño completo de la sección de totales del checkout y carrito con jerarquía visual clara: tarjeta verde para depósito (pago de hoy), tarjeta ámbar para saldo pendiente, y línea informativa para el total general de la reserva.
+
 ## [2.16.12] - 2026-02-25
 
 ### Fixed

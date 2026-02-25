@@ -204,71 +204,90 @@ endif; ?>
 endif; ?>
         </div>
         
-        <hr class="summary-divider">
-        
-        <div class="summary-total">
-            <div class="flex flex-col">
-                <div class="flex items-center justify-between w-full">
-                    <span class="total-label">
-                        <?php 
-                        $have_deposit = false;
-                        $sidebar_pending = 0;
-                        if (isset(WC()->cart->deposit_data) && !empty(WC()->cart->deposit_data) && function_exists('ovatb_get_meta_data')) {
-                            $have_deposit = (bool) ovatb_get_meta_data('have_deposit', WC()->cart->deposit_data);
-                            if ($have_deposit) {
-                                $sidebar_pending = (float) ovatb_get_meta_data('remaining_total', WC()->cart->deposit_data);
-                            }
-                        }
-                        
-                        if ($have_deposit) {
-                            _e('Total to pay today', 'wiwa-checkout');
-                        } else {
-                            _e('Total', 'wiwa-checkout');
-                        }
-                        ?>
+        <?php
+        // --- Deposit logic ---
+        $have_deposit = false;
+        $sidebar_pending = 0;
+        $sidebar_deposit_amount = (float) $cart->get_total('edit');
+
+        if (isset(WC()->cart->deposit_data) && !empty(WC()->cart->deposit_data) && function_exists('ovatb_get_meta_data')) {
+            $have_deposit = (bool) ovatb_get_meta_data('have_deposit', WC()->cart->deposit_data);
+            if ($have_deposit) {
+                $sidebar_pending = (float) ovatb_get_meta_data('remaining_total', WC()->cart->deposit_data);
+            }
+        }
+
+        // Convert pending to active currency
+        if ($sidebar_pending > 0 && class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+            $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
+            $pending_price_html = Wiwa_FOX_Integration::format_price($sidebar_pending);
+        } else {
+            $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
+            $pending_price_html = wc_price($sidebar_pending);
+        }
+
+        $grand_total_active = $sidebar_deposit_amount + $converted_pending;
+
+        // Currency code
+        $active_currency_code = '';
+        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+            $active_currency_code = Wiwa_FOX_Integration::get_current_currency();
+        } else {
+            $active_currency_code = isset($currency) ? $currency : get_woocommerce_currency();
+        }
+        ?>
+
+        <?php if ($have_deposit && $sidebar_pending > 0): ?>
+        <!-- ══════ DEPOSIT BREAKDOWN ══════ -->
+        <div class="wiwa-deposit-breakdown">
+
+            <!-- 1. TODAY'S PAYMENT (highest hierarchy) -->
+            <div class="wiwa-deposit-today">
+                <div class="wiwa-deposit-today__header">
+                    <span class="wiwa-deposit-today__icon">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
                     </span>
-                    <span class="total-value">
-                        <?php echo wc_price($cart->get_total('edit')); ?>
-                        <?php if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()): ?>
-                            <span class="currency-code"><?php echo Wiwa_FOX_Integration::get_current_currency(); ?></span>
-                        <?php else: ?>
-                            <span class="currency-code"><?php echo esc_html($currency); ?></span>
-                        <?php endif; ?>
-                    </span>
+                    <span class="wiwa-deposit-today__label"><?php _e("You pay today", 'wiwa-checkout'); ?></span>
+                    <span class="wiwa-deposit-today__badge"><?php _e('Deposit', 'wiwa-checkout'); ?></span>
                 </div>
-                
-                <?php if ($have_deposit && $sidebar_pending > 0): ?>
-                <div class="flex items-center justify-between w-full mt-2 pt-2 border-t border-dashed border-gray-200">
-                    <span class="text-red-500 text-[13px] font-medium"><?php _e('Pending payment', 'wiwa-checkout'); ?></span>
-                    <span class="text-red-600 text-[14px] font-bold">
-                        <?php 
-                        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
-                            echo wp_kses_post(Wiwa_FOX_Integration::format_price($sidebar_pending));
-                        } else {
-                            echo wc_price($sidebar_pending);
-                        }
-                        ?>
-                    </span>
+                <div class="wiwa-deposit-today__amount">
+                    <?php echo wc_price($sidebar_deposit_amount); ?>
+                    <span class="wiwa-deposit-today__currency"><?php echo esc_html($active_currency_code); ?></span>
                 </div>
-                
-                <div class="flex items-center justify-between w-full mt-3 pt-3 border-t border-solid border-gray-100">
-                    <span class="text-gray-500 text-[13px] font-medium"><?php _e('Total booking', 'wiwa-checkout'); ?></span>
-                    <span class="text-[#1a3c28] text-[15px] font-bold">
-                        <?php 
-                        $sidebar_deposit = (float) $cart->total;
-                        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
-                            $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
-                        } else {
-                            $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
-                        }
-                        $grand_total_active = $sidebar_deposit + $converted_pending;
-                        echo wp_kses_post(wc_price($grand_total_active));
-                        ?>
+            </div>
+
+            <!-- 2. PENDING BALANCE (secondary, warning-like) -->
+            <div class="wiwa-deposit-pending">
+                <div class="wiwa-deposit-pending__row">
+                    <span class="wiwa-deposit-pending__label">
+                        <svg class="wiwa-deposit-pending__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                        <?php _e('Remaining balance', 'wiwa-checkout'); ?>
                     </span>
+                    <span class="wiwa-deposit-pending__amount"><?php echo wp_kses_post($pending_price_html); ?></span>
                 </div>
-                <?php endif; ?>
+                <p class="wiwa-deposit-pending__note">
+                    <?php _e('Paid on the day of the tour at our offices.', 'wiwa-checkout'); ?>
+                </p>
+            </div>
+
+            <!-- 3. GRAND TOTAL (tertiary, informational) -->
+            <div class="wiwa-deposit-grand">
+                <span class="wiwa-deposit-grand__label"><?php _e('Total booking value', 'wiwa-checkout'); ?></span>
+                <span class="wiwa-deposit-grand__amount"><?php echo wp_kses_post(wc_price($grand_total_active)); ?></span>
             </div>
         </div>
+
+        <?php else: ?>
+        <!-- ══════ NO DEPOSIT (simple total) ══════ -->
+        <hr class="summary-divider">
+        <div class="summary-total">
+            <span class="total-label"><?php _e('Total', 'wiwa-checkout'); ?></span>
+            <span class="total-value">
+                <?php echo wc_price($sidebar_deposit_amount); ?>
+                <span class="currency-code"><?php echo esc_html($active_currency_code); ?></span>
+            </span>
+        </div>
+        <?php endif; ?>
         
         <?php if ($coupons_enabled): ?>
         <div class="summary-coupon">

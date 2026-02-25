@@ -346,33 +346,78 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                             }
                         }
 
-                        // Support WOOCS conversion for pending balance if it exists
+                        // Convert pending to active currency
                         if ($sidebar_pending > 0 && class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
-                            $sidebar_pending_html = Wiwa_FOX_Integration::format_price($sidebar_pending);
+                            $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
+                            $pending_price_html = Wiwa_FOX_Integration::format_price($sidebar_pending);
                         } else {
-                            $sidebar_pending_html = wc_price($sidebar_pending);
+                            $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
+                            $pending_price_html = wc_price($sidebar_pending);
+                        }
+
+                        $grand_total_active = $sidebar_deposit + $converted_pending;
+
+                        // Currency code
+                        $active_currency_code = '';
+                        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+                            $active_currency_code = Wiwa_FOX_Integration::get_current_currency();
+                        } else {
+                            $active_currency_code = isset($wiwa_currency_code) ? $wiwa_currency_code : get_woocommerce_currency();
                         }
                         ?>
+                    </div>
 
-                        <!-- Total pay today (Deposit) -->
-                        <div class="flex justify-between items-center text-[#1a3c28] text-[14px]">
-                            <span class="font-medium"><?php esc_html_e('Total to pay today', 'wiwa-checkout'); ?> <?php if ($have_deposit) echo '(' . esc_html__('Deposit', 'wiwa-checkout') . ')'; ?></span>
-                            <span class="font-bold"><?php echo wc_price($sidebar_deposit); ?></span>
+                    <?php if ($have_deposit && $sidebar_pending > 0) : ?>
+                    <!-- ══════ DEPOSIT BREAKDOWN ══════ -->
+                    <div class="wiwa-deposit-breakdown">
+
+                        <!-- 1. TODAY'S PAYMENT (highest hierarchy) -->
+                        <div class="wiwa-deposit-today">
+                            <div class="wiwa-deposit-today__header">
+                                <span class="wiwa-deposit-today__icon">
+                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>
+                                </span>
+                                <span class="wiwa-deposit-today__label"><?php esc_html_e("You pay today", 'wiwa-checkout'); ?></span>
+                                <span class="wiwa-deposit-today__badge"><?php esc_html_e('Deposit', 'wiwa-checkout'); ?></span>
+                            </div>
+                            <div class="wiwa-deposit-today__amount">
+                                <?php echo wc_price($sidebar_deposit); ?>
+                                <span class="wiwa-deposit-today__currency"><?php echo esc_html($active_currency_code); ?></span>
+                            </div>
                         </div>
 
-                        <!-- Pending -->
-                        <?php if ($have_deposit && $sidebar_pending > 0) : ?>
-                        <div class="pt-5 border-t border-dashed border-gray-200">
-                            <div class="flex justify-between items-center text-red-600 text-[14px]">
-                                <span><?php esc_html_e('Pending payment', 'wiwa-checkout'); ?></span>
-                                <span class="font-bold"><?php echo wp_kses_post($sidebar_pending_html); ?></span>
+                        <!-- 2. PENDING BALANCE (secondary, warning-like) -->
+                        <div class="wiwa-deposit-pending">
+                            <div class="wiwa-deposit-pending__row">
+                                <span class="wiwa-deposit-pending__label">
+                                    <svg class="wiwa-deposit-pending__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
+                                    <?php esc_html_e('Remaining balance', 'wiwa-checkout'); ?>
+                                </span>
+                                <span class="wiwa-deposit-pending__amount"><?php echo wp_kses_post($pending_price_html); ?></span>
                             </div>
-                            <p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed italic">
-                                <?php esc_html_e('The remaining balance will be paid directly at our offices on the day of the tour.', 'wiwa-checkout'); ?>
+                            <p class="wiwa-deposit-pending__note">
+                                <?php esc_html_e('Paid on the day of the tour at our offices.', 'wiwa-checkout'); ?>
                             </p>
                         </div>
-                        <?php endif; ?>
+
+                        <!-- 3. GRAND TOTAL (tertiary, informational) -->
+                        <div class="wiwa-deposit-grand">
+                            <span class="wiwa-deposit-grand__label"><?php esc_html_e('Total booking value', 'wiwa-checkout'); ?></span>
+                            <span class="wiwa-deposit-grand__amount"><?php echo wp_kses_post(wc_price($grand_total_active)); ?></span>
+                        </div>
                     </div>
+
+                    <?php else : ?>
+                    <!-- ══════ NO DEPOSIT (simple total) ══════ -->
+                    <div class="pt-7 border-t border-gray-100">
+                        <div class="flex flex-col gap-1 mb-7">
+                            <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total', 'wiwa-checkout'); ?></span>
+                            <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight">
+                                <?php echo wp_kses_post(wc_price($sidebar_deposit)); ?>
+                                <span class="wiwa-currency-code"><?php echo esc_html($active_currency_code); ?></span>
+                            </span>
+                        </div>
+                    <?php endif; ?>
 
                     <!-- SHIPPING / FEES / COUPONS / TAXES (WC Standard) -->
                     <?php if (WC()->cart->needs_shipping() && WC()->cart->show_shipping()) : ?>
@@ -403,33 +448,8 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         </div>
                     <?php endif; ?>
 
-                    <!-- BIG TOTAL + CTA -->
-                    <div class="pt-7 border-t border-gray-100">
-                        <div class="flex flex-col gap-1 mb-7">
-                            <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total booking', 'wiwa-checkout'); ?></span>
-                            <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight flex items-end">
-                                <?php 
-                                $grand_total_raw = $sidebar_deposit + $sidebar_pending;
-                                
-                                // Since pending can be converted inside the template, we need to convert sidebar_pending dynamically 
-                                // Wait, sidebar_deposit is in ACTIVE currency because WooCommerce Cart uses active currency
-                                // BUT sidebar_pending from `ovatb_get_meta_data` is in BASE currency!
-                                // So we must mathematically add the CONVERTED pending balance to sidebar_deposit.
-
-                                if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
-                                    $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
-                                } else {
-                                    $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
-                                }
-                                
-                                $grand_total_active = $sidebar_deposit + $converted_pending;
-                                
-                                // Note. Using wc_price to format it natively
-                                echo wp_kses_post(wc_price($grand_total_active)); 
-                                ?>
-                            </span>
-                        </div>
-
+                    <!-- CTA Button -->
+                    <div class="<?php echo ($have_deposit && $sidebar_pending > 0) ? 'pt-4' : ''; ?>">
                         <a href="<?php echo esc_url(wc_get_checkout_url()); ?>" class="wiwa-cta-pay">
                             <?php esc_html_e('Proceed to Payment', 'wiwa-checkout'); ?>
                         </a>
