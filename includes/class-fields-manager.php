@@ -8,12 +8,89 @@ class Wiwa_Fields_Manager
 {
 
     /**
-     * Get all custom fields
+     * Get all custom fields, with labels translated via WPML on the frontend.
      */
     public static function get_fields()
     {
         $fields = get_option('wiwa_checkout_fields', self::get_default_fields());
+
+        // On frontend, translate labels through WPML String Translation
+        if (!is_admin()) {
+            foreach ($fields as $group => &$group_fields) {
+                foreach ($group_fields as $key => &$field) {
+                    if (!empty($field['label'])) {
+                        $field['label'] = self::translate_field_label($key, $field['label']);
+                    }
+                    // Translate select options too
+                    if (!empty($field['options']) && is_array($field['options'])) {
+                        foreach ($field['options'] as $opt_key => &$opt_label) {
+                            if (!empty($opt_label)) {
+                                $opt_label = self::translate_field_label($key . '_opt_' . $opt_key, $opt_label);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return $fields;
+    }
+
+    /**
+     * Translate a single field label via WPML String Translation.
+     *
+     * @param string $name  Unique identifier for the string (field key).
+     * @param string $label The original label text.
+     * @return string Translated label.
+     */
+    public static function translate_field_label($name, $label)
+    {
+        return apply_filters(
+            'wpml_translate_single_string',
+            $label,
+            'wiwa-checkout',
+            'field_' . sanitize_key($name)
+        );
+    }
+
+    /**
+     * Register all saved field labels with WPML String Translation.
+     * Called on `init` so labels appear in WPML > String Translation.
+     */
+    public static function register_fields_for_wpml()
+    {
+        $fields = get_option('wiwa_checkout_fields', []);
+        if (empty($fields) || !is_array($fields)) {
+            return;
+        }
+
+        foreach ($fields as $group => $group_fields) {
+            if (!is_array($group_fields)) continue;
+
+            foreach ($group_fields as $key => $field) {
+                if (!empty($field['label'])) {
+                    do_action(
+                        'wpml_register_single_string',
+                        'wiwa-checkout',
+                        'field_' . sanitize_key($key),
+                        $field['label']
+                    );
+                }
+                // Register select options too
+                if (!empty($field['options']) && is_array($field['options'])) {
+                    foreach ($field['options'] as $opt_key => $opt_label) {
+                        if (!empty($opt_label)) {
+                            do_action(
+                                'wpml_register_single_string',
+                                'wiwa-checkout',
+                                'field_' . sanitize_key($key) . '_opt_' . sanitize_key($opt_key),
+                                $opt_label
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**

@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.16.6
+ * Version: 2.16.7
  * Author: Juan Pablo Misat - Connexis
  * Author URI: http://connexis.co/
  * Text Domain: wiwa-checkout
@@ -29,8 +29,8 @@ add_action('before_woocommerce_init', function () {
     }
 });
 
-// Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.16.6');
+// Constantes del Plugin
+define('WIWA_CHECKOUT_VERSION', '2.16.7');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -120,26 +120,34 @@ final class Wiwa_Tour_Checkout
             new Wiwa_Cart_Handler();
         });
 
-        // Template Overrides for OvaTour Booking
-        add_filter('ovatb_locate_template', [$this, 'override_ovatb_templates'], 10, 4);
-
-        // Bridge WOOCS/FOX currency conversion into OvaTourBooking
-        add_filter('ovatb_convert_price', ['Wiwa_FOX_Integration', 'ovatb_convert_price'], 10, 4);
-
-        // Register OvaTourBooking guest labels for WPML String Translation
-        add_action('init', [$this, 'register_guest_labels_for_wpml']);
+        // Translate OvaTourBooking guest data before template render
+        add_filter('ovatb_get_data_guests', [$this, 'translate_ovatb_guest_data'], 20);
 
         // DEBUG PATH HOOK
         add_action('wp_head', [$this, 'debug_paths']);
     }
 
-    public function override_ovatb_templates($template, $template_name, $template_path, $default_path)
+    /**
+     * Translate guest labels in OvaTourBooking data array before rendering
+     */
+    public function translate_ovatb_guest_data($args)
     {
-        $plugin_path = WIWA_CHECKOUT_PATH . 'templates/ova-tour-booking/' . $template_name;
-        if (file_exists($plugin_path)) {
-            return $plugin_path;
+        if (is_admin() || empty($args['guests']) || !is_array($args['guests'])) {
+            return $args;
         }
-        return $template;
+
+        foreach ($args['guests'] as &$guest) {
+            if (!empty($guest['label'])) {
+                $guest['label'] = apply_filters(
+                    'wpml_translate_single_string',
+                    $guest['label'],
+                    'wiwa-checkout',
+                    'guest_label_' . sanitize_key($guest['label'])
+                );
+            }
+        }
+
+        return $args;
     }
 
     /**

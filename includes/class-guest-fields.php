@@ -47,12 +47,12 @@ class Wiwa_Guest_Fields
     private function get_default_fields()
     {
         return [
-            'guest_first_name' => ['label' => 'Nombre', 'required' => true, 'type' => 'text'],
-            'guest_last_name' => ['label' => 'Apellido', 'required' => true, 'type' => 'text'],
-            'guest_email' => ['label' => 'Email', 'required' => false, 'type' => 'email'],
-            'guest_phone' => ['label' => 'Teléfono', 'required' => false, 'type' => 'tel'],
-            'guest_passport' => ['label' => 'Documento', 'required' => true, 'type' => 'text'],
-            'guest_nationality' => ['label' => 'Nacionalidad', 'required' => true, 'type' => 'select'],
+            'guest_first_name' => ['label' => __('Name', 'wiwa-checkout'), 'required' => true, 'type' => 'text'],
+            'guest_last_name' => ['label' => __('Last Name', 'wiwa-checkout'), 'required' => true, 'type' => 'text'],
+            'guest_email' => ['label' => __('Email', 'wiwa-checkout'), 'required' => false, 'type' => 'email'],
+            'guest_phone' => ['label' => __('Phone', 'wiwa-checkout'), 'required' => false, 'type' => 'tel'],
+            'guest_passport' => ['label' => __('Document', 'wiwa-checkout'), 'required' => true, 'type' => 'text'],
+            'guest_nationality' => ['label' => __('Nationality', 'wiwa-checkout'), 'required' => true, 'type' => 'select'],
         ];
     }
 

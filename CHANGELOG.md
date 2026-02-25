@@ -1,4 +1,14 @@
-# Changelog Wiwa Tour Checkout Pro
+# Changelog
+
+## [2.16.7] - 2026-02-25
+
+### Added
+- Auto-registration of custom checkout fields to WPML String Translation using `wpml_register_single_string`.
+- Frontend WPML translation mapping for custom checkout fields fetched from `Wiwa_Fields_Manager`.
+
+### Fixed
+- Replaced ineffective template override with robust data filter `ovatb_get_data_guests` to translate guest labels (e.g. "Cantidad de viajeros") before template rendering.
+- Re-added `__()` wrappers to Spanish labels in `class-guest-fields.php` for robust WPML scanning. Wiwa Tour Checkout Pro
 
 ## [2.16.6] - 2026-02-25
 
