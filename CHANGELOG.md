@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.1] - 2026-02-25
+
+### Fixed
+- **Checkout Display Issue:** Añadida una regla CSS para forzar la visibilidad del botón de "Confirmar y Pagar" (`#place_order`) en el paso 2 del checkout. Esto soluciona un problema donde WooCommerce ocultaba el botón al cambiar de divisa mediante el switcher FOX debido a la estructura HTML personalizada de Wiwa Checkout.
+
 ## [2.16.0] - 2026-02-24
 
 ### Added

@@ -1071,6 +1071,11 @@
     order: 1
 }
 
+/* Forzar visibilidad del botón de pago para evitar que el script de WooCommerce (checkout.js) lo oculte al actualizar el checkout tras un cambio de moneda */
+form#wiwa-checkout-step-2 button#place_order {
+    display: inline-flex !important;
+}
+
 .form-footer-step2 .btn-secondary {
     order: 2
 }
