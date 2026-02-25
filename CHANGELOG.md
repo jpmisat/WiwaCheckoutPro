@@ -1,5 +1,10 @@
 # Changelog
 
+## [2.16.8] - 2026-02-25
+
+### Fixed
+- Hotfix: Restored `templates/ova-tour-booking/forms/booking-form.php` and the template locator hook which were mistakenly deleted in previous commit, causing the "Add to Cart" button to lose its custom styling.
+
 ## [2.16.7] - 2026-02-25
 
 ### Added
