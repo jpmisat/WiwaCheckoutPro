@@ -61,7 +61,7 @@ class Wiwa_Fields_Manager
     {
         $fields = get_option('wiwa_checkout_fields', []);
         if (empty($fields) || !is_array($fields)) {
-            return;
+            $fields = self::get_default_fields();
         }
 
         foreach ($fields as $group => $group_fields) {

@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.16] - 2026-02-25
+
+### Fixed
+
+- Eliminado código de moneda duplicado en el subtotal del side-cart (`mini-cart.php`).
+- Ocultada la fila "Subtotal" redundante en el sidebar del checkout cuando el desglose de depósito está activo.
+- Añadido código de moneda activo (`COP`, `USD`, etc.) a "Remaining balance" y "Total booking value" en el sidebar.
+- Corregido el registro de campos en WPML String Translation (`class-fields-manager.php`): ahora usa `get_default_fields()` como fallback cuando la opción `wiwa_checkout_fields` no existe en la BD.
+
 ## [2.16.15] - 2026-02-25
 
 ### Fixed

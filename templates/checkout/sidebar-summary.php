@@ -165,6 +165,17 @@ endif; ?>
 endforeach; ?>
         </div>
         
+        <?php
+        // Pre-check deposit to decide if subtotal section is needed
+        $pre_have_deposit = false;
+        if (isset(WC()->cart->deposit_data) && !empty(WC()->cart->deposit_data) && function_exists('ovatb_get_meta_data')) {
+            $pre_have_deposit = (bool) ovatb_get_meta_data('have_deposit', WC()->cart->deposit_data);
+            $pre_pending = (float) ovatb_get_meta_data('remaining_total', WC()->cart->deposit_data);
+            if (!$pre_pending) $pre_have_deposit = false;
+        }
+        ?>
+        
+        <?php if (!$pre_have_deposit): ?>
         <hr class="summary-divider">
         
         <div class="summary-prices">
@@ -203,6 +214,7 @@ endif; ?>
             <?php
 endif; ?>
         </div>
+        <?php endif; ?>
         
         <?php
         // --- Deposit logic ---
@@ -263,7 +275,10 @@ endif; ?>
                         <svg class="wiwa-deposit-pending__icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>
                         <?php _e('Remaining balance', 'wiwa-checkout'); ?>
                     </span>
-                    <span class="wiwa-deposit-pending__amount"><?php echo wp_kses_post($pending_price_html); ?></span>
+                    <span class="wiwa-deposit-pending__amount">
+                        <?php echo wp_kses_post($pending_price_html); ?>
+                        <span class="wiwa-deposit-pending__currency"><?php echo esc_html($active_currency_code); ?></span>
+                    </span>
                 </div>
                 <p class="wiwa-deposit-pending__note">
                     <?php _e('Paid on the day of the tour at our offices.', 'wiwa-checkout'); ?>
@@ -273,7 +288,10 @@ endif; ?>
             <!-- 3. GRAND TOTAL (tertiary, informational) -->
             <div class="wiwa-deposit-grand">
                 <span class="wiwa-deposit-grand__label"><?php _e('Total booking value', 'wiwa-checkout'); ?></span>
-                <span class="wiwa-deposit-grand__amount"><?php echo wp_kses_post(wc_price($grand_total_active)); ?></span>
+                <span class="wiwa-deposit-grand__amount">
+                    <?php echo wp_kses_post(wc_price($grand_total_active)); ?>
+                    <span class="wiwa-deposit-grand__currency"><?php echo esc_html($active_currency_code); ?></span>
+                </span>
             </div>
         </div>
 

@@ -2274,6 +2274,24 @@ button[type="submit"].btn-primary:hover,
     color: inherit;
 }
 
+.wiwa-deposit-pending__currency {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a16207;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-left: 2px;
+}
+
+.wiwa-deposit-grand__currency {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-left: 2px;
+}
+
 /* ========================================
    Step 2 Specific Styles
    ======================================== */

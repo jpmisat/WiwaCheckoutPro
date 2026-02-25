@@ -169,7 +169,6 @@ do_action( 'woocommerce_before_mini_cart' ); ?>
         <span><?php esc_html_e( 'Subtotal', 'woocommerce' ); ?></span>
         <span class="wiwa-subtotal-amount">
             <?php echo WC()->cart->get_cart_subtotal(); ?>
-            <span class="wiwa-currency-code-large"><?php echo get_woocommerce_currency(); ?></span>
         </span>
     </p>
 
