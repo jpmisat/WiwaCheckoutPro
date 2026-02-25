@@ -736,3 +736,18 @@ msgstr "No se pudo agregar al carrito."
 
 msgid "Verifique los datos."
 msgstr "Verifique los datos."
+
+msgid "You pay today"
+msgstr "Pagas hoy"
+
+msgid "Deposit"
+msgstr "Depósito"
+
+msgid "Remaining balance"
+msgstr "Saldo pendiente"
+
+msgid "Paid on the day of the tour at our offices."
+msgstr "Se paga el día del tour en nuestras oficinas."
+
+msgid "Total booking value"
+msgstr "Valor total de la reserva"

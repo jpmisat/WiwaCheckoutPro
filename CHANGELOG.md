@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.14] - 2026-02-25
+
+### Added
+
+- Traducciones en español, inglés y francés para los nuevos textos del desglose de depósito: "You pay today", "Deposit", "Remaining balance", "Paid on the day of the tour at our offices.", "Total booking value".
+
 ## [2.16.13] - 2026-02-25
 
 ### Changed

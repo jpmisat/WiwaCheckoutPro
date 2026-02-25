@@ -774,3 +774,18 @@ msgstr "Could not add to cart."
 msgid "Verifique los datos."
 
 msgstr "Please check the data."
+
+msgid "You pay today"
+msgstr "You pay today"
+
+msgid "Deposit"
+msgstr "Deposit"
+
+msgid "Remaining balance"
+msgstr "Remaining balance"
+
+msgid "Paid on the day of the tour at our offices."
+msgstr "Paid on the day of the tour at our offices."
+
+msgid "Total booking value"
+msgstr "Total booking value"

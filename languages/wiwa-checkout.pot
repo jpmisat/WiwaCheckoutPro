@@ -717,3 +717,18 @@ msgstr ""
 
 msgid "Verifique los datos."
 msgstr ""
+
+msgid "You pay today"
+msgstr ""
+
+msgid "Deposit"
+msgstr ""
+
+msgid "Remaining balance"
+msgstr ""
+
+msgid "Paid on the day of the tour at our offices."
+msgstr ""
+
+msgid "Total booking value"
+msgstr ""

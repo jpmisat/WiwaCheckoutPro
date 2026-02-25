@@ -741,3 +741,18 @@ msgstr "Impossible d'ajouter au panier."
 
 msgid "Verifique los datos."
 msgstr "Veuillez vérifier les données."
+
+msgid "You pay today"
+msgstr "Vous payez aujourd'hui"
+
+msgid "Deposit"
+msgstr "Acompte"
+
+msgid "Remaining balance"
+msgstr "Solde restant"
+
+msgid "Paid on the day of the tour at our offices."
+msgstr "Payé le jour du tour dans nos bureaux."
+
+msgid "Total booking value"
+msgstr "Valeur totale de la réservation"
