@@ -178,13 +178,12 @@ class Wiwa_FOX_Integration
             return $new_price;
         }
 
-        // Skip if another converter (CURCY / WPML-MC) already changed the price
-        if ((float) $new_price !== (float) $price) {
-            return $new_price;
-        }
-
-        global $WOOCS;
-        return (float) $WOOCS->woocs_exchange_value($price);
+        // Use our reliable convert_price method which grabs the rate explicitly
+        $converted_price = self::convert_price((float)$price);
+        
+        // Return whichever is higher between the previously modified new_price (if any) and our explicitly converted price,
+        // or just return our converted price.
+        return $converted_price;
     }
 
     /**
