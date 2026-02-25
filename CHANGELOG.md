@@ -1,4 +1,17 @@
 # Changelog
+All notable changes to this project will be documented in this file.
+
+## [2.16.10] - 2026-02-25
+
+### Fixed
+
+- **Currency Conversion:** Registered missing hooks for `Wiwa_FOX_Integration` so `woocs_exchange_value` logic finally executes correctly during AJAX recalculation and cart item text filtering without needing to modify OvaTourBooking source files.
+
+## [2.16.9] - 2026-02-25
+
+### Added
+- Auto-registration of custom checkout fields to WPML String Translation using `wpml_register_single_string`.
+- Frontend WPML translation mapping for custom checkout fields fetched from `Wiwa_Fields_Manager`.
 
 ## [2.16.8] - 2026-02-25
 

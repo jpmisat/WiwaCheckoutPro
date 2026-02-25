@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.16.9
+ * Version: 2.16.10
  * Author: Wiwa Tours (Javier)
  * Author URI: https://wiwatour.com
  * Text Domain: wiwa-checkout
@@ -94,13 +94,42 @@ final class Wiwa_Tour_Checkout
         }
     }
 
-    private function init_hooks()
+    public function init_hooks()
     {
-        // Inicializar internacionalización
+        // Load Textdomain
         add_action('plugins_loaded', ['Wiwa_I18n', 'load_plugin_textdomain']);
 
-        // Registrar shortcodes
-        add_action('init', ['Wiwa_Shortcodes', 'init']);
+        // Register Shortcodes
+        add_action('init', function () {
+            // Load required files where class exists check is needed
+            include_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-shortcodes.php';
+            // Register shortcodes after definitions are loaded
+            add_shortcode('wiwa_checkout_form', ['Wiwa_Shortcodes', 'checkout_form']);
+            add_shortcode('wiwa_checkout_cart', ['Wiwa_Shortcodes', 'checkout_cart']);
+            add_shortcode('wiwa_checkout_thankyou', ['Wiwa_Shortcodes', 'checkout_thankyou']);
+            
+            // Register fields with WPML String Translation
+            if (class_exists('Wiwa_Fields_Manager')) {
+                Wiwa_Fields_Manager::register_fields_for_wpml();
+            }
+        });
+
+        // Initialize admin settings if in dashboard
+        if (is_admin()) {
+            add_action('init', function () {
+                new Wiwa_Settings();
+            });
+        }
+
+        // Initialize Cart Handler logic
+        add_action('init', function () {
+            new Wiwa_Cart_Handler();
+        });
+
+        // Initialize FOX Integration
+        add_action('init', function () {
+            Wiwa_FOX_Integration::init();
+        });
 
         // Hooks de activación/desactivación
         register_activation_hook(WIWA_CHECKOUT_FILE, [$this, 'activate']);
