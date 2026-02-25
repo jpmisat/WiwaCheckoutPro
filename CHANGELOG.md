@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.12] - 2026-02-25
+
+### Fixed
+
+- Corregido el cálculo del total general (Total de la reserva) para que sume correctamente el depósito actual más el saldo pendiente, en lugar de mostrar sólo el monto del depósito, y se añadió este total faltante en la barra lateral del checkout.
+
 ## [2.16.11] - 2026-02-25
 
 ### Fixed

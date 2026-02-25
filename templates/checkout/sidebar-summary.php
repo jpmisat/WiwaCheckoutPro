@@ -242,11 +242,27 @@ endif; ?>
                     <span class="text-red-500 text-[13px] font-medium"><?php _e('Pending payment', 'wiwa-checkout'); ?></span>
                     <span class="text-red-600 text-[14px] font-bold">
                         <?php 
-                        if (class_exists('Wiwa_FOX_Integration')) {
+                        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
                             echo wp_kses_post(Wiwa_FOX_Integration::format_price($sidebar_pending));
                         } else {
                             echo wc_price($sidebar_pending);
                         }
+                        ?>
+                    </span>
+                </div>
+                
+                <div class="flex items-center justify-between w-full mt-3 pt-3 border-t border-solid border-gray-100">
+                    <span class="text-gray-500 text-[13px] font-medium"><?php _e('Total booking', 'wiwa-checkout'); ?></span>
+                    <span class="text-[#1a3c28] text-[15px] font-bold">
+                        <?php 
+                        $sidebar_deposit = (float) $cart->total;
+                        if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+                            $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
+                        } else {
+                            $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
+                        }
+                        $grand_total_active = $sidebar_deposit + $converted_pending;
+                        echo wp_kses_post(wc_price($grand_total_active));
                         ?>
                     </span>
                 </div>

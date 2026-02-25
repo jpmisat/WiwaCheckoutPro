@@ -77,10 +77,37 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         $pax_count  = $tour_meta['travelers'] > 0 ? $tour_meta['travelers'] : 1;
                         $unit_price = $line_subtotal_raw / $pax_count;
 
-                        // Calculations for deposit (keeping existing logic based on raw subtotal)
-                        $deposit_rate  = apply_filters('wiwa_deposit_rate', 0.30);
-                        $deposit_val   = $line_subtotal_raw * $deposit_rate;
-                        $pending_val   = $line_subtotal_raw - $deposit_val;
+                        // Calculations for deposit
+                        $has_deposit = false;
+                        $deposit_val = $line_subtotal_raw;
+                        $pending_val = 0;
+
+                        if ($is_tour && $_product->get_meta('pay_deposit')) {
+                            $has_deposit   = true;
+                            $total_payable = floatval($_product->get_meta('total_payable'));
+                            
+                            // Tax enabled handling (base currency)
+                            if (wc_tax_enabled() && $_product->is_taxable()) {
+                                if (wc_prices_include_tax()) {
+                                    if (!WC()->cart->display_prices_including_tax()) {
+                                        $total_payable = wc_get_price_excluding_tax($_product, ['price' => $total_payable]);
+                                    }
+                                } else {
+                                    if (WC()->cart->display_prices_including_tax()) {
+                                        $total_payable = wc_get_price_including_tax($_product, ['price' => $total_payable]);
+                                    }
+                                }
+                            }
+                            
+                            // Convert to active currency
+                            if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+                                $total_payable = Wiwa_FOX_Integration::convert_price($total_payable);
+                            } else {
+                                $total_payable = apply_filters('woocs_exchange_value', $total_payable);
+                            }
+                            
+                            $pending_val = max(0, $total_payable - $line_subtotal_raw);
+                        }
 
                         // Determine primary guest key for AJAX
                         $primary_guest_key = '';
@@ -256,6 +283,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 <?php echo wc_price($unit_price); ?> <span class="opacity-70">/ persona</span>
                             </p>
 
+                            <?php if ($has_deposit && $pending_val > 0): ?>
                             <div class="mt-3 md:mt-4 space-y-1 md:space-y-1.5 p-3 md:p-0 bg-gray-50 md:bg-transparent rounded-lg md:rounded-none">
                                 <div class="flex justify-between md:justify-end gap-2 text-[11px] md:text-[12px] text-gray-500">
                                     <span><?php esc_html_e('Deposit:', 'wiwa-checkout'); ?></span>
@@ -266,6 +294,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     <span class="font-bold text-red-600 md:text-[13px]"><?php echo wc_price($pending_val); ?></span>
                                 </div>
                             </div>
+                            <?php endif; ?>
                         </div>
 
                     </div>
@@ -304,7 +333,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
 
                         <?php
                         // --- Deposit logic for sidebar ---
-                        $sidebar_deposit = WC()->cart->get_total('edit');
+                        $sidebar_deposit = (float) WC()->cart->total;
                         $sidebar_pending = 0;
                         $have_deposit = false;
 
@@ -318,7 +347,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                         }
 
                         // Support WOOCS conversion for pending balance if it exists
-                        if ($sidebar_pending > 0 && class_exists('Wiwa_FOX_Integration')) {
+                        if ($sidebar_pending > 0 && class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
                             $sidebar_pending_html = Wiwa_FOX_Integration::format_price($sidebar_pending);
                         } else {
                             $sidebar_pending_html = wc_price($sidebar_pending);
@@ -378,8 +407,26 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                     <div class="pt-7 border-t border-gray-100">
                         <div class="flex flex-col gap-1 mb-7">
                             <span class="text-gray-500 text-[13px] font-medium"><?php esc_html_e('Total booking', 'wiwa-checkout'); ?></span>
-                            <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight">
-                                <?php echo wp_kses_post(WC()->cart->get_total()); ?><span class="wiwa-currency-code"><?php echo esc_html($wiwa_currency_code); ?></span>
+                            <span class="text-3xl md:text-4xl font-bold text-[#1a3c28] tracking-tight flex items-end">
+                                <?php 
+                                $grand_total_raw = $sidebar_deposit + $sidebar_pending;
+                                
+                                // Since pending can be converted inside the template, we need to convert sidebar_pending dynamically 
+                                // Wait, sidebar_deposit is in ACTIVE currency because WooCommerce Cart uses active currency
+                                // BUT sidebar_pending from `ovatb_get_meta_data` is in BASE currency!
+                                // So we must mathematically add the CONVERTED pending balance to sidebar_deposit.
+
+                                if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()) {
+                                    $converted_pending = Wiwa_FOX_Integration::convert_price($sidebar_pending);
+                                } else {
+                                    $converted_pending = (float) apply_filters('woocs_exchange_value', $sidebar_pending);
+                                }
+                                
+                                $grand_total_active = $sidebar_deposit + $converted_pending;
+                                
+                                // Note. Using wc_price to format it natively
+                                echo wp_kses_post(wc_price($grand_total_active)); 
+                                ?>
                             </span>
                         </div>
 
