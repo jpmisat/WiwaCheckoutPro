@@ -720,3 +720,24 @@ msgstr "Réserver à partir de %s"
 
 msgid "From %s"
 msgstr "À partir de %s"
+
+msgid "¡Agregado al carrito!"
+msgstr "Ajouté au panier !"
+
+msgid "Ver carrito"
+msgstr "Voir le panier"
+
+msgid "Reservar ahora"
+msgstr "Réserver maintenant"
+
+msgid "Más actividades que te pueden gustar"
+msgstr "Plus d'activités qui pourraient vous plaire"
+
+msgid "Producto agregado al carrito"
+msgstr "Produit ajouté au panier"
+
+msgid "No se pudo agregar al carrito."
+msgstr "Impossible d'ajouter au panier."
+
+msgid "Verifique los datos."
+msgstr "Veuillez vérifier les données."

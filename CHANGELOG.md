@@ -1,5 +1,10 @@
 # Changelog Wiwa Tour Checkout Pro
 
+## [2.16.4] - 2026-02-25
+
+### Fixed
+- **Add to Cart Modal i18n:** Added 7 missing translatable strings to `.pot`, `.po` (fr_FR, es_ES, es_CO), and regenerated `.mo` binary files. The modal now correctly displays French translations for "Ajouté au panier !", "Voir le panier", "Réserver maintenant", and "Plus d'activités qui pourraient vous plaire" via WPML String Translation.
+
 ## [2.16.3] - 2026-02-25
 
 ### Changed

@@ -715,3 +715,24 @@ msgstr "Reserva desde %s"
 
 msgid "From %s"
 msgstr "Desde %s"
+
+msgid "¡Agregado al carrito!"
+msgstr "¡Agregado al carrito!"
+
+msgid "Ver carrito"
+msgstr "Ver carrito"
+
+msgid "Reservar ahora"
+msgstr "Reservar ahora"
+
+msgid "Más actividades que te pueden gustar"
+msgstr "Más actividades que te pueden gustar"
+
+msgid "Producto agregado al carrito"
+msgstr "Producto agregado al carrito"
+
+msgid "No se pudo agregar al carrito."
+msgstr "No se pudo agregar al carrito."
+
+msgid "Verifique los datos."
+msgstr "Verifique los datos."

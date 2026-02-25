@@ -696,3 +696,24 @@ msgstr ""
 
 msgid "From %s"
 msgstr ""
+
+msgid "¡Agregado al carrito!"
+msgstr ""
+
+msgid "Ver carrito"
+msgstr ""
+
+msgid "Reservar ahora"
+msgstr ""
+
+msgid "Más actividades que te pueden gustar"
+msgstr ""
+
+msgid "Producto agregado al carrito"
+msgstr ""
+
+msgid "No se pudo agregar al carrito."
+msgstr ""
+
+msgid "Verifique los datos."
+msgstr ""
