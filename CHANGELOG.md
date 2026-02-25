@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.15] - 2026-02-25
+
+### Fixed
+
+- Restaurado el registro del shortcode `[dynamic_deposit_currency]` añadiendo la llamada a `Wiwa_Shortcodes::init()` en el hook `init` del plugin principal. La clase y método existían pero nunca se ejecutaba el `add_shortcode()`.
+
 ## [2.16.14] - 2026-02-25
 
 ### Added

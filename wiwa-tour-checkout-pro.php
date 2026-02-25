@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.16.14
+ * Version: 2.16.15
  * Author: Wiwa Tours (Javier)
  * Author URI: https://wiwatour.com
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Constantes del Plugin
-define('WIWA_CHECKOUT_VERSION', '2.16.14');
+define('WIWA_CHECKOUT_VERSION', '2.16.15');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -107,6 +107,8 @@ final class Wiwa_Tour_Checkout
             add_shortcode('wiwa_checkout_form', ['Wiwa_Shortcodes', 'checkout_form']);
             add_shortcode('wiwa_checkout_cart', ['Wiwa_Shortcodes', 'checkout_cart']);
             add_shortcode('wiwa_checkout_thankyou', ['Wiwa_Shortcodes', 'checkout_thankyou']);
+            // Register dynamic_deposit_currency shortcode
+            Wiwa_Shortcodes::init();
             
             // Register fields with WPML String Translation
             if (class_exists('Wiwa_Fields_Manager')) {
