@@ -207,17 +207,51 @@ endif; ?>
         <hr class="summary-divider">
         
         <div class="summary-total">
-            <span class="total-label"><?php _e('Total', 'wiwa-checkout'); ?></span>
-            <span class="total-value">
-                <?php echo wc_price($cart->get_total('edit')); ?>
-                <?php if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()): ?>
-                    <span class="currency-code"><?php echo Wiwa_FOX_Integration::get_current_currency(); ?></span>
-                <?php
-else: ?>
-                    <span class="currency-code"><?php echo esc_html($currency); ?></span>
-                <?php
-endif; ?>
-            </span>
+            <div class="flex flex-col">
+                <div class="flex items-center justify-between w-full">
+                    <span class="total-label">
+                        <?php 
+                        $have_deposit = false;
+                        $sidebar_pending = 0;
+                        if (isset(WC()->cart->deposit_data) && !empty(WC()->cart->deposit_data) && function_exists('ovatb_get_meta_data')) {
+                            $have_deposit = (bool) ovatb_get_meta_data('have_deposit', WC()->cart->deposit_data);
+                            if ($have_deposit) {
+                                $sidebar_pending = (float) ovatb_get_meta_data('remaining_total', WC()->cart->deposit_data);
+                            }
+                        }
+                        
+                        if ($have_deposit) {
+                            _e('Total to pay today', 'wiwa-checkout');
+                        } else {
+                            _e('Total', 'wiwa-checkout');
+                        }
+                        ?>
+                    </span>
+                    <span class="total-value">
+                        <?php echo wc_price($cart->get_total('edit')); ?>
+                        <?php if (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active()): ?>
+                            <span class="currency-code"><?php echo Wiwa_FOX_Integration::get_current_currency(); ?></span>
+                        <?php else: ?>
+                            <span class="currency-code"><?php echo esc_html($currency); ?></span>
+                        <?php endif; ?>
+                    </span>
+                </div>
+                
+                <?php if ($have_deposit && $sidebar_pending > 0): ?>
+                <div class="flex items-center justify-between w-full mt-2 pt-2 border-t border-dashed border-gray-200">
+                    <span class="text-red-500 text-[13px] font-medium"><?php _e('Pending payment', 'wiwa-checkout'); ?></span>
+                    <span class="text-red-600 text-[14px] font-bold">
+                        <?php 
+                        if (class_exists('Wiwa_FOX_Integration')) {
+                            echo wp_kses_post(Wiwa_FOX_Integration::format_price($sidebar_pending));
+                        } else {
+                            echo wc_price($sidebar_pending);
+                        }
+                        ?>
+                    </span>
+                </div>
+                <?php endif; ?>
+            </div>
         </div>
         
         <?php if ($coupons_enabled): ?>

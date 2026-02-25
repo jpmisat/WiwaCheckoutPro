@@ -304,28 +304,45 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
 
                         <?php
                         // --- Deposit logic for sidebar ---
-                        $cart_subtotal_raw = WC()->cart->get_subtotal();
-                        $sidebar_deposit_rate = apply_filters('wiwa_deposit_rate', 0.30);
-                        $sidebar_deposit = $cart_subtotal_raw * $sidebar_deposit_rate;
-                        $sidebar_pending = $cart_subtotal_raw - $sidebar_deposit;
+                        $sidebar_deposit = WC()->cart->get_total('edit');
+                        $sidebar_pending = 0;
+                        $have_deposit = false;
+
+                        if (isset(WC()->cart->deposit_data) && !empty(WC()->cart->deposit_data)) {
+                            if (function_exists('ovatb_get_meta_data')) {
+                                $have_deposit = (bool) ovatb_get_meta_data('have_deposit', WC()->cart->deposit_data);
+                                if ($have_deposit) {
+                                    $sidebar_pending = (float) ovatb_get_meta_data('remaining_total', WC()->cart->deposit_data);
+                                }
+                            }
+                        }
+
+                        // Support WOOCS conversion for pending balance if it exists
+                        if ($sidebar_pending > 0 && class_exists('Wiwa_FOX_Integration')) {
+                            $sidebar_pending_html = Wiwa_FOX_Integration::format_price($sidebar_pending);
+                        } else {
+                            $sidebar_pending_html = wc_price($sidebar_pending);
+                        }
                         ?>
 
                         <!-- Total pay today (Deposit) -->
                         <div class="flex justify-between items-center text-[#1a3c28] text-[14px]">
-                            <span class="font-medium"><?php esc_html_e('Total to pay today (Deposit)', 'wiwa-checkout'); ?></span>
+                            <span class="font-medium"><?php esc_html_e('Total to pay today', 'wiwa-checkout'); ?> <?php if ($have_deposit) echo '(' . esc_html__('Deposit', 'wiwa-checkout') . ')'; ?></span>
                             <span class="font-bold"><?php echo wc_price($sidebar_deposit); ?></span>
                         </div>
 
                         <!-- Pending -->
+                        <?php if ($have_deposit && $sidebar_pending > 0) : ?>
                         <div class="pt-5 border-t border-dashed border-gray-200">
                             <div class="flex justify-between items-center text-red-600 text-[14px]">
                                 <span><?php esc_html_e('Pending payment', 'wiwa-checkout'); ?></span>
-                                <span class="font-bold"><?php echo wc_price($sidebar_pending); ?></span>
+                                <span class="font-bold"><?php echo wp_kses_post($sidebar_pending_html); ?></span>
                             </div>
                             <p class="text-[10px] text-gray-400 mt-1.5 leading-relaxed italic">
                                 <?php esc_html_e('The remaining balance will be paid directly at our offices on the day of the tour.', 'wiwa-checkout'); ?>
                             </p>
                         </div>
+                        <?php endif; ?>
                     </div>
 
                     <!-- SHIPPING / FEES / COUPONS / TAXES (WC Standard) -->
