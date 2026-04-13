@@ -6,6 +6,12 @@ _original_backup/
 Wiwa tr - Manual de marca.pdf
 force-reload.ps1
 
+# Credentials (sensitive)
+docs/wiwatour_credentials.md
+
+# Deprecated agent rules (migrated to .gemini/GEMINI.md)
+.agents/
+
 # Standard WordPress & OS Ignores
 .vscode/
 .idea/
