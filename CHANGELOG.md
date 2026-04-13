@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.19] - 2026-04-13
+
+### Fixed
+
+- **Tailwind CSS / Material Symbols / Montserrat no cargando en la página del carrito:** `is_cart()` de WooCommerce devolvía `false` durante `wp_enqueue_scripts` en la página `/carrito/` construida con Elementor, causando que el layout Stitch se renderizara sin framework CSS. Implementada detección multi-fallback de 5 métodos: (1) `is_cart()` nativo, (2) constante `WIWA_RENDERING_CART`, (3) comparación de `wc_get_page_id('cart')` incluyendo traducciones WPML via `icl_object_id`, (4) detección por URL slug `/carrito/`, `/cart/`, `/panier/`, `/warenkorb/`, (5) escaneo de shortcode `[wiwa_checkout_cart]` en contenido del post.
+
 ## [2.16.18] - 2026-04-13
 
 ### Added

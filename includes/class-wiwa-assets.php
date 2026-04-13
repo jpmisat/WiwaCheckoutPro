@@ -45,9 +45,51 @@ class Wiwa_Assets
 
         // --- CART PAGE SPECIFIC ASSETS ---
         // Load on native WC cart page OR when our custom [wiwa_checkout_cart] shortcode is used
-        $is_wiwa_cart = is_cart() || (defined('WIWA_RENDERING_CART') && WIWA_RENDERING_CART);
+        // Using aggressive multi-fallback detection because is_cart() can fail with Elementor/WPML
+        $is_wiwa_cart = false;
 
-        // Fallback: Also detect if the current page contains our shortcode in its content
+        // Method 1: Native WooCommerce detection
+        if (function_exists('is_cart') && is_cart()) {
+            $is_wiwa_cart = true;
+        }
+
+        // Method 2: WIWA_RENDERING_CART constant (set by our shortcode)
+        if (!$is_wiwa_cart && defined('WIWA_RENDERING_CART') && WIWA_RENDERING_CART) {
+            $is_wiwa_cart = true;
+        }
+
+        // Method 3: Match current page ID to WooCommerce cart page ID
+        if (!$is_wiwa_cart && function_exists('wc_get_page_id')) {
+            $cart_page_id = wc_get_page_id('cart');
+            if ($cart_page_id > 0) {
+                global $post;
+                $current_page_id = is_object($post) ? $post->ID : 0;
+                // Also check for WPML translated page IDs
+                if ($current_page_id === $cart_page_id) {
+                    $is_wiwa_cart = true;
+                } elseif (function_exists('icl_object_id')) {
+                    // WPML: check if current page is a translation of the cart page
+                    $translated_cart_id = icl_object_id($cart_page_id, 'page', true);
+                    if ($current_page_id === $translated_cart_id) {
+                        $is_wiwa_cart = true;
+                    }
+                }
+            }
+        }
+
+        // Method 4: URL slug fallback (catches /carrito/, /cart/, /panier/)
+        if (!$is_wiwa_cart && !is_admin()) {
+            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $cart_slugs = ['carrito', 'cart', 'panier', 'warenkorb'];
+            foreach ($cart_slugs as $slug) {
+                if (preg_match('#/' . $slug . '(/|$|\?)#i', $request_uri)) {
+                    $is_wiwa_cart = true;
+                    break;
+                }
+            }
+        }
+
+        // Method 5: Shortcode scan in post content
         if (!$is_wiwa_cart && !is_admin()) {
             global $post;
             if ($post && is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'wiwa_checkout_cart')) {
