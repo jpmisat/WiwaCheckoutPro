@@ -44,7 +44,18 @@ class Wiwa_Assets
         }
 
         // --- CART PAGE SPECIFIC ASSETS ---
-        if ( !is_admin() && is_cart() ) {
+        // Load on native WC cart page OR when our custom [wiwa_checkout_cart] shortcode is used
+        $is_wiwa_cart = is_cart() || (defined('WIWA_RENDERING_CART') && WIWA_RENDERING_CART);
+
+        // Fallback: Also detect if the current page contains our shortcode in its content
+        if (!$is_wiwa_cart && !is_admin()) {
+            global $post;
+            if ($post && is_a($post, 'WP_Post') && has_shortcode($post->post_content, 'wiwa_checkout_cart')) {
+                $is_wiwa_cart = true;
+            }
+        }
+
+        if ( !is_admin() && $is_wiwa_cart ) {
             // 1. Tailwind CSS CDN (cart page only to avoid breaking other pages)
             wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,container-queries', [], null, false);
 

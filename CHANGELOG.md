@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.18] - 2026-04-13
+
+### Added
+
+- Implementados los métodos faltantes `checkout_cart()`, `checkout_form()` y `checkout_thankyou()` en `class-wiwa-shortcodes.php`. Estos shortcodes (`[wiwa_checkout_cart]`, `[wiwa_checkout_form]`, `[wiwa_checkout_thankyou]`) estaban registrados en el plugin principal pero carecían de funciones de renderizado, causando salida vacía silenciosa.
+- `checkout_cart()` delega a `[woocommerce_cart]` y define la constante `WIWA_RENDERING_CART` para señalizar al asset loader.
+- `checkout_form()` delega a `[woocommerce_checkout]` para reutilizar el flujo multi-step de Wiwa Checkout Handler.
+- `checkout_thankyou()` valida la orden vía `order-received` y `key` de WooCommerce, con fallback visual de confirmación genérica.
+
+### Changed
+
+- Ampliada la detección de assets del carrito en `class-wiwa-assets.php`: ahora carga Tailwind CSS CDN, Material Symbols, Montserrat y los estilos custom no solo en la página nativa `is_cart()` de WooCommerce, sino también en cualquier página que contenga el shortcode `[wiwa_checkout_cart]` (vía constante `WIWA_RENDERING_CART` + escaneo de `has_shortcode()` en el contenido del post).
+
 ## [2.16.17] - 2026-02-25
 
 ### Added
