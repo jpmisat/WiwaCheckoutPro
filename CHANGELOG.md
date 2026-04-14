@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.22] - 2026-04-14
+
+### Added
+
+- **Elementor Override:** Added programmatic override hooking into `get_post_metadata` to selectively and completely disable Elementor rendering on the Cart page (`is_cart()`). This cleanly shields the raw Tailwind HTML templates from Elementor's wrapper containers without manual backend interventions.
+
+## [2.16.21] - 2026-04-14
+
+### Fixed
+
+- **Cart Layout:** Reverted brittle manual 300-line CSS overrides in `wiwa-cart-styles.css` that broke the mobile experience.
+- **Elementor Collisions:** Added `important: true` to the Tailwind configuration to cleanly force utility classes inside `.wiwa-cart-page` without manually rewriting layouts.
+
 ## [2.16.20] - 2026-04-13
 
 ### Fixed

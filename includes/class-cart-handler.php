@@ -13,6 +13,9 @@ class Wiwa_Cart_Handler
         add_filter('wc_get_template', [$this, 'override_cart_templates'], PHP_INT_MAX, 5);
         add_filter('woocommerce_locate_template', [$this, 'override_cart_templates'], PHP_INT_MAX, 3);
         
+        // Force disable Elementor on the Cart page dynamically to protect Tailwind layouts
+        add_filter('get_post_metadata', [$this, 'disable_elementor_on_cart'], 10, 4);
+        
         // Enqueue side cart script
         add_action('wp_enqueue_scripts', [$this, 'enqueue_side_cart_script']);
         
@@ -52,6 +55,21 @@ class Wiwa_Cart_Handler
         add_action('template_redirect', [$this, 'prevent_varnish_on_checkout_pages'], 9);
     }
 
+    /**
+     * Disable Elementor specifically for the Cart page
+     * so it doesn't wrap the template in elementor-widget-container and ruin Tailwind
+     */
+    public function disable_elementor_on_cart($value, $object_id, $meta_key, $single)
+    {
+        if ($meta_key === '_elementor_edit_mode') {
+            if (function_exists('wc_get_page_id') && $object_id == wc_get_page_id('cart')) {
+                // By returning false/empty String for the edit_mode meta key, 
+                // Elementor believes this page is essentially a classic WP page
+                return $single ? '' : [];
+            }
+        }
+        return $value;
+    }
 
     /**
      * Prevent Varnish / CloudPanel from caching WC cart fragment AJAX responses.
