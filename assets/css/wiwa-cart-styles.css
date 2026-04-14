@@ -39,6 +39,11 @@ body.woocommerce-cart {
   background-color: var(--wiwa-bg-body) !important;
 }
 
+/* Defeat Elementor generic link underlines */
+.wiwa-cart-page a.no-underline {
+  text-decoration: none !important;
+}
+
 /* Reset WC table-based cart styles that may leak through */
 body.woocommerce-cart .woocommerce table.shop_table,
 body.woocommerce-cart .woocommerce table.shop_table thead,
@@ -277,14 +282,6 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     "wght" 300,
     "GRAD" 0,
     "opsz" 24;
-}
-
-/* Eradicate Elementor global link underlines for cart page items */
-.page-content .wiwa-cart-page a.no-underline,
-.wiwa-cart-page a.no-underline {
-  text-decoration: none !important;
-  border: none !important;
-  box-shadow: none !important;
 }
 
 /* Fix WC image output to fill container */

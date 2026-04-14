@@ -3,9 +3,9 @@ All notable changes to this project will be documented in this file.
 
 ## [2.16.27] - 2026-04-14
 
-### Style
+### Fixed
 
-- **Strict Underline Purge:** Implemented a highly specific CSS rule targeting `.page-content .wiwa-cart-page a.no-underline` injected natively via the plugin's stylesheet (`wiwa-cart-styles.css`) to definitively override Elementor's ultra-specific global `text-decoration: underline` rules on all links in the checkout loop.
+- **Elementor CSS Override:** Elementor's generic `.page-content a { text-decoration: underline; }` CSS rule was overpowering Tailwind's internal `text-decoration-line` handling for some browsers. Added an explicit `text-decoration: none !important;` rule to `wiwa-cart-styles.css` directly targeting `.wiwa-cart-page a.no-underline` to permanently defeat WordPress/Elementor's forceful pseudo-underlines.
 
 ## [2.16.26] - 2026-04-14
 
