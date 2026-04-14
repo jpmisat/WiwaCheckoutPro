@@ -47,7 +47,7 @@
 .wiwa-checkout-container {
     max-width: 1400px;
     margin: 0 auto;
-    padding: 40px 20px
+    padding: 30px 20px
 }
 
 .wiwa-checkout-steps {
@@ -126,7 +126,7 @@
 
 .wiwa-checkout-form {
     background: white;
-    padding: 48px;
+    padding: 40px;
     border-radius: 16px;
     box-shadow: 0 1px 3px rgba(0, 0, 0, .1), 0 1px 2px rgba(0, 0, 0, .06)
 }
@@ -158,13 +158,13 @@
 
 .form-grid {
     display: grid;
-    gap: 24px;
+    gap: 20px;
     margin-bottom: 36px
 }
 
 .form-grid-2 {
     grid-template-columns: repeat(2, 1fr);
-    grid-auto-flow: dense;
+    /* grid-auto-flow: dense Removed to respect DOM order */
 }
 
 .form-field {
@@ -177,13 +177,9 @@
     grid-column: 1 / -1 !important;
 }
 
-.form-field.field-left {
-    grid-column: 1 !important;
-    width: 100%;
-}
-
+.form-field.field-left,
 .form-field.field-right {
-    grid-column: 2 !important;
+    grid-column: span 1 !important;
     width: 100%;
 }
 
@@ -205,7 +201,7 @@
 .wiwa-input,
 .wiwa-select {
     width: 100%;
-    padding: 16px 18px;
+    padding: 12px 16px;
     border: 1px solid var(--wiwa-gray-300);
     border-radius: var(--wiwa-radius);
     font-size: 15px;
@@ -291,7 +287,7 @@
     border-right: 1px solid var(--wiwa-gray-200) !important;
     flex-shrink: 0;
     width: auto;
-    min-width: 100px;
+    min-width: 80px;
     max-width: 140px;
 }
 
@@ -300,7 +296,7 @@
     border: none !important;
     flex-shrink: 0;
     width: auto !important;
-    min-width: 100px;
+    min-width: 80px;
     margin: 0 !important;
 }
 
@@ -394,6 +390,274 @@
     z-index: 1
 }
 
+/* ===== "I am the main traveler" Toggle ===== */
+.wiwa-traveler-toggle {
+    margin: 8px 0 28px;
+    padding: 18px 24px;
+    background: linear-gradient(135deg, var(--wiwa-green-light), #e8f0ec);
+    border: 2px solid rgba(30, 58, 43, 0.12);
+    border-radius: 14px;
+    transition: all 0.3s ease;
+}
+
+.wiwa-traveler-toggle:hover {
+    border-color: rgba(30, 58, 43, 0.25);
+    box-shadow: 0 2px 12px rgba(30, 58, 43, 0.08);
+}
+
+.wiwa-traveler-toggle.is-active {
+    border-color: var(--wiwa-brand);
+    background: linear-gradient(135deg, #e0ede5, #d5e8dc);
+    box-shadow: 0 4px 16px rgba(30, 58, 43, 0.12);
+}
+
+.traveler-toggle-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+}
+
+.traveler-toggle-info {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.traveler-toggle-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background: var(--wiwa-brand);
+    border-radius: 12px;
+    color: white;
+    flex-shrink: 0;
+}
+
+.traveler-toggle-text {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.traveler-toggle-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+    line-height: 1.3;
+}
+
+.traveler-toggle-desc {
+    font-size: 13px;
+    color: var(--wiwa-gray-600);
+    line-height: 1.4;
+}
+
+/* iOS-style Toggle Switch */
+.wiwa-toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 52px;
+    height: 28px;
+    flex-shrink: 0;
+    cursor: pointer;
+}
+
+.wiwa-toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+    position: absolute;
+}
+
+.toggle-slider {
+    position: absolute;
+    inset: 0;
+    background: var(--wiwa-gray-300);
+    border-radius: 28px;
+    transition: background 0.3s ease, box-shadow 0.3s ease;
+}
+
+.toggle-slider::before {
+    content: '';
+    position: absolute;
+    width: 22px;
+    height: 22px;
+    left: 3px;
+    bottom: 3px;
+    background: white;
+    border-radius: 50%;
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.15);
+}
+
+.wiwa-toggle-switch input:checked + .toggle-slider {
+    background: var(--wiwa-brand);
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.15);
+}
+
+.wiwa-toggle-switch input:checked + .toggle-slider::before {
+    transform: translateX(24px);
+}
+
+.wiwa-toggle-switch input:focus + .toggle-slider {
+    box-shadow: 0 0 0 3px rgba(30, 58, 43, 0.2);
+}
+
+/* Linked / Synced field state */
+.wiwa-linked-field {
+    position: relative;
+    pointer-events: none;
+    opacity: 0.65;
+    transition: opacity 0.3s ease;
+}
+
+.wiwa-linked-field::after {
+    content: '🔗';
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    font-size: 12px;
+    opacity: 0.7;
+    z-index: 2;
+}
+
+.wiwa-linked-field .wiwa-input,
+.wiwa-linked-field .wiwa-select,
+.wiwa-linked-field .combined-input-group,
+.wiwa-linked-field .select2-container {
+    background: var(--wiwa-gray-100) !important;
+    cursor: not-allowed;
+}
+
+/* Toggle Feedback Message */
+.traveler-toggle-feedback {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wiwa-brand);
+    padding: 0 8px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.traveler-toggle-feedback.show {
+    max-height: 40px;
+    opacity: 1;
+    padding: 8px 8px 0;
+}
+
+/* Per-Passenger "Use my data" Copy Button */
+.wiwa-copy-billing-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 6px;
+    color: var(--wiwa-brand);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.wiwa-copy-billing-btn:hover {
+    background: var(--wiwa-green-light);
+    border-color: var(--wiwa-brand);
+}
+
+.wiwa-copy-billing-btn:active {
+    transform: scale(0.96);
+}
+
+.wiwa-copy-billing-btn svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+/* Feedback states */
+.wiwa-copy-billing-btn .copy-btn-done {
+    display: none;
+}
+
+.wiwa-copy-billing-btn.is-copied {
+    background: var(--wiwa-brand);
+    border-color: var(--wiwa-brand);
+    color: white;
+    pointer-events: none;
+}
+
+.wiwa-copy-billing-btn.is-copied svg {
+    transform: translateY(2px);
+}
+
+.wiwa-copy-billing-btn.is-copied .copy-btn-text {
+    display: none;
+}
+
+.wiwa-copy-billing-btn.is-copied .copy-btn-done {
+    display: inline;
+}
+
+
+
+/* Responsive toggle */
+@media (max-width: 640px) {
+    .wiwa-traveler-toggle {
+        padding: 14px 16px;
+    }
+    
+    .traveler-toggle-icon {
+        width: 38px;
+        height: 38px;
+    }
+    
+    .traveler-toggle-icon svg {
+        width: 18px;
+        height: 18px;
+    }
+    
+    .traveler-toggle-label {
+        font-size: 14px;
+    }
+    
+    .traveler-toggle-desc {
+        font-size: 12px;
+    }
+    
+    .wiwa-toggle-switch {
+        width: 48px;
+        height: 26px;
+    }
+    
+    .toggle-slider::before {
+        width: 20px;
+        height: 20px;
+    }
+    
+    .wiwa-toggle-switch input:checked + .toggle-slider::before {
+        transform: translateX(22px);
+    }
+
+    .wiwa-copy-billing-btn {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+
+    .wiwa-copy-billing-btn svg {
+        width: 12px;
+        height: 12px;
+    }
+}
+
 .tours-accordion {
     display: flex;
     flex-direction: column;
@@ -418,42 +682,58 @@
 }
 
 .tour-accordion-header {
-    display: flex;
-    justify-content: space-between;
+    display: grid;
+    grid-template-columns: 100px 1fr auto; /* Desktop: Image - Content - Toggle */
+    gap: 20px;
     align-items: center;
-    padding: 20px 24px;
+    padding: 20px;
     cursor: pointer;
-    transition: background .2s;
-    background: var(--wiwa-gray-50)
+    transition: all 0.2s ease;
+    background: white;
+    position: relative;
+    border-radius: 16px;
 }
 
 .tour-accordion-header:hover {
-    background: var(--wiwa-green-light)
+    background: var(--wiwa-gray-50);
 }
 
+/* Remove the nested grid/flex wrapper to make the main header the grid parent */
 .tour-accordion-header-left {
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    flex: 1
+    display: contents; 
 }
 
 .tour-thumbnail {
-    width: 80px;
-    height: 80px;
+    width: 100px;
+    height: 100px;
     border-radius: 12px;
     overflow: hidden;
-    flex-shrink: 0
+    position: relative;
+    flex-shrink: 0;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.05);
 }
 
 .tour-thumbnail img {
     width: 100%;
     height: 100%;
-    object-fit: cover
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s ease;
+}
+
+.tour-accordion-item:hover .tour-thumbnail img {
+    transform: scale(1.05); /* Sutil zoom effect */
 }
 
 .tour-info {
     flex: 1
+}
+
+.tour-name a {
+    text-decoration: none;
+    color: inherit;
+    border-bottom: none;
+    pointer-events: none; /* Just in case */
 }
 
 .tour-name {
@@ -461,17 +741,8 @@
     font-weight: 600;
     color: var(--wiwa-gray-900);
     margin-bottom: 8px;
-    line-height: 1.4
-}
-
-.tour-name a {
-    text-decoration: none;
-    color: inherit;
-    border-bottom: none;
-}
-
-.tour-name a:hover {
-    color: var(--wiwa-green);
+    line-height: 1.4;
+    cursor: default;
 }
 
 .tour-meta {
@@ -496,27 +767,22 @@
 
 .tour-accordion-toggle {
     background: transparent;
-    border: 1px solid var(--wiwa-gray-300);
+    border: none;
     border-radius: 50%;
-    /* Circle shape */
-    padding: 10px;
-    /* Larger touch target */
-    width: 44px;
-    height: 44px;
+    width: 40px;
+    height: 40px;
     display: flex;
     align-items: center;
     justify-content: center;
     cursor: pointer;
-    color: var(--wiwa-gray-600);
-    transition: all .3s;
+    color: var(--wiwa-gray-400);
+    transition: all 0.2s ease;
     flex-shrink: 0;
 }
 
 .tour-accordion-toggle:hover {
-    background: white;
-    color: var(--wiwa-green);
-    border-color: var(--wiwa-green);
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    background: var(--wiwa-gray-200);
+    color: var(--wiwa-gray-700);
 }
 
 .tour-accordion-toggle .chevron {
@@ -1073,6 +1339,11 @@
     order: 1
 }
 
+/* Forzar visibilidad del botón de pago para evitar que el script de WooCommerce (checkout.js) lo oculte al actualizar el checkout tras un cambio de moneda */
+form#wiwa-checkout-step-2 button#place_order {
+    display: inline-flex !important;
+}
+
 .form-footer-step2 .btn-secondary {
     order: 2
 }
@@ -1090,7 +1361,7 @@
 /* Phone Input Wrapper */
 .phone-input-wrapper {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 90px 1fr;
     gap: 10px
 }
 
@@ -1161,16 +1432,16 @@
    Accordion Error States
    ======================================== */
 .tour-accordion-item.has-error {
-    border-color: #ef4444;
+    border-color: var(--wiwa-error);
+    box-shadow: 0 0 0 1px var(--wiwa-error) inset;
 }
 
 .tour-accordion-item.has-error .tour-accordion-header {
-    background: #FEF2F2;
-    /* Soft red bg */
+    background: #FFF5F5;
 }
 
 .tour-accordion-item.has-error .passenger-name {
-    color: #ef4444;
+    color: var(--wiwa-error);
     font-weight: 600;
 }
 
@@ -1192,7 +1463,132 @@
 .tour-accordion-item.has-error .accordion-error-badge {
     display: inline-flex !important;
     align-items: center;
-    gap: 4px;
+    gap: 6px;
+    background: #e11d48; /* Premium Red */
+    color: white;
+    padding: 6px 12px;
+    border-radius: 50px;
+    font-size: 12px;
+    font-weight: 600;
+    box-shadow: 0 2px 6px rgba(225, 29, 72, 0.25);
+    z-index: 2;
+}
+
+/* --- MOBILE CARD LAYOUT (<768px) --- */
+@media (max-width: 768px) {
+    .tour-accordion-header {
+        grid-template-columns: 1fr; /* Stacked layout */
+        grid-template-areas: 
+            "image"
+            "content"
+            "actions";
+        gap: 12px;
+        padding: 16px;
+    }
+
+    .tour-thumbnail {
+        grid-area: image;
+        width: 100%;
+        height: 140px; /* Portada style */
+        border-radius: 12px;
+    }
+
+    .tour-thumbnail img {
+        object-position: center;
+    }
+
+    .tour-info {
+        grid-area: content;
+    }
+
+    .tour-name {
+        font-size: 16px;
+        margin-bottom: 6px;
+    }
+    
+    /* Container for Badge + Toggle */
+    .tour-accordion-header::after {
+        content: ''; 
+        /* Helper to create a flex container for actions if needed, 
+           but we might need to rely on the natural flow or JS injection.
+           For now, let's use the grid items we have. */
+    }
+
+    /* We need to position the toggle and badge */
+    .tour-accordion-toggle {
+        grid-area: actions;
+        justify-self: end; /* Align to right */
+        margin-top: 4px;
+        background: var(--wiwa-gray-100);
+    }
+    
+    .tour-accordion-item.has-error .accordion-error-badge {
+        grid-area: actions;
+        justify-self: start; /* Align to left */
+        margin-top: 4px;
+        /* Ensure it shares the row with the toggle */
+        align-self: center;
+    }
+    
+    /* If both exist, we need them on the same row. 
+       Since they are separate DOM elements mixed in, CSS Grid areas might be tricky if they aren't direct children wrapper in a container.
+       Assuming standard DOM order: Thumbnail, Info, Badge, Toggle. 
+       Let's try a different approach for Action Row */
+       
+    .tour-accordion-header {
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .tour-accordion-header-left {
+        display: flex;
+        flex-direction: column;
+        width: 100%;
+        gap: 12px;
+    }
+    
+    .tour-thumbnail {
+        width: 100%;
+        height: 150px;
+    }
+    
+    /* Create an action row effect using Flexbox order/alignment manually isn't perfect without a container.
+       But we can use absolute positioning for the toggle or badge if needed, 
+       OR just let them stack naturally at the bottom. */
+       
+    .tour-info {
+        width: 100%;
+    }
+    
+    .tour-accordion-toggle {
+        align-self: flex-end; /* Right align */
+        width: 36px;
+        height: 36px;
+        margin-top: -36px; /* Pull it up next to badge if possible, or just below */
+    }
+    
+    .tour-accordion-item.has-error .tour-accordion-toggle {
+         margin-top: 0; /* Reset if stacking */
+    }
+    
+    /* Better approach for Actions Row simulation: */
+    .accordion-error-badge {
+        order: 3;
+        align-self: flex-start;
+        margin-right: auto;
+    }
+    
+    .tour-accordion-toggle {
+        order: 4;
+        align-self: flex-end;
+    }
+    
+    /* Layout correction:
+       .tour-accordion-header (Grid/Flex)
+          -> .tour-accordion-header-left (Content) -> [Thumb, Info]
+          -> .accordion-error-badge (if exists)
+          -> .tour-accordion-toggle
+    */
 }
 
 /* Clear error state when accordion is opened */
@@ -1292,7 +1688,7 @@
    ======================================== */
 .combined-input-group {
     display: grid;
-    grid-template-columns: 120px 1fr;
+    grid-template-columns: 90px 1fr;
     gap: 0;
 }
 
@@ -1320,12 +1716,12 @@
 /* ---- Mobile: Combined Input Groups ---- */
 @media (max-width: 600px) {
     .combined-input-group {
-        grid-template-columns: 95px 1fr;
+        grid-template-columns: 90px 1fr;
     }
 
     .combined-input-group .select2-container {
-        max-width: 95px !important;
-        width: 95px !important;
+        max-width: 93px !important;
+        width: 93px !important;
     }
 
     .combined-input-group .select2-container .select2-selection__rendered {
@@ -1340,7 +1736,7 @@
 
     .combined-input-group select {
         min-width: 85px;
-        max-width: 95px;
+        max-width: 90px;
         font-size: 12px;
         padding: 10px 6px;
     }
@@ -1959,6 +2355,212 @@ button[type="submit"].btn-primary:hover,
 }
 
 /* ========================================
+   Deposit Breakdown Component
+   Clear 3-tier visual hierarchy for deposit tours
+   ======================================== */
+
+.wiwa-deposit-breakdown {
+    margin-top: 20px;
+    padding-top: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* --- 1. TODAY'S PAYMENT (Primary — Green Card) --- */
+.wiwa-deposit-today {
+    background: linear-gradient(135deg, #f0fdf4 0%, #e8fbe8 100%);
+    border: 1.5px solid #bbf7d0;
+    border-radius: 12px;
+    padding: 16px 18px;
+    position: relative;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease;
+}
+
+.wiwa-deposit-today:hover {
+    box-shadow: 0 2px 12px rgba(22, 163, 74, 0.08);
+}
+
+.wiwa-deposit-today::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 4px;
+    height: 100%;
+    background: linear-gradient(180deg, #16a34a, #22c55e);
+    border-radius: 2px 0 0 2px;
+}
+
+.wiwa-deposit-today__header {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-bottom: 8px;
+}
+
+.wiwa-deposit-today__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 22px;
+    height: 22px;
+    background: #16a34a;
+    color: white;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.wiwa-deposit-today__icon svg {
+    width: 12px;
+    height: 12px;
+}
+
+.wiwa-deposit-today__label {
+    font-size: 13px;
+    font-weight: 600;
+    color: #15803d;
+    letter-spacing: 0.01em;
+}
+
+.wiwa-deposit-today__badge {
+    font-size: 10px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    background: #16a34a;
+    color: white;
+    padding: 2px 8px;
+    border-radius: 100px;
+    margin-left: auto;
+}
+
+.wiwa-deposit-today__amount {
+    font-size: 26px;
+    font-weight: 800;
+    color: #15803d;
+    line-height: 1.1;
+    display: flex;
+    align-items: baseline;
+    gap: 6px;
+}
+
+.wiwa-deposit-today__amount .woocommerce-Price-amount {
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
+
+.wiwa-deposit-today__currency {
+    font-size: 13px;
+    font-weight: 600;
+    color: #22c55e;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+}
+
+/* --- 2. PENDING BALANCE (Secondary — Amber/Warning) --- */
+.wiwa-deposit-pending {
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    border-radius: 10px;
+    padding: 12px 16px;
+    margin-top: 10px;
+}
+
+.wiwa-deposit-pending__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 8px;
+}
+
+.wiwa-deposit-pending__label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #92400e;
+}
+
+.wiwa-deposit-pending__icon {
+    color: #d97706;
+    flex-shrink: 0;
+}
+
+.wiwa-deposit-pending__amount {
+    font-size: 15px;
+    font-weight: 700;
+    color: #b45309;
+    white-space: nowrap;
+}
+
+.wiwa-deposit-pending__amount .woocommerce-Price-amount {
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
+
+.wiwa-deposit-pending__note {
+    margin: 6px 0 0 0;
+    font-size: 10px;
+    color: #a16207;
+    font-style: italic;
+    line-height: 1.4;
+    padding-left: 20px;
+    opacity: 0.85;
+}
+
+/* --- 3. GRAND TOTAL (Tertiary — Informational) --- */
+.wiwa-deposit-grand {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 12px 4px 4px;
+    margin-top: 8px;
+    border-top: 1px dashed #e5e7eb;
+}
+
+.wiwa-deposit-grand__label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #9ca3af;
+    letter-spacing: 0.01em;
+}
+
+.wiwa-deposit-grand__amount {
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+}
+
+.wiwa-deposit-grand__amount .woocommerce-Price-amount {
+    font-size: inherit;
+    font-weight: inherit;
+    color: inherit;
+}
+
+.wiwa-deposit-pending__currency {
+    font-size: 11px;
+    font-weight: 600;
+    color: #a16207;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-left: 2px;
+}
+
+.wiwa-deposit-grand__currency {
+    font-size: 10px;
+    font-weight: 600;
+    color: #9ca3af;
+    letter-spacing: 0.04em;
+    opacity: 0.8;
+    margin-left: 2px;
+}
+
+/* ========================================
    Step 2 Specific Styles
    ======================================== */
 /* Hide Currency Selector in Sidebar ONLY on Step 2 */
@@ -2332,3 +2934,855 @@ ul.order_details li strong {
         content: none;
     }
 }
+
+/* 
+ * Side Cart Empty State 
+ */
+.wiwa-side-cart-empty {
+    text-align: center;
+    padding: 40px 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    min-height: 300px;
+}
+
+.wiwa-side-cart-empty .wiwa-empty-icon svg {
+    margin-bottom: 16px;
+    stroke: var(--wiwa-gray-400, #9CA3AF);
+    width: 64px;
+    height: 64px;
+}
+
+.wiwa-side-cart-empty .wiwa-empty-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--wiwa-gray-900, #111827);
+    margin: 0 0 8px;
+    line-height: 1.3;
+}
+
+.wiwa-side-cart-empty .wiwa-empty-desc {
+    font-size: 14px;
+    color: var(--wiwa-gray-500, #6B7280);
+    margin: 0 0 24px;
+    line-height: 1.5;
+    max-width: 260px;
+}
+
+.wiwa-side-cart-empty .wiwa-btn-primary {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--wiwa-green, #1E3A2B);
+    color: white !important;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none !important;
+    font-weight: 600;
+    font-size: 15px;
+    transition: all 0.2s;
+    border: none;
+    cursor: pointer;
+}
+
+.wiwa-side-cart-empty .wiwa-btn-primary:hover {
+    background: var(--wiwa-green-dark, #162c20) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+}
+
+/*
+ * Side Cart Populated State (Elementor Overrides)
+ */
+/* Product Item */
+.elementor-menu-cart__product {
+    padding: 16px 0 !important;
+    border-bottom: 1px solid var(--wiwa-gray-200) !important;
+}
+
+.elementor-menu-cart__product-image img {
+    border-radius: 8px !important;
+    width: 64px !important;
+    height: 64px !important;
+    object-fit: cover !important;
+}
+
+.elementor-menu-cart__product-name,
+.elementor-menu-cart__product-name a {
+    font-size: 14px !important;
+    font-weight: 600 !important;
+    color: var(--wiwa-gray-900) !important;
+    text-decoration: none !important;
+    margin-bottom: 4px !important;
+}
+
+/* Variations/Attributes */
+.elementor-menu-cart__product .variation {
+    font-size: 12px !important;
+    color: var(--wiwa-gray-500) !important;
+    margin-top: 4px !important;
+}
+
+.elementor-menu-cart__product .variation dt,
+.elementor-menu-cart__product .variation dd {
+    display: inline !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    font-weight: normal !important;
+}
+.elementor-menu-cart__product .variation dt {
+    font-weight: 500 !important;
+    margin-right: 4px !important;
+}
+
+/* Price */
+.elementor-menu-cart__product-price {
+    font-size: 14px !important;
+    font-weight: 700 !important;
+    color: var(--wiwa-green) !important;
+}
+
+/* Subtotal */
+.elementor-menu-cart__subtotal {
+    border-top: 2px solid var(--wiwa-gray-200) !important;
+    padding: 20px 0 !important;
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: var(--wiwa-gray-900) !important;
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+}
+
+/* Footer Buttons */
+.elementor-menu-cart__footer-buttons {
+    display: flex !important;
+    gap: 12px !important;
+    flex-direction: column !important;
+}
+
+.elementor-menu-cart__footer-buttons .elementor-button {
+    width: 100% !important;
+    padding: 14px !important;
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    font-size: 15px !important;
+    text-align: center !important;
+    justify-content: center !important;
+    transition: all 0.2s !important;
+}
+
+/* View Cart Button (Secondary) */
+.elementor-menu-cart__footer-buttons .elementor-button--view-cart {
+    background: transparent !important;
+    border: 1px solid var(--wiwa-gray-300) !important;
+    color: var(--wiwa-gray-700) !important;
+}
+
+.elementor-menu-cart__footer-buttons .elementor-button--view-cart:hover {
+    border-color: var(--wiwa-gray-900) !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* Checkout Button (Primary) */
+.elementor-menu-cart__footer-buttons .elementor-button--checkout {
+    background: var(--wiwa-green, #1E3A2B) !important;
+    color: white !important;
+    border: none !important;
+}
+
+.elementor-menu-cart__footer-buttons .elementor-button--checkout:hover {
+    background: #162c20 !important; /* Explicit hex for safety */
+    color: white !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2);
+}
+
+/* Hide Default Empty Message aggressively */
+.woocommerce-mini-cart__empty-message {
+
+/* 
+ * =========================================
+ * Main Cart Page Redesign (v2.8.0)
+ * =========================================
+ */
+
+.wiwa-cart-wrapper {
+    max-width: 1200px;
+    margin: 40px auto;
+    padding: 0 20px;
+    font-family: 'Outfit', sans-serif; /* Ensure font consistency */
+}
+
+.wiwa-cart-title {
+    font-size: 2.5rem;
+    color: var(--wiwa-brand);
+    margin-bottom: 30px;
+    text-align: center;
+    font-weight: 700;
+}
+
+/* 
+ * Layout Grid 
+ * Desktop: Table (2/3) + Totals (1/3)
+ */
+.wiwa-cart-wrapper .woocommerce-cart-form {
+    display: block;
+    width: 100%;
+}
+
+@media (min-width: 992px) {
+    .wiwa-cart-wrapper {
+        display: grid;
+        grid-template-columns: 1fr 350px;
+        gap: 40px;
+        align-items: start;
+    }
+
+    .wiwa-cart-title {
+        grid-column: 1 / -1;
+    }
+}
+
+/* 
+ * Cart Table Styling 
+ */
+.wiwa-cart-table table.shop_table {
+    border: none !important;
+    border-radius: var(--wiwa-radius);
+    overflow: hidden;
+    background: white;
+    box-shadow: var(--wiwa-shadow);
+    border-collapse: separate !important;
+    border-spacing: 0;
+    width: 100%;
+    margin-bottom: 0; 
+}
+
+.wiwa-cart-table th {
+    background: var(--wiwa-gray-100);
+    color: var(--wiwa-gray-700);
+    font-weight: 600;
+    padding: 15px 20px !important;
+    text-transform: uppercase;
+    font-size: 0.85rem;
+    border-bottom: 2px solid var(--wiwa-gray-200) !important;
+}
+
+.wiwa-cart-table td {
+    padding: 20px !important;
+    vertical-align: middle !important;
+    border-top: 1px solid var(--wiwa-gray-100) !important;
+}
+
+.wiwa-cart-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Product Info */
+.wiwa-cart-table .product-thumbnail img {
+    width: 80px !important;
+    height: 80px !important;
+    object-fit: cover;
+    border-radius: 8px;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+}
+
+.wiwa-cart-table .product-name a {
+    color: var(--wiwa-brand);
+    font-weight: 700;
+    font-size: 1.1rem;
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.wiwa-cart-table .product-name a:hover {
+    color: var(--wiwa-accent);
+}
+
+.wiwa-cart-table .product-price,
+.wiwa-cart-table .product-subtotal {
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+    font-size: 1rem;
+}
+
+/* Remove Button */
+.wiwa-cart-table .product-remove .remove {
+    color: var(--wiwa-gray-400) !important;
+    font-size: 1.5rem !important;
+    font-weight: 400 !important;
+    transition: color 0.2s !important;
+    width: 24px;
+    height: 24px;
+    line-height: 22px;
+    border-radius: 50%;
+    display: block;
+    text-align: center;
+}
+
+.wiwa-cart-table .product-remove .remove:hover {
+    color: var(--wiwa-error) !important;
+    background: var(--wiwa-error-light);
+}
+
+/* Modern Quantity/Pax Input Styling */
+.wiwa-quantity-wrapper {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+}
+
+.wiwa-pax-input-group {
+    display: flex;
+    align-items: center; /* Align label and input horizontally */
+    justify-content: space-between;
+    gap: 10px;
+    background: #f9f9f9;
+    padding: 6px 10px;
+    border-radius: 6px;
+    border: 1px solid #eee;
+    width: 100%;
+    max-width: 140px; /* Constrain width */
+}
+
+.wiwa-pax-label {
+    font-size: 0.8rem;
+    color: var(--wiwa-gray-600);
+    font-weight: 500;
+    margin: 0;
+    white-space: nowrap;
+}
+
+.wiwa-cart-table .quantity {
+    display: flex;
+    align-items: center;
+    margin: 0;
+}
+
+.wiwa-cart-table .quantity input.qty {
+    color: var(--wiwa-brand);
+    appearance: textfield; /* Remove spinner */
+    -moz-appearance: textfield;
+}
+
+.wiwa-cart-table .quantity input.qty::-webkit-outer-spin-button,
+.wiwa-cart-table .quantity input.qty::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+/* 
+ * Actions Row (Update Cart)
+ */
+.wiwa-cart-table td.actions {
+    background: var(--wiwa-gray-50);
+    padding: 15px 20px !important;
+    text-align: right;
+}
+
+.wiwa-update-cart-btn {
+    background: white !important;
+    color: var(--wiwa-brand) !important;
+    border: 1px solid var(--wiwa-brand) !important;
+    border-radius: var(--wiwa-radius) !important;
+    padding: 10px 20px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s !important;
+    cursor: pointer;
+}
+
+.wiwa-update-cart-btn:hover {
+    background: var(--wiwa-brand) !important;
+    color: white !important;
+}
+
+.coupon {
+    display: none !important; /* Hide coupon field in cart based on premium design preference, or style if requested */
+}
+
+/* 
+ * Cart Totals (Sidebar)
+ */
+.wiwa-cart-collaterals .cart_totals {
+    width: 100% !important;
+    float: none !important;
+    background: white;
+    padding: 30px;
+    border-radius: var(--wiwa-radius);
+    box-shadow: var(--wiwa-shadow-md);
+    border: 1px solid var(--wiwa-gray-200);
+}
+
+.wiwa-cart-collaterals h2 {
+    font-size: 1.5rem;
+    color: var(--wiwa-brand);
+    margin-bottom: 20px;
+    border-bottom: 2px solid var(--wiwa-gray-200);
+    padding-bottom: 10px;
+}
+
+.wiwa-cart-collaterals table.shop_table {
+    width: 100%;
+    margin-bottom: 20px;
+    border-collapse: collapse;
+}
+
+.wiwa-cart-collaterals th {
+    text-align: left;
+    padding: 15px 0;
+    color: var(--wiwa-gray-600);
+    font-weight: 500;
+}
+
+.wiwa-cart-collaterals td {
+    text-align: right;
+    padding: 15px 0;
+    font-weight: 600;
+    color: var(--wiwa-gray-900);
+}
+
+.wiwa-cart-collaterals .order-total th,
+.wiwa-cart-collaterals .order-total td {
+    border-top: 1px solid var(--wiwa-gray-200);
+    color: var(--wiwa-brand);
+    font-size: 1.25rem;
+    font-weight: 800;
+    padding-top: 20px;
+}
+
+/* Checkout Button */
+.wiwa-cart-collaterals .wc-proceed-to-checkout a.checkout-button {
+    display: block;
+    width: 100%;
+    background: var(--wiwa-accent) !important;
+    color: white !important;
+    text-align: center;
+    padding: 15px !important;
+    border-radius: var(--wiwa-radius) !important;
+    font-weight: 700 !important;
+    font-size: 1.1rem !important;
+    text-transform: uppercase;
+    transition: all 0.2s;
+    border: none;
+}
+
+.wiwa-cart-collaterals .wc-proceed-to-checkout a.checkout-button:hover {
+    background: var(--wiwa-brand) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 15px rgba(232, 166, 58, 0.4);
+}
+
+/* 
+ * Mobile Responsive (Card Layout)
+ */
+@media (max-width: 768px) {
+    .wiwa-cart-table thead {
+        display: none; /* Hide table headers */
+    }
+
+    .wiwa-cart-table, 
+    .wiwa-cart-table tbody, 
+    .wiwa-cart-table tr, 
+    .wiwa-cart-table td {
+        display: block;
+        width: 100%;
+    }
+
+    .wiwa-cart-table tr {
+        margin-bottom: 20px;
+        background: white;
+        border: 1px solid var(--wiwa-gray-200);
+        border-radius: var(--wiwa-radius);
+        padding: 15px;
+        position: relative;
+        box-shadow: var(--wiwa-shadow);
+    }
+    
+    .wiwa-cart-table td {
+        border: none !important;
+        padding: 5px 0 !important;
+        text-align: left;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* Product Image & Name centering */
+    .wiwa-cart-table .product-thumbnail {
+        justify-content: center;
+        margin-bottom: 10px;
+    }
+    
+    .wiwa-cart-table .product-thumbnail img {
+        width: 100% !important;
+        max-width: 120px;
+        height: auto !important;
+    }
+
+    .wiwa-cart-table .product-name {
+        font-size: 1.2rem;
+        text-align: center;
+        justify-content: center;
+        margin-bottom: 15px;
+    }
+
+    /* Labels for mobile */
+    .wiwa-cart-table td:before {
+        content: attr(data-title);
+        font-weight: 600;
+        color: var(--wiwa-gray-500);
+        display: block;
+        margin-right: 10px;
+    }
+
+    .wiwa-cart-table td.product-thumbnail:before,
+    .wiwa-cart-table td.product-name:before,
+    .wiwa-cart-table td.product-remove:before {
+        display: none;
+    }
+
+    /* Remove button absolute top right */
+    .wiwa-cart-table .product-remove {
+        position: absolute;
+        top: 10px;
+        right: 10px;
+        width: auto !important;
+        padding: 0 !important;
+    }
+    
+    .wiwa-cart-table .quantity {
+        margin-left: auto;
+    }
+    
+    .wiwa-update-cart-btn {
+        width: 100%;
+    }
+
+/* 
+ * =========================================
+ * Layout Improvements (v2.8.1)
+ * =========================================
+ */
+
+/* Fix Side Cart Z-Index (Absolute Top) */
+.elementor-menu-cart__container,
+.elementor-menu-cart__main,
+.elementor-menu-cart__overlay,
+.elementor-menu-cart__wrapper {
+    z-index: 2147483647 !important; /* Max Int */
+    position: relative; /* Ensure z-index applies */
+}
+
+/* Ensure the overlay covers everything */
+.elementor-menu-cart__overlay {
+    position: fixed !important; 
+}
+
+/* Empty Cart Button Hover */
+.wiwa-empty-cart-btn:hover {
+    background-color: #162c20; /* Darker green */
+    color: #ffffff !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2);
+}
+
+/* ----------------------------------------------------------- */
+/*  5. SIDE CART UI ENHANCEMENTS (Premium Look)                */
+/* ----------------------------------------------------------- */
+
+/* 1. Remove Underlines & General Text */
+body .elementor-menu-cart__container a {
+    text-decoration: none !important;
+    box-shadow: none !important;
+    border-bottom: none !important;
+}
+
+body .elementor-menu-cart__product-name,
+body .elementor-menu-cart__product-price {
+    font-family: inherit !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+body .elementor-menu-cart__product-name {
+    font-weight: 600 !important;
+    font-size: 15px !important;
+    margin-bottom: 4px !important;
+    display: block !important;
+}
+
+/* 2. Remove Button (Circular Red) */
+body .elementor-menu-cart__product-remove {
+    position: relative !important;
+    width: 24px !important;
+    height: 24px !important;
+    min-width: 24px !important;
+    border-radius: 50% !important;
+    background-color: var(--wiwa-error-light) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    cursor: pointer !important;
+    transition: all 0.2s ease !important;
+    margin-left: 12px !important;
+    box-shadow: none !important;
+    border: none !important;
+}
+
+body .elementor-menu-cart__product-remove a,
+body .elementor-menu-cart__product-remove svg,
+body .elementor-menu-cart__product-remove i {
+    color: var(--wiwa-error) !important;
+    font-size: 14px !important;
+    line-height: 1 !important;
+    display: block !important;
+    text-decoration: none !important;
+}
+
+/* If the theme uses an 'x' character instead of icon, center it */
+body .elementor-menu-cart__product-remove a {
+    text-align: center !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 100% !important;
+    height: 100% !important;
+}
+
+body .elementor-menu-cart__product-remove:hover {
+    background-color: var(--wiwa-error) !important;
+    transform: scale(1.1);
+}
+
+body .elementor-menu-cart__product-remove:hover a,
+body .elementor-menu-cart__product-remove:hover svg {
+    color: white !important;
+}
+
+/* 3. Subtotal Section (Clean & Premium) */
+body .elementor-menu-cart__subtotal {
+    border-top: 1px solid var(--wiwa-gray-200) !important;
+    padding: 20px 24px !important;
+    display: flex !important;
+    justify-content: space-between !important; /* Spread text and price */
+    align-items: center !important;
+    background: white !important;
+    font-size: 16px !important;
+    color: var(--wiwa-gray-700) !important;
+    font-weight: 600 !important;
+}
+
+/* Isolate the Price part of Subtotal */
+body .elementor-menu-cart__subtotal .woocommerce-Price-amount {
+    font-size: 20px !important;
+    font-weight: 700 !important;
+    color: var(--wiwa-green) !important;
+}
+
+/* 4. Footer Buttons */
+body .elementor-menu-cart__footer-buttons {
+    gap: 12px !important;
+    padding: 0 24px 24px !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart,
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout {
+    border-radius: 12px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+    font-size: 15px !important;
+    height: 48px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: all 0.2s ease !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout {
+    background: var(--wiwa-green) !important;
+    color: white !important;
+    box-shadow: 0 4px 12px rgba(30, 58, 43, 0.2) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--checkout:hover {
+    background: var(--wiwa-green-hover) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 16px rgba(30, 58, 43, 0.3) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart {
+    background: white !important;
+    border: 2px solid var(--wiwa-gray-200) !important;
+    color: var(--wiwa-gray-700) !important;
+}
+
+body .elementor-menu-cart__footer-buttons .elementor-button--view-cart:hover {
+    border-color: var(--wiwa-gray-400) !important;
+    background: var(--wiwa-gray-50) !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* 5. Quantity Input (If we manage to enable it) */
+.elementor-menu-cart__product-quantity .quantity {
+    display: flex !important;
+    align-items: center !important;
+    border: 1px solid var(--wiwa-gray-300) !important;
+    border-radius: 6px !important;
+    overflow: hidden !important;
+    width: fit-content !important;
+    margin-top: 8px !important;
+}
+
+.elementor-menu-cart__product-quantity .qty {
+    width: 40px !important;
+    height: 32px !important;
+    text-align: center !important;
+    border: none !important;
+    -moz-appearance: textfield !important;
+    background: white !important;
+    padding: 0 !important;
+    font-size: 14px !important;
+    color: var(--wiwa-gray-900) !important;
+}
+
+/* Previous Notice Styles */
+.woocommerce-notices-wrapper .woocommerce-message, 
+.woocommerce-notices-wrapper .woocommerce-info, 
+.woocommerce-notices-wrapper .woocommerce-error {
+    background-color: #f8f9fa !important;
+    color: var(--wiwa-gray-700) !important;
+    border-top: 3px solid var(--wiwa-brand) !important;
+    border-radius: 8px !important;
+    padding: 15px 20px !important;
+    margin-bottom: 25px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05) !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 15px !important;
+    font-weight: 500 !important;
+}
+
+.woocommerce-notices-wrapper .woocommerce-message::before, 
+.woocommerce-notices-wrapper .woocommerce-info::before, 
+.woocommerce-notices-wrapper .woocommerce-error::before {
+    display: none !important; 
+}
+
+.woocommerce-notices-wrapper .woocommerce-info {
+    border-top-color: var(--wiwa-blue, #2F80ED) !important;
+}
+
+.woocommerce-notices-wrapper .woocommerce-error {
+    border-top-color: var(--wiwa-error, #EB5757) !important;
+    background-color: #FFF5F5 !important;
+    color: var(--wiwa-error) !important;
+}
+
+.woocommerce-notices-wrapper .woocommerce-message .button {
+    float: right;
+    background: transparent !important;
+    color: var(--wiwa-brand) !important;
+    border: 1px solid var(--wiwa-brand) !important;
+    padding: 5px 15px !important;
+    border-radius: 4px !important;
+    font-weight: 600 !important;
+    transition: all 0.3s ease;
+    margin-left: auto;
+}
+
+.woocommerce-notices-wrapper .woocommerce-message .button:hover {
+    background: var(--wiwa-brand) !important;
+    color: white !important;
+}
+
+/* Fix link colors in notices */
+.woocommerce-notices-wrapper a {
+    color: var(--wiwa-brand);
+    text-decoration: underline;
+}
+
+/* ----------------------------------------------------------- */
+/*  5. SIDE CART (Elementor Menu Cart Customization)           */
+/*  Added to support 'Moved to Body' fix                       */
+/* ----------------------------------------------------------- */
+
+/* Main Container (Panel) targeting Body child */
+body > .elementor-menu-cart__container {
+    background-color: white !important;
+    box-shadow: -5px 0 30px rgba(0,0,0,0.15) !important;
+}
+
+/* Header */
+body .elementor-menu-cart__header {
+    padding: 24px !important;
+    border-bottom: 1px solid var(--wiwa-gray-200) !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+}
+
+/* Close Button (Header) */
+body .elementor-menu-cart__close-button {
+    width: 32px !important;
+    height: 32px !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    background: var(--wiwa-gray-100) !important;
+    border-radius: 50% !important;
+    border: none !important;
+    cursor: pointer !important;
+    transition: all 0.2s !important;
+    color: var(--wiwa-gray-500) !important;
+}
+
+body .elementor-menu-cart__close-button:hover {
+    background: var(--wiwa-gray-200) !important;
+    color: var(--wiwa-error) !important;
+}
+
+/* Product List */
+body .elementor-menu-cart__main {
+    padding: 24px !important;
+    background-color: var(--wiwa-gray-50) !important;
+}
+
+body .elementor-menu-cart__product {
+    background: white !important;
+    border-radius: 12px !important;
+    padding: 16px !important;
+    margin-bottom: 16px !important;
+    border: 1px solid var(--wiwa-gray-200) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.02) !important;
+}
+
+/* Footer Buttons */
+body .elementor-menu-cart__subtotal {
+    padding: 20px 24px !important;
+    border-top: 1px solid var(--wiwa-gray-200) !important;
+    background: white !important;
+}
+
+body .elementor-menu-cart__footer-buttons {
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    padding: 0 24px 24px !important;
+    background: white !important;
+}
+
+body .elementor-menu-cart__container .elementor-button {
+    border-radius: 10px !important;
+    font-weight: 600 !important;
+    text-transform: none !important;
+}
+
+body .elementor-menu-cart__container .elementor-button--checkout {
+    background: var(--wiwa-brand) !important;
+}
+

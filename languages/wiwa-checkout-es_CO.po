@@ -1,0 +1,753 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-24T22:45:45.706Z\n"
+"PO-Revision-Date: 2026-02-24T22:45:45.706Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: es_CO\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "— Select —"
+msgstr "— Seleccionar —"
+
+msgid "Coupon applied!"
+msgstr "¡Cupón aplicado!"
+
+msgid "Thank you for your booking!"
+msgstr "¡Gracias por tu reserva!"
+
+msgid "Saved!"
+msgstr "¡Guardado!"
+
+msgid "Have a discount code?"
+msgstr "¿Tienes un código de descuento?"
+
+msgid "*We need passenger information to confirm these tours."
+msgstr ""
+"*Necesitamos información sobre los pasajeros para poder confirmar estos "
+"tours."
+
+msgid "<span class=\"icon-cart\"></span> Add to Cart"
+msgstr "<span class=\"icon-cart\"></span> Agregar al Carrito"
+
+msgid "Accept %sTerms and Conditions%s and %sPrivacy Policy%s"
+msgstr "Aceptar %sTérminos y Condiciones%s y %sPolítica de Privacidad%s"
+
+msgid "Active"
+msgstr "Activo"
+
+msgid ""
+"Activate Wiwa Tours custom checkout. This will replace the WooCommerce "
+"checkout and cart."
+msgstr ""
+"Activa el checkout personalizado de Wiwa Tours. Esto reemplazará el "
+"checkout y carrito de WooCommerce."
+
+msgid "Activate Wiwa Checkout"
+msgstr "Activar Checkout Wiwa"
+
+msgid "Activate selector in checkout"
+msgstr "Activar selector en checkout"
+
+msgid "Price update"
+msgstr "Actualización de precios"
+
+msgid "Updating..."
+msgstr "Actualizando..."
+
+msgid "Automatically update prices when changing currency"
+msgstr "Actualizar precios automáticamente al cambiar moneda"
+
+msgid "Manage in Tour Booking"
+msgstr "Administrar en Tour Booking"
+
+msgid "Adult"
+msgstr "Adulto"
+
+msgid "Adults"
+msgstr "Adultos"
+
+msgid "Add to cart"
+msgstr "Agregar al carrito"
+
+msgid "Add Field"
+msgstr "Agregar Campo"
+
+msgid "Full width"
+msgstr "Ancho completo"
+
+msgid "Last Name"
+msgstr "Apellido"
+
+msgid "Apply"
+msgstr "Aplicar"
+
+msgid "We will send the confirmation here and you can manage your bookings"
+msgstr "Aquí enviaremos la confirmación y podrás gestionar tus reservas"
+
+msgid "Text area"
+msgstr "Área de texto"
+
+msgid ""
+"Drag fields to reorder them. Use specialized types (🌍 Country, 📞 Phone, "
+"🪪 Document) for better UX in checkout."
+msgstr ""
+"Arrastra los campos para reordenarlos. Usa tipos especializados (🌍 País, "
+"📞 Teléfono, 🪪 Documento) para mejor UX en el checkout."
+
+msgid "Autocomplete city field on checkout load"
+msgstr "Autocompletar campo de ciudad al cargar checkout"
+
+msgid "Flag"
+msgstr "Bandera"
+
+msgid "Base"
+msgstr "Base"
+
+msgid "Infants"
+msgstr "Bebés"
+
+msgid "Buttons (recommended for ≤4 currencies)"
+msgstr "Botones (recomendado para ≤4 monedas)"
+
+msgid "Field"
+msgstr "Campo"
+
+msgid "Field required by WooCommerce"
+msgstr "Campo requerido por WooCommerce"
+
+msgid "Fields"
+msgstr "Campos"
+
+msgid "Billing / Contact Fields"
+msgstr "Campos de Facturación / Contacto"
+
+msgid "Passenger Fields (Ova Tour Booking)"
+msgstr "Campos de Pasajeros (Ova Tour Booking)"
+
+msgid "Fields saved"
+msgstr "Campos guardados"
+
+msgid "Pending fields"
+msgstr "Campos pendientes"
+
+msgid "ID Card"
+msgstr "Tarjeta de Identidad"
+
+msgid "National ID"
+msgstr "Cédula de Ciudadanía"
+
+msgid "Foreign ID"
+msgstr "Cédula Extranjería"
+
+msgid "City"
+msgstr "Ciudad"
+
+msgid "Detected city:"
+msgstr "Ciudad detectada:"
+
+msgid "Code"
+msgstr "Código"
+
+msgid "Discount code"
+msgstr "Código de descuento"
+
+msgid "Zip Code"
+msgstr "Código Postal"
+
+msgid "Buy FOX →"
+msgstr "Comprar FOX →"
+
+msgid "Connection successful!"
+msgstr "Conexión exitosa!"
+
+msgid "Configure the fields to be displayed in the checkout and passenger form."
+msgstr ""
+"Configura los campos que se mostrarán en el formulario de checkout y "
+"pasajeros."
+
+msgid "Configuration"
+msgstr "Configuración"
+
+msgid "General Configuration"
+msgstr "Configuración General"
+
+msgid "Configuration saved"
+msgstr "Configuración guardada"
+
+msgid "Configure →"
+msgstr "Configurar →"
+
+msgid "Configure now"
+msgstr "Configurar ahora"
+
+msgid "Confirm and pay"
+msgstr "Confirmar y pagar"
+
+msgid "Continue to payment to finish."
+msgstr "Continúa al pago para finalizar."
+
+msgid "Copy"
+msgstr "Copiar"
+
+msgid "Invalid coupon"
+msgstr "Cupón no válido"
+
+msgid "Contact details"
+msgstr "Datos de contacto"
+
+msgid "Travelers' details"
+msgstr "Datos de los viajeros"
+
+msgid "You must accept the terms and conditions"
+msgstr "Debes aceptar los términos y condiciones"
+
+msgid "Decrease quantity"
+msgstr "Decrease quantity"
+
+msgid "Deposit:"
+msgstr "Depósito:"
+
+msgid "Right (50%)"
+msgstr "Derecha (50%)"
+
+msgid "Discount"
+msgstr "Descuento"
+
+msgid "Unique destinations"
+msgstr "Destinos únicos"
+
+msgid "Booking details"
+msgstr "Detalles de tu reserva"
+
+msgid "Geographic Detection (MaxMind)"
+msgstr "Detección Geográfica (MaxMind)"
+
+msgid "Automatically detect country"
+msgstr "Detectar país automáticamente"
+
+msgid "Address"
+msgstr "Dirección"
+
+msgid "Documentation"
+msgstr "Documentación"
+
+msgid "Document"
+msgstr "Documento"
+
+msgid "Full Document (Type + Number)"
+msgstr "Documento Completo (Tipo + Número)"
+
+msgid "Dropdown (recommended for >4 currencies)"
+msgstr "Dropdown (recomendado para >4 monedas)"
+
+msgid "The price will update automatically based on the selected currency."
+msgstr "El precio se actualizará automáticamente según la moneda seleccionada."
+
+msgid ""
+"The remaining balance will be paid directly at our offices on the day of "
+"the tour."
+msgstr ""
+"El saldo restante se pagará directamente en nuestras oficinas el día del "
+"tour."
+
+msgid "Delete"
+msgstr "Eliminar"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Company"
+msgstr "Empresa"
+
+msgid "Shipping"
+msgstr "Envío"
+
+msgid "Error adding to cart."
+msgstr "Error al agregar al carrito."
+
+msgid "Error changing currency"
+msgstr "Error al cambiar la moneda"
+
+msgid "Error changing currency. Please reload the page."
+msgstr "Error al cambiar la moneda. Por favor recarga la página."
+
+msgid "Error saving"
+msgstr "Error al guardar"
+
+msgid "Request error"
+msgstr "Error en la solicitud"
+
+msgid "Error processing payment. Please try again."
+msgstr "Error procesando el pago. Por favor intenta de nuevo."
+
+msgid "State"
+msgstr "Estado"
+
+msgid "Order status"
+msgstr "Estado de tu pedido"
+
+msgid "Checkout status"
+msgstr "Estado del Checkout"
+
+msgid "This field is required"
+msgstr "Este campo es requerido"
+
+msgid ""
+"This plugin requires FOX Currency Switcher Professional for multi-currency "
+"functionality."
+msgstr ""
+"Este plugin requiere FOX Currency Switcher Professional para funcionalidad "
+"de multi-moneda."
+
+msgid "Selector style"
+msgstr "Estilo del selector"
+
+msgid "GeoIP Strategy"
+msgstr "Estrategia de GeoIP"
+
+msgid "Label"
+msgstr "Etiqueta"
+
+msgid "5-star experiences"
+msgstr "Experiencias 5 estrellas"
+
+msgid "Explore more tours"
+msgstr "Explorar más tours"
+
+msgid "Explore Tours"
+msgstr "Explorar Tours"
+
+msgid "Date"
+msgstr "Fecha"
+
+msgid "Date of Birth"
+msgstr "Fecha de Nacimiento"
+
+msgid "Complete purchase"
+msgstr "Finalizar compra"
+
+msgid "FOX Currency Switcher detected and active"
+msgstr "FOX Currency Switcher detectado y activo"
+
+msgid "FOX Currency Switcher not detected"
+msgstr "FOX Currency Switcher no detectado"
+
+msgid "FOX Settings →"
+msgstr "FOX Settings →"
+
+msgid "General"
+msgstr "General"
+
+msgid "GeoIP not available"
+msgstr "GeoIP no disponible"
+
+msgid "Field Manager"
+msgstr "Gestor de Campos"
+
+msgid "Saving..."
+msgstr "Guardando..."
+
+msgid "Save Changes"
+msgstr "Guardar Cambios"
+
+msgid "Save Fields"
+msgstr "Guardar Campos"
+
+msgid "An error occurred. Please try again."
+msgstr "Ha ocurrido un error. Por favor intenta nuevamente."
+
+msgid "We have sent a confirmation email to"
+msgstr "Hemos enviado un correo de confirmación a"
+
+msgid "Taxes"
+msgstr "Impuestos"
+
+msgid "Increase quantity"
+msgstr "Increase quantity"
+
+msgid "Infant"
+msgstr "Infante"
+
+msgid "Information"
+msgstr "Información"
+
+msgid "Enter your code"
+msgstr "Ingresa tu código"
+
+msgid "Enter a coupon code"
+msgstr "Ingresa un código de cupón"
+
+msgid "Integrations"
+msgstr "Integraciones"
+
+msgid "Go to payment"
+msgstr "Ir al pago"
+
+msgid "Left (50%)"
+msgstr "Izquierda (50%)"
+
+msgid "Currencies are configured in"
+msgstr "Las monedas se configuran en"
+
+msgid ""
+"Fields are managed from WooCommerce > Tour Booking > Guest Information. Use "
+"the \"Required\" switch to control validation at checkout."
+msgstr ""
+"Los campos se administran desde WooCommerce > Tour Booking > Guest "
+"Information. Usa el switch \"Requerido\" para controlar la validación en el "
+"checkout."
+
+msgid "Payments in %s are encrypted and protected."
+msgstr "Los pagos en %s están encriptados y protegidos."
+
+msgid "MaxMind Account ID"
+msgstr "MaxMind Account ID"
+
+msgid "MaxMind configured"
+msgstr "MaxMind configurado"
+
+msgid "MaxMind Dashboard"
+msgstr "MaxMind Dashboard"
+
+msgid "MaxMind License Key"
+msgstr "MaxMind License Key"
+
+msgid "Payment method"
+msgstr "Método de pago"
+
+msgid "Currency"
+msgstr "Moneda"
+
+msgid "Payment currency"
+msgstr "Moneda de pago"
+
+msgid "Invalid currency"
+msgstr "Moneda no válida"
+
+msgid "Show currency selector"
+msgstr "Mostrar selector de moneda"
+
+msgid "Multi-Currency (FOX Currency Switcher)"
+msgstr "Multi-Moneda (FOX Currency Switcher)"
+
+msgid "Nationality"
+msgstr "Nacionalidad"
+
+msgid "Nationality (Typeahead + Flags)"
+msgstr "Nacionalidad (Typeahead + Flags)"
+
+msgid "None"
+msgstr "Ninguna"
+
+msgid "Child"
+msgstr "Niño"
+
+msgid "Children"
+msgstr "Niños"
+
+msgid "Tax ID (NIT)"
+msgstr "NIT"
+
+msgid "Not configured"
+msgstr "No configurado"
+
+msgid "No fields configured in Ova Tour Booking."
+msgstr "No hay campos configurados en Ova Tour Booking. "
+
+msgid "No payment methods available."
+msgstr "No hay métodos de pago disponibles."
+
+msgid "Could not detect city"
+msgstr "No se pudo detectar la ciudad"
+
+msgid "No fields received"
+msgstr "No se recibieron campos"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Number"
+msgstr "Número"
+
+msgid "Document number"
+msgstr "Número de documento"
+
+msgid "Document Number"
+msgstr "Número de Documento"
+
+msgid "Get your Account ID at"
+msgstr "Obtén tu Account ID en"
+
+msgid "A connection error occurred. Try again."
+msgstr "Ocurrió un error de conexión. Intente nuevamente."
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Checkout Display Options"
+msgstr "Opciones de Visualización en Checkout"
+
+msgid "Other"
+msgstr "Otro"
+
+msgid "Checkout Page"
+msgstr "Página del Checkout"
+
+msgid ""
+"Page where the checkout will be displayed. Make sure it contains the "
+"[wiwa_checkout] shortcode."
+msgstr ""
+"Página donde se mostrará el checkout. Asegúrate de que contenga el "
+"shortcode [wiwa_checkout]."
+
+msgid "Payment"
+msgstr "Pago"
+
+msgid "Secure SSL Payment"
+msgstr "Pago Seguro SSL"
+
+msgid ""
+"It looks like you haven't added any tours to your cart yet. Explore our "
+"amazing destinations and live a unique adventure!"
+msgstr ""
+"Parece que aún no has agregado ningún tour a tu carrito. ¡Explora nuestros "
+"increíbles destinos y vive una aventura única!"
+
+msgid "Looks like you haven't added a tour yet. Explore our destinations!"
+msgstr "Parece que aún no has agregado ningún tour. ¡Explora nuestros destinos!"
+
+msgid "Passenger %d"
+msgstr "Pasajero %d"
+
+msgid "Passport"
+msgstr "Pasaporte"
+
+msgid "Order #%s"
+msgstr "Pedido #%s"
+
+msgid "Pending payment"
+msgstr "Pendiente por pagar"
+
+msgid "Placeholder"
+msgstr "Placeholder"
+
+msgid "Please complete all required fields."
+msgstr "Por favor completa todos los campos requeridos."
+
+msgid "Position"
+msgstr "Posición"
+
+msgid "Dietary preferences"
+msgstr "Preferencias alimenticias"
+
+msgid "Testing..."
+msgstr "Probando..."
+
+msgid "Test Connection"
+msgstr "Probar Conexión"
+
+msgid "Proceed to Payment"
+msgstr "Proceder al Pago"
+
+msgid "Processing..."
+msgstr "Procesando..."
+
+msgid "Req."
+msgstr "Req."
+
+msgid "Required"
+msgstr "Requerido"
+
+msgid "Book"
+msgstr "Reservar"
+
+msgid "Summary"
+msgstr "Resumen"
+
+msgid "Summary of your booking"
+msgstr "Resumen de tu reserva"
+
+msgid "Review your upcoming experiences before confirming your booking."
+msgstr "Revisa tus próximas experiencias antes de confirmar tu reserva."
+
+msgid "Pending balance:"
+msgstr "Saldo pendiente:"
+
+msgid "Select your payment method"
+msgstr "Selecciona tu medio de pago"
+
+msgid "Select your tour"
+msgstr "Selecciona tu tour"
+
+msgid "Select"
+msgstr "Seleccionar"
+
+msgid "Select country"
+msgstr "Seleccionar país"
+
+msgid "Selector"
+msgstr "Selector"
+
+msgid "Session expired. Please reload the page."
+msgstr "Sesión expirada. Por favor recarga la página."
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "If you have any questions, contact us via WhatsApp or email."
+msgstr "Si tienes alguna pregunta, contáctanos a través de nuestro WhatsApp o email."
+
+msgid "Symbol"
+msgstr "Símbolo"
+
+msgid "Unauthorized"
+msgstr "Sin autorización"
+
+msgid "Gluten-free"
+msgstr "Sin gluten"
+
+msgid "Lactose-free"
+msgstr "Sin lactosa"
+
+msgid "Area Code Only"
+msgstr "Solo Código de Área"
+
+msgid "Document Type Only"
+msgstr "Solo Tipo Documento"
+
+msgid "Support"
+msgstr "Soporte"
+
+msgid "Subtotal"
+msgstr "Subtotal"
+
+msgid "Experiences subtotal"
+msgstr "Subtotal experiencias"
+
+msgid "Fee"
+msgstr "Tasa"
+
+msgid "Phone"
+msgstr "Teléfono"
+
+msgid "Phone (Simple)"
+msgstr "Teléfono (Simple)"
+
+msgid "Full Phone (Code + Number)"
+msgstr "Teléfono Completo (Código + Número)"
+
+msgid "Text"
+msgstr "Texto"
+
+msgid "Type"
+msgstr "Tipo"
+
+msgid "Doc. Type"
+msgstr "Tipo doc."
+
+msgid "Document Type"
+msgstr "Tipo de Documento"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Total to pay today (Deposit)"
+msgstr "Total a pagar hoy (Depósito)"
+
+msgid "Total booking"
+msgstr "Total de la reserva"
+
+msgid "Total Travelers:"
+msgstr "Total Viajeros:"
+
+msgid "Cart Totals"
+msgstr "Totales del Carrito"
+
+msgid "Adventure tours"
+msgstr "Tours de aventura"
+
+msgid "Your cart"
+msgstr "Tu carrito"
+
+msgid "Your Adventure Cart"
+msgstr "Tu Carrito de Aventuras"
+
+msgid "Your cart is empty"
+msgstr "Tu carrito está vacío"
+
+msgid "Use this shortcode to show the checkout on any page."
+msgstr "Usa este shortcode para mostrar el checkout en cualquier página."
+
+msgid "Use own MaxMind API"
+msgstr "Usar API propia de MaxMind"
+
+msgid "Use WooCommerce settings (Recommended)"
+msgstr "Usar configuración de WooCommerce (Recomendado)"
+
+msgid "Use YellowTree (GeoIP Detect / JS API)"
+msgstr "Usar YellowTree (GeoIP Detect / JS API)"
+
+msgid "Vegan"
+msgstr "Vegana"
+
+msgid "Vegetarian"
+msgstr "Vegetariana"
+
+msgid "View cart"
+msgstr "Ver carrito"
+
+msgid "Travelers"
+msgstr "Viajeros"
+
+msgid "Back"
+msgstr "Volver"
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce no está activo."
+
+msgid "Book from %s"
+msgstr "Reserva desde %s"
+
+msgid "From %s"
+msgstr "Desde %s"
+
+msgid "¡Agregado al carrito!"
+msgstr "¡Agregado al carrito!"
+
+msgid "Ver carrito"
+msgstr "Ver carrito"
+
+msgid "Reservar ahora"
+msgstr "Reservar ahora"
+
+msgid "Más actividades que te pueden gustar"
+msgstr "Más actividades que te pueden gustar"
+
+msgid "Producto agregado al carrito"
+msgstr "Producto agregado al carrito"
+
+msgid "No se pudo agregar al carrito."
+msgstr "No se pudo agregar al carrito."
+
+msgid "Verifique los datos."
+msgstr "Verifique los datos."
+
+msgid "You pay today"
+msgstr "Pagas hoy"
+
+msgid "Deposit"
+msgstr "Depósito"
+
+msgid "Remaining balance"
+msgstr "Saldo pendiente"
+
+msgid "Paid on the day of the tour at our offices."
+msgstr "Se paga el día del tour en nuestras oficinas."
+
+msgid "Total booking value"
+msgstr "Valor total de la reserva"

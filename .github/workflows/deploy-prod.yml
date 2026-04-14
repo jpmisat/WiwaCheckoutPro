@@ -1,0 +1,37 @@
+name: Deploy to Production
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  release-and-deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      # 1. Create Release with Changelog
+      - name: Create Release
+        id: create_release
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: v${{ github.run_number }}
+          name: Release v${{ github.run_number }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+
+      # 2. Deploy to Hostinger Prod
+      - name: Deploy to Hostinger Prod
+        uses: easingthemes/ssh-deploy@v5.1.0
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY_PROD }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "/"
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+          REMOTE_USER: ${{ secrets.SSH_USER_PROD }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
+          TARGET: "/home/wiwatour-ssh/htdocs/wiwatour.com/wp-content/plugins/wiwa-tour-checkout-pro"
+          EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa_Manual_de_marca.pdf, /force-reload.ps1"

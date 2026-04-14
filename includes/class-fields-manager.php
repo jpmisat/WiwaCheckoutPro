@@ -8,12 +8,89 @@ class Wiwa_Fields_Manager
 {
 
     /**
-     * Get all custom fields
+     * Get all custom fields, with labels translated via WPML on the frontend.
      */
     public static function get_fields()
     {
         $fields = get_option('wiwa_checkout_fields', self::get_default_fields());
+
+        // On frontend, translate labels through WPML String Translation
+        if (!is_admin()) {
+            foreach ($fields as $group => &$group_fields) {
+                foreach ($group_fields as $key => &$field) {
+                    if (!empty($field['label'])) {
+                        $field['label'] = self::translate_field_label($key, $field['label']);
+                    }
+                    // Translate select options too
+                    if (!empty($field['options']) && is_array($field['options'])) {
+                        foreach ($field['options'] as $opt_key => &$opt_label) {
+                            if (!empty($opt_label)) {
+                                $opt_label = self::translate_field_label($key . '_opt_' . $opt_key, $opt_label);
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
         return $fields;
+    }
+
+    /**
+     * Translate a single field label via WPML String Translation.
+     *
+     * @param string $name  Unique identifier for the string (field key).
+     * @param string $label The original label text.
+     * @return string Translated label.
+     */
+    public static function translate_field_label($name, $label)
+    {
+        return apply_filters(
+            'wpml_translate_single_string',
+            $label,
+            'wiwa-checkout',
+            'field_' . sanitize_key($name)
+        );
+    }
+
+    /**
+     * Register all saved field labels with WPML String Translation.
+     * Called on `init` so labels appear in WPML > String Translation.
+     */
+    public static function register_fields_for_wpml()
+    {
+        $fields = get_option('wiwa_checkout_fields', []);
+        if (empty($fields) || !is_array($fields)) {
+            $fields = self::get_default_fields();
+        }
+
+        foreach ($fields as $group => $group_fields) {
+            if (!is_array($group_fields)) continue;
+
+            foreach ($group_fields as $key => $field) {
+                if (!empty($field['label'])) {
+                    do_action(
+                        'wpml_register_single_string',
+                        'wiwa-checkout',
+                        'field_' . sanitize_key($key),
+                        $field['label']
+                    );
+                }
+                // Register select options too
+                if (!empty($field['options']) && is_array($field['options'])) {
+                    foreach ($field['options'] as $opt_key => $opt_label) {
+                        if (!empty($opt_label)) {
+                            do_action(
+                                'wpml_register_single_string',
+                                'wiwa-checkout',
+                                'field_' . sanitize_key($key) . '_opt_' . sanitize_key($opt_key),
+                                $opt_label
+                            );
+                        }
+                    }
+                }
+            }
+        }
     }
 
     /**
@@ -24,14 +101,14 @@ class Wiwa_Fields_Manager
         return [
             'billing' => [
                 'billing_first_name' => [
-                    'label' => __('Nombre', 'wiwa-checkout'),
+                    'label' => __('Name', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'billing_last_name' => [
-                    'label' => __('Apellido', 'wiwa-checkout'),
+                    'label' => __('Last Name', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
@@ -45,21 +122,21 @@ class Wiwa_Fields_Manager
                     'width' => 'full'
                 ],
                 'billing_phone' => [
-                    'label' => __('Teléfono', 'wiwa-checkout'),
+                    'label' => __('Phone', 'wiwa-checkout'),
                     'type' => 'tel',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'billing_country' => [
-                    'label' => __('Nacionalidad', 'wiwa-checkout'),
+                    'label' => __('Nationality', 'wiwa-checkout'),
                     'type' => 'select',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'billing_city' => [
-                    'label' => __('Ciudad', 'wiwa-checkout'),
+                    'label' => __('City', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => false,
                     'enabled' => true,
@@ -67,42 +144,42 @@ class Wiwa_Fields_Manager
                     'geoip_auto' => true
                 ],
                 'billing_document_type' => [
-                    'label' => __('Tipo de Documento', 'wiwa-checkout'),
+                    'label' => __('Document Type', 'wiwa-checkout'),
                     'type' => 'select',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'quarter',
                     'options' => [
-                        'cc' => __('Cédula', 'wiwa-checkout'),
-                        'passport' => __('Pasaporte', 'wiwa-checkout'),
-                        'nit' => __('NIT', 'wiwa-checkout'),
-                        'ce' => __('Cédula Extranjería', 'wiwa-checkout'),
-                        'other' => __('Otro', 'wiwa-checkout')
+                        'cc' => __('ID Card', 'wiwa-checkout'),
+                        'passport' => __('Passport', 'wiwa-checkout'),
+                        'nit' => __('Tax ID (NIT)', 'wiwa-checkout'),
+                        'ce' => __('Foreign ID', 'wiwa-checkout'),
+                        'other' => __('Other', 'wiwa-checkout')
                     ]
                 ],
                 'billing_document' => [
-                    'label' => __('Número de Documento', 'wiwa-checkout'),
+                    'label' => __('Document Number', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'three-quarter'
                 ],
                 'billing_company' => [
-                    'label' => __('Empresa', 'wiwa-checkout'),
+                    'label' => __('Company', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => false,
                     'enabled' => false,
                     'width' => 'full'
                 ],
                 'billing_address_1' => [
-                    'label' => __('Dirección', 'wiwa-checkout'),
+                    'label' => __('Address', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => false,
                     'enabled' => false,
                     'width' => 'full'
                 ],
                 'billing_postcode' => [
-                    'label' => __('Código Postal', 'wiwa-checkout'),
+                    'label' => __('Zip Code', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => false,
                     'enabled' => false,
@@ -111,56 +188,56 @@ class Wiwa_Fields_Manager
             ],
             'passenger' => [
                 'guest_first_name' => [
-                    'label' => __('Nombre', 'wiwa-checkout'),
+                    'label' => __('Name', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'guest_last_name' => [
-                    'label' => __('Apellido', 'wiwa-checkout'),
+                    'label' => __('Last Name', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'guest_phone' => [
-                    'label' => __('Teléfono', 'wiwa-checkout'),
+                    'label' => __('Phone', 'wiwa-checkout'),
                     'type' => 'tel',
                     'required' => false,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'guest_passport' => [
-                    'label' => __('Documento', 'wiwa-checkout'),
+                    'label' => __('Document', 'wiwa-checkout'),
                     'type' => 'text',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'guest_nationality' => [
-                    'label' => __('Nacionalidad', 'wiwa-checkout'),
+                    'label' => __('Nationality', 'wiwa-checkout'),
                     'type' => 'select',
                     'required' => true,
                     'enabled' => true,
                     'width' => 'half'
                 ],
                 'guest_diet' => [
-                    'label' => __('Preferencias alimenticias', 'wiwa-checkout'),
+                    'label' => __('Dietary preferences', 'wiwa-checkout'),
                     'type' => 'select',
                     'required' => false,
                     'enabled' => true,
                     'width' => 'half',
                     'options' => [
-                        '' => __('Ninguna', 'wiwa-checkout'),
-                        'vegetarian' => __('Vegetariana', 'wiwa-checkout'),
-                        'vegan' => __('Vegana', 'wiwa-checkout'),
-                        'gluten_free' => __('Sin gluten', 'wiwa-checkout'),
-                        'lactose_free' => __('Sin lactosa', 'wiwa-checkout')
+                        '' => __('None', 'wiwa-checkout'),
+                        'vegetarian' => __('Vegetarian', 'wiwa-checkout'),
+                        'vegan' => __('Vegan', 'wiwa-checkout'),
+                        'gluten_free' => __('Gluten-free', 'wiwa-checkout'),
+                        'lactose_free' => __('Lactose-free', 'wiwa-checkout')
                     ]
                 ],
                 'guest_birthdate' => [
-                    'label' => __('Fecha de Nacimiento', 'wiwa-checkout'),
+                    'label' => __('Date of Birth', 'wiwa-checkout'),
                     'type' => 'date',
                     'required' => false,
                     'enabled' => false,
@@ -176,20 +253,20 @@ class Wiwa_Fields_Manager
     public static function get_field_types()
     {
         return [
-            'text' => __('Texto', 'wiwa-checkout'),
+            'text' => __('Text', 'wiwa-checkout'),
             'email' => __('Email', 'wiwa-checkout'),
-            'tel' => __('Teléfono (Simple)', 'wiwa-checkout'),
-            'number' => __('Número', 'wiwa-checkout'),
-            'date' => __('Fecha', 'wiwa-checkout'),
+            'tel' => __('Phone (Simple)', 'wiwa-checkout'),
+            'number' => __('Number', 'wiwa-checkout'),
+            'date' => __('Date', 'wiwa-checkout'),
             'select' => __('Selector', 'wiwa-checkout'),
-            'textarea' => __('Área de texto', 'wiwa-checkout'),
+            'textarea' => __('Text area', 'wiwa-checkout'),
             // Specialized types
-            'country' => __('Nacionalidad (Typeahead + Flags)', 'wiwa-checkout'),
-            'phone' => __('Teléfono Completo (Código + Número)', 'wiwa-checkout'),
-            'document' => __('Documento Completo (Tipo + Número)', 'wiwa-checkout'),
+            'country' => __('Nationality (Typeahead + Flags)', 'wiwa-checkout'),
+            'phone' => __('Full Phone (Code + Number)', 'wiwa-checkout'),
+            'document' => __('Full Document (Type + Number)', 'wiwa-checkout'),
             // Sub-components
-            'phone_code' => __('Solo Código de Área', 'wiwa-checkout'),
-            'document_type' => __('Solo Tipo Documento', 'wiwa-checkout'),
+            'phone_code' => __('Area Code Only', 'wiwa-checkout'),
+            'document_type' => __('Document Type Only', 'wiwa-checkout'),
         ];
     }
 
@@ -315,9 +392,9 @@ class Wiwa_Fields_Manager
     public static function get_positions()
     {
         return [
-            'full' => __('Ancho completo', 'wiwa-checkout'),
-            'left' => __('Izquierda (50%)', 'wiwa-checkout'),
-            'right' => __('Derecha (50%)', 'wiwa-checkout'),
+            'full' => __('Full width', 'wiwa-checkout'),
+            'left' => __('Left (50%)', 'wiwa-checkout'),
+            'right' => __('Right (50%)', 'wiwa-checkout'),
         ];
     }
     /**
@@ -326,13 +403,13 @@ class Wiwa_Fields_Manager
     public static function get_document_types()
     {
         return [
-            '' => __('Tipo doc.', 'wiwa-checkout'),
-            'cc' => __('Cédula de Ciudadanía', 'wiwa-checkout'),
-            'passport' => __('Pasaporte', 'wiwa-checkout'),
-            'ce' => __('Cédula de Extranjería', 'wiwa-checkout'),
-            'nit' => __('NIT', 'wiwa-checkout'),
-            'ti' => __('Tarjeta de Identidad', 'wiwa-checkout'),
-            'other' => __('Otro', 'wiwa-checkout')
+            '' => __('Doc. Type', 'wiwa-checkout'),
+            'cc' => __('National ID', 'wiwa-checkout'),
+            'passport' => __('Passport', 'wiwa-checkout'),
+            'ce' => __('Foreign ID', 'wiwa-checkout'),
+            'nit' => __('Tax ID (NIT)', 'wiwa-checkout'),
+            'ti' => __('ID Card', 'wiwa-checkout'),
+            'other' => __('Other', 'wiwa-checkout')
         ];
     }
 }

@@ -41,15 +41,15 @@ endif; ?>
         </div>
         <h1 class="wiwa-thankyou-title">
             <?php if ($order_status === 'completed' || $order_status === 'processing'): ?>
-                <?php _e('¡Gracias por tu reserva!', 'wiwa-checkout'); ?>
+                <?php _e('Thank you for your booking!', 'wiwa-checkout'); ?>
             <?php
 else: ?>
-                <?php _e('Estado de tu pedido', 'wiwa-checkout'); ?>
+                <?php _e('Order status', 'wiwa-checkout'); ?>
             <?php
 endif; ?>
         </h1>
         <p class="wiwa-thankyou-subtitle">
-            <?php printf(__('Pedido #%s', 'wiwa-checkout'), $order->get_order_number()); ?>
+            <?php printf(__('Order #%s', 'wiwa-checkout'), $order->get_order_number()); ?>
         </p>
     </div>
 
@@ -61,7 +61,7 @@ endif; ?>
 
     <!-- Order Summary -->
     <div class="wiwa-thankyou-section">
-        <h3><?php _e('Resumen de tu reserva', 'wiwa-checkout'); ?></h3>
+        <h3><?php _e('Summary of your booking', 'wiwa-checkout'); ?></h3>
         <div class="wiwa-order-items">
             <?php foreach ($order->get_items() as $item_id => $item):
     $product = $item->get_product();
@@ -107,14 +107,14 @@ endforeach; ?>
             </tr>
             <?php if ($order->get_discount_total() > 0): ?>
             <tr class="discount-row">
-                <td><?php _e('Descuento', 'wiwa-checkout'); ?></td>
+                <td><?php _e('Discount', 'wiwa-checkout'); ?></td>
                 <td>-<?php echo wc_price($order->get_discount_total()); ?></td>
             </tr>
             <?php
 endif; ?>
             <?php if ($order->get_total_tax() > 0): ?>
             <tr>
-                <td><?php _e('Impuestos', 'wiwa-checkout'); ?></td>
+                <td><?php _e('Taxes', 'wiwa-checkout'); ?></td>
                 <td><?php echo wc_price($order->get_total_tax()); ?></td>
             </tr>
             <?php
@@ -129,7 +129,7 @@ endif; ?>
     <!-- Customer Details -->
     <div class="wiwa-thankyou-section wiwa-customer-section">
         <div class="customer-column">
-            <h4><?php _e('Datos de contacto', 'wiwa-checkout'); ?></h4>
+            <h4><?php _e('Contact details', 'wiwa-checkout'); ?></h4>
             <p>
                 <?php echo esc_html($order->get_billing_first_name() . ' ' . $order->get_billing_last_name()); ?><br>
                 <?php echo esc_html($order->get_billing_email()); ?><br>
@@ -137,7 +137,7 @@ endif; ?>
             </p>
         </div>
         <div class="customer-column">
-            <h4><?php _e('Método de pago', 'wiwa-checkout'); ?></h4>
+            <h4><?php _e('Payment method', 'wiwa-checkout'); ?></h4>
             <p><?php echo wp_kses_post($order->get_payment_method_title()); ?></p>
         </div>
     </div>
@@ -145,11 +145,11 @@ endif; ?>
     <!-- Confirmation Message -->
     <div class="wiwa-confirmation-message">
         <p>
-            <?php _e('Hemos enviado un correo de confirmación a', 'wiwa-checkout'); ?> 
+            <?php _e('We have sent a confirmation email to', 'wiwa-checkout'); ?> 
             <strong><?php echo esc_html($order->get_billing_email()); ?></strong>
         </p>
         <p class="small-text">
-            <?php _e('Si tienes alguna pregunta, contáctanos a través de nuestro WhatsApp o email.', 'wiwa-checkout'); ?>
+            <?php _e('If you have any questions, contact us via WhatsApp or email.', 'wiwa-checkout'); ?>
         </p>
     </div>
 
@@ -159,7 +159,7 @@ endif; ?>
             <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"/>
             </svg>
-            <?php _e('Explorar más tours', 'wiwa-checkout'); ?>
+            <?php _e('Explore more tours', 'wiwa-checkout'); ?>
         </a>
     </div>
 </div>

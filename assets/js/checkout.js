@@ -1,426 +1,699 @@
 /**
- * Wiwa Tour Checkout Scripts v2.5.0
+ * Wiwa Tour Checkout Scripts v3.0.0 (Vanilla JS)
  * @author Juan Pablo Misat - Connexis
- * Incluye validación completa en el cliente
- * Terms persistence y WOOCS integration
+ * Optimized for performance and modern browsers.
  */
-jQuery(document).ready(function ($) {
+document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    // ==================== TERMS CHECKBOX PERSISTENCE ====================
+    console.log('%c[Wiwa Checkout] v2.17.4 loaded', 'color: #00d4aa; font-weight: bold;');
 
-    // Restore terms checkbox state from sessionStorage
-    if (sessionStorage.getItem('wiwa_accept_terms') === 'true') {
-        $('#accept_terms').prop('checked', true);
+    // Helper: Select elements safely
+    const $ = (selector, parent = document) => parent.querySelector(selector);
+    const $$ = (selector, parent = document) => Array.from(parent.querySelectorAll(selector));
+
+    // Helper: Add Event Listener
+    const on = (selector, event, handler) => {
+        document.addEventListener(event, e => {
+            if (e.target.closest(selector)) {
+                handler(e, e.target.closest(selector));
+            }
+        });
+    };
+
+    // Helper: Trigger Event
+    const trigger = (el, eventName) => {
+        if (el) el.dispatchEvent(new Event(eventName, { bubbles: true }));
+    };
+
+    // Global Config
+    const config = window.wiwaCheckout || {};
+
+    // ==================== TERMS CHECKBOX PERSISTENCE ====================
+    
+    const termsCheckbox = document.getElementById('accept_terms');
+    if (termsCheckbox) {
+        // Restore state
+        if (sessionStorage.getItem('wiwa_accept_terms') === 'true') {
+            termsCheckbox.checked = true;
+        }
+
+        // Save state
+        termsCheckbox.addEventListener('change', function () {
+            sessionStorage.setItem('wiwa_accept_terms', this.checked);
+        });
     }
 
-    // Save terms checkbox state on change
-    $('#accept_terms').on('change', function () {
-        sessionStorage.setItem('wiwa_accept_terms', $(this).is(':checked'));
+    // ==================== BILLING → PASSENGER COPY SYSTEM ====================
+
+    /**
+     * Core mapping: guest field key fragments → billing field name
+     * Handles both default keys (guest_first_name) and OVA keys (first_name)
+     */
+    var GUEST_TO_BILLING = {
+        'first_name':   'billing_first_name',
+        'last_name':    'billing_last_name',
+        'email':        'billing_email',
+        'phone':        'billing_phone',
+        'nationality':  'billing_country',
+        'country':      'billing_country',
+        'passport':     'billing_document',
+        'document':     'billing_document',
+        'nombre':       'billing_first_name',
+        'apellido':     'billing_last_name',
+        'apellidos':    'billing_last_name',
+        'correo':       'billing_email',
+        'telefono':     'billing_phone',
+        'nacionalidad': 'billing_country',
+        'documento':    'billing_document',
+        'id':           'billing_document'
+    };
+
+    /**
+     * Parse a guest field name to extract its core key, index, and suffix.
+     * Handles patterns:
+     *   guest_first_name_101          → { key: 'first_name', idx: '101', suffix: '' }
+     *   guest_guest_passport_101      → { key: 'passport', idx: '101', suffix: '' }
+     *   guest_guest_passport_101_type → { key: 'passport', idx: '101', suffix: '_type' }
+     *   guest_guest_phone_101_code    → { key: 'phone', idx: '101', suffix: '_code' }
+     */
+    function parseGuestFieldName(name) {
+        if (!name || !name.startsWith('guest_')) return null;
+
+        // Known suffixes that come AFTER the index
+        var suffixes = ['_type', '_code'];
+        var suffix = '';
+
+        for (var i = 0; i < suffixes.length; i++) {
+            if (name.endsWith(suffixes[i])) {
+                suffix = suffixes[i];
+                name = name.slice(0, -suffix.length);
+                break;
+            }
+        }
+
+        // Extract the index (last numeric segment after the last underscore)
+        var lastUnderscore = name.lastIndexOf('_');
+        if (lastUnderscore === -1) return null;
+
+        var idx = name.substring(lastUnderscore + 1);
+        if (!/^\d+$/.test(idx)) return null;
+
+        // Everything between 'guest_' and '_{idx}' is the field key
+        var keyPart = name.substring(6, lastUnderscore); // 6 = 'guest_'.length
+
+        // Strip a second 'guest_' prefix if present (default fields: guest_guest_first_name)
+        if (keyPart.startsWith('guest_')) {
+            keyPart = keyPart.substring(6);
+        }
+
+        return { key: keyPart, idx: idx, suffix: suffix };
+    }
+
+    /**
+     * Find the billing source element for a given billing field name.
+     * Handles both compound (inside combined-input-group) and standalone fields.
+     */
+    function findBillingSource(billingName) {
+        // Direct match by name attribute
+        var el = document.querySelector('[name="' + billingName + '"]');
+        if (el) return el;
+
+        // Fallback: try without "billing_" prefix variations
+        return null;
+    }
+
+    /**
+     * Copy billing data → a specific passenger block (by DOM element).
+     * Returns the count of fields successfully copied.
+     */
+    function copyBillingToBlock(passengerBlock) {
+        var fields = passengerBlock.querySelectorAll('input, select, textarea');
+        var copied = 0;
+
+        console.debug('[WiwaCopy] Processing block:', passengerBlock.dataset.guestIndex);
+
+        fields.forEach(function (field) {
+            if (!field.name || field.type === 'hidden') return;
+
+            var parsed = parseGuestFieldName(field.name);
+            if (!parsed) {
+                console.debug('[WiwaCopy]   Skip (no parse):', field.name);
+                return;
+            }
+
+            // Determine the billing source field name
+            var billingKey = GUEST_TO_BILLING[parsed.key];
+            if (!billingKey) {
+                console.debug('[WiwaCopy]   Skip (no mapping for key "' + parsed.key + '"):', field.name);
+                return;
+            }
+
+            // For compound fields, append the suffix to billing key
+            var billingName = billingKey + parsed.suffix;
+            var src = findBillingSource(billingName);
+
+            if (!src) {
+                console.debug('[WiwaCopy]   Skip (billing not found "' + billingName + '"):', field.name);
+                return;
+            }
+
+            // For text/email/tel inputs, skip if empty
+            // For selects, skip ONLY if value is truly empty string AND it's the first option (placeholder)
+            var srcVal = src.value;
+            if (src.tagName === 'SELECT') {
+                // Allow copying even placeholder values for document type selects
+                // Only skip if value is empty AND we have a proper empty-string placeholder
+                if (srcVal === '' && src.options.length > 0 && src.options[0].value === '') {
+                    console.debug('[WiwaCopy]   Skip (select placeholder):', billingName, '→ val=""');
+                    return;
+                }
+            } else {
+                if (!srcVal) {
+                    console.debug('[WiwaCopy]   Skip (empty value):', billingName);
+                    return;
+                }
+            }
+
+            // Copy value
+            field.value = srcVal;
+            console.debug('[WiwaCopy]   ✓ Copied:', billingName, '→', field.name, '=', srcVal);
+
+            // Trigger Select2 update for selects
+            if (field.tagName === 'SELECT' && window.jQuery) {
+                jQuery(field).val(srcVal).trigger('change.select2');
+            }
+
+            // Trigger input event for validation listeners
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
+
+            // Clear validation errors
+            field.classList.remove('error');
+            var formField = field.closest('.form-field');
+            if (formField) formField.classList.remove('has-error');
+
+            copied++;
+        });
+
+        console.debug('[WiwaCopy] Total copied:', copied);
+        return copied;
+    }
+
+    /**
+     * Show a brief "✓ Copied!" feedback animation on a copy button
+     */
+    function showCopyFeedback(btn) {
+        btn.classList.add('is-copied');
+        setTimeout(function () {
+            btn.classList.remove('is-copied');
+        }, 2000);
+    }
+
+    // ── Per-Passenger "Use my data" buttons ──
+    var copyButtons = $$('.wiwa-copy-billing-btn');
+    copyButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var block = btn.closest('.passenger-block');
+            if (!block) return;
+
+            var count = copyBillingToBlock(block);
+            if (count > 0) {
+                showCopyFeedback(btn);
+            }
+        });
     });
 
-    // ==================== VALIDACIÓN DEL FORMULARIO ====================
-    /**
-     * Validar un campo individual
-     * Solo muestra error si el campo está vacío y fue tocado (blur/submit)
-     */
-    function validateField($field) {
-        var isValid = true;
-        var $formField = $field.closest('.form-field');
-        var $errorMsg = $formField.find('.error-message');
+    // ── Global "I am the main traveler" Toggle ──
+    var sameAsBillingToggle = document.getElementById('wiwa_same_as_billing');
+    if (sameAsBillingToggle) {
+        var toggleCard = document.getElementById('wiwa-traveler-toggle');
+        var feedbackEl = document.getElementById('traveler-toggle-feedback');
 
-        // Limpiar estado previo
-        $field.removeClass('error');
-        $formField.removeClass('has-error');
+        function applyGlobalPreFill() {
+            // Find all passenger blocks that are Passenger 1 (pax index ends in 1)
+            var allBlocks = $$('.passenger-block[data-guest-index]');
+            var totalFilled = 0;
 
-        // Solo validar si el campo ha sido tocado o está vacío
-        var fieldValue = $field.val();
+            allBlocks.forEach(function (block) {
+                var idx = block.dataset.guestIndex;
+                // Pax 1 indices end in 01: 1, 101, 201, etc.
+                if (parseInt(idx) % 100 === 1) {
+                    totalFilled += copyBillingToBlock(block);
+                }
+            });
 
-        // Campo requerido vacío
-        if ($field.prop('required') && (!fieldValue || fieldValue === '')) {
+            // Show feedback
+            if (feedbackEl && totalFilled > 0) {
+                var msg = (window.wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.fieldsPreFilled)
+                    ? wiwaCheckout.strings.fieldsPreFilled
+                    : 'fields pre-filled';
+                feedbackEl.textContent = '✓ ' + totalFilled + ' ' + msg;
+                feedbackEl.classList.add('show');
+                setTimeout(function () {
+                    feedbackEl.classList.remove('show');
+                }, 3000);
+            }
+        }
+
+        sameAsBillingToggle.addEventListener('change', function () {
+            if (this.checked) {
+                applyGlobalPreFill();
+                if (toggleCard) toggleCard.classList.add('is-active');
+                sessionStorage.setItem('wiwa_same_as_billing', 'true');
+            } else {
+                if (toggleCard) toggleCard.classList.remove('is-active');
+                sessionStorage.setItem('wiwa_same_as_billing', 'false');
+                // Do NOT clear fields — non-destructive OFF
+            }
+        });
+
+        // Real-time sync: when billing fields change while toggle is ON, re-fill Pax 1
+        var billingInputs = $$('[name^="billing_"]');
+        billingInputs.forEach(function (input) {
+            var handler = function () {
+                if (!sameAsBillingToggle.checked) return;
+                applyGlobalPreFill();
+            };
+            input.addEventListener('input', handler);
+            input.addEventListener('change', handler);
+            if (input.tagName === 'SELECT' && window.jQuery) {
+                jQuery(input).on('change', handler);
+            }
+        });
+
+        // Restore persisted toggle state
+        if (sessionStorage.getItem('wiwa_same_as_billing') === 'true') {
+            sameAsBillingToggle.checked = true;
+            if (toggleCard) toggleCard.classList.add('is-active');
+            setTimeout(function () {
+                applyGlobalPreFill();
+            }, 400);
+        }
+    }
+
+
+    // ==================== FORM VALIDATION ====================
+
+    function validateField(field) {
+        let isValid = true;
+        const formField = field.closest('.form-field');
+        if (!formField) return true;
+
+        // Reset state
+        field.classList.remove('error');
+        formField.classList.remove('has-error');
+
+        const fieldValue = field.value.trim();
+
+        // Check required
+        if (field.required && !fieldValue) {
             isValid = false;
         }
 
-        // Validar email solo si tiene valor
-        if ($field.attr('type') === 'email' && fieldValue) {
-            var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // Check email
+        if (field.type === 'email' && fieldValue) {
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
             if (!emailRegex.test(fieldValue)) {
                 isValid = false;
             }
         }
 
-        // Mostrar error si no es válido
         if (!isValid) {
-            $field.addClass('error');
-            $formField.addClass('has-error');
+            field.classList.add('error');
+            formField.classList.add('has-error');
         }
 
         return isValid;
     }
 
-    /**
-     * Validar todos los campos del formulario
-     */
-    function validateForm($form) {
-        var isValid = true;
-        var firstError = null;
-        var $errorAccordion = null;
-        var errorAccordions = [];
+    function validateForm(form) {
+        let isValid = true;
+        let firstError = null;
+        let errorAccordions = [];
 
-        // Validar campos de contacto
-        $form.find('input[required], select[required]').each(function () {
-            if (!validateField($(this))) {
-                if (!firstError) {
-                    firstError = $(this);
-                }
+        // 1. Validate contact fields
+        const contactFields = $$('input[required], select[required]', form);
+        contactFields.forEach(field => {
+            if (!validateField(field)) {
+                if (!firstError) firstError = field;
                 isValid = false;
             }
         });
 
-        // Validar campos de pasajeros (data-guest-field="required" OR data-required="true")
-        $form.find('[data-guest-field="required"], [data-required="true"]').each(function () {
-            var $field = $(this);
-            var $formField = $field.closest('.form-field');
-            var $accordion = $field.closest('.tour-accordion-item');
+        // 2. Validate Guest Fields (custom data attributes)
+        const guestFields = $$('[data-guest-field="required"], [data-required="true"]', form);
+        guestFields.forEach(field => {
+            const formField = field.closest('.form-field');
+            const accordion = field.closest('.tour-accordion-item');
+            
+            if (!field.value.trim()) {
+                field.classList.add('error');
+                if (formField) formField.classList.add('has-error');
 
-            if (!$field.val() || $field.val() === '') {
-                $field.addClass('error');
-                $formField.addClass('has-error');
-
-                // Track this accordion as having errors
-                if ($accordion.length && errorAccordions.indexOf($accordion[0]) === -1) {
-                    errorAccordions.push($accordion[0]);
+                if (accordion && !errorAccordions.includes(accordion)) {
+                    errorAccordions.push(accordion);
                 }
 
-                if (!firstError) {
-                    firstError = $field;
-                    $errorAccordion = $accordion;
-                }
+                if (!firstError) firstError = field;
                 isValid = false;
             } else {
-                $field.removeClass('error');
-                $formField.removeClass('has-error');
+                field.classList.remove('error');
+                if (formField) formField.classList.remove('has-error');
             }
         });
 
-        // Validar términos y condiciones
-        if (!$('#accept_terms').is(':checked')) {
-            $('#terms-error').show();
-            if (!firstError) {
-                firstError = $('#accept_terms');
-            }
+        // 3. Validate Terms
+        const terms = document.getElementById('accept_terms');
+        const termsError = document.getElementById('terms-error');
+        
+        if (terms && !terms.checked) {
+            if (termsError) termsError.style.display = 'block';
+            if (!firstError) firstError = terms;
             isValid = false;
         } else {
-            $('#terms-error').hide();
+            if (termsError) termsError.style.display = 'none';
         }
 
-        // Si hay error en un acordeón cerrado, abrirlo
+        // Handle Accordions with errors
         if (!isValid && errorAccordions.length > 0) {
-            // First, add visual indicator to all accordions with errors
-            $(errorAccordions).each(function () {
-                $(this).addClass('has-error');
-            });
-
-            // Open the first accordion that has an error and is closed
-            var $firstClosedError = null;
-            $(errorAccordions).each(function () {
-                if (!$(this).hasClass('active')) {
-                    $firstClosedError = $(this);
-                    return false; // break
-                }
-            });
-
-            if ($firstClosedError) {
-                // Close all and open the one with error
-                $firstClosedError.addClass('active');
-
-                // Update firstError to be within this accordion
-                firstError = $firstClosedError.find('.error').first();
+            errorAccordions.forEach(acc => acc.classList.add('has-error'));
+            
+            // Find first closed error accordion
+            const closedErrorAcc = errorAccordions.find(acc => !acc.classList.contains('active'));
+            if (closedErrorAcc) {
+                // Close others?? No, just open this one for now to show user
+                closedErrorAcc.classList.add('active');
+                const body = closedErrorAcc.querySelector('.tour-accordion-body');
+                if (body) body.style.display = 'block';
             }
         }
 
-        // Scroll al primer error
-        if (!isValid && firstError && firstError.length) {
-            // Small delay to allow accordion to open
-            setTimeout(function () {
-                $('html, body').animate({
-                    scrollTop: firstError.offset().top - 100
-                }, 400, function () {
-                    firstError.focus();
-                });
-            }, 100);
+        // Scroll to first error
+        if (!isValid && firstError) {
+            setTimeout(() => {
+                firstError.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                setTimeout(() => firstError.focus(), 500);
+            }, 300);
         }
 
         return isValid;
     }
 
-    // ==================== ACORDEONES ====================
-
-    // Abrir primer acordeón por defecto
-    $('.tour-accordion-item').first().addClass('active');
-
-    // Toggle accordion
-    $('.tour-accordion-header').on('click', function () {
-        var $item = $(this).closest('.tour-accordion-item');
-
-        if ($item.hasClass('active')) {
-            $item.removeClass('active');
-            $item.find('.tour-accordion-body').slideUp(200);
-        } else {
-            $('.tour-accordion-item').removeClass('active');
-            $('.tour-accordion-body').slideUp(200);
-            $item.addClass('active');
-            $item.find('.tour-accordion-body').slideDown(200);
-        }
-    });
-
-    // ==================== STEP NAVIGATION VALIDATION ====================
-
-    // Prevent clicking step 2 without validating step 1
-    $('#step-2-link').on('click', function (e) {
-        e.preventDefault();
-
-        var $form = $('#wiwa-checkout-step-1');
-
-        // If on step 1, validate before navigating
-        if ($form.length) {
-            if (validateForm($form)) {
-                // Form is valid, submit it to go to step 2
-                $form.submit();
-            }
-            // If invalid, validateForm already handles error display
-        }
-    });
-
-    // Allow clicking step 1 link to go back
-    $('.step[data-step="1"]').on('click', function (e) {
-        // Allow normal navigation to step 1
-    });
-
-    // ==================== VALIDACIÓN EN TIEMPO REAL ====================
-
-    // Validar al perder foco
-    $('#wiwa-checkout-step-1 input, #wiwa-checkout-step-1 select').on('blur', function () {
-        if ($(this).prop('required') || $(this).data('guest-field') === 'required' || $(this).data('required') === true) {
-            validateField($(this));
-        }
-    });
-
-    // Limpiar error al escribir
-    $('#wiwa-checkout-step-1 input, #wiwa-checkout-step-1 select').on('input change', function () {
-        if ($(this).hasClass('error')) {
-            $(this).removeClass('error');
-            $(this).closest('.form-field').removeClass('has-error');
-        }
-        // Also clear accordion error when fields are filled
-        var $accordion = $(this).closest('.tour-accordion-item');
-        if ($accordion.length && $accordion.hasClass('has-error')) {
-            // Check if all required fields in this accordion are now valid
-            var hasEmptyRequired = false;
-            $accordion.find('[data-guest-field="required"], [data-required="true"]').each(function () {
-                if (!$(this).val()) {
-                    hasEmptyRequired = true;
-                    return false; // break
-                }
-            });
-            if (!hasEmptyRequired) {
-                $accordion.removeClass('has-error');
-            }
-        }
-    });
-
-    // ==================== SUBMIT DEL FORMULARIO ====================
-
-    $('#wiwa-checkout-step-1').on('submit', function (e) {
-        e.preventDefault();
-        var $form = $(this);
-
-        // Validar formulario
-        if (!validateForm($form)) {
-            return false;
-        }
-
-        var $submitBtn = $form.find('button[type="submit"], .btn-continue');
-        var originalText = $submitBtn.text();
-
-        // Deshabilitar botón
-        $submitBtn.prop('disabled', true).text('Guardando...');
-
-        // AJAX para guardar datos y actualizar carrito (Bridge for Ova Tour Booking)
-        var formData = $form.serialize();
-
-        $.ajax({
-            url: wiwaCheckout.ajaxUrl,
-            type: 'POST',
-            data: formData + '&action=wiwa_update_order_data&nonce=' + wiwaCheckout.nonce,
-            success: function (response) {
-                if (response.success) {
-                    // Redireccionar al paso 2
-                    window.location.href = $form.attr('action');
-                } else {
-                    alert('Error guardando datos. Por favor intenta de nuevo.');
-                    $submitBtn.prop('disabled', false).text(originalText);
-                }
-            },
-            error: function () {
-                alert('Error de conexión. Por favor intenta de nuevo.');
-                $submitBtn.prop('disabled', false).text(originalText);
-            }
-        });
-    });
-
-    // ==================== PASO 2: PAYMENT ====================
-
-    // Payment Method Selection
-    $(document).on('change', 'input[name="payment_method"]', function () {
-        $('.payment-method-description').slideUp(200);
-        $(this).closest('.payment-method-option').find('.payment-method-description').slideDown(300);
-    });
-
-    // ==================== WOOCS CURRENCY SWITCHER ====================
-
-    // Button style currency selector
-    $(document).on('click', '.currency-btn', function (e) {
-        e.preventDefault();
-        var currency = $(this).data('currency');
-        changeCurrency(currency);
-    });
-
-    // Dropdown style currency selector
-    $(document).on('change', '#wiwa-currency-select', function () {
-        var currency = $(this).val();
-        changeCurrency(currency);
-    });
-
-    // Legacy support for radio inputs
-    $(document).on('change', 'input[name="order_currency"]', function () {
-        var currency = $(this).val();
-        changeCurrency(currency);
-    });
-
-    // Currency change function (WOOCS compatible)
-    function changeCurrency(currency) {
-        // Show loading state
-        $('.order-summary-card').css('opacity', '0.6');
-        $('.currency-btn').prop('disabled', true);
-        $('.currency-btn.active').removeClass('active');
-        $('.currency-btn[data-currency="' + currency + '"]').addClass('active');
-
-        // WOOCS uses URL parameter to switch currency
-        // This is the most reliable method and works with all WOOCS configurations
-        var url = window.location.href;
-
-        // Remove existing currency parameter
-        url = url.replace(/([?&])currency=[^&]*/g, '');
-
-        // Clean up URL
-        url = url.replace(/\?&/, '?').replace(/&&/, '&').replace(/\?$/, '').replace(/&$/, '');
-
-        // Add new currency parameter
-        url += (url.indexOf('?') === -1 ? '?' : '&') + 'currency=' + currency;
-
-        // Redirect to new URL
-        window.location.href = url;
+    // ==================== ACCORDIONS ====================
+    
+    // Open first one by default
+    const firstAcc = $('.tour-accordion-item');
+    if (firstAcc) {
+        firstAcc.classList.add('active');
+        const body = firstAcc.querySelector('.tour-accordion-body');
+        if (body) body.style.display = 'block';
     }
 
-    // Apply Coupon
-    $('#apply_coupon').on('click', function (e) {
-        e.preventDefault();
-        var couponCode = $('#coupon_code').val().trim();
+    // Toggle
+    on('.tour-accordion-header', 'click', (e, header) => {
+        const item = header.closest('.tour-accordion-item');
+        const body = item.querySelector('.tour-accordion-body');
 
-        if (!couponCode) {
-            showCouponMessage('Por favor ingresa un código de descuento', 'error');
-            return;
+        // Close all others (optional behavior, matching original)
+        $$('.tour-accordion-item').forEach(acc => {
+            if (acc !== item) {
+                acc.classList.remove('active');
+                const b = acc.querySelector('.tour-accordion-body');
+                if (b) b.style.display = 'none'; // Simple toggle, ideally use CSS transitions or height animation
+            }
+        });
+
+        // Toggle current
+        if (item.classList.contains('active')) {
+            item.classList.remove('active');
+            if (body) body.style.display = 'none';
+        } else {
+            item.classList.add('active');
+            if (body) body.style.display = 'block';
         }
+    });
 
-        $.ajax({
-            url: wiwaCheckout.ajaxUrl,
-            type: 'POST',
-            data: {
-                action: 'wiwa_apply_coupon',
-                coupon_code: couponCode,
-                nonce: wiwaCheckout.nonce
-            },
-            beforeSend: function () {
-                $('#apply_coupon').prop('disabled', true).text('Aplicando...');
-            },
-            success: function (response) {
-                if (response.success) {
-                    showCouponMessage(response.data.message, 'success');
-                    setTimeout(function () {
-                        location.reload();
-                    }, 1500);
-                } else {
-                    showCouponMessage(response.data.message, 'error');
+    // ==================== STEP NAVIGATION ====================
+
+    // Step 2 Link
+    const step2Link = document.getElementById('step-2-link');
+    if (step2Link) {
+        step2Link.addEventListener('click', e => {
+            e.preventDefault();
+            const form = document.getElementById('wiwa-checkout-step-1');
+            if (form) {
+                // Manually trigger submit handler
+                form.dispatchEvent(new Event('submit', { cancelable: true, bubbles: true }));
+            }
+        });
+    }
+
+    // ==================== REAL-TIME VALIDATION ====================
+
+    const inputs = $$('#wiwa-checkout-step-1 input, #wiwa-checkout-step-1 select');
+    inputs.forEach(input => {
+        // Blur validation
+        input.addEventListener('blur', () => {
+            if (input.required || input.dataset.guestField === 'required' || input.dataset.required === 'true') {
+                validateField(input);
+            }
+        });
+
+        // Input clear error
+        input.addEventListener('input', () => {
+            if (input.classList.contains('error')) {
+                input.classList.remove('error');
+                const group = input.closest('.form-field');
+                if (group) group.classList.remove('has-error');
+            }
+
+            // Check accordion error state
+            const accordion = input.closest('.tour-accordion-item');
+            if (accordion && accordion.classList.contains('has-error')) {
+                // Re-check validity of this accordion
+                const requiredInAcc = $$('[data-guest-field="required"], [data-required="true"]', accordion);
+                const hasEmpty = requiredInAcc.some(el => !el.value.trim());
+                if (!hasEmpty) {
+                    accordion.classList.remove('has-error');
                 }
-            },
-            complete: function () {
-                $('#apply_coupon').prop('disabled', false).text('Aplicar');
             }
         });
     });
 
-    function showCouponMessage(message, type) {
-        var $msg = $('#coupon-message');
-        $msg.removeClass('success error').addClass(type).text(message).fadeIn();
-        setTimeout(function () {
-            $msg.fadeOut();
+    // ==================== FORM SUBMIT (FETCH) ====================
+
+    const form1 = document.getElementById('wiwa-checkout-step-1');
+    if (form1) {
+        form1.addEventListener('submit', function (e) {
+            e.preventDefault();
+            if (!validateForm(this)) return false;
+
+            const submitBtn = this.querySelector('button[type="submit"], .btn-continue');
+            const originalText = submitBtn ? submitBtn.innerText : 'Continuar';
+
+            if (submitBtn) {
+                submitBtn.disabled = true;
+                submitBtn.innerText = 'Guardando...';
+            }
+
+            const formData = new FormData(this);
+            formData.append('action', 'wiwa_update_order_data');
+            formData.append('nonce', config.nonce);
+
+            fetch(config.ajaxUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    // Clear all wiwa_ sessionStorage keys — data is now saved server-side
+                    Object.keys(sessionStorage).forEach(k => {
+                        if (k.startsWith('wiwa_')) sessionStorage.removeItem(k);
+                    });
+                    window.location.href = this.getAttribute('action');
+                } else {
+                    const errorMessage = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.errorSavingData ? wiwaCheckout.strings.errorSavingData : 'Error guardando datos: ';
+                    const unknownError = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.unknownError ? wiwaCheckout.strings.unknownError : 'Error desconocido';
+                    alert(errorMessage + (data.data || unknownError));
+                    if (submitBtn) {
+                        submitBtn.disabled = false;
+                        submitBtn.innerText = originalText;
+                    }
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                const connectionError = wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.connectionError ? wiwaCheckout.strings.connectionError : 'Error de conexión.';
+                alert(connectionError);
+                if (submitBtn) {
+                    submitBtn.disabled = false;
+                    submitBtn.innerText = originalText;
+                }
+            });
+        });
+    }
+
+    // ==================== PAYMENT METHODS ====================
+
+    on('input[name="payment_method"]', 'change', (e, input) => {
+        // Hide all descriptions
+        $$('.payment-method-description').forEach(el => el.style.display = 'none'); // Use explicit display none
+        
+        // Show current
+        const option = input.closest('.payment-method-option');
+        if (option) {
+            const desc = option.querySelector('.payment-method-description');
+            if (desc) desc.style.display = 'block'; // Simple toggle
+        }
+    });
+
+    // ==================== CURRENCY SWITCHER ====================
+
+    function changeCurrency(currency) {
+        // Visually disable
+        const card = $('.order-summary-card');
+        if (card) card.style.opacity = '0.6';
+        
+        $$('.currency-btn').forEach(btn => btn.disabled = true);
+
+        // Update URL
+        const url = new URL(window.location.href);
+        url.searchParams.set('currency', currency);
+        window.location.href = url.toString();
+    }
+
+    on('.currency-btn', 'click', (e, btn) => {
+        e.preventDefault();
+        changeCurrency(btn.dataset.currency);
+    });
+
+    on('#wiwa-currency-select', 'change', (e, select) => {
+        changeCurrency(select.value);
+    });
+
+    on('input[name="order_currency"]', 'change', (e, input) => {
+        changeCurrency(input.value);
+    });
+
+    // ==================== COUPON ====================
+
+    const applyCouponBtn = document.getElementById('apply_coupon');
+    if (applyCouponBtn) {
+        applyCouponBtn.addEventListener('click', e => {
+            e.preventDefault();
+            const codeInput = document.getElementById('coupon_code');
+            const code = codeInput ? codeInput.value.trim() : '';
+
+            if (!code) {
+                showCouponMessage('Ingresa un código', 'error');
+                return;
+            }
+
+            applyCouponBtn.disabled = true;
+            applyCouponBtn.innerText = 'Aplicando...';
+
+            const formData = new FormData();
+            formData.append('action', 'wiwa_apply_coupon');
+            formData.append('coupon_code', code);
+            formData.append('nonce', config.nonce);
+
+            fetch(config.ajaxUrl, {
+                method: 'POST',
+                body: formData
+            })
+            .then(res => res.json())
+            .then(res => {
+                if (res.success) {
+                    showCouponMessage(res.data.message, 'success');
+                    setTimeout(() => location.reload(), 1500);
+                } else {
+                    showCouponMessage(res.data.message, 'error');
+                }
+            })
+            .catch(err => {
+                showCouponMessage('Error de conexión', 'error');
+            })
+            .finally(() => {
+                applyCouponBtn.disabled = false;
+                applyCouponBtn.innerText = 'Aplicar';
+            });
+        });
+    }
+
+    function showCouponMessage(msg, type) {
+        const el = document.getElementById('coupon-message');
+        if (!el) return;
+        el.className = 'coupon-message ' + type;
+        el.innerText = msg;
+        el.style.display = 'block';
+        setTimeout(() => {
+            el.style.display = 'none';
         }, 5000);
     }
 
-    // Step 2 Process Payment
-    // Step 2 Process Payment
-    /* 
-    // DISABLED: Let WooCommerce and Gateways handle the submit naturally
-    $('#wiwa-checkout-step-2').on('submit', function (e) {
-        e.preventDefault();
-        var formData = $(this).serialize();
+    // ==================== AUTO SAVE ====================
+    
+    // Autosave inputs to session storage & restore from server (for returning customers & reloads)
+    if (form1) {
+        // Cleanup old localStorage items from previous versions
+        Object.keys(localStorage).forEach(key => {
+            if (key.startsWith('wiwa_')) {
+                localStorage.removeItem(key);
+            }
+        });
 
-        $.ajax({
-            url: wiwaCheckout.ajaxUrl,
-            type: 'POST',
-            data: formData + '&action=wiwa_process_checkout&nonce=' + wiwaCheckout.nonce,
-            beforeSend: function () {
-                $('#place_order').prop('disabled', true).text('Procesando pago...');
-            },
-            success: function (response) {
-                if (response.result === 'success') {
-                    window.location.href = response.redirect;
-                } else if (response.redirect) {
-                    window.location.href = response.redirect;
-                } else {
-                    alert('Error: ' + (response.messages || 'Error desconocido'));
-                    $('#place_order').prop('disabled', false).text('Confirmar y pagar');
+        const saveInput = (input) => {
+            if (!input.name) return;
+            if (input.type === 'checkbox' || input.type === 'radio') {
+                sessionStorage.setItem('wiwa_' + input.name, input.checked ? 'true' : 'false');
+            } else {
+                sessionStorage.setItem('wiwa_' + input.name, input.value || '');
+            }
+        };
+
+        const serverData = window.wiwaStep1Data || {};
+
+        $$('input, select, textarea', form1).forEach(input => {
+            if (!input.name || input.type === 'hidden') return;
+
+            let saved = sessionStorage.getItem('wiwa_' + input.name);
+
+            if (saved === null) {
+                // Not in session storage, try server data (if arriving via 'Back' from Step 2)
+                if (serverData[input.name] !== undefined) {
+                    if (input.type === 'checkbox' || input.type === 'radio') {
+                        input.checked = true; // If key exists in POST data, it was checked
+                        saveInput(input); // Sync immediately to sessionStorage
+                    } else {
+                        input.value = serverData[input.name];
+                        saveInput(input);
+                        if (input.tagName === 'SELECT' && window.jQuery) {
+                            jQuery(input).trigger('change.select2');
+                        }
+                    }
                 }
-            },
-            error: function () {
-                alert('Error en el proceso de pago. Por favor intenta nuevamente.');
-                $('#place_order').prop('disabled', false).text('Confirmar y pagar');
+            } else {
+                // Restore from SessionStorage
+                if (input.type === 'checkbox' || input.type === 'radio') {
+                    input.checked = (saved === 'true');
+                } else {
+                    input.value = saved;
+                    if (input.tagName === 'SELECT' && window.jQuery) {
+                        jQuery(input).trigger('change.select2');
+                    }
+                }
             }
-        });
-    });
-    */
 
-    // ==================== AUTO-SAVE (OPCIONAL) ====================
-
-    if ($('#wiwa-checkout-step-1').length) {
-        $('#wiwa-checkout-step-1 input, #wiwa-checkout-step-1 select').on('blur', function () {
-            var fieldName = $(this).attr('name');
-            var fieldValue = $(this).val();
-
-            if (fieldName && fieldValue) {
-                sessionStorage.setItem('wiwa_' + fieldName, fieldValue);
-            }
-        });
-
-        // Restaurar valores guardados
-        $('#wiwa-checkout-step-1 input, #wiwa-checkout-step-1 select').each(function () {
-            var fieldName = $(this).attr('name');
-            var savedValue = sessionStorage.getItem('wiwa_' + fieldName);
-
-            if (savedValue && !$(this).val()) {
-                $(this).val(savedValue);
+            // Save on change/blur/input
+            input.addEventListener('blur', () => saveInput(input));
+            input.addEventListener('change', () => saveInput(input));
+            if (input.tagName !== 'SELECT' && input.type !== 'checkbox' && input.type !== 'radio') {
+                input.addEventListener('input', () => saveInput(input));
             }
         });
     }
+
 });

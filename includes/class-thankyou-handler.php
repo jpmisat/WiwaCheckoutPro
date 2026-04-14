@@ -30,6 +30,26 @@ class Wiwa_Thankyou_Handler
             <h2>¡Gracias por reservar con Wiwa Tours!</h2>
             <p>Hemos recibido tu reserva #<?php echo $order->get_order_number(); ?>.</p>
         </div>
+        
+        <script type="text/javascript">
+            // Clear passenger data from sessionStorage on successful checkout
+            document.addEventListener('DOMContentLoaded', function() {
+                try {
+                    const keysToRemove = [];
+                    for (let i = 0; i < sessionStorage.length; i++) {
+                        const key = sessionStorage.key(i);
+                        if (key && key.indexOf('wiwa_cart_data_') === 0) {
+                            keysToRemove.push(key);
+                        }
+                    }
+                    keysToRemove.forEach(function(key) {
+                        sessionStorage.removeItem(key);
+                    });
+                } catch (e) {
+                    console.error('Error clearing passenger session data', e);
+                }
+            });
+        </script>
         <?php
     }
 }

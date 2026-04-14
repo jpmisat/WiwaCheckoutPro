@@ -11,6 +11,18 @@ if (!defined('ABSPATH')) {
  */
 class Wiwa_FOX_Integration
 {
+    /**
+     * Initializes the integration hooks.
+     */
+    public static function init()
+    {
+        if (defined('OVATB_PREFIX')) {
+            // Use our custom conversion logic for OvaTourBooking prices
+            add_filter(OVATB_PREFIX . 'convert_price', array(__CLASS__, 'ovatb_convert_price'), 10, 4);
+            // Fix unhandled wc_price formatting for deposit texts in the cart
+            add_filter(OVATB_PREFIX . 'cart_item_subtotal', array(__CLASS__, 'fix_cart_item_deposit_text'), 20, 3);
+        }
+    }
 
     /**
      * Verificar si FOX está activo
@@ -87,12 +99,13 @@ class Wiwa_FOX_Integration
     {
         global $WOOCS;
 
-        if (!self::is_active()) {
+        if (!self::is_active() || !is_object($WOOCS)) {
             return wc_price($price);
         }
 
-        // Usar método de FOX para aplicar conversión y formato
-        return $WOOCS->woocommerce_price($price);
+        // Convert using exchange rate, then format with wc_price
+        $converted = self::convert_price(floatval($price));
+        return wc_price($converted);
     }
 
     /**
@@ -149,6 +162,81 @@ class Wiwa_FOX_Integration
         }
 
         return $currencies[$currency_code]['symbol'];
+    }
+
+    /**
+     * Hook into OvaTourBooking's price conversion to add WOOCS support.
+     *
+     * OvaTourBooking's ovatb_convert_price() only handles CURCY and WPML-MC.
+     * This filter callback applies the WOOCS exchange rate so prices in the
+     * booking modal (total, calendar day-prices, deposits) display correctly
+     * in the user-selected currency.
+     *
+     * @param float $new_price  The (possibly already converted) price.
+     * @param float $price      The original base-currency price.
+     * @param array $args       Extra args (may contain 'currency').
+     * @param bool  $convert    Whether conversion was requested.
+     * @return float
+     */
+    public static function ovatb_convert_price($new_price, $price, $args, $convert)
+    {
+        // Skip if WOOCS is not active
+        if (!self::is_active()) {
+            return $new_price;
+        }
+
+        // Skip if caller explicitly disabled conversion
+        if (!$convert) {
+            return $new_price;
+        }
+
+        // Use our reliable convert_price method which grabs the rate explicitly
+        $converted_price = self::convert_price((float)$price);
+        
+        // Return whichever is higher between the previously modified new_price (if any) and our explicitly converted price,
+        // or just return our converted price.
+        return $converted_price;
+    }
+
+    /**
+     * Fix deposit text currency conversion in cart
+     * Intercepts ova-tour-booking cart HTML where wc_price() is used instead of ovatb_price()
+     */
+    public static function fix_cart_item_deposit_text($product_subtotal_html, $product_subtotal, $cart_item)
+    {
+        if (!self::is_active()) {
+            return $product_subtotal_html;
+        }
+
+        if (isset($cart_item['data']) && is_callable([$cart_item['data'], 'is_type']) && $cart_item['data']->is_type('ovatb_tour')) {
+            $pay_deposit = $cart_item['data']->get_meta('pay_deposit');
+            if ($pay_deposit) {
+                $total_payable = floatval($cart_item['data']->get_meta('total_payable'));
+                
+                if ( function_exists('wc_tax_enabled') && wc_tax_enabled() && $cart_item['data']->is_taxable() ) {
+                    if ( wc_prices_include_tax() ) {
+                        if ( !WC()->cart->display_prices_including_tax() ) {
+                            $total_payable = wc_get_price_excluding_tax( $cart_item['data'], [
+                                'price' => $total_payable
+                            ]);
+                        }
+                    } else {
+                        if ( WC()->cart->display_prices_including_tax() ) {
+                            $total_payable = wc_get_price_including_tax( $cart_item['data'], [
+                                'price' => $total_payable
+                            ]);
+                        }
+                    }
+                }
+
+                $bad_price_html = wc_price($total_payable);
+                $good_price_html = self::format_price($total_payable);
+
+                $product_subtotal_html = str_replace($bad_price_html, $good_price_html, $product_subtotal_html);
+            }
+        }
+
+        return $product_subtotal_html;
     }
 
     /**

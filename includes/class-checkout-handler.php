@@ -89,12 +89,15 @@ class Wiwa_Checkout_Handler
      */
     public function redirect_cart_to_checkout()
     {
+        // Redirect disabled to allow access to Cart page
+        /*
         if (is_cart() && get_option('wiwa_checkout_enabled') && !WC()->cart->is_empty()) {
             $checkout_page_id = get_option('wiwa_checkout_page_id');
             $checkout_url = $checkout_page_id ? get_permalink($checkout_page_id) : wc_get_checkout_url();
             wp_safe_redirect($checkout_url);
             exit;
         }
+        */
     }
 
     /**
@@ -142,7 +145,7 @@ class Wiwa_Checkout_Handler
     public function render_checkout()
     {
         if (!class_exists('WooCommerce')) {
-            return '<div class="woocommerce-error">' . __('WooCommerce no está activo.', 'wiwa-checkout') . '</div>';
+            return '<div class="woocommerce-error">' . __('WooCommerce is not active.', 'wiwa-checkout') . '</div>';
         }
 
         if (WC()->cart->is_empty()) {
@@ -182,15 +185,7 @@ class Wiwa_Checkout_Handler
             );
         }
 
-        // Enqueue cart styles on cart page
-        if (is_cart()) {
-            wp_enqueue_style(
-                'wiwa-cart-css',
-                WIWA_CHECKOUT_URL . 'assets/css/cart.css',
-            [],
-                WIWA_CHECKOUT_VERSION
-            );
-        }
+
 
         // Check if we should load checkout assets
         if (!$this->is_wiwa_checkout_page() && !is_checkout()) {
@@ -212,20 +207,22 @@ class Wiwa_Checkout_Handler
             true
         );
 
-        // CSS
+        // CSS — use filemtime for aggressive cache-busting
+        $css_ver = WIWA_CHECKOUT_VERSION . '.' . filemtime(WIWA_CHECKOUT_PATH . 'assets/css/checkout.css');
         wp_enqueue_style(
             'wiwa-checkout-css',
             WIWA_CHECKOUT_URL . 'assets/css/checkout.css',
         ['dashicons', 'select2'],
-            WIWA_CHECKOUT_VERSION
+            $css_ver
         );
 
-        // JS
+        // JS — use filemtime for aggressive cache-busting
+        $js_ver = WIWA_CHECKOUT_VERSION . '.' . filemtime(WIWA_CHECKOUT_PATH . 'assets/js/checkout.js');
         wp_enqueue_script(
             'wiwa-checkout-js',
             WIWA_CHECKOUT_URL . 'assets/js/checkout.js',
         ['jquery', 'wc-checkout'], // Add dependency on wc-checkout if available, or just make sure wc-checkout is loaded
-            WIWA_CHECKOUT_VERSION,
+            $js_ver,
             true
         );
 
@@ -235,25 +232,47 @@ class Wiwa_Checkout_Handler
         }
 
         // GeoIP integration
+        $geoip_deps = ['jquery'];
+        if (get_option('wiwa_geoip_strategy', 'woocommerce') === 'yellowtree') {
+            $geoip_deps[] = 'geoip_detect'; // Native handle for YellowTree script
+        }
+
         wp_enqueue_script(
             'wiwa-geoip-js',
             WIWA_CHECKOUT_URL . 'assets/js/geoip.js',
-        ['jquery'],
+            $geoip_deps,
             WIWA_CHECKOUT_VERSION,
             true
         );
 
+        // Contextualize AJAX URL with Language if WPML/Polylang is active
+        $ajax_url = admin_url('admin-ajax.php');
+        $lang = apply_filters('wpml_current_language', null);
+        if (!$lang && function_exists('pll_current_language')) {
+            $lang = pll_current_language();
+        }
+        if ($lang) {
+            $ajax_url = add_query_arg('lang', $lang, $ajax_url);
+        }
+
         wp_localize_script('wiwa-checkout-js', 'wiwaCheckout', [
-            'ajaxUrl' => admin_url('admin-ajax.php'),
+            'ajaxUrl' => $ajax_url,
             'nonce' => wp_create_nonce('wiwa_checkout_nonce'),
             'homeUrl' => home_url('/'),
             'strings' => [
-                'processing' => __('Procesando...', 'wiwa-checkout'),
-                'error' => __('Error en la solicitud', 'wiwa-checkout')
+                'processing' => __('Processing...', 'wiwa-checkout'),
+                'error' => __('Request error', 'wiwa-checkout'),
+                'continueToPayment' => __('Continue to payment to finish.', 'wiwa-checkout'),
+                'selectTour' => __('Select your tour', 'wiwa-checkout'),
+                'adult' => __('Adult', 'wiwa-checkout'),
+                'child' => __('Child', 'wiwa-checkout'),
+                'infant' => __('Infant', 'wiwa-checkout'),
+                'fieldsPreFilled' => __('fields pre-filled', 'wiwa-checkout'),
             ],
             'geoIp' => [
                 'autoComplete' => get_option('wiwa_geoip_autocomplete_city'),
-                'detectCountry' => get_option('wiwa_geoip_detect_country')
+                'detectCountry' => get_option('wiwa_geoip_detect_country'),
+                'strategy' => get_option('wiwa_geoip_strategy', 'woocommerce')
             ]
         ]);
     }

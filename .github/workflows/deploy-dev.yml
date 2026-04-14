@@ -1,4 +1,4 @@
-name: Deploy to Dev
+name: Deploy to Development
 
 on:
   push:
@@ -6,28 +6,21 @@ on:
       - dev
 
 jobs:
-  deploy:
+  deploy-dev:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout code
+      - name: Checkout Code
         uses: actions/checkout@v4
 
-      - name: SSH Deploy
+      - name: Deploy to Hostinger Dev
+        uses: easingthemes/ssh-deploy@v5.1.0
         env:
-          SSH_PRIVATE_KEY: ${{ secrets.SERVER_SSH_KEY }}
-          SERVER_IP: ${{ secrets.SERVER_IP }}
-          SERVER_USER: ${{ secrets.SERVER_USER }}
-        run: |
-          mkdir -p ~/.ssh
-          echo "$SSH_PRIVATE_KEY" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -H $SERVER_IP >> ~/.ssh/known_hosts
-          # Ensure Target directory exists
-          ssh -i ~/.ssh/id_ed25519 $SERVER_USER@$SERVER_IP "mkdir -p /home/wiwatour-dev/htdocs/dev.wiwatour.com/wp-content/plugins/WiwaCheckoutPro"
-          # Rsync files
-          rsync -avz --delete \
-            --exclude '.git' \
-            --exclude '.github' \
-            --exclude '.agents' \
-            --exclude '.gemini' \
-            ./ $SERVER_USER@$SERVER_IP:/home/wiwatour-dev/htdocs/dev.wiwatour.com/wp-content/plugins/WiwaCheckoutPro/
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_KEY_DEV }}
+          ARGS: "-rlgoDzvc -i --delete"
+          SOURCE: "/"
+          REMOTE_HOST: ${{ secrets.HOSTINGER_HOST }}
+
+          REMOTE_USER: ${{ secrets.SSH_USER_DEV }}
+          REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
+          TARGET: "/home/wiwatour-dev/htdocs/dev.wiwatour.com/wp-content/plugins/wiwa-tour-checkout-pro"
+          EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa_Manual_de_marca.pdf, /force-reload.ps1"

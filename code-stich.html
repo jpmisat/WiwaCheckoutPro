@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="es"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Wiwa Tours - Carrito de Compras</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet"/>
+<script>
+        tailwind.config = {
+          theme: {
+            extend: {
+              colors: {
+                'wiwa-cream': '#fdfbf7',
+                'wiwa-bg': '#f9f9f9',
+                'wiwa-green': '#1a3c28',
+                'wiwa-green-light': '#2b4c3b',
+                'wiwa-text-gray': '#4b5563',
+                'wiwa-border': '#e5e7eb',
+              },
+              fontFamily: {
+                sans: ['Montserrat', 'Roboto', 'sans-serif'],
+              }
+            }
+          }
+        }
+    </script>
+<style type="text/tailwindcss">
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+        :root {
+          --primary-green: #1a3c28;
+          --header-cream: #fdfbf7;
+        }
+        body {
+          font-family: 'Montserrat', sans-serif;
+        }
+        .card-shadow {
+          box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.05), 0 2px 4px -1px rgba(0, 0, 0, 0.02);
+        }
+        .stepper-btn {
+          @apply transition-colors duration-200;
+        }
+        .material-symbols-outlined {
+          font-variation-settings: 'FILL' 0, 'wght' 300, 'GRAD' 0, 'opsz' 24;
+        }
+        .nav-link {
+          @apply text-[13px] font-medium tracking-widest uppercase text-wiwa-green opacity-80 hover:opacity-100 transition-opacity duration-300;
+        }
+    </style>
+</head>
+<body class="bg-wiwa-bg text-gray-800 antialiased min-h-screen flex flex-col">
+<header class="sticky top-0 z-50 bg-[#fdfbf7] border-b border-gray-100/50" data-purpose="main-header">
+<div class="container mx-auto px-4 lg:px-10 h-24 flex items-center justify-between">
+<div class="flex-shrink-0 lg:w-1/4">
+<a class="inline-block" href="#">
+<img alt="Wiwa Tours Logo" class="h-14 w-auto object-contain" src="https://media.istockphoto.com/id/1909408258/photo/ciudad-perdida-ancient-ruins-in-sierra-nevada-mountains-santa-marta-colombia-wilderness.jpg?s=1024x1024&w=is&k=20&c=2N9XBpjNobFG6rpjYJo4N3LQzgN25_ipAjP7bKLi9AI="/>
+</a>
+</div>
+<nav aria-label="Main Navigation" class="hidden lg:flex items-center justify-center flex-grow space-x-10">
+<a class="nav-link" href="#">Nosotros</a>
+<div class="relative group">
+<button class="nav-link flex items-center gap-1 group">
+                    Destinos
+                    <span class="material-symbols-outlined text-[18px] transition-transform duration-300 group-hover:rotate-180">expand_more</span>
+</button>
+<div class="absolute left-1/2 -translate-x-1/2 mt-4 w-56 bg-white rounded-lg shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 py-2 border border-gray-100">
+<a class="block px-6 py-3 text-sm text-gray-700 hover:bg-wiwa-cream hover:text-wiwa-green transition-colors" href="#">Ciudad Perdida</a>
+<a class="block px-6 py-3 text-sm text-gray-700 hover:bg-wiwa-cream hover:text-wiwa-green transition-colors" href="#">Tayrona Park</a>
+<a class="block px-6 py-3 text-sm text-gray-700 hover:bg-wiwa-cream hover:text-wiwa-green transition-colors" href="#">Sierra Nevada</a>
+</div>
+</div>
+<a class="nav-link" href="#">Experiencias</a>
+<a class="nav-link" href="#">Info Útil</a>
+<a class="nav-link" href="#">Blog</a>
+<a class="nav-link" href="#">Contacto</a>
+</nav>
+<div class="flex items-center justify-end lg:w-1/4 space-x-6">
+<div class="hidden xl:flex items-center space-x-4">
+<button class="flex items-center gap-1 text-[12px] font-semibold text-wiwa-green hover:opacity-70 transition">
+                    COP <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+<div class="h-4 w-[1px] bg-gray-300"></div>
+<button class="flex items-center gap-1 text-[12px] font-semibold text-wiwa-green hover:opacity-70 transition">
+                    ES <span class="material-symbols-outlined text-[16px]">expand_more</span>
+</button>
+</div>
+<button aria-label="View Cart" class="relative group p-2 text-wiwa-green hover:bg-wiwa-cream rounded-full transition-all">
+<span class="material-symbols-outlined text-[28px]">shopping_bag</span>
+<span class="absolute top-1 right-1 flex h-5 w-5 items-center justify-center rounded-full bg-red-600 text-[10px] font-bold text-white ring-2 ring-white">2</span>
+</button>
+<button class="lg:hidden p-2 text-wiwa-green">
+<span class="material-symbols-outlined text-[28px]">menu</span>
+</button>
+</div>
+</div>
+</header>
+<main class="flex-grow container mx-auto px-4 lg:px-10 pt-12 pb-20" data-purpose="cart-page-content">
+<div class="mb-12">
+<h1 class="text-3xl md:text-5xl font-bold text-wiwa-green mb-4 tracking-tight">Tu Carrito de Aventuras</h1>
+<div class="h-1 w-20 bg-wiwa-green mb-6"></div>
+<p class="text-gray-500 text-lg max-w-2xl font-light">Revisa tus próximas experiencias en la Sierra Nevada antes de confirmar tu reserva.</p>
+</div>
+<div class="flex flex-col lg:flex-row gap-12">
+<section class="lg:w-2/3 space-y-8" data-purpose="cart-items-list">
+<article class="bg-white rounded-2xl card-shadow p-5 md:p-8 flex flex-col md:flex-row gap-8 items-start border border-gray-50" data-purpose="cart-item">
+<div class="w-full md:w-56 h-56 flex-shrink-0 relative overflow-hidden rounded-xl">
+<img alt="Tour Ciudad Perdida" class="w-full h-full object-cover transform hover:scale-105 transition duration-700" src="https://media.istockphoto.com/id/117145669/photo/double-rainbow-at-machu-picchu.jpg?s=1024x1024&w=is&k=20&c=F6t_KEmMuPsEnAEG3xnqu-Tnf2jAZiEtuKDCVDE9Ty8="/>
+<div class="absolute top-3 left-3 bg-white/90 backdrop-blur-sm px-3 py-1 rounded-full shadow-sm">
+<span class="text-[10px] font-bold text-wiwa-green uppercase tracking-tighter">Popular</span>
+</div>
+</div>
+<div class="flex flex-col md:flex-row flex-grow justify-between w-full h-full min-h-[14rem]">
+<div class="flex flex-col justify-between md:w-1/2">
+<div>
+<h2 class="text-2xl font-bold text-wiwa-green mb-4 leading-tight">Tour Ciudad Perdida 4 días</h2>
+<div class="space-y-3 text-[14px] text-gray-500">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-medium text-gray-700">13-02-2026</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-medium text-gray-700">5 - 6 días</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<div class="flex items-center gap-1">
+<span class="font-medium text-gray-700">2 Viajeros</span>
+<button class="text-wiwa-green-light underline text-[11px] ml-1 hover:text-green-800">Ver info</button>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-6 flex items-center gap-2 text-red-500 hover:text-red-700 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
+</div>
+<div class="mt-8 md:mt-0 md:w-1/2 flex flex-col items-end justify-between">
+<div class="flex flex-col items-center">
+<div class="flex items-center bg-wiwa-bg border border-gray-200 rounded-full p-1 w-32 justify-between">
+<button aria-label="Decrease quantity" class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-600 transition-all">-</button>
+<span class="font-bold text-wiwa-green text-sm">2</span>
+<button aria-label="Increase quantity" class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-600 transition-all">+</button>
+</div>
+<span class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-semibold">Viajeros</span>
+</div>
+<div class="text-right mt-6">
+<p class="text-[13px] text-gray-400 mb-1">$ 372.000 <span class="opacity-70">/ persona</span></p>
+<p class="text-3xl font-bold text-wiwa-green">$ 3.720.000</p>
+<div class="mt-4 space-y-2">
+<div class="flex justify-end gap-3 text-sm text-gray-500">
+<span>Depósito:</span>
+<span class="font-semibold text-wiwa-green">$ 1.167.000</span>
+</div>
+<div class="flex justify-end gap-3 text-sm">
+<span class="text-gray-500">Saldo pendiente:</span>
+<span class="font-bold text-red-600">$ 2.553.000</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+<article class="bg-white rounded-2xl card-shadow p-5 md:p-8 flex flex-col md:flex-row gap-8 items-start border border-gray-50" data-purpose="cart-item">
+<div class="w-full md:w-56 h-56 flex-shrink-0 relative overflow-hidden rounded-xl">
+<img alt="Tour Tayrona Park" class="w-full h-full object-cover transform hover:scale-105 transition duration-700" src=""/>
+</div>
+<div class="flex flex-col md:flex-row flex-grow justify-between w-full h-full min-h-[14rem]">
+<div class="flex flex-col justify-between md:w-1/2">
+<div>
+<h2 class="text-2xl font-bold text-wiwa-green mb-4 leading-tight">Tour Parque Tayrona &amp; Cabo</h2>
+<div class="space-y-3 text-[14px] text-gray-500">
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">calendar_today</span>
+<span class="font-medium text-gray-700">15-02-2026</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">schedule</span>
+<span class="font-medium text-gray-700">1 día full</span>
+</div>
+<div class="flex items-center gap-3">
+<span class="material-symbols-outlined text-[18px]">group</span>
+<div class="flex items-center gap-1">
+<span class="font-medium text-gray-700">2 Viajeros</span>
+</div>
+</div>
+</div>
+</div>
+<button class="mt-6 flex items-center gap-2 text-red-500 hover:text-red-700 text-sm font-medium transition-colors">
+<span class="material-symbols-outlined text-[18px]">delete</span> Eliminar
+                        </button>
+</div>
+<div class="mt-8 md:mt-0 md:w-1/2 flex flex-col items-end justify-between">
+<div class="flex flex-col items-center">
+<div class="flex items-center bg-wiwa-bg border border-gray-200 rounded-full p-1 w-32 justify-between">
+<button aria-label="Decrease quantity" class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-600 transition-all">-</button>
+<span class="font-bold text-wiwa-green text-sm">2</span>
+<button aria-label="Increase quantity" class="stepper-btn w-8 h-8 flex items-center justify-center rounded-full hover:bg-white hover:shadow-sm text-gray-600 transition-all">+</button>
+</div>
+<span class="text-[10px] text-gray-400 mt-2 uppercase tracking-widest font-semibold">Viajeros</span>
+</div>
+<div class="text-right mt-6">
+<p class="text-[13px] text-gray-400 mb-1">$ 250.000 <span class="opacity-70">/ persona</span></p>
+<p class="text-3xl font-bold text-wiwa-green">$ 500.000</p>
+<div class="mt-4 space-y-2">
+<div class="flex justify-end gap-3 text-sm text-gray-500">
+<span>Depósito:</span>
+<span class="font-semibold text-wiwa-green">$ 150.000</span>
+</div>
+<div class="flex justify-end gap-3 text-sm">
+<span class="text-gray-500">Saldo pendiente:</span>
+<span class="font-bold text-red-600">$ 350.000</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</article>
+</section>
+<aside class="lg:w-1/3" data-purpose="order-summary">
+<div class="bg-white rounded-2xl card-shadow p-8 sticky top-32 border border-gray-50">
+<h3 class="text-[13px] font-bold text-wiwa-green uppercase tracking-[0.2em] border-b border-gray-100 pb-6 mb-8">Totales del Carrito</h3>
+<div class="space-y-6 mb-10">
+<div class="flex justify-between items-center text-gray-500 text-[15px]">
+<span>Subtotal experiencias</span>
+<span class="font-semibold text-gray-800">$ 4.220.000</span>
+</div>
+<div class="flex justify-between items-center text-wiwa-green text-[15px]">
+<span class="font-medium">Total a pagar hoy (Depósito)</span>
+<span class="font-bold">$ 1.317.000</span>
+</div>
+<div class="pt-6 border-t border-dashed border-gray-200">
+<div class="flex justify-between items-center text-red-600 text-[15px]">
+<span>Pendiente por pagar</span>
+<span class="font-bold">$ 2.903.000</span>
+</div>
+<p class="text-[11px] text-gray-400 mt-2 leading-relaxed italic">El saldo restante se pagará directamente en nuestras oficinas el día del tour.</p>
+</div>
+</div>
+<div class="pt-8 border-t border-gray-100">
+<div class="flex flex-col gap-2 mb-8">
+<span class="text-gray-500 text-sm font-medium">Total de la reserva</span>
+<span class="text-5xl font-bold text-wiwa-green tracking-tight">$ 4.220.000</span>
+</div>
+<button class="w-full bg-wiwa-green hover:bg-wiwa-green-light text-white font-bold py-5 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 duration-300 text-[14px] uppercase tracking-widest">
+                        Proceder al Pago
+                    </button>
+<div class="flex items-center justify-center gap-2 mt-6">
+<span class="material-symbols-outlined text-[16px] text-gray-400">lock</span>
+<span class="text-[11px] text-gray-400 uppercase font-medium tracking-tighter">Pago Seguro SSL</span>
+</div>
+</div>
+</div>
+<div class="mt-6 bg-wiwa-cream p-6 rounded-2xl border border-wiwa-border/40">
+<p class="text-[13px] font-semibold text-wiwa-green mb-3">¿Tienes un código de descuento?</p>
+<div class="flex gap-2">
+<input class="flex-grow bg-white border-gray-200 rounded-lg text-sm px-4 py-2 focus:ring-wiwa-green focus:border-wiwa-green" placeholder="Ingresa tu código" type="text"/>
+<button class="bg-wiwa-green text-white px-4 py-2 rounded-lg text-[12px] font-bold uppercase hover:opacity-90 transition">Aplicar</button>
+</div>
+</div>
+</aside>
+</div>
+</main>
+<a aria-label="Contact on WhatsApp" class="fixed bottom-8 right-8 z-50 bg-[#25D366] text-white p-4 rounded-full shadow-2xl transition-all hover:scale-110 hover:shadow-green-200 flex items-center justify-center group" href="#">
+<svg class="w-8 h-8" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+<path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"></path>
+</svg>
+<span class="max-w-0 overflow-hidden group-hover:max-w-xs group-hover:ml-3 transition-all duration-500 font-semibold whitespace-nowrap text-sm">¿Ayuda con tu reserva?</span>
+</a>
+
+</body></html>

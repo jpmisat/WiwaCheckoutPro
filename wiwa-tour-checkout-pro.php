@@ -3,9 +3,9 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.6.0
- * Author: Juan Pablo Misat - Connexis
- * Author URI: http://connexis.co/
+ * Version: 2.17.4
+ * Author: Wiwa Tours (Javier)
+ * Author URI: https://wiwatour.com
  * Text Domain: wiwa-checkout
  * Domain Path: /languages
  * Requires PHP: 7.4
@@ -29,13 +29,14 @@ add_action('before_woocommerce_init', function () {
     }
 });
 
-// Definir constantes
-define('WIWA_CHECKOUT_VERSION', '2.7.0');
+// Constantes del Plugin
+define('WIWA_CHECKOUT_VERSION', '2.17.4');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
 define('WIWA_CHECKOUT_BASENAME', plugin_basename(__FILE__));
 
+// ... (restored)
 
 /**
  * Clase principal del plugin (Singleton)
@@ -70,6 +71,7 @@ final class Wiwa_Tour_Checkout
         require_once WIWA_CHECKOUT_PATH . 'includes/class-settings.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-fields-manager.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-i18n.php'; // Translation
+        require_once WIWA_CHECKOUT_PATH . 'includes/wiwa-helpers.php'; // Global Helpers
 
         // Integrations
         require_once WIWA_CHECKOUT_PATH . 'includes/class-geoip-integration.php';
@@ -78,11 +80,13 @@ final class Wiwa_Tour_Checkout
         require_once WIWA_CHECKOUT_PATH . 'includes/class-tour-booking-integration.php';
 
         // Handlers
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-assets.php'; // Asset Manager
         require_once WIWA_CHECKOUT_PATH . 'includes/class-checkout-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-payment-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-thankyou-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-cart-handler.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-ajax-handler.php';
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-shortcodes.php';
 
         // Admin
         if (is_admin()) {
@@ -90,10 +94,44 @@ final class Wiwa_Tour_Checkout
         }
     }
 
-    private function init_hooks()
+    public function init_hooks()
     {
-        // Inicializar internacionalización
+        // Load Textdomain
         add_action('plugins_loaded', ['Wiwa_I18n', 'load_plugin_textdomain']);
+
+        // Register Shortcodes
+        add_action('init', function () {
+            // Load required files where class exists check is needed
+            include_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-shortcodes.php';
+            // Register shortcodes after definitions are loaded
+            add_shortcode('wiwa_checkout_form', ['Wiwa_Shortcodes', 'checkout_form']);
+            add_shortcode('wiwa_checkout_cart', ['Wiwa_Shortcodes', 'checkout_cart']);
+            add_shortcode('wiwa_checkout_thankyou', ['Wiwa_Shortcodes', 'checkout_thankyou']);
+            // Register dynamic_deposit_currency shortcode
+            Wiwa_Shortcodes::init();
+            
+            // Register fields with WPML String Translation
+            if (class_exists('Wiwa_Fields_Manager')) {
+                Wiwa_Fields_Manager::register_fields_for_wpml();
+            }
+        });
+
+        // Initialize admin settings if in dashboard
+        if (is_admin()) {
+            add_action('init', function () {
+                new Wiwa_Settings();
+            });
+        }
+
+        // Initialize Cart Handler logic
+        add_action('init', function () {
+            new Wiwa_Cart_Handler();
+        });
+
+        // Initialize FOX Integration
+        add_action('init', function () {
+            Wiwa_FOX_Integration::init();
+        });
 
         // Hooks de activación/desactivación
         register_activation_hook(WIWA_CHECKOUT_FILE, [$this, 'activate']);
@@ -106,14 +144,106 @@ final class Wiwa_Tour_Checkout
 
         // Inicializar Handlers
         add_action('plugins_loaded', function () {
+            new Wiwa_Assets();
             new Wiwa_Checkout_Handler();
             new Wiwa_Thankyou_Handler();
             new Wiwa_Ajax_Handler();
             new Wiwa_Cart_Handler();
         });
 
+        // Template Overrides for OvaTour Booking
+        add_filter('ovatb_locate_template', [$this, 'override_ovatb_templates'], 10, 4);
+
+        // Translate OvaTourBooking guest data before template render
+        add_filter('ovatb_get_data_guests', [$this, 'translate_ovatb_guest_data'], 20);
+
         // DEBUG PATH HOOK
         add_action('wp_head', [$this, 'debug_paths']);
+    }
+
+    public function override_ovatb_templates($template, $template_name, $template_path, $default_path)
+    {
+        $plugin_path = WIWA_CHECKOUT_PATH . 'templates/ova-tour-booking/' . $template_name;
+        if (file_exists($plugin_path)) {
+            return $plugin_path;
+        }
+        return $template;
+    }
+
+    /**
+     * Translate guest labels in OvaTourBooking data array before rendering
+     */
+    public function translate_ovatb_guest_data($args)
+    {
+        if (is_admin() || empty($args['guests']) || !is_array($args['guests'])) {
+            return $args;
+        }
+
+        foreach ($args['guests'] as &$guest) {
+            if (!empty($guest['label'])) {
+                $guest['label'] = apply_filters(
+                    'wpml_translate_single_string',
+                    $guest['label'],
+                    'wiwa-checkout',
+                    'guest_label_' . sanitize_key($guest['label'])
+                );
+            }
+        }
+
+        return $args;
+    }
+
+    /**
+     * Register OvaTourBooking guest-type labels with WPML String Translation.
+     * This allows labels like "Cantidad de viajeros" (stored in product meta)
+     * to appear in WPML > String Translation and be translated to any language.
+     */
+    public function register_guest_labels_for_wpml()
+    {
+        // Only run in admin or on first front-end load after flush
+        if (!function_exists('OVATB') || !is_callable([OVATB(), 'options'])) {
+            return;
+        }
+
+        // Use a transient to avoid running this on every page load
+        $cache_key = 'wiwa_guest_labels_registered';
+        if (get_transient($cache_key)) {
+            return;
+        }
+
+        // Query all tour products
+        $products = wc_get_products([
+            'type'   => 'tour',
+            'limit'  => -1,
+            'status' => 'publish',
+            'return' => 'ids',
+        ]);
+
+        foreach ($products as $product_id) {
+            $product = wc_get_product($product_id);
+            if (!$product || !method_exists($product, 'get_guests')) {
+                continue;
+            }
+
+            $guests = $product->get_guests();
+            if (!is_array($guests)) {
+                continue;
+            }
+
+            foreach ($guests as $guest) {
+                if (!empty($guest['label'])) {
+                    do_action(
+                        'wpml_register_single_string',
+                        'wiwa-checkout',                              // context
+                        'guest_label_' . sanitize_key($guest['label']), // name
+                        $guest['label']                                // value
+                    );
+                }
+            }
+        }
+
+        // Cache for 12 hours — re-registers on product save via transient flush
+        set_transient($cache_key, true, 12 * HOUR_IN_SECONDS);
     }
 
     public function check_dependencies()
@@ -165,8 +295,9 @@ final class Wiwa_Tour_Checkout
     // DEBUG PATH
     public function debug_paths()
     {
-        echo "\n<!-- DEBUG PATH INFO: " . WIWA_CHECKOUT_PATH . " -->\n";
-        echo "<!-- DEBUG TEMPLATE 1: " . WIWA_CHECKOUT_PATH . "templates/checkout/step-1.php -->\n";
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            echo "\n<!-- DEBUG PATH INFO: " . WIWA_CHECKOUT_PATH . " -->\n";
+        }
     }
 }
 

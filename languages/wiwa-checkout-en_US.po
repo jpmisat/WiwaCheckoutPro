@@ -1,0 +1,791 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "— Select —"
+msgstr "— Select —"
+
+msgid "Coupon applied!"
+msgstr "Coupon applied!"
+
+msgid "Thank you for your booking!"
+msgstr "Thank you for your booking!"
+
+msgid "Saved!"
+msgstr "Saved!"
+
+msgid "Have a discount code?"
+msgstr "Have a discount code?"
+
+msgid "*We need passenger information to confirm these tours."
+msgstr "*We need passenger information to confirm these tours."
+
+msgid "<span class=\"icon-cart\"></span> Add to Cart"
+msgstr "<span class=\"icon-cart\"></span> Add to Cart"
+
+msgid "Accept %sTerms and Conditions%s and %sPrivacy Policy%s"
+msgstr "Accept %sTerms and Conditions%s and %sPrivacy Policy%s"
+
+msgid "Active"
+msgstr "Active"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Activate Wiwa Checkout"
+msgstr "Activate Wiwa Checkout"
+
+msgid "Activate selector in checkout"
+msgstr "Activate selector in checkout"
+
+msgid "Price update"
+msgstr "Price update"
+
+msgid "Updating..."
+msgstr "Updating..."
+
+msgid "Automatically update prices when changing currency"
+msgstr "Automatically update prices when changing currency"
+
+msgid "Manage in Tour Booking"
+msgstr "Manage in Tour Booking"
+
+msgid "Adult"
+msgstr "Adult"
+
+msgid "Adults"
+msgstr "Adults"
+
+msgid "Add to cart"
+msgstr "Add to cart"
+
+msgid "Add Field"
+msgstr "Add Field"
+
+msgid "Full width"
+msgstr "Full width"
+
+msgid "Last Name"
+msgstr "Last Name"
+
+msgid "Apply"
+msgstr "Apply"
+
+msgid "We will send the confirmation here and you can manage your bookings"
+msgstr "We will send the confirmation here and you can manage your bookings"
+
+msgid "Text area"
+msgstr "Text area"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Autocomplete city field on checkout load"
+msgstr "Autocomplete city field on checkout load"
+
+msgid "Flag"
+msgstr "Flag"
+
+msgid "Base"
+msgstr "Base"
+
+msgid "Infants"
+msgstr "Infants"
+
+msgid "Buttons (recommended for ≤4 currencies)"
+msgstr "Buttons (recommended for ≤4 currencies)"
+
+msgid "Field"
+msgstr "Field"
+
+msgid "Field required by WooCommerce"
+msgstr "Field required by WooCommerce"
+
+msgid "Fields"
+msgstr "Fields"
+
+msgid "Billing / Contact Fields"
+msgstr "Billing / Contact Fields"
+
+msgid "Passenger Fields (Ova Tour Booking)"
+msgstr "Passenger Fields (Ova Tour Booking)"
+
+msgid "Fields saved"
+msgstr "Fields saved"
+
+msgid "Pending fields"
+msgstr "Pending fields"
+
+msgid "ID Card"
+msgstr "ID Card"
+
+msgid "National ID"
+msgstr "National ID"
+
+msgid "Foreign ID"
+msgstr "Foreign ID"
+
+msgid "City"
+msgstr "City"
+
+msgid "Detected city:"
+msgstr "Detected city:"
+
+msgid "Code"
+msgstr "Code"
+
+msgid "Discount code"
+msgstr "Discount code"
+
+msgid "Zip Code"
+msgstr "Zip Code"
+
+msgid "Buy FOX →"
+msgstr "Buy FOX →"
+
+msgid "Connection successful!"
+msgstr "Connection successful!"
+
+msgid "Configure the fields to be displayed in the checkout and passenger form."
+msgstr "Configure the fields to be displayed in the checkout and passenger form."
+
+msgid "Configuration"
+msgstr "Configuration"
+
+msgid "General Configuration"
+msgstr "General Configuration"
+
+msgid "Configuration saved"
+msgstr "Configuration saved"
+
+msgid "Configure →"
+msgstr "Configure →"
+
+msgid "Configure now"
+msgstr "Configure now"
+
+msgid "Confirm and pay"
+msgstr "Confirm and pay"
+
+msgid "Continue to payment to finish."
+msgstr "Continue to payment to finish."
+
+msgid "Copy"
+msgstr "Copy"
+
+msgid "Invalid coupon"
+msgstr "Invalid coupon"
+
+msgid "Contact details"
+msgstr "Contact details"
+
+msgid "Travelers' details"
+msgstr "Travelers' details"
+
+msgid "You must accept the terms and conditions"
+msgstr "You must accept the terms and conditions"
+
+msgid "Decrease quantity"
+msgstr "Decrease quantity"
+
+msgid "Deposit:"
+msgstr "Deposit:"
+
+msgid "Right (50%)"
+msgstr "Right (50%)"
+
+msgid "Discount"
+msgstr "Discount"
+
+msgid "Unique destinations"
+msgstr "Unique destinations"
+
+msgid "Booking details"
+msgstr "Booking details"
+
+msgid "Geographic Detection (MaxMind)"
+msgstr "Geographic Detection (MaxMind)"
+
+msgid "Automatically detect country"
+msgstr "Automatically detect country"
+
+msgid "Address"
+msgstr "Address"
+
+msgid "Documentation"
+msgstr "Documentation"
+
+msgid "Document"
+msgstr "Document"
+
+msgid "Full Document (Type + Number)"
+msgstr "Full Document (Type + Number)"
+
+msgid "Dropdown (recommended for >4 currencies)"
+msgstr "Dropdown (recommended for >4 currencies)"
+
+msgid "The price will update automatically based on the selected currency."
+msgstr "The price will update automatically based on the selected currency."
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Delete"
+msgstr "Delete"
+
+msgid "Email"
+msgstr "Email"
+
+msgid "Company"
+msgstr "Company"
+
+msgid "Shipping"
+msgstr "Shipping"
+
+msgid "Error adding to cart."
+msgstr "Error adding to cart."
+
+msgid "Error changing currency"
+msgstr "Error changing currency"
+
+msgid "Error changing currency. Please reload the page."
+msgstr "Error changing currency. Please reload the page."
+
+msgid "Error saving"
+msgstr "Error saving"
+
+msgid "Request error"
+msgstr "Request error"
+
+msgid "Error processing payment. Please try again."
+msgstr "Error processing payment. Please try again."
+
+msgid "State"
+msgstr "State"
+
+msgid "Order status"
+msgstr "Order status"
+
+msgid "Checkout status"
+msgstr "Checkout status"
+
+msgid "This field is required"
+msgstr "This field is required"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Selector style"
+msgstr "Selector style"
+
+msgid "GeoIP Strategy"
+msgstr "GeoIP Strategy"
+
+msgid "Label"
+msgstr "Label"
+
+msgid "5-star experiences"
+msgstr "5-star experiences"
+
+msgid "Explore more tours"
+msgstr "Explore more tours"
+
+msgid "Explore Tours"
+msgstr "Explore Tours"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Date of Birth"
+msgstr "Date of Birth"
+
+msgid "Complete purchase"
+msgstr "Complete purchase"
+
+msgid "FOX Currency Switcher detected and active"
+msgstr "FOX Currency Switcher detected and active"
+
+msgid "FOX Currency Switcher not detected"
+msgstr "FOX Currency Switcher not detected"
+
+msgid "FOX Settings →"
+msgstr "FOX Settings →"
+
+msgid "General"
+msgstr "General"
+
+msgid "GeoIP not available"
+msgstr "GeoIP not available"
+
+msgid "Field Manager"
+msgstr "Field Manager"
+
+msgid "Saving..."
+msgstr "Saving..."
+
+msgid "Save Changes"
+msgstr "Save Changes"
+
+msgid "Save Fields"
+msgstr "Save Fields"
+
+msgid "An error occurred. Please try again."
+msgstr "An error occurred. Please try again."
+
+msgid "We have sent a confirmation email to"
+msgstr "We have sent a confirmation email to"
+
+msgid "Taxes"
+msgstr "Taxes"
+
+msgid "Increase quantity"
+msgstr "Increase quantity"
+
+msgid "Infant"
+msgstr "Infant"
+
+msgid "Information"
+msgstr "Information"
+
+msgid "Enter your code"
+msgstr "Enter your code"
+
+msgid "Enter a coupon code"
+msgstr "Enter a coupon code"
+
+msgid "Integrations"
+msgstr "Integrations"
+
+msgid "Go to payment"
+msgstr "Go to payment"
+
+msgid "Left (50%)"
+msgstr "Left (50%)"
+
+msgid "Currencies are configured in"
+msgstr "Currencies are configured in"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Payments in %s are encrypted and protected."
+msgstr "Payments in %s are encrypted and protected."
+
+msgid "MaxMind Account ID"
+msgstr "MaxMind Account ID"
+
+msgid "MaxMind configured"
+msgstr "MaxMind configured"
+
+msgid "MaxMind Dashboard"
+msgstr "MaxMind Dashboard"
+
+msgid "MaxMind License Key"
+msgstr "MaxMind License Key"
+
+msgid "Payment method"
+msgstr "Payment method"
+
+msgid "Currency"
+msgstr "Currency"
+
+msgid "Payment currency"
+msgstr "Payment currency"
+
+msgid "Invalid currency"
+msgstr "Invalid currency"
+
+msgid "Show currency selector"
+msgstr "Show currency selector"
+
+msgid "Multi-Currency (FOX Currency Switcher)"
+msgstr "Multi-Currency (FOX Currency Switcher)"
+
+msgid "Nationality"
+msgstr "Nationality"
+
+msgid "Nationality (Typeahead + Flags)"
+msgstr "Nationality (Typeahead + Flags)"
+
+msgid "None"
+msgstr "None"
+
+msgid "Child"
+msgstr "Child"
+
+msgid "Children"
+msgstr "Children"
+
+msgid "Tax ID (NIT)"
+msgstr "Tax ID (NIT)"
+
+msgid "Not configured"
+msgstr "Not configured"
+
+msgid "No fields configured in Ova Tour Booking."
+msgstr "No fields configured in Ova Tour Booking."
+
+msgid "No payment methods available."
+msgstr "No payment methods available."
+
+msgid "Could not detect city"
+msgstr "Could not detect city"
+
+msgid "No fields received"
+msgstr "No fields received"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Number"
+msgstr "Number"
+
+msgid "Document number"
+msgstr "Document number"
+
+msgid "Document Number"
+msgstr "Document Number"
+
+msgid "Get your Account ID at"
+msgstr "Get your Account ID at"
+
+msgid "A connection error occurred. Try again."
+msgstr "A connection error occurred. Try again."
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Checkout Display Options"
+msgstr "Checkout Display Options"
+
+msgid "Other"
+msgstr "Other"
+
+msgid "Checkout Page"
+msgstr "Checkout Page"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Payment"
+msgstr "Payment"
+
+msgid "Secure SSL Payment"
+msgstr "Secure SSL Payment"
+
+msgid ""
+msgstr ""
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-25T07:30:00.000Z\n"
+"PO-Revision-Date: 2026-02-25T07:30:00.000Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
+"Language-Team: \n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+msgid "Looks like you haven't added a tour yet. Explore our destinations!"
+msgstr "Looks like you haven't added a tour yet. Explore our destinations!"
+
+msgid "Passenger %d"
+msgstr "Passenger %d"
+
+msgid "Passport"
+msgstr "Passport"
+
+msgid "Order #%s"
+msgstr "Order #%s"
+
+msgid "Pending payment"
+msgstr "Pending payment"
+
+msgid "Placeholder"
+msgstr "Placeholder"
+
+msgid "Please complete all required fields."
+msgstr "Please complete all required fields."
+
+msgid "Position"
+msgstr "Position"
+
+msgid "Dietary preferences"
+msgstr "Dietary preferences"
+
+msgid "Testing..."
+msgstr "Testing..."
+
+msgid "Test Connection"
+msgstr "Test Connection"
+
+msgid "Proceed to Payment"
+msgstr "Proceed to Payment"
+
+msgid "Processing..."
+msgstr "Processing..."
+
+msgid "Req."
+msgstr "Req."
+
+msgid "Required"
+msgstr "Required"
+
+msgid "Book"
+msgstr "Book"
+
+msgid "Summary"
+msgstr "Summary"
+
+msgid "Summary of your booking"
+msgstr "Summary of your booking"
+
+msgid "Review your upcoming experiences before confirming your booking."
+msgstr "Review your upcoming experiences before confirming your booking."
+
+msgid "Pending balance:"
+msgstr "Pending balance:"
+
+msgid "Select your payment method"
+msgstr "Select your payment method"
+
+msgid "Select your tour"
+msgstr "Select your tour"
+
+msgid "Select"
+msgstr "Select"
+
+msgid "Select country"
+msgstr "Select country"
+
+msgid "Selector"
+msgstr "Selector"
+
+msgid "Session expired. Please reload the page."
+msgstr "Session expired. Please reload the page."
+
+msgid "Shortcode"
+msgstr "Shortcode"
+
+msgid "If you have any questions, contact us via WhatsApp or email."
+msgstr "If you have any questions, contact us via WhatsApp or email."
+
+msgid "Symbol"
+msgstr "Symbol"
+
+msgid "Unauthorized"
+msgstr "Unauthorized"
+
+msgid "Gluten-free"
+msgstr "Gluten-free"
+
+msgid "Lactose-free"
+msgstr "Lactose-free"
+
+msgid "Area Code Only"
+msgstr "Area Code Only"
+
+msgid "Document Type Only"
+msgstr "Document Type Only"
+
+msgid "Support"
+msgstr "Support"
+
+msgid "Subtotal"
+msgstr "Subtotal"
+
+msgid "Experiences subtotal"
+msgstr "Experiences subtotal"
+
+msgid "Fee"
+msgstr "Fee"
+
+msgid "Phone"
+msgstr "Phone"
+
+msgid "Phone (Simple)"
+msgstr "Phone (Simple)"
+
+msgid "Full Phone (Code + Number)"
+msgstr "Full Phone (Code + Number)"
+
+msgid "Text"
+msgstr "Text"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Doc. Type"
+msgstr "Doc. Type"
+
+msgid "Document Type"
+msgstr "Document Type"
+
+msgid "Total"
+msgstr "Total"
+
+msgid "Total to pay today (Deposit)"
+msgstr "Total to pay today (Deposit)"
+
+msgid "Total booking"
+msgstr "Total booking"
+
+msgid "Total Travelers:"
+msgstr "Total Travelers:"
+
+msgid "Cart Totals"
+msgstr "Cart Totals"
+
+msgid "Adventure tours"
+msgstr "Adventure tours"
+
+msgid "Your cart"
+msgstr "Your cart"
+
+msgid "Your Adventure Cart"
+msgstr "Your Adventure Cart"
+
+msgid "Your cart is empty"
+msgstr "Your cart is empty"
+
+msgid "Use this shortcode to show the checkout on any page."
+msgstr "Use this shortcode to show the checkout on any page."
+
+msgid "Use own MaxMind API"
+msgstr "Use own MaxMind API"
+
+msgid "Use WooCommerce settings (Recommended)"
+msgstr "Use WooCommerce settings (Recommended)"
+
+msgid "Use YellowTree (GeoIP Detect / JS API)"
+msgstr "Use YellowTree (GeoIP Detect / JS API)"
+
+msgid "Vegan"
+msgstr "Vegan"
+
+msgid "Vegetarian"
+msgstr "Vegetarian"
+
+msgid "View cart"
+msgstr "View cart"
+
+msgid "Travelers"
+msgstr "Travelers"
+
+msgid "Back"
+msgstr "Back"
+
+msgid "WooCommerce is not active."
+msgstr "WooCommerce is not active."
+
+msgid "Book from %s"
+msgstr "Book from %s"
+
+msgid "From %s"
+msgstr "From %s"
+
+msgid "¡Agregado al carrito!"
+msgstr "Added to cart!"
+
+msgid "Ver carrito"
+msgstr "View cart"
+
+msgid "Reservar ahora"
+msgstr "Book now"
+
+msgid "Más actividades que te pueden gustar"
+msgstr "More activities you might like"
+
+msgid "Producto agregado al carrito"
+msgstr "Product added to cart"
+
+msgid "No se pudo agregar al carrito."
+msgstr "Could not add to cart."
+
+msgid "Verifique los datos."
+
+msgstr "Please check the data."
+
+msgid "You pay today"
+msgstr "You pay today"
+
+msgid "Deposit"
+msgstr "Deposit"
+
+msgid "Remaining balance"
+msgstr "Remaining balance"
+
+msgid "Paid on the day of the tour at our offices."
+msgstr "Paid on the day of the tour at our offices."
+
+msgid "Total booking value"
+msgstr "Total booking value"

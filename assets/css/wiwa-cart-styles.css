@@ -1,0 +1,1206 @@
+/**
+ * Wiwa Tour Checkout - Cart & Mini-Cart Styles
+ * Version: 2.11.9
+ *
+ * This file provides:
+ * 1. Base overrides for WooCommerce cart elements to align with Stitch design
+ * 2. Mini-cart sidebar quantity pill styles (used outside the main cart page)
+ * 3. Fallback styles when Tailwind is NOT loaded (mini-cart widget, etc.)
+ * 4. Empty Cart Template Styles
+ *
+ * The main cart page (templates/cart/cart.php) uses Tailwind CDN for layout.
+ * These styles complement Tailwind, they don't replace it.
+ */
+
+/* =========================================
+   0. DESIGN TOKENS
+   ========================================= */
+:root {
+  --wiwa-primary: #1a3c28;
+  --wiwa-primary-light: #2b4c3b;
+  --wiwa-cream: #fdfbf7;
+  --wiwa-bg-body: #f9f9f9;
+  --wiwa-bg-card: #ffffff;
+  --wiwa-text: #1f2937;
+  --wiwa-text-gray: #4b5563;
+  --wiwa-text-light: #9ca3af;
+  --wiwa-border: #e5e7eb;
+  --wiwa-border-light: #f9fafb;
+  --wiwa-red: #dc2626;
+  --wiwa-font-main: "Montserrat", sans-serif;
+}
+
+/* =========================================
+   1. MAIN CART PAGE - WC OVERRIDES
+   ========================================= */
+
+/* Force body background on cart pages */
+body.woocommerce-cart {
+  background-color: var(--wiwa-bg-body) !important;
+}
+
+/* Defeat Elementor generic link underlines */
+.wiwa-cart-page a.no-underline,
+.wiwa-cart-page h2>a {
+  text-decoration: none !important;
+}
+
+/* Reset WC table-based cart styles that may leak through */
+body.woocommerce-cart .woocommerce table.shop_table,
+body.woocommerce-cart .woocommerce table.shop_table thead,
+body.woocommerce-cart .woocommerce table.shop_table tbody,
+body.woocommerce-cart .woocommerce table.shop_table tr,
+body.woocommerce-cart .woocommerce table.shop_table td,
+body.woocommerce-cart .woocommerce table.shop_table th {
+  border: none !important;
+  background: transparent !important;
+}
+
+/* Image override: ensure WC-generated images fill our container */
+.wiwa-cart-page .wiwa-thumb-wrap img,
+.wiwa-cart-page .wiwa-thumb-wrap a img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block !important;
+  border-radius: 0 !important;
+  /* parent has rounded-xl */
+  max-width: none !important;
+}
+
+.wiwa-cart-page .wiwa-thumb-wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Remove WC default list styles from meta data */
+.wiwa-cart-page .variation,
+.wiwa-cart-page dl.variation {
+  display: none !important;
+  /* We display our own meta via PHP extraction */
+}
+
+/* WC Price amount styling */
+.wiwa-cart-page .woocommerce-Price-amount {
+  font-family: var(--wiwa-font-main) !important;
+}
+
+/* Hide the WC update cart button (we handle it differently) */
+.wiwa-cart-page button[name="update_cart"] {
+  display: none !important;
+}
+
+/* Remove WC default borders/backgrounds from cart totals in sidebar */
+.wiwa-cart-page .cart_totals,
+.wiwa-cart-page .woocommerce-cart-form,
+.wiwa-cart-page .cart-collaterals {
+  border: none !important;
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+/* Fix: Material Symbols icon vertical alignment */
+.wiwa-cart-page .material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
+  vertical-align: middle;
+}
+
+/* =========================================
+   2. QUANTITY PILL (Shared: Mini-Cart + Main Cart)
+   ========================================= */
+
+/* Mini cart quantity - pill shape */
+.wiwa-mini-cart-qty,
+.wiwa-main-cart-qty {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0;
+  background: #ffffff;
+  border: 1px solid var(--wiwa-border);
+  border-radius: 9999px;
+  padding: 2px;
+  height: 32px;
+  width: 90px;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+  overflow: hidden;
+}
+
+/* Quantity buttons */
+.wiwa-qty-btn {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  border: none !important;
+  background: transparent !important;
+  color: var(--wiwa-text-gray);
+  font-weight: 400;
+  font-size: 18px;
+  line-height: 1;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  transition: all 0.2s;
+  box-shadow: none !important;
+}
+
+.wiwa-qty-btn:hover {
+  background: var(--wiwa-bg-body) !important;
+  color: var(--wiwa-primary);
+}
+
+/* Quantity input */
+.wiwa-qty-input {
+  flex: 1;
+  width: 100%;
+  min-width: 0;
+  height: 100%;
+  border: none !important;
+  background: transparent !important;
+  text-align: center;
+  font-weight: 700;
+  color: var(--wiwa-primary);
+  font-size: 0.9rem;
+  padding: 0;
+  margin: 0;
+  -moz-appearance: textfield;
+  appearance: none;
+  box-shadow: none !important;
+}
+
+.wiwa-qty-input:focus {
+  outline: none;
+}
+
+.wiwa-qty-input::-webkit-outer-spin-button,
+.wiwa-qty-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* =========================================
+   3. CART PAGE - ADDITIONAL POLISH
+   ========================================= */
+
+/* Card hover effect */
+.wiwa-cart-page article:hover {
+  box-shadow:
+    0 8px 30px -4px rgba(0, 0, 0, 0.08),
+    0 4px 8px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Stepper button inline in the Stitch design */
+.wiwa-cart-page .stepper-btn {
+  transition: all 0.2s ease;
+}
+
+.wiwa-cart-page .stepper-btn:hover {
+  background: white !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+/* Sticky sidebar */
+.wiwa-sticky-sidebar {
+  position: sticky;
+  top: 8rem;
+  /* ~128px, matching top-32 */
+}
+
+/* Ensure WC notices still look decent */
+.wiwa-cart-page .woocommerce-message,
+.wiwa-cart-page .woocommerce-info,
+.wiwa-cart-page .woocommerce-error {
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-family: var(--wiwa-font-main);
+}
+
+/* Coupon success/error highlight */
+.wiwa-cart-page .woocommerce-message {
+  border-left-color: var(--wiwa-primary) !important;
+}
+
+/* =========================================
+   4. MINI-CART WIDGET (sidebar/dropdown)
+   ========================================= */
+
+/* Mini cart: hide default quantity text */
+.wiwa-mini-cart-qty+.quantity {
+  display: none !important;
+}
+
+/* Keep the mini-cart looking tidy */
+.widget_shopping_cart .wiwa-mini-cart-qty {
+  margin: 8px 0;
+}
+
+/* =========================================
+   5. RESPONSIVE POLISH
+   ========================================= */
+@media (max-width: 767px) {
+
+  /* On mobile, the price block aligns left instead of right */
+  .wiwa-cart-page article .text-right {
+    text-align: left;
+  }
+
+  /* Quantity stepper center on mobile */
+  .wiwa-cart-page article .flex.flex-col.items-center {
+    align-items: flex-start;
+  }
+}
+
+/* Print styles */
+@media print {
+  .wiwa-cart-page aside {
+    page-break-before: always;
+  }
+}
+
+/* =========================================
+   6. MIGRATED FROM CART.PHP (Inline Styles)
+   ========================================= */
+
+/* ===== Stitch Cart Inline Styles ===== */
+.wiwa-cart-page {
+  font-family: "Montserrat", "Roboto", sans-serif;
+  width: 100%;
+  max-width: 100%;
+  /* Full Width Fix */
+  margin: 0 auto;
+  padding: 0 16px 80px;
+}
+
+@media (min-width: 1024px) {
+  .wiwa-cart-page {
+    padding: 0 32px 96px;
+    /* Responsive padding + bottom breathing room */
+  }
+}
+
+.card-shadow {
+  box-shadow:
+    0 4px 20px -2px rgba(0, 0, 0, 0.05),
+    0 2px 4px -1px rgba(0, 0, 0, 0.02);
+}
+
+.material-symbols-outlined {
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 300,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* Fix WC image output to fill container */
+.wiwa-cart-page .wiwa-thumb-wrap img,
+.wiwa-cart-page .wiwa-thumb-wrap a img {
+  width: 100% !important;
+  height: 100% !important;
+  object-fit: cover !important;
+  display: block;
+  border-radius: 0 !important;
+  max-width: none !important;
+}
+
+.wiwa-cart-page .wiwa-thumb-wrap a {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide default WC variation data */
+.wiwa-cart-page dl.variation,
+.wiwa-cart-page .variation {
+  display: none !important;
+}
+
+/* WC price amount inherits font */
+.wiwa-cart-page .woocommerce-Price-amount {
+  font-family: inherit !important;
+}
+
+/* ===== Stepper pill — clean, no red borders ===== */
+.wiwa-stepper-pill {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f3f4f6;
+  border: 1px solid #e5e7eb;
+  border-radius: 9999px;
+  padding: 3px;
+  width: 120px;
+  height: 40px;
+}
+
+.wiwa-stepper-pill button {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  border: none !important;
+  outline: none !important;
+  background: transparent !important;
+  color: #4b5563;
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+  box-shadow: none !important;
+  line-height: 1;
+}
+
+.wiwa-stepper-pill button:hover {
+  background: #ffffff !important;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
+  color: #1a3c28;
+}
+
+.wiwa-stepper-pill button:focus {
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.wiwa-stepper-pill input {
+  width: 40px;
+  text-align: center;
+  font-weight: 700;
+  font-size: 14px;
+  color: #1a3c28;
+  background: transparent !important;
+  border: none !important;
+  padding: 0;
+  margin: 0;
+  -moz-appearance: textfield;
+  appearance: none;
+  box-shadow: none !important;
+  outline: none !important;
+}
+
+.wiwa-stepper-pill input::-webkit-outer-spin-button,
+.wiwa-stepper-pill input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* ===== Price sizes — more harmonious ===== */
+.wiwa-price-per-person {
+  font-size: 12px;
+  color: #9ca3af;
+}
+
+.wiwa-price-per-person .woocommerce-Price-amount {
+  font-size: 12px !important;
+}
+
+.wiwa-price-subtotal {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1a3c28;
+}
+
+.wiwa-price-subtotal .woocommerce-Price-amount {
+  font-size: inherit !important;
+}
+
+/* Tame any theme-injected woocs price markup */
+.wiwa-price-subtotal .woocs_special_price_code {
+  font-size: 1.5rem !important;
+  font-weight: 700 !important;
+  display: inline-block !important;
+  line-height: 1.2;
+  word-break: break-word;
+}
+
+@media (min-width: 1024px) {
+  .wiwa-price-subtotal .woocs_special_price_code {
+    font-size: 1.75rem !important;
+    /* Reduced from 2rem as requested */
+  }
+}
+
+.wiwa-price-per-person .woocs_special_price_code {
+  font-size: 0.85rem !important;
+  font-weight: inherit !important;
+}
+
+/* ===== Sticky sidebar ===== */
+.wiwa-sticky-sidebar {
+  position: sticky;
+  top: 8rem;
+}
+
+/* ===== "Proceder al Pago" CTA — high-contrast UX ===== */
+.wiwa-cta-pay {
+  display: block;
+  text-align: center;
+  width: 100%;
+  background: linear-gradient(135deg, #1a3c28 0%, #2b4c3b 100%);
+  color: #ffffff !important;
+  font-weight: 700;
+  padding: 18px 24px;
+  border-radius: 12px;
+  text-decoration: none !important;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  font-size: 13px;
+  box-shadow: 0 10px 20px -5px rgba(26, 60, 40, 0.35);
+  transition: all 0.3s ease;
+}
+
+.wiwa-cta-pay:hover {
+  background: linear-gradient(135deg, #2b4c3b 0%, #3b6050 100%);
+  color: #ffffff !important;
+  transform: translateY(-2px);
+  box-shadow: 0 14px 28px -6px rgba(26, 60, 40, 0.45);
+}
+
+.wiwa-cta-pay:visited,
+.wiwa-cta-pay:active {
+  color: #ffffff !important;
+}
+
+/* ===== Currency code subtle ===== */
+.wiwa-currency-code {
+  font-size: 0.45em;
+  font-weight: 500;
+  color: #9ca3af;
+  letter-spacing: 0.05em;
+  vertical-align: super;
+  margin-left: 4px;
+}
+
+/* Cart card hover */
+.wiwa-cart-page article {
+  transition: box-shadow 0.3s ease;
+}
+
+.wiwa-cart-page article:hover {
+  box-shadow:
+    0 8px 30px -4px rgba(0, 0, 0, 0.08),
+    0 4px 8px -2px rgba(0, 0, 0, 0.04) !important;
+}
+
+/* Loading state */
+.wiwa-cart-page article.wiwa-loading {
+  opacity: 0.5;
+  pointer-events: none;
+}
+
+/* Stepper Loading State */
+.wiwa-stepper-pill.wiwa-is-loading {
+  opacity: 0.6;
+  pointer-events: none;
+  position: relative;
+}
+
+.wiwa-stepper-pill.wiwa-is-loading::after {
+  content: "";
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 16px;
+  height: 16px;
+  margin-top: -8px;
+  margin-left: -8px;
+  border: 2px solid transparent;
+  border-top-color: var(--wiwa-primary, #1e3a2b);
+  border-left-color: var(--wiwa-primary, #1e3a2b);
+  border-radius: 50%;
+  animation: wiwa-spin 0.6s linear infinite;
+  z-index: 10;
+}
+
+@keyframes wiwa-spin {
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* WC notices */
+.wiwa-cart-page .woocommerce-message,
+.wiwa-cart-page .woocommerce-info,
+.wiwa-cart-page .woocommerce-error {
+  border-radius: 12px;
+  margin-bottom: 24px;
+  font-family: "Montserrat", sans-serif;
+}
+
+/* =========================================
+   7. EMPTY CART TEMPLATE
+   ========================================= */
+.wiwa-empty-cart {
+  max-width: 600px;
+  margin: auto;
+  /* let flexbox do vertical centering */
+  padding: 0 20px;
+  text-align: center;
+  font-family: "Montserrat", sans-serif;
+  /* Fill drawer so margin:auto centers vertically */
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.wiwa-empty-cart-content {
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+  border-radius: 24px;
+  padding: 20px 20px;
+  margin: auto;
+  border: 1px solid #e5e7eb;
+  display: flex !important;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  visibility: visible !important;
+  opacity: 1 !important;
+  height: auto !important;
+}
+
+.wiwa-empty-icon-wrapper {
+  margin-bottom: 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+}
+
+.wiwa-empty-decorations {
+  margin-top: 32px;
+  display: flex;
+  justify-content: center;
+  gap: 24px;
+  opacity: 0.7;
+}
+
+.wiwa-empty-title {
+  font-size: 28px;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 16px;
+}
+
+.wiwa-empty-description {
+  font-size: 16px;
+  color: #6b7280;
+  line-height: 1.7;
+  margin: 0 0 32px;
+}
+
+.wiwa-empty-cta .wiwa-empty-cart-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  background: linear-gradient(135deg, #1e3a2b 0%, #2d5641 100%);
+  color: white !important;
+  padding: 16px 32px;
+  border-radius: 12px;
+  text-decoration: none !important;
+  font-weight: 600;
+  font-size: 16px;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(30, 58, 43, 0.3);
+  border: none;
+}
+
+.wiwa-empty-cta .wiwa-empty-cart-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(30, 58, 43, 0.4);
+  color: #ffffff !important;
+}
+
+.wiwa-empty-features {
+  display: flex;
+  justify-content: center;
+  gap: 32px;
+  margin-top: 48px;
+  flex-wrap: wrap;
+}
+
+.feature-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.feature-icon {
+  font-size: 32px;
+}
+
+.feature-item span {
+  font-size: 14px;
+  color: #6b7280;
+  font-weight: 500;
+}
+
+@media (max-width: 480px) {
+  .wiwa-empty-cart-content {
+    padding: 40px 24px;
+  }
+
+  .wiwa-empty-title {
+    font-size: 24px;
+  }
+
+  .wiwa-empty-features {
+    gap: 20px;
+  }
+}
+
+/* =========================================
+   8. MINI CART CUSTOM LAYOUT
+   ========================================= */
+
+/* Drawer scrollable section (Shopify Style) */
+.widget_shopping_cart_content {
+  display: flex !important;
+  flex-direction: column;
+  height: 100vh;
+  max-height: 90%;
+  /* center empty-cart state vertically */
+  justify-content: flex-start;
+  /* default: let header+items fill from top */
+}
+
+/* Overwrite Elementor default to force centering of empty cart */
+.elementor-menu-cart__main .widget_shopping_cart_content {
+  display: flex !important;
+  flex-direction: column;
+  height: 90% !important;
+  margin: auto !important;
+}
+
+.elementor-menu-cart__main {
+  height: 100%;
+  margin: auto;
+  max-height: 100vh;
+}
+
+@media screen and (max-width: 480px) {
+  .elementor-menu-cart__container .elementor-menu-cart__main {
+    padding-top: 0px !important;
+    padding-bottom: 0px !important;
+    margin: auto;
+    height: 100vh !important;
+  }
+
+  .elementor-menu-cart__container {
+    padding: 10px !important;
+    /* Reduce outer padding */
+  }
+}
+
+/* -----------------------------------------------
+   Close Button — Redesigned (pill style, premium)
+   ----------------------------------------------- */
+.elementor-menu-cart__close-button {
+  position: absolute !important;
+  top: 20px !important;
+  /* a little lower so there's breathing room from edge */
+  right: 18px !important;
+  width: 32px !important;
+  height: 32px !important;
+  background: transparent !important;
+  border: none !important;
+  border-radius: 50% !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  z-index: 9999 !important;
+  transition: opacity 0.2s !important;
+  box-shadow: none !important;
+}
+
+.elementor-menu-cart__close-button:hover {
+  opacity: 0.6 !important;
+  background: transparent !important;
+}
+
+.elementor-menu-cart__close-button svg {
+  width: 13px !important;
+  height: 13px !important;
+  fill: #374151 !important;
+  display: block !important;
+}
+
+/* -----------------------------------------------
+   Cart Header — Title row with safe top spacing
+   ----------------------------------------------- */
+.wiwa-mini-cart-header-title {
+  padding: clamp(1rem, 3vh, 1.5rem) 3rem clamp(0.625rem, 1vh, 1rem) 0;
+  margin-top: 0;
+  border-bottom: 1px solid var(--wiwa-border);
+  margin-bottom: clamp(0.625rem, 2vh, 1rem);
+  flex-shrink: 0;
+  position: relative;
+}
+
+.wiwa-cart-main-title {
+  font-size: clamp(1.125rem, 2vw + 0.5rem, 1.25rem);
+  font-weight: 800;
+  margin: 0;
+  color: var(--wiwa-text);
+  letter-spacing: -0.3px;
+  line-height: 1.2;
+}
+
+/* Scrollable Cart List */
+.woocommerce-mini-cart.cart_list {
+  flex-grow: 1;
+  overflow-y: auto !important;
+  overflow-x: hidden;
+  padding-right: 12px !important;
+  margin-right: -12px !important;
+  max-height: calc(100vh - 220px);
+  /* Ensure there is room for the footer */
+}
+
+@media screen and (max-width: 480px) {
+  .woocommerce-mini-cart.cart_list {
+    max-height: calc(100vh - 220px) !important;
+    /* Force more room for tight mobile footer */
+  }
+}
+
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.woocommerce-mini-cart.cart_list::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+/* Fixed Bottom section */
+p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal,
+p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
+  flex-shrink: 0;
+  background: #fff;
+  z-index: 10;
+  position: relative;
+}
+
+p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+  padding-top: 16px !important;
+}
+
+@media screen and (max-width: 480px) {
+  p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+    padding-top: 8px !important;
+  }
+}
+
+/* Grid Layout for Item */
+.wiwa-mini-cart-item-grid {
+  display: grid;
+  grid-template-columns: clamp(3.75rem, min(12vw, 80px), 5rem) 1fr;
+  gap: clamp(1rem, 3vw, 1.5rem);
+  align-items: start;
+  padding: clamp(1.25rem, 4vh, 2rem) 0;
+  border-bottom: 1px solid var(--wiwa-border);
+  width: 100%;
+  position: relative;
+}
+
+.woocommerce-mini-cart-item:last-child .wiwa-mini-cart-item-grid {
+  border-bottom: none;
+}
+
+.woocommerce-mini-cart-item {
+  padding: 0 !important;
+  border-bottom: none !important;
+  list-style: none !important;
+  /* No bullets */
+  margin-left: 0 !important;
+  width: 100%;
+}
+
+.woocommerce-mini-cart {
+  list-style: none !important;
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+/* Thumbnail */
+.wiwa-mini-cart-thumb img {
+  width: 100% !important;
+  height: clamp(3.75rem, min(12vw, 80px), 5rem) !important;
+  object-fit: cover;
+  border-radius: clamp(0.5rem, 2vw, 0.75rem);
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+}
+
+/* Content Column */
+.wiwa-mini-cart-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: clamp(3.75rem, min(12vw, 80px), 5rem);
+  width: 100%;
+}
+
+/* Title */
+.wiwa-mini-cart-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 6px;
+  padding-right: 28px;
+  /* Space for absolute remove key */
+  position: relative;
+  width: 100%;
+}
+
+.wiwa-item-title {
+  font-size: 14px;
+  font-weight: 700;
+  line-height: 1.4;
+  color: var(--wiwa-text);
+  text-decoration: none !important;
+  /* NO UNDERLINE */
+  border: none !important;
+  display: block;
+}
+
+.wiwa-item-title:hover {
+  color: var(--wiwa-primary);
+  text-decoration: none !important;
+}
+
+/* Remove Button (Absolute Top Right) */
+.wiwa-mini-cart-header .remove {
+  position: absolute !important;
+  top: -2px;
+  right: 0;
+  width: 24px;
+  height: 24px;
+  background: transparent !important;
+  color: #9ca3af !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s;
+  border-radius: 50%;
+}
+
+.wiwa-mini-cart-header .remove:hover {
+  color: #dc2626 !important;
+  background: #fef2f2 !important;
+}
+
+/* Meta Rows */
+.wiwa-mini-cart-meta,
+.wiwa-mini-cart-meta-row-2 {
+  font-size: 13px;
+  color: var(--wiwa-text-gray);
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  /* Consistent gap */
+  margin-bottom: 4px;
+  line-height: 1.4;
+}
+
+.wiwa-mini-cart-meta-row-2 {
+  margin-bottom: 0px;
+  /* Stepper is dead, we don't need extra space here */
+}
+
+/* Price Per Person Text (New) */
+.wiwa-price-per-person-text {
+  font-size: 13px;
+  font-weight: 700;
+  /* Bold as requested */
+  color: var(--wiwa-text-gray);
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.wiwa-price-per-person-text .woocommerce-Price-amount {
+  font-size: 13px !important;
+}
+
+.meta-separator {
+  color: #e5e7eb;
+  margin: 0 4px;
+  font-size: 10px;
+}
+
+/* Footer Row */
+.wiwa-mini-cart-footer {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  /* Align left */
+  margin-top: auto;
+  width: 100%;
+}
+
+/* Subtotal Currency */
+.wiwa-currency-code-large {
+  font-size: 0.6em;
+  font-weight: 600;
+  color: #9ca3af;
+  vertical-align: super;
+  margin-left: 2px;
+}
+
+/* Footer Left: Stepper + Price */
+.wiwa-footer-left {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+/* Stepper (Pill Shape) */
+.wiwa-mini-cart-stepper .wiwa-mini-cart-qty {
+  height: 38px;
+  /* Taller pill for mobile touch */
+  width: 110px;
+  /* Wider for clarity */
+  border-radius: 999px;
+  border: 1px solid var(--wiwa-border);
+  background: #ffffff;
+  padding: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.wiwa-mini-cart-stepper .wiwa-qty-btn {
+  width: 30px;
+  height: 30px;
+  font-size: 16px;
+  color: var(--wiwa-text-gray);
+  border-radius: 50%;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f3f4f6;
+}
+
+.wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
+  background: var(--wiwa-primary);
+  color: #ffffff;
+}
+
+.wiwa-mini-cart-stepper .wiwa-qty-input {
+  font-size: 15px;
+  font-weight: 700;
+  color: var(--wiwa-text);
+}
+
+/* Price */
+.wiwa-mini-cart-price {
+  font-weight: 800;
+  color: var(--wiwa-text);
+  font-size: 15px;
+}
+
+/* Remove Button (Clean) */
+.wiwa-mini-cart-footer .remove {
+  position: static !important;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: transparent !important;
+  color: #ef4444 !important;
+  /* Standard red */
+  border: 1px solid transparent !important;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  transition: all 0.2s;
+}
+
+.wiwa-mini-cart-footer .remove:hover {
+  background: #fef2f2 !important;
+  border-color: #fecaca !important;
+}
+
+.wiwa-mini-cart-footer .remove .material-symbols-outlined {
+  font-size: 20px;
+}
+
+/* Bottom Section */
+/* Removed .wiwa-mini-cart-bottom wrapper */
+
+/* Subtotal Box (Reduced height & Elegant) p tag */
+p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  margin: 0 0 12px !important;
+  /* Margin override - reduced */
+  padding: 12px 0 8px !important;
+  /* Minimal vertical padding */
+  border-top: 1px solid #e5e7eb;
+  /* Move top border here */
+  border-bottom: 1px dashed #e5e7eb;
+  /* Subtle divider instead of box */
+  background: transparent !important;
+  border-radius: 0;
+  border-left: none;
+  border-right: none;
+}
+
+@media screen and (max-width: 480px) {
+  p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
+    margin: 0 0 8px !important;
+    padding: 8px 0 6px !important;
+  }
+}
+
+p.wiwa-mini-cart-subtotal span:first-child {
+  font-size: 15px;
+  color: var(--wiwa-text-gray);
+  font-weight: 500;
+}
+
+.wiwa-subtotal-amount,
+.wiwa-subtotal-amount .woocs_special_price_code,
+.wiwa-subtotal-amount .woocommerce-Price-amount {
+  font-size: 24px !important;
+  /* INCREASED SIZE */
+  font-weight: 800 !important;
+  color: var(--wiwa-primary) !important;
+  line-height: 1.2;
+}
+
+/* Buttons p tag */
+p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
+  display: flex !important;
+  flex-direction: column;
+  gap: 12px;
+  margin: 0 !important;
+  /* Desktop: 2rem clear from edge */
+  padding: 0 0 max(2rem, calc(1rem + env(safe-area-inset-bottom))) !important;
+}
+
+@media screen and (max-width: 768px) {
+  p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
+    /* Mobile: 4rem = ~64px, keeps button well above nav bar */
+    padding: 0 0 max(1rem, calc(2rem + env(safe-area-inset-bottom))) !important;
+    gap: 10px;
+  }
+}
+
+.wiwa-mini-cart-buttons .button {
+  width: 100%;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 14px !important;
+  /* Taller touch targets */
+  border-radius: 12px !important;
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none !important;
+  text-transform: none;
+  /* User might prefer normal case */
+  letter-spacing: 0.5px;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
+}
+
+@media screen and (max-width: 480px) {
+  .wiwa-mini-cart-buttons .button {
+    padding: 10px !important;
+    /* Reduce padding slightly */
+    min-height: 44px;
+    /* Slightly smaller min-height */
+    font-size: 14px;
+  }
+
+  .wiwa-subtotal-amount,
+  .wiwa-subtotal-amount .woocs_special_price_code,
+  .wiwa-subtotal-amount .woocommerce-Price-amount {
+    font-size: 22px !important;
+    /* Slightly increased */
+  }
+}
+
+.wiwa-mini-cart-buttons .button:active {
+  transform: scale(0.98);
+}
+
+/* "View Cart" - White with Border (Image 1) */
+.wiwa-btn-outline {
+  background: #ffffff !important;
+  border: 1px solid #d1d5db !important;
+  /* Visible gray border */
+  color: var(--wiwa-text) !important;
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.wiwa-btn-outline:hover {
+  background: #f9fafb !important;
+  border-color: #9ca3af !important;
+  color: #111827 !important;
+}
+
+/* "Checkout" - Dark Green (Image 1) */
+.wiwa-btn-primary {
+  background: var(--wiwa-primary) !important;
+  color: #ffffff !important;
+  border: 1px solid var(--wiwa-primary) !important;
+  box-shadow: 0 4px 6px rgba(26, 60, 40, 0.2);
+}
+
+.wiwa-btn-primary:hover {
+  background: var(--wiwa-primary-light) !important;
+  box-shadow: 0 6px 12px rgba(26, 60, 40, 0.25);
+  color: white !important;
+}
+
+/* Hide default buttons block */
+/* Hide default buttons block */
+.elementor-menu-cart__footer-buttons {
+  display: none !important;
+}
+
+/* Force List Style None for Cart Items - FIX FOR BULLETS */
+.widget_shopping_cart_content ul,
+.woocommerce-mini-cart,
+.elementor-menu-cart__products {
+  list-style: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+.widget_shopping_cart_content li,
+.woocommerce-mini-cart-item,
+.elementor-menu-cart__product {
+  list-style-type: none !important;
+  margin-left: 0 !important;
+  padding-left: 0 !important;
+}
+
+.widget_shopping_cart_content li::before,
+.woocommerce-mini-cart-item::before {
+  display: none !important;
+  content: none !important;
+}

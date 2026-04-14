@@ -1,310 +1,734 @@
-# Wiwa Tour Checkout Pro i18n
-# Copyright (C) 2024 Wiwa Tour
-# This file is distributed under the same license as the Wiwa Tour Checkout Pro plugin.
-#
-#, fuzzy
 msgid ""
 msgstr ""
-"Project-Id-Version: Wiwa Tour Checkout Pro 2.0.1\n"
-"Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2024-01-01 00:00+0000\n"
-"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Project-Id-Version: Wiwa Checkout Pro\n"
+"POT-Creation-Date: 2026-02-24T22:45:45.716Z\n"
+"PO-Revision-Date: 2026-02-24T22:45:45.716Z\n"
+"Last-Translator: Antigravity AI (Connexis)\n"
 "Language-Team: \n"
-"Language: \n"
+"Language: en_US\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: templates/checkout/step-1.php
-msgid "Nombre"
+msgid "— Select —"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Apellido"
+msgid "Coupon applied!"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Correo electrónico"
+msgid "Thank you for your booking!"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Nacionalidad"
+msgid "Saved!"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Ciudad"
+msgid "Have a discount code?"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Documento"
+msgid "*We need passenger information to confirm these tours."
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Cédula"
+msgid "<span class=\"icon-cart\"></span> Add to Cart"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Pasaporte"
+msgid "Accept %sTerms and Conditions%s and %sPrivacy Policy%s"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "NIT"
+msgid "Active"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Céd. Extranjería"
+msgid ""
+"Activate Wiwa Tours custom checkout. This will replace the WooCommerce "
+"checkout and cart."
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Otro"
+msgid "Activate Wiwa Checkout"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Teléfono de contacto"
+msgid "Activate selector in checkout"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Seleccionar"
+msgid "Price update"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Este campo es requerido"
+msgid "Updating..."
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Ingresa un email válido"
+msgid "Automatically update prices when changing currency"
 msgstr ""
 
-#: templates/checkout/step-1.php
-msgid "Selecciona tu nacionalidad"
+msgid "Manage in Tour Booking"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "Selecciona tu medio de pago"
+msgid "Adult"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "Moneda"
+msgid "Adults"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "No hay métodos de pago disponibles."
+msgid "Add to cart"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "Los pagos en %s están encriptados y protegidos."
+msgid "Add Field"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "Confirmar y pagar"
+msgid "Full width"
 msgstr ""
 
-#: templates/checkout/step-2.php
-msgid "Volver"
+msgid "Last Name"
 msgstr ""
 
-#: templates/checkout/wrapper.php
-msgid "Información"
+msgid "Apply"
 msgstr ""
 
-#: templates/checkout/wrapper.php
-msgid "Pago"
+msgid "We will send the confirmation here and you can manage your bookings"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Resumen"
+msgid "Text area"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Subtotal (%d tour%s)"
+msgid ""
+"Drag fields to reorder them. Use specialized types (🌍 Country, 📞 Phone, "
+"🪪 Document) for better UX in checkout."
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Descuento"
+msgid "Autocomplete city field on checkout load"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Impuestos"
+msgid "Flag"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Total"
+msgid "Base"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Código de descuento"
+msgid "Infants"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "Aplicar"
+msgid "Buttons (recommended for ≤4 currencies)"
 msgstr ""
 
-#: templates/checkout/sidebar-summary.php
-msgid "%d Viajero"
-msgid_plural "%d Viajeros"
-msgstr[0] ""
-msgstr[1] ""
-
-#: templates/thankyou/order-received.php
-msgid "¡Gracias por tu reserva!"
+msgid "Field"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Estado de tu pedido"
+msgid "Field required by WooCommerce"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Pedido #%s"
+msgid "Fields"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Resumen de tu reserva"
+msgid "Billing / Contact Fields"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Subtotal"
+msgid "Passenger Fields (Ova Tour Booking)"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Datos de contacto"
+msgid "Fields saved"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Método de pago"
+msgid "Pending fields"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Hemos enviado un correo de confirmación a"
+msgid "ID Card"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Si tienes alguna pregunta, contáctanos a través de nuestro WhatsApp o email."
+msgid "National ID"
 msgstr ""
 
-#: templates/thankyou/order-received.php
-msgid "Explorar más tours"
+msgid "Foreign ID"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Tu carrito está vacío"
+msgid "City"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Parece que aún no has agregado ningún tour a tu carrito. ¡Explora nuestros increíbles destinos y vive una aventura única!"
+msgid "Detected city:"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Explorar Tours"
+msgid "Code"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Destinos únicos"
+msgid "Discount code"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Tours de aventura"
+msgid "Zip Code"
 msgstr ""
 
-#: templates/cart/empty-cart.php
-msgid "Experiencias 5 estrellas"
+msgid "Buy FOX →"
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Configuración General"
+msgid "Connection successful!"
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Activar Checkout Personalizado"
+msgid "Configure the fields to be displayed in the checkout and passenger form."
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Habilitar checkout personalizado de Wiwa Tours"
+msgid "Configuration"
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Sobrescribir Checkout WooCommerce"
+msgid "General Configuration"
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Sobrescribir Carrito WooCommerce"
+msgid "Configuration saved"
 msgstr ""
 
-#: admin/views/tab-general.php
+msgid "Configure →"
+msgstr ""
+
+msgid "Configure now"
+msgstr ""
+
+msgid "Confirm and pay"
+msgstr ""
+
+msgid "Continue to payment to finish."
+msgstr ""
+
+msgid "Copy"
+msgstr ""
+
+msgid "Invalid coupon"
+msgstr ""
+
+msgid "Contact details"
+msgstr ""
+
+msgid "Travelers' details"
+msgstr ""
+
+msgid "You must accept the terms and conditions"
+msgstr ""
+
+msgid "Decrease quantity"
+msgstr ""
+
+msgid "Deposit:"
+msgstr ""
+
+msgid "Right (50%)"
+msgstr ""
+
+msgid "Discount"
+msgstr ""
+
+msgid "Unique destinations"
+msgstr ""
+
+msgid "Booking details"
+msgstr ""
+
+msgid "Geographic Detection (MaxMind)"
+msgstr ""
+
+msgid "Automatically detect country"
+msgstr ""
+
+msgid "Address"
+msgstr ""
+
+msgid "Documentation"
+msgstr ""
+
+msgid "Document"
+msgstr ""
+
+msgid "Full Document (Type + Number)"
+msgstr ""
+
+msgid "Dropdown (recommended for >4 currencies)"
+msgstr ""
+
+msgid "The price will update automatically based on the selected currency."
+msgstr ""
+
+msgid ""
+"The remaining balance will be paid directly at our offices on the day of "
+"the tour."
+msgstr ""
+
+msgid "Delete"
+msgstr ""
+
+msgid "Email"
+msgstr ""
+
+msgid "Company"
+msgstr ""
+
+msgid "Shipping"
+msgstr ""
+
+msgid "Error adding to cart."
+msgstr ""
+
+msgid "Error changing currency"
+msgstr ""
+
+msgid "Error changing currency. Please reload the page."
+msgstr ""
+
+msgid "Error saving"
+msgstr ""
+
+msgid "Request error"
+msgstr ""
+
+msgid "Error processing payment. Please try again."
+msgstr ""
+
+msgid "State"
+msgstr ""
+
+msgid "Order status"
+msgstr ""
+
+msgid "Checkout status"
+msgstr ""
+
+msgid "This field is required"
+msgstr ""
+
+msgid ""
+"This plugin requires FOX Currency Switcher Professional for multi-currency "
+"functionality."
+msgstr ""
+
+msgid "Selector style"
+msgstr ""
+
+msgid "GeoIP Strategy"
+msgstr ""
+
+msgid "Label"
+msgstr ""
+
+msgid "5-star experiences"
+msgstr ""
+
+msgid "Explore more tours"
+msgstr ""
+
+msgid "Explore Tours"
+msgstr ""
+
+msgid "Date"
+msgstr ""
+
+msgid "Date of Birth"
+msgstr ""
+
+msgid "Complete purchase"
+msgstr ""
+
+msgid "FOX Currency Switcher detected and active"
+msgstr ""
+
+msgid "FOX Currency Switcher not detected"
+msgstr ""
+
+msgid "FOX Settings →"
+msgstr ""
+
+msgid "General"
+msgstr ""
+
+msgid "GeoIP not available"
+msgstr ""
+
+msgid "Field Manager"
+msgstr ""
+
+msgid "Saving..."
+msgstr ""
+
+msgid "Save Changes"
+msgstr ""
+
+msgid "Save Fields"
+msgstr ""
+
+msgid "An error occurred. Please try again."
+msgstr ""
+
+msgid "We have sent a confirmation email to"
+msgstr ""
+
+msgid "Taxes"
+msgstr ""
+
+msgid "Increase quantity"
+msgstr ""
+
+msgid "Infant"
+msgstr ""
+
+msgid "Information"
+msgstr ""
+
+msgid "Enter your code"
+msgstr ""
+
+msgid "Enter a coupon code"
+msgstr ""
+
+msgid "Integrations"
+msgstr ""
+
+msgid "Go to payment"
+msgstr ""
+
+msgid "Left (50%)"
+msgstr ""
+
+msgid "Currencies are configured in"
+msgstr ""
+
+msgid ""
+"Fields are managed from WooCommerce > Tour Booking > Guest Information. Use "
+"the \"Required\" switch to control validation at checkout."
+msgstr ""
+
+msgid "Payments in %s are encrypted and protected."
+msgstr ""
+
+msgid "MaxMind Account ID"
+msgstr ""
+
+msgid "MaxMind configured"
+msgstr ""
+
+msgid "MaxMind Dashboard"
+msgstr ""
+
+msgid "MaxMind License Key"
+msgstr ""
+
+msgid "Payment method"
+msgstr ""
+
+msgid "Currency"
+msgstr ""
+
+msgid "Payment currency"
+msgstr ""
+
+msgid "Invalid currency"
+msgstr ""
+
+msgid "Show currency selector"
+msgstr ""
+
+msgid "Multi-Currency (FOX Currency Switcher)"
+msgstr ""
+
+msgid "Nationality"
+msgstr ""
+
+msgid "Nationality (Typeahead + Flags)"
+msgstr ""
+
+msgid "None"
+msgstr ""
+
+msgid "Child"
+msgstr ""
+
+msgid "Children"
+msgstr ""
+
+msgid "Tax ID (NIT)"
+msgstr ""
+
+msgid "Not configured"
+msgstr ""
+
+msgid "No fields configured in Ova Tour Booking."
+msgstr ""
+
+msgid "No payment methods available."
+msgstr ""
+
+msgid "Could not detect city"
+msgstr ""
+
+msgid "No fields received"
+msgstr ""
+
+msgid "Name"
+msgstr ""
+
+msgid "Number"
+msgstr ""
+
+msgid "Document number"
+msgstr ""
+
+msgid "Document Number"
+msgstr ""
+
+msgid "Get your Account ID at"
+msgstr ""
+
+msgid "A connection error occurred. Try again."
+msgstr ""
+
+msgid "Options"
+msgstr ""
+
+msgid "Checkout Display Options"
+msgstr ""
+
+msgid "Other"
+msgstr ""
+
+msgid "Checkout Page"
+msgstr ""
+
+msgid ""
+"Page where the checkout will be displayed. Make sure it contains the "
+"[wiwa_checkout] shortcode."
+msgstr ""
+
+msgid "Payment"
+msgstr ""
+
+msgid "Secure SSL Payment"
+msgstr ""
+
+msgid ""
+"It looks like you haven't added any tours to your cart yet. Explore our "
+"amazing destinations and live a unique adventure!"
+msgstr ""
+
+msgid "Looks like you haven't added a tour yet. Explore our destinations!"
+msgstr ""
+
+msgid "Passenger %d"
+msgstr ""
+
+msgid "Passport"
+msgstr ""
+
+msgid "Order #%s"
+msgstr ""
+
+msgid "Pending payment"
+msgstr ""
+
+msgid "Placeholder"
+msgstr ""
+
+msgid "Please complete all required fields."
+msgstr ""
+
+msgid "Position"
+msgstr ""
+
+msgid "Dietary preferences"
+msgstr ""
+
+msgid "Testing..."
+msgstr ""
+
+msgid "Test Connection"
+msgstr ""
+
+msgid "Proceed to Payment"
+msgstr ""
+
+msgid "Processing..."
+msgstr ""
+
+msgid "Req."
+msgstr ""
+
+msgid "Required"
+msgstr ""
+
+msgid "Book"
+msgstr ""
+
+msgid "Summary"
+msgstr ""
+
+msgid "Summary of your booking"
+msgstr ""
+
+msgid "Review your upcoming experiences before confirming your booking."
+msgstr ""
+
+msgid "Pending balance:"
+msgstr ""
+
+msgid "Select your payment method"
+msgstr ""
+
+msgid "Select your tour"
+msgstr ""
+
+msgid "Select"
+msgstr ""
+
+msgid "Select country"
+msgstr ""
+
+msgid "Selector"
+msgstr ""
+
+msgid "Session expired. Please reload the page."
+msgstr ""
+
 msgid "Shortcode"
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Página de Checkout"
+msgid "If you have any questions, contact us via WhatsApp or email."
 msgstr ""
 
-#: admin/views/tab-general.php
-msgid "Guardar Cambios"
+msgid "Symbol"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Gestor de Campos"
+msgid "Unauthorized"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Campos de Facturación / Contacto"
+msgid "Gluten-free"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Campos de Pasajeros"
+msgid "Lactose-free"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Agregar Campo"
+msgid "Area Code Only"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Campo"
+msgid "Document Type Only"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Etiqueta"
+msgid "Support"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Tipo"
+msgid "Subtotal"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Requerido"
+msgid "Experiences subtotal"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Activo"
+msgid "Fee"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Acciones"
+msgid "Phone"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Guardar Campos"
+msgid "Phone (Simple)"
 msgstr ""
 
-#: admin/views/tab-fields.php
-msgid "Agregar Nuevo Campo"
+msgid "Full Phone (Code + Number)"
 msgstr ""
 
-#: includes/class-ajax-handler.php
-msgid "Moneda no válida"
+msgid "Text"
 msgstr ""
 
-#: includes/class-ajax-handler.php
-msgid "¡Cupón aplicado!"
+msgid "Type"
 msgstr ""
 
-#: includes/class-ajax-handler.php
-msgid "Cupón no válido"
+msgid "Doc. Type"
 msgstr ""
 
-#: includes/class-ajax-handler.php
-msgid "Configuración guardada"
+msgid "Document Type"
 msgstr ""
 
-#: includes/class-ajax-handler.php
-msgid "Campos guardados"
+msgid "Total"
+msgstr ""
+
+msgid "Total to pay today (Deposit)"
+msgstr ""
+
+msgid "Total booking"
+msgstr ""
+
+msgid "Total Travelers:"
+msgstr ""
+
+msgid "Cart Totals"
+msgstr ""
+
+msgid "Adventure tours"
+msgstr ""
+
+msgid "Your cart"
+msgstr ""
+
+msgid "Your Adventure Cart"
+msgstr ""
+
+msgid "Your cart is empty"
+msgstr ""
+
+msgid "Use this shortcode to show the checkout on any page."
+msgstr ""
+
+msgid "Use own MaxMind API"
+msgstr ""
+
+msgid "Use WooCommerce settings (Recommended)"
+msgstr ""
+
+msgid "Use YellowTree (GeoIP Detect / JS API)"
+msgstr ""
+
+msgid "Vegan"
+msgstr ""
+
+msgid "Vegetarian"
+msgstr ""
+
+msgid "View cart"
+msgstr ""
+
+msgid "Travelers"
+msgstr ""
+
+msgid "Back"
+msgstr ""
+
+msgid "WooCommerce is not active."
+msgstr ""
+
+msgid "Book from %s"
+msgstr ""
+
+msgid "From %s"
+msgstr ""
+
+msgid "¡Agregado al carrito!"
+msgstr ""
+
+msgid "Ver carrito"
+msgstr ""
+
+msgid "Reservar ahora"
+msgstr ""
+
+msgid "Más actividades que te pueden gustar"
+msgstr ""
+
+msgid "Producto agregado al carrito"
+msgstr ""
+
+msgid "No se pudo agregar al carrito."
+msgstr ""
+
+msgid "Verifique los datos."
+msgstr ""
+
+msgid "You pay today"
+msgstr ""
+
+msgid "Deposit"
+msgstr ""
+
+msgid "Remaining balance"
+msgstr ""
+
+msgid "Paid on the day of the tour at our offices."
+msgstr ""
+
+msgid "Total booking value"
 msgstr ""

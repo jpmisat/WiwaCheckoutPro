@@ -16,8 +16,8 @@ class Wiwa_Admin_Page
             
             <h2 class="nav-tab-wrapper">
                 <a href="?page=wiwa-checkout-settings&tab=general" class="nav-tab <?php echo $active_tab == 'general' ? 'nav-tab-active' : ''; ?>"><?php _e('General', 'wiwa-checkout'); ?></a>
-                <a href="?page=wiwa-checkout-settings&tab=fields" class="nav-tab <?php echo $active_tab == 'fields' ? 'nav-tab-active' : ''; ?>"><?php _e('Campos', 'wiwa-checkout'); ?></a>
-                <a href="?page=wiwa-checkout-settings&tab=integrations" class="nav-tab <?php echo $active_tab == 'integrations' ? 'nav-tab-active' : ''; ?>"><?php _e('Integraciones', 'wiwa-checkout'); ?></a>
+                <a href="?page=wiwa-checkout-settings&tab=fields" class="nav-tab <?php echo $active_tab == 'fields' ? 'nav-tab-active' : ''; ?>"><?php _e('Fields', 'wiwa-checkout'); ?></a>
+                <a href="?page=wiwa-checkout-settings&tab=integrations" class="nav-tab <?php echo $active_tab == 'integrations' ? 'nav-tab-active' : ''; ?>"><?php _e('Integrations', 'wiwa-checkout'); ?></a>
             </h2>
             
             <?php

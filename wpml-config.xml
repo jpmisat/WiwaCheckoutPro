@@ -1,0 +1,14 @@
+<wpml-config>
+    <admin-texts>
+        <!-- Plugin Options if any -->
+    </admin-texts>
+    <custom-types>
+        <!-- Custom post types -->
+    </custom-types>
+    <taxonomies>
+        <!-- Custom taxonomies -->
+    </taxonomies>
+    <custom-fields>
+        <!-- Custom fields -->
+    </custom-fields>
+</wpml-config>
