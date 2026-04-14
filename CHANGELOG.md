@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.28] - 2026-04-14
+
+### Style
+
+- **CSS Selectors Cleanup:** Broadened the strict `text-decoration: none !important;` rule to explicitly cover `.wiwa-cart-page h2>a` for cart items titles, catching WordPress/Elementor's generic underline leakage on heading elements perfectly. Prettier CSS formatting applied across the stylesheet.
+
 ## [2.16.27] - 2026-04-14
 
 ### Fixed

@@ -40,7 +40,8 @@ body.woocommerce-cart {
 }
 
 /* Defeat Elementor generic link underlines */
-.wiwa-cart-page a.no-underline {
+.wiwa-cart-page a.no-underline,
+.wiwa-cart-page h2>a {
   text-decoration: none !important;
 }
 
@@ -62,9 +63,11 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   height: 100% !important;
   object-fit: cover !important;
   display: block !important;
-  border-radius: 0 !important; /* parent has rounded-xl */
+  border-radius: 0 !important;
+  /* parent has rounded-xl */
   max-width: none !important;
 }
+
 .wiwa-cart-page .wiwa-thumb-wrap a {
   display: block;
   width: 100%;
@@ -74,7 +77,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 /* Remove WC default list styles from meta data */
 .wiwa-cart-page .variation,
 .wiwa-cart-page dl.variation {
-  display: none !important; /* We display our own meta via PHP extraction */
+  display: none !important;
+  /* We display our own meta via PHP extraction */
 }
 
 /* WC Price amount styling */
@@ -146,6 +150,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   transition: all 0.2s;
   box-shadow: none !important;
 }
+
 .wiwa-qty-btn:hover {
   background: var(--wiwa-bg-body) !important;
   color: var(--wiwa-primary);
@@ -169,9 +174,11 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   appearance: none;
   box-shadow: none !important;
 }
+
 .wiwa-qty-input:focus {
   outline: none;
 }
+
 .wiwa-qty-input::-webkit-outer-spin-button,
 .wiwa-qty-input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -193,6 +200,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .wiwa-cart-page .stepper-btn {
   transition: all 0.2s ease;
 }
+
 .wiwa-cart-page .stepper-btn:hover {
   background: white !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
@@ -201,7 +209,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 /* Sticky sidebar */
 .wiwa-sticky-sidebar {
   position: sticky;
-  top: 8rem; /* ~128px, matching top-32 */
+  top: 8rem;
+  /* ~128px, matching top-32 */
 }
 
 /* Ensure WC notices still look decent */
@@ -223,7 +232,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    ========================================= */
 
 /* Mini cart: hide default quantity text */
-.wiwa-mini-cart-qty + .quantity {
+.wiwa-mini-cart-qty+.quantity {
   display: none !important;
 }
 
@@ -236,6 +245,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    5. RESPONSIVE POLISH
    ========================================= */
 @media (max-width: 767px) {
+
   /* On mobile, the price block aligns left instead of right */
   .wiwa-cart-page article .text-right {
     text-align: left;
@@ -262,20 +272,25 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .wiwa-cart-page {
   font-family: "Montserrat", "Roboto", sans-serif;
   width: 100%;
-  max-width: 100%; /* Full Width Fix */
+  max-width: 100%;
+  /* Full Width Fix */
   margin: 0 auto;
   padding: 0 16px;
 }
+
 @media (min-width: 1024px) {
   .wiwa-cart-page {
-    padding: 0 32px; /* Responsive padding */
+    padding: 0 32px;
+    /* Responsive padding */
   }
 }
+
 .card-shadow {
   box-shadow:
     0 4px 20px -2px rgba(0, 0, 0, 0.05),
     0 2px 4px -1px rgba(0, 0, 0, 0.02);
 }
+
 .material-symbols-outlined {
   font-variation-settings:
     "FILL" 0,
@@ -294,6 +309,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   border-radius: 0 !important;
   max-width: none !important;
 }
+
 .wiwa-cart-page .wiwa-thumb-wrap a {
   display: block;
   width: 100%;
@@ -323,6 +339,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   width: 120px;
   height: 40px;
 }
+
 .wiwa-stepper-pill button {
   width: 32px;
   height: 32px;
@@ -341,15 +358,18 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   box-shadow: none !important;
   line-height: 1;
 }
+
 .wiwa-stepper-pill button:hover {
   background: #ffffff !important;
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1) !important;
   color: #1a3c28;
 }
+
 .wiwa-stepper-pill button:focus {
   outline: none !important;
   box-shadow: none !important;
 }
+
 .wiwa-stepper-pill input {
   width: 40px;
   text-align: center;
@@ -365,6 +385,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   box-shadow: none !important;
   outline: none !important;
 }
+
 .wiwa-stepper-pill input::-webkit-outer-spin-button,
 .wiwa-stepper-pill input::-webkit-inner-spin-button {
   -webkit-appearance: none;
@@ -376,17 +397,21 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   font-size: 12px;
   color: #9ca3af;
 }
+
 .wiwa-price-per-person .woocommerce-Price-amount {
   font-size: 12px !important;
 }
+
 .wiwa-price-subtotal {
   font-size: 1.5rem;
   font-weight: 700;
   color: #1a3c28;
 }
+
 .wiwa-price-subtotal .woocommerce-Price-amount {
   font-size: inherit !important;
 }
+
 /* Tame any theme-injected woocs price markup */
 .wiwa-price-subtotal .woocs_special_price_code {
   font-size: 1.5rem !important;
@@ -395,11 +420,14 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   line-height: 1.2;
   word-break: break-word;
 }
+
 @media (min-width: 1024px) {
   .wiwa-price-subtotal .woocs_special_price_code {
-    font-size: 1.75rem !important; /* Reduced from 2rem as requested */
+    font-size: 1.75rem !important;
+    /* Reduced from 2rem as requested */
   }
 }
+
 .wiwa-price-per-person .woocs_special_price_code {
   font-size: 0.85rem !important;
   font-weight: inherit !important;
@@ -428,12 +456,14 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   box-shadow: 0 10px 20px -5px rgba(26, 60, 40, 0.35);
   transition: all 0.3s ease;
 }
+
 .wiwa-cta-pay:hover {
   background: linear-gradient(135deg, #2b4c3b 0%, #3b6050 100%);
   color: #ffffff !important;
   transform: translateY(-2px);
   box-shadow: 0 14px 28px -6px rgba(26, 60, 40, 0.45);
 }
+
 .wiwa-cta-pay:visited,
 .wiwa-cta-pay:active {
   color: #ffffff !important;
@@ -453,6 +483,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
 .wiwa-cart-page article {
   transition: box-shadow 0.3s ease;
 }
+
 .wiwa-cart-page article:hover {
   box-shadow:
     0 8px 30px -4px rgba(0, 0, 0, 0.08),
@@ -471,6 +502,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   pointer-events: none;
   position: relative;
 }
+
 .wiwa-stepper-pill.wiwa-is-loading::after {
   content: "";
   position: absolute;
@@ -487,8 +519,11 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   animation: wiwa-spin 0.6s linear infinite;
   z-index: 10;
 }
+
 @keyframes wiwa-spin {
-  100% { transform: rotate(360deg); }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 
 /* WC notices */
@@ -505,7 +540,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    ========================================= */
 .wiwa-empty-cart {
   max-width: 600px;
-  margin: auto;          /* let flexbox do vertical centering */
+  margin: auto;
+  /* let flexbox do vertical centering */
   padding: 0 20px;
   text-align: center;
   font-family: "Montserrat", sans-serif;
@@ -515,6 +551,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   align-items: center;
   justify-content: center;
 }
+
 .wiwa-empty-cart-content {
   background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
   border-radius: 24px;
@@ -529,6 +566,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   opacity: 1 !important;
   height: auto !important;
 }
+
 .wiwa-empty-icon-wrapper {
   margin-bottom: 24px;
   display: flex;
@@ -536,6 +574,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   align-items: center;
   width: 100%;
 }
+
 .wiwa-empty-decorations {
   margin-top: 32px;
   display: flex;
@@ -543,18 +582,21 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   gap: 24px;
   opacity: 0.7;
 }
+
 .wiwa-empty-title {
   font-size: 28px;
   font-weight: 700;
   color: #111827;
   margin: 0 0 16px;
 }
+
 .wiwa-empty-description {
   font-size: 16px;
   color: #6b7280;
   line-height: 1.7;
   margin: 0 0 32px;
 }
+
 .wiwa-empty-cta .wiwa-empty-cart-btn {
   display: inline-flex;
   align-items: center;
@@ -570,11 +612,13 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   box-shadow: 0 4px 15px rgba(30, 58, 43, 0.3);
   border: none;
 }
+
 .wiwa-empty-cta .wiwa-empty-cart-btn:hover {
   transform: translateY(-3px);
   box-shadow: 0 8px 25px rgba(30, 58, 43, 0.4);
   color: #ffffff !important;
 }
+
 .wiwa-empty-features {
   display: flex;
   justify-content: center;
@@ -582,31 +626,38 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   margin-top: 48px;
   flex-wrap: wrap;
 }
+
 .feature-item {
   display: flex;
   flex-direction: column;
   align-items: center;
   gap: 8px;
 }
+
 .feature-icon {
   font-size: 32px;
 }
+
 .feature-item span {
   font-size: 14px;
   color: #6b7280;
   font-weight: 500;
 }
+
 @media (max-width: 480px) {
   .wiwa-empty-cart-content {
     padding: 40px 24px;
   }
+
   .wiwa-empty-title {
     font-size: 24px;
   }
+
   .wiwa-empty-features {
     gap: 20px;
   }
 }
+
 /* =========================================
    8. MINI CART CUSTOM LAYOUT
    ========================================= */
@@ -618,7 +669,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   height: 100vh;
   max-height: 90%;
   /* center empty-cart state vertically */
-  justify-content: flex-start; /* default: let header+items fill from top */
+  justify-content: flex-start;
+  /* default: let header+items fill from top */
 }
 
 /* Overwrite Elementor default to force centering of empty cart */
@@ -634,6 +686,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   margin: auto;
   max-height: 100vh;
 }
+
 @media screen and (max-width: 480px) {
   .elementor-menu-cart__container .elementor-menu-cart__main {
     padding-top: 0px !important;
@@ -641,8 +694,10 @@ body.woocommerce-cart .woocommerce table.shop_table th {
     margin: auto;
     height: 100vh !important;
   }
+
   .elementor-menu-cart__container {
-    padding: 10px !important; /* Reduce outer padding */
+    padding: 10px !important;
+    /* Reduce outer padding */
   }
 }
 
@@ -651,7 +706,8 @@ body.woocommerce-cart .woocommerce table.shop_table th {
    ----------------------------------------------- */
 .elementor-menu-cart__close-button {
   position: absolute !important;
-  top: 20px !important;   /* a little lower so there's breathing room from edge */
+  top: 20px !important;
+  /* a little lower so there's breathing room from edge */
   right: 18px !important;
   width: 32px !important;
   height: 32px !important;
@@ -666,10 +722,12 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   transition: opacity 0.2s !important;
   box-shadow: none !important;
 }
+
 .elementor-menu-cart__close-button:hover {
   opacity: 0.6 !important;
   background: transparent !important;
 }
+
 .elementor-menu-cart__close-button svg {
   width: 13px !important;
   height: 13px !important;
@@ -688,6 +746,7 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   flex-shrink: 0;
   position: relative;
 }
+
 .wiwa-cart-main-title {
   font-size: clamp(1.125rem, 2vw + 0.5rem, 1.25rem);
   font-weight: 800;
@@ -702,21 +761,27 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   flex-grow: 1;
   overflow-y: auto !important;
   overflow-x: hidden;
-  padding-right: 12px !important; 
+  padding-right: 12px !important;
   margin-right: -12px !important;
-  max-height: calc(100vh - 220px); /* Ensure there is room for the footer */
+  max-height: calc(100vh - 220px);
+  /* Ensure there is room for the footer */
 }
+
 @media screen and (max-width: 480px) {
   .woocommerce-mini-cart.cart_list {
-    max-height: calc(100vh - 220px) !important; /* Force more room for tight mobile footer */
+    max-height: calc(100vh - 220px) !important;
+    /* Force more room for tight mobile footer */
   }
 }
+
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar {
   width: 6px;
 }
+
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar-track {
   background: transparent;
 }
+
 .woocommerce-mini-cart.cart_list::-webkit-scrollbar-thumb {
   background: #cbd5e1;
   border-radius: 4px;
@@ -730,9 +795,11 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   z-index: 10;
   position: relative;
 }
+
 p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   padding-top: 16px !important;
 }
+
 @media screen and (max-width: 480px) {
   p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
     padding-top: 8px !important;
@@ -750,16 +817,20 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   width: 100%;
   position: relative;
 }
+
 .woocommerce-mini-cart-item:last-child .wiwa-mini-cart-item-grid {
   border-bottom: none;
 }
+
 .woocommerce-mini-cart-item {
   padding: 0 !important;
   border-bottom: none !important;
-  list-style: none !important; /* No bullets */
+  list-style: none !important;
+  /* No bullets */
   margin-left: 0 !important;
   width: 100%;
 }
+
 .woocommerce-mini-cart {
   list-style: none !important;
   padding: 0 !important;
@@ -790,19 +861,23 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   justify-content: space-between;
   align-items: flex-start;
   margin-bottom: 6px;
-  padding-right: 28px; /* Space for absolute remove key */
+  padding-right: 28px;
+  /* Space for absolute remove key */
   position: relative;
   width: 100%;
 }
+
 .wiwa-item-title {
   font-size: 14px;
   font-weight: 700;
   line-height: 1.4;
   color: var(--wiwa-text);
-  text-decoration: none !important; /* NO UNDERLINE */
+  text-decoration: none !important;
+  /* NO UNDERLINE */
   border: none !important;
   display: block;
 }
+
 .wiwa-item-title:hover {
   color: var(--wiwa-primary);
   text-decoration: none !important;
@@ -824,6 +899,7 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   transition: all 0.2s;
   border-radius: 50%;
 }
+
 .wiwa-mini-cart-header .remove:hover {
   color: #dc2626 !important;
   background: #fef2f2 !important;
@@ -837,27 +913,32 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   display: flex;
   align-items: center;
   flex-wrap: wrap;
-  gap: 8px; /* Consistent gap */
+  gap: 8px;
+  /* Consistent gap */
   margin-bottom: 4px;
   line-height: 1.4;
 }
 
 .wiwa-mini-cart-meta-row-2 {
-  margin-bottom: 0px; /* Stepper is dead, we don't need extra space here */
+  margin-bottom: 0px;
+  /* Stepper is dead, we don't need extra space here */
 }
 
 /* Price Per Person Text (New) */
 .wiwa-price-per-person-text {
   font-size: 13px;
-  font-weight: 700; /* Bold as requested */
+  font-weight: 700;
+  /* Bold as requested */
   color: var(--wiwa-text-gray);
   display: inline-flex;
   align-items: center;
   gap: 4px;
 }
+
 .wiwa-price-per-person-text .woocommerce-Price-amount {
   font-size: 13px !important;
 }
+
 .meta-separator {
   color: #e5e7eb;
   margin: 0 4px;
@@ -868,7 +949,8 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
 .wiwa-mini-cart-footer {
   display: flex;
   align-items: center;
-  justify-content: flex-start; /* Align left */
+  justify-content: flex-start;
+  /* Align left */
   margin-top: auto;
   width: 100%;
 }
@@ -891,8 +973,10 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
 
 /* Stepper (Pill Shape) */
 .wiwa-mini-cart-stepper .wiwa-mini-cart-qty {
-  height: 38px; /* Taller pill for mobile touch */
-  width: 110px; /* Wider for clarity */
+  height: 38px;
+  /* Taller pill for mobile touch */
+  width: 110px;
+  /* Wider for clarity */
   border-radius: 999px;
   border: 1px solid var(--wiwa-border);
   background: #ffffff;
@@ -901,6 +985,7 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   align-items: center;
   justify-content: space-between;
 }
+
 .wiwa-mini-cart-stepper .wiwa-qty-btn {
   width: 30px;
   height: 30px;
@@ -913,10 +998,12 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   justify-content: center;
   background: #f3f4f6;
 }
+
 .wiwa-mini-cart-stepper .wiwa-qty-btn:hover {
   background: var(--wiwa-primary);
   color: #ffffff;
 }
+
 .wiwa-mini-cart-stepper .wiwa-qty-input {
   font-size: 15px;
   font-weight: 700;
@@ -937,7 +1024,8 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   height: 32px;
   border-radius: 50%;
   background: transparent !important;
-  color: #ef4444 !important; /* Standard red */
+  color: #ef4444 !important;
+  /* Standard red */
   border: 1px solid transparent !important;
   display: flex;
   align-items: center;
@@ -945,10 +1033,12 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   text-decoration: none;
   transition: all 0.2s;
 }
+
 .wiwa-mini-cart-footer .remove:hover {
   background: #fef2f2 !important;
   border-color: #fecaca !important;
 }
+
 .wiwa-mini-cart-footer .remove .material-symbols-outlined {
   font-size: 20px;
 }
@@ -961,30 +1051,38 @@ p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
   display: flex !important;
   justify-content: space-between;
   align-items: center;
-  margin: 0 0 12px !important; /* Margin override - reduced */
-  padding: 12px 0 8px !important; /* Minimal vertical padding */
-  border-top: 1px solid #e5e7eb; /* Move top border here */
-  border-bottom: 1px dashed #e5e7eb; /* Subtle divider instead of box */
+  margin: 0 0 12px !important;
+  /* Margin override - reduced */
+  padding: 12px 0 8px !important;
+  /* Minimal vertical padding */
+  border-top: 1px solid #e5e7eb;
+  /* Move top border here */
+  border-bottom: 1px dashed #e5e7eb;
+  /* Subtle divider instead of box */
   background: transparent !important;
   border-radius: 0;
   border-left: none;
   border-right: none;
 }
+
 @media screen and (max-width: 480px) {
   p.woocommerce-mini-cart__total.wiwa-mini-cart-subtotal {
     margin: 0 0 8px !important;
     padding: 8px 0 6px !important;
   }
 }
+
 p.wiwa-mini-cart-subtotal span:first-child {
   font-size: 15px;
   color: var(--wiwa-text-gray);
   font-weight: 500;
 }
+
 .wiwa-subtotal-amount,
 .wiwa-subtotal-amount .woocs_special_price_code,
 .wiwa-subtotal-amount .woocommerce-Price-amount {
-  font-size: 24px !important; /* INCREASED SIZE */
+  font-size: 24px !important;
+  /* INCREASED SIZE */
   font-weight: 800 !important;
   color: var(--wiwa-primary) !important;
   line-height: 1.2;
@@ -999,6 +1097,7 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   /* Desktop: 2rem clear from edge */
   padding: 0 0 max(2rem, calc(1rem + env(safe-area-inset-bottom))) !important;
 }
+
 @media screen and (max-width: 768px) {
   p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
     /* Mobile: 4rem = ~64px, keeps button well above nav bar */
@@ -1006,35 +1105,44 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
     gap: 10px;
   }
 }
+
 .wiwa-mini-cart-buttons .button {
   width: 100%;
   text-align: center;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 14px !important; /* Taller touch targets */
+  padding: 14px !important;
+  /* Taller touch targets */
   border-radius: 12px !important;
   font-weight: 700;
   font-size: 15px;
   text-decoration: none !important;
-  text-transform: none; /* User might prefer normal case */
+  text-transform: none;
+  /* User might prefer normal case */
   letter-spacing: 0.5px;
   transition:
     transform 0.2s,
     box-shadow 0.2s;
 }
+
 @media screen and (max-width: 480px) {
   .wiwa-mini-cart-buttons .button {
-    padding: 10px !important; /* Reduce padding slightly */
-    min-height: 44px; /* Slightly smaller min-height */
+    padding: 10px !important;
+    /* Reduce padding slightly */
+    min-height: 44px;
+    /* Slightly smaller min-height */
     font-size: 14px;
   }
+
   .wiwa-subtotal-amount,
   .wiwa-subtotal-amount .woocs_special_price_code,
   .wiwa-subtotal-amount .woocommerce-Price-amount {
-    font-size: 22px !important; /* Slightly increased */
+    font-size: 22px !important;
+    /* Slightly increased */
   }
 }
+
 .wiwa-mini-cart-buttons .button:active {
   transform: scale(0.98);
 }
@@ -1042,10 +1150,12 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
 /* "View Cart" - White with Border (Image 1) */
 .wiwa-btn-outline {
   background: #ffffff !important;
-  border: 1px solid #d1d5db !important; /* Visible gray border */
+  border: 1px solid #d1d5db !important;
+  /* Visible gray border */
   color: var(--wiwa-text) !important;
   box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
 }
+
 .wiwa-btn-outline:hover {
   background: #f9fafb !important;
   border-color: #9ca3af !important;
@@ -1059,6 +1169,7 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   border: 1px solid var(--wiwa-primary) !important;
   box-shadow: 0 4px 6px rgba(26, 60, 40, 0.2);
 }
+
 .wiwa-btn-primary:hover {
   background: var(--wiwa-primary-light) !important;
   box-shadow: 0 6px 12px rgba(26, 60, 40, 0.25);
@@ -1079,6 +1190,7 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   margin: 0 !important;
   padding: 0 !important;
 }
+
 .widget_shopping_cart_content li,
 .woocommerce-mini-cart-item,
 .elementor-menu-cart__product {
@@ -1086,6 +1198,7 @@ p.woocommerce-mini-cart__buttons.wiwa-mini-cart-buttons {
   margin-left: 0 !important;
   padding-left: 0 !important;
 }
+
 .widget_shopping_cart_content li::before,
 .woocommerce-mini-cart-item::before {
   display: none !important;
