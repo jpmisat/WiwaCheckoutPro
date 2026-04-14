@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.25] - 2026-04-14
+
+### Style
+
+- **Link Aesthetics:** Removed generic theme underlines from cart item titles and the "Delete" action button by injecting `no-underline hover:no-underline` to ensure a cleaner modern look matching the mockups.
+
 ## [2.16.24] - 2026-04-14
 
 ### Fixed
