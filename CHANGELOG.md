@@ -1,6 +1,13 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.4] - 2026-04-14
+
+### Fixed
+
+- **Aggressive cache-busting:** Both JS and CSS assets now use `filemtime()` appended to the version string, preventing server-side cache plugins from serving stale files.
+- **Version detection log:** Added `console.log('[Wiwa Checkout] v2.17.4 loaded')` at script start for immediate cache verification in DevTools.
+
 ## [2.17.3] - 2026-04-14
 
 ### Fixed

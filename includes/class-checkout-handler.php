@@ -207,20 +207,22 @@ class Wiwa_Checkout_Handler
             true
         );
 
-        // CSS
+        // CSS — use filemtime for aggressive cache-busting
+        $css_ver = WIWA_CHECKOUT_VERSION . '.' . filemtime(WIWA_CHECKOUT_PATH . 'assets/css/checkout.css');
         wp_enqueue_style(
             'wiwa-checkout-css',
             WIWA_CHECKOUT_URL . 'assets/css/checkout.css',
         ['dashicons', 'select2'],
-            WIWA_CHECKOUT_VERSION
+            $css_ver
         );
 
-        // JS
+        // JS — use filemtime for aggressive cache-busting
+        $js_ver = WIWA_CHECKOUT_VERSION . '.' . filemtime(WIWA_CHECKOUT_PATH . 'assets/js/checkout.js');
         wp_enqueue_script(
             'wiwa-checkout-js',
             WIWA_CHECKOUT_URL . 'assets/js/checkout.js',
         ['jquery', 'wc-checkout'], // Add dependency on wc-checkout if available, or just make sure wc-checkout is loaded
-            WIWA_CHECKOUT_VERSION,
+            $js_ver,
             true
         );
 
