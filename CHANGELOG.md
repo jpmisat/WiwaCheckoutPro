@@ -1,6 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.20] - 2026-04-13
+
+### Fixed
+
+- **Layout completamente roto por Elementor CSS:** Elementor forzaba `display: block` en todos los contenedores, sobreescribiendo las clases utilitarias de Tailwind CSS (`flex`, `lg:flex-row`, `lg:w-[65%]`). Refactorizado el CSS crítico del carrito en `wiwa-cart-styles.css` con ~300 líneas de reglas propias usando `!important` y selectores `[data-purpose]`, garantizando que el layout 2-columnas (items 65% + summary 35%) funcione independientemente de Tailwind CDN.
+- **Imágenes de tour gigantes ocupando ancho completo:** Forzado sizing responsivo del thumbnail con `wiwa-thumb-wrap` (6rem mobile → 12rem desktop) usando `!important` para sobreescribir las dimensiones inline de WooCommerce.
+- **Material Symbols (iconos) y Montserrat (fuente) no cargaban:** Elementor eliminaba silenciosamente los estilos externos enqueue'ados vía `wp_enqueue_style`. Implementada inyección directa de `<link>` tags en el `<head>` mediante `print_critical_css()` con detección robusta de la página de carrito por URL slug.
+
+### Changed
+
+- Todos los estilos de layout del carrito ahora son autónomos (CSS propio) en lugar de depender de que Tailwind CDN interprete las clases correctamente bajo Elementor.
+- Header del carrito (título, subtítulo, barra verde) ahora tiene reglas CSS dedicadas con tipografía forzada.
+- Botón de eliminar item ahora tiene estilos propios para desktop (texto link rojo) y mobile (icono en pill rojo).
+- Cards de tour tienen padding, border-radius y box-shadow definidos mediante CSS propio.
+
 ## [2.16.19] - 2026-04-13
 
 ### Fixed

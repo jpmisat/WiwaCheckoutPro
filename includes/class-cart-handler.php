@@ -406,7 +406,26 @@ class Wiwa_Cart_Handler
      */
     public function print_critical_css() {
         if (is_admin()) return;
-        ?>
+        
+        // Direct font injection for cart pages - bypasses Elementor's asset stripping
+        $is_cart_page = is_cart();
+        if (!$is_cart_page) {
+            $request_uri = isset($_SERVER['REQUEST_URI']) ? $_SERVER['REQUEST_URI'] : '';
+            $cart_slugs = ['carrito', 'cart', 'panier', 'warenkorb'];
+            foreach ($cart_slugs as $slug) {
+                if (preg_match('#/' . $slug . '(/|$|\?)#i', $request_uri)) {
+                    $is_cart_page = true;
+                    break;
+                }
+            }
+        }
+        if ($is_cart_page) : ?>
+        <!-- Wiwa Cart: Direct font injection (Elementor bypass) -->
+        <link rel="preconnect" href="https://fonts.googleapis.com">
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+        <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+        <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" rel="stylesheet">
+        <?php endif; ?>
         <style id="wiwa-critical-css">
             /* CRITICAL: Side Cart Z-Index */
             
