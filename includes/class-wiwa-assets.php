@@ -9,18 +9,6 @@ class Wiwa_Assets
     public function __construct()
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_custom_scripts']);
-        add_filter('script_loader_tag', [$this, 'add_cfasync_false_to_tailwind'], 10, 2);
-    }
-    
-    /**
-     * Bypasses CloudFlare Rocket Loader to prevent Tailwind CDN execution delay
-     */
-    public function add_cfasync_false_to_tailwind($tag, $handle)
-    {
-        if ($handle === 'tailwindcss') {
-            return str_replace(' src', ' data-cfasync="false" src', $tag);
-        }
-        return $tag;
     }
 
     public function enqueue_custom_scripts()
@@ -110,32 +98,8 @@ class Wiwa_Assets
         }
 
         if ( !is_admin() && $is_wiwa_cart ) {
-            // 1. Tailwind CSS CDN (cart page only to avoid breaking other pages)
-            wp_enqueue_script('tailwindcss', 'https://cdn.tailwindcss.com?plugins=forms,container-queries', [], null, false);
-
-            // 2. Tailwind config with Stitch design tokens (inline after tailwind loads)
-            $tw_config = "
-                tailwind.config = {
-                    important: true,
-                    theme: {
-                        extend: {
-                            colors: {
-                                'wiwa-cream': '#fdfbf7',
-                                'wiwa-bg': '#f9f9f9',
-                                'wiwa-green': '#1a3c28',
-                                'wiwa-green-light': '#2b4c3b',
-                                'wiwa-text-gray': '#4b5563',
-                                'wiwa-border': '#e5e7eb',
-                            },
-                            fontFamily: {
-                                sans: ['Montserrat', 'Roboto', 'sans-serif'],
-                            }
-                        }
-                    }
-                }
-            ";
-            wp_add_inline_script('tailwindcss', $tw_config);
-
+            // Tailwind CDN has been moved to print_critical_css to guarantee optimal execution order and bypass Rocket Loader completely.
+            
             // 3. Google Material Symbols (icons used in the design)
             wp_enqueue_style('material-symbols', 'https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200', [], null);
 

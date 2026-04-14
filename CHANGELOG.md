@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.24] - 2026-04-14
+
+### Fixed
+
+- **FOUC & Rocket Loader Crash:** Hard-injected `tailwind.config` and the `cdn.tailwindcss.com` script directly into the exact top of the `<head>` execution chain via `print_critical_css` and attached `data-cfasync="false"` natively to both. This completely bypasses the WordPress enqueue stack (`wp_enqueue_script` / `wp_add_inline_script`) which allowed Cloudflare Rocket Loader to decouple the configuration from the CDN engine, causing the frontend CSS to crash randomly or be fully replaced natively instead of applying the Stitch classes after the AJAX update.
+
 ## [2.16.23] - 2026-04-14
 
 ### Fixed

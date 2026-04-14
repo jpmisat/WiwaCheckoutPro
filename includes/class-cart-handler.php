@@ -438,6 +438,31 @@ class Wiwa_Cart_Handler
             }
         }
         if ($is_cart_page) : ?>
+        <!-- Wiwa Cart: Tailwind configuration & CDN Script (Bypasses Rocket Loader & Enqueue delays completely) -->
+        <script data-cfasync="false">
+            window.tailwind = {
+                config: {
+                    important: true,
+                    theme: {
+                        extend: {
+                            colors: {
+                                'wiwa-cream': '#fdfbf7',
+                                'wiwa-bg': '#f9f9f9',
+                                'wiwa-green': '#1a3c28',
+                                'wiwa-green-light': '#2b4c3b',
+                                'wiwa-text-gray': '#4b5563',
+                                'wiwa-border': '#e5e7eb',
+                            },
+                            fontFamily: {
+                                sans: ['Montserrat', 'Roboto', 'sans-serif'],
+                            }
+                        }
+                    }
+                }
+            };
+        </script>
+        <script data-cfasync="false" src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+
         <!-- Wiwa Cart: Direct font injection (Elementor bypass) -->
         <link rel="preconnect" href="https://fonts.googleapis.com">
         <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
