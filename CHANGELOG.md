@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.29] - 2026-04-14
+
+### Fixed
+
+- **Cart Footer Spacing:** Added generous bottom padding (80px mobile / 96px desktop) to `.wiwa-cart-page` so the last cart card no longer sits flush against the site footer.
+
 ## [2.16.28] - 2026-04-14
 
 ### Style

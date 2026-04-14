@@ -275,13 +275,13 @@ body.woocommerce-cart .woocommerce table.shop_table th {
   max-width: 100%;
   /* Full Width Fix */
   margin: 0 auto;
-  padding: 0 16px;
+  padding: 0 16px 80px;
 }
 
 @media (min-width: 1024px) {
   .wiwa-cart-page {
-    padding: 0 32px;
-    /* Responsive padding */
+    padding: 0 32px 96px;
+    /* Responsive padding + bottom breathing room */
   }
 }
 
