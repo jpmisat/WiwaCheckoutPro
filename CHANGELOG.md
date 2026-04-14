@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.27] - 2026-04-14
+
+### Style
+
+- **Strict Underline Purge:** Implemented a highly specific CSS rule targeting `.page-content .wiwa-cart-page a.no-underline` injected natively via the plugin's stylesheet (`wiwa-cart-styles.css`) to definitively override Elementor's ultra-specific global `text-decoration: underline` rules on all links in the checkout loop.
+
 ## [2.16.26] - 2026-04-14
 
 ### Style
