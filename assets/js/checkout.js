@@ -109,6 +109,19 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     /**
+     * Find the billing source element for a given billing field name.
+     * Handles both compound (inside combined-input-group) and standalone fields.
+     */
+    function findBillingSource(billingName) {
+        // Direct match by name attribute
+        var el = document.querySelector('[name="' + billingName + '"]');
+        if (el) return el;
+
+        // Fallback: try without "billing_" prefix variations
+        return null;
+    }
+
+    /**
      * Copy billing data → a specific passenger block (by DOM element).
      * Returns the count of fields successfully copied.
      */
@@ -116,28 +129,62 @@ document.addEventListener('DOMContentLoaded', function () {
         var fields = passengerBlock.querySelectorAll('input, select, textarea');
         var copied = 0;
 
+        console.debug('[WiwaCopy] Processing block:', passengerBlock.dataset.guestIndex);
+
         fields.forEach(function (field) {
             if (!field.name || field.type === 'hidden') return;
 
             var parsed = parseGuestFieldName(field.name);
-            if (!parsed) return;
+            if (!parsed) {
+                console.debug('[WiwaCopy]   Skip (no parse):', field.name);
+                return;
+            }
 
             // Determine the billing source field name
             var billingKey = GUEST_TO_BILLING[parsed.key];
-            if (!billingKey) return;
+            if (!billingKey) {
+                console.debug('[WiwaCopy]   Skip (no mapping for key "' + parsed.key + '"):', field.name);
+                return;
+            }
 
             // For compound fields, append the suffix to billing key
             var billingName = billingKey + parsed.suffix;
-            var src = document.querySelector('[name="' + billingName + '"]');
-            if (!src || !src.value) return;
+            var src = findBillingSource(billingName);
+
+            if (!src) {
+                console.debug('[WiwaCopy]   Skip (billing not found "' + billingName + '"):', field.name);
+                return;
+            }
+
+            // For text/email/tel inputs, skip if empty
+            // For selects, skip ONLY if value is truly empty string AND it's the first option (placeholder)
+            var srcVal = src.value;
+            if (src.tagName === 'SELECT') {
+                // Allow copying even placeholder values for document type selects
+                // Only skip if value is empty AND we have a proper empty-string placeholder
+                if (srcVal === '' && src.options.length > 0 && src.options[0].value === '') {
+                    console.debug('[WiwaCopy]   Skip (select placeholder):', billingName, '→ val=""');
+                    return;
+                }
+            } else {
+                if (!srcVal) {
+                    console.debug('[WiwaCopy]   Skip (empty value):', billingName);
+                    return;
+                }
+            }
 
             // Copy value
-            field.value = src.value;
+            field.value = srcVal;
+            console.debug('[WiwaCopy]   ✓ Copied:', billingName, '→', field.name, '=', srcVal);
 
             // Trigger Select2 update for selects
             if (field.tagName === 'SELECT' && window.jQuery) {
-                jQuery(field).val(src.value).trigger('change.select2');
+                jQuery(field).val(srcVal).trigger('change.select2');
             }
+
+            // Trigger input event for validation listeners
+            field.dispatchEvent(new Event('input', { bubbles: true }));
+            field.dispatchEvent(new Event('change', { bubbles: true }));
 
             // Clear validation errors
             field.classList.remove('error');
@@ -147,6 +194,7 @@ document.addEventListener('DOMContentLoaded', function () {
             copied++;
         });
 
+        console.debug('[WiwaCopy] Total copied:', copied);
         return copied;
     }
 

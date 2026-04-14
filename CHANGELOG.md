@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.3] - 2026-04-14
+
+### Fixed
+
+- **Reverted billing document to standalone rendering:** Billing side was already working correctly with separate `billing_document_type` (select) + `billing_document` (input). Making it compound was unnecessary and broke the existing layout. Only guest `guest_passport` renders as compound (type select + number input).
+- **JS copy: smarter empty-value handling for selects:** No longer skips select fields that have a non-empty selected value. The previous `!src.value` check would skip selects even when the user had made a selection, because it treated any falsy value as "empty". Now it only skips selects with an explicit empty-string placeholder option.
+- **JS copy: dispatches input/change events** after copying values to trigger validation listeners and other dependent handlers.
+- **Added console.debug logging** to the copy system for easier debugging. Open DevTools > Console and filter by `[WiwaCopy]` to trace exactly which fields are being copied, skipped, and why.
+
 ## [2.17.2] - 2026-04-14
 
 ### Fixed
