@@ -9,6 +9,18 @@ class Wiwa_Assets
     public function __construct()
     {
         add_action('wp_enqueue_scripts', [$this, 'enqueue_custom_scripts']);
+        add_filter('script_loader_tag', [$this, 'add_cfasync_false_to_tailwind'], 10, 2);
+    }
+    
+    /**
+     * Bypasses CloudFlare Rocket Loader to prevent Tailwind CDN execution delay
+     */
+    public function add_cfasync_false_to_tailwind($tag, $handle)
+    {
+        if ($handle === 'tailwindcss') {
+            return str_replace(' src', ' data-cfasync="false" src', $tag);
+        }
+        return $tag;
     }
 
     public function enqueue_custom_scripts()

@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.23] - 2026-04-14
+
+### Fixed
+
+- **Tailwind Rendering Delayed:** Bypassed Cloudflare Rocket Loader (`data-cfasync="false"`) on the `cdn.tailwindcss.com` script. This prevents Cloudflare from deferring the CSS compilation dynamically, ensuring the Cart UI paints styling instantly avoiding a flash of unstyled content or failed layouts on the live frontend.
+
 ## [2.16.22] - 2026-04-14
 
 ### Added
