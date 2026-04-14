@@ -87,6 +87,10 @@ foreach ($billing_fields as $field_key => $field):
     if (empty($field['enabled']))
         continue;
 
+    // Skip standalone document_type — it's rendered inside the compound document field
+    if ($field_key === 'billing_document_type')
+        continue;
+
     $is_required = !empty($field['required']);
     $field_type = $field['type'] ?? 'text';
     $field_label = $field['label'] ?? ucfirst(str_replace('billing_', '', $field_key));
@@ -100,10 +104,10 @@ foreach ($billing_fields as $field_key => $field):
     if ($position === 'three-quarter')
         $position = 'full';
 
-    // Specialized checks
-    $is_country = ($field_type === 'country');
-    $is_phone = ($field_type === 'phone');
-    $is_document = ($field_type === 'document');
+    // Specialized checks — detect by type OR by field key name
+    $is_country = ($field_type === 'country' || $field_type === 'select' && strpos($field_key, 'country') !== false);
+    $is_phone   = ($field_type === 'phone' || $field_type === 'tel');
+    $is_document = ($field_type === 'document' || (strpos($field_key, 'document') !== false && strpos($field_key, 'document_type') === false));
 
     $field_options = $field['options'] ?? [];
     $field_placeholder = $field['placeholder'] ?? '';
@@ -336,11 +340,11 @@ endforeach; ?>
             $field_options = isset($field['options']) ? $field['options'] : [];
             $required_attr = $field_required ? 'data-required="true"' : '';
 
-            // Detect specialized types
+            // Detect specialized types — by type OR by field key name
             $is_country = ($field_type === 'country' || strpos($field_key, 'nationality') !== false || strpos($field_key, 'country') !== false);
             $is_phone = ($field_type === 'phone' || $field_type === 'tel' || strpos($field_key, 'phone') !== false);
             $is_document_type = ($field_type === 'document_type');
-            $is_document = ($field_type === 'document');
+            $is_document = ($field_type === 'document' || strpos($field_key, 'passport') !== false || (strpos($field_key, 'document') !== false && strpos($field_key, 'document_type') === false));
 ?>
                             <div class="form-field">
                                 <label for="<?php echo esc_attr($field_id); ?>">

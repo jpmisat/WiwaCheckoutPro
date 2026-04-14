@@ -196,7 +196,10 @@ document.addEventListener('DOMContentLoaded', function () {
 
             // Show feedback
             if (feedbackEl && totalFilled > 0) {
-                feedbackEl.textContent = '✓ ' + totalFilled + ' fields pre-filled';
+                var msg = (window.wiwaCheckout && wiwaCheckout.strings && wiwaCheckout.strings.fieldsPreFilled)
+                    ? wiwaCheckout.strings.fieldsPreFilled
+                    : 'fields pre-filled';
+                feedbackEl.textContent = '✓ ' + totalFilled + ' ' + msg;
                 feedbackEl.classList.add('show');
                 setTimeout(function () {
                     feedbackEl.classList.remove('show');

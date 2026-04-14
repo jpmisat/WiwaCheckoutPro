@@ -1,6 +1,22 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.2] - 2026-04-14
+
+### Fixed
+
+- **Guest document compound field rendering:** `guest_passport` (type `text`) was not triggering compound document rendering (type select + number input) because detection only checked `$field_type === 'document'`. Now guest detection uses `strpos($field_key, 'passport')` as fallback, matching the same pattern used for phone and nationality fields.
+- **Billing `billing_document` also now renders as compound field** using `strpos($field_key, 'document')` detection, and standalone `billing_document_type` field entry is skipped to prevent duplicate type selects.
+- **JS feedback string now WPML-translatable:** Moved the hardcoded "fields pre-filled" text to `wp_localize_script` via `wiwaCheckout.strings.fieldsPreFilled`, making it available for WPML String Translation.
+
+### WPML Compatibility Audit
+
+All UI strings in the checkout are already fully WPML-compatible:
+- All PHP strings use `_e()`, `__()`, `esc_attr_e()`, or `printf(__())` with the `'wiwa-checkout'` text domain.
+- OVA guest field labels and options are registered via `wpml_register_single_string` and translated via `wpml_translate_single_string` (see `class-tour-booking-integration.php:214-236`).
+- JS strings are passed through `wp_localize_script` and use `__()` on the PHP side (see `class-checkout-handler.php:260-269`).
+- WPML language parameter is appended to AJAX URLs (see `class-checkout-handler.php:248-254`).
+
 ## [2.17.1] - 2026-04-14
 
 ### Fixed

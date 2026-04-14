@@ -265,6 +265,7 @@ class Wiwa_Checkout_Handler
                 'adult' => __('Adult', 'wiwa-checkout'),
                 'child' => __('Child', 'wiwa-checkout'),
                 'infant' => __('Infant', 'wiwa-checkout'),
+                'fieldsPreFilled' => __('fields pre-filled', 'wiwa-checkout'),
             ],
             'geoIp' => [
                 'autoComplete' => get_option('wiwa_geoip_autocomplete_city'),
