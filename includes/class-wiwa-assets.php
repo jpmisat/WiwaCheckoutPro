@@ -104,6 +104,7 @@ class Wiwa_Assets
             // 2. Tailwind config with Stitch design tokens (inline after tailwind loads)
             $tw_config = "
                 tailwind.config = {
+                    important: true,
                     theme: {
                         extend: {
                             colors: {
