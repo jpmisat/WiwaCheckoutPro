@@ -42,6 +42,176 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    // ==================== "I AM THE MAIN TRAVELER" TOGGLE ====================
+
+    const sameAsBillingToggle = document.getElementById('wiwa_same_as_billing');
+    if (sameAsBillingToggle) {
+        const toggleCard = document.getElementById('wiwa-traveler-toggle');
+        const fieldMap = JSON.parse(sameAsBillingToggle.dataset.fieldMap || '{}');
+        const pax1Indices = JSON.parse(sameAsBillingToggle.dataset.pax1Indices || '[]');
+
+        /**
+         * Find the billing source element by field key.
+         * Handles regular inputs, selects, and compound sub-selects (_code, _type).
+         */
+        function getBillingEl(billingKey) {
+            // Direct match by name or id
+            return document.querySelector(
+                '[name="' + billingKey + '"], #' + billingKey
+            );
+        }
+
+        /**
+         * Find guest target element(s) for Passenger 1 across all tours.
+         * guestKey = e.g. "guest_first_name", pax1Indices = [101, 201...]
+         * Names in DOM: "guest_first_name_101", "guest_first_name_201", …
+         */
+        function getGuestEls(guestKey) {
+            const targets = [];
+            pax1Indices.forEach(function (idx) {
+                const el = document.querySelector('[name="guest_' + guestKey + '_' + idx + '"]')
+                        || document.querySelector('[name="' + guestKey + '_' + idx + '"]');
+                if (el) targets.push(el);
+            });
+            return targets;
+        }
+
+        /**
+         * Copy value from billing field → all Pax1 guest fields
+         */
+        function syncField(billingKey, guestKey) {
+            const src = getBillingEl(billingKey);
+            if (!src) return;
+
+            const guests = getGuestEls(guestKey);
+            guests.forEach(function (guest) {
+                guest.value = src.value;
+                // Trigger Select2 update if it's a select
+                if (guest.tagName === 'SELECT' && window.jQuery) {
+                    jQuery(guest).val(src.value).trigger('change.select2');
+                }
+                // Clear any validation error
+                guest.classList.remove('error');
+                var formField = guest.closest('.form-field');
+                if (formField) formField.classList.remove('has-error');
+            });
+        }
+
+        /**
+         * Sync ALL mapped fields
+         */
+        function syncAllFields() {
+            Object.keys(fieldMap).forEach(function (billingKey) {
+                syncField(billingKey, fieldMap[billingKey]);
+            });
+        }
+
+        /**
+         * Lock Pax1 fields (add overlay + readonly)
+         */
+        function lockPax1Fields() {
+            Object.keys(fieldMap).forEach(function (billingKey) {
+                var guestKey = fieldMap[billingKey];
+                var guests = getGuestEls(guestKey);
+                guests.forEach(function (guest) {
+                    var formField = guest.closest('.form-field');
+                    if (formField) formField.classList.add('wiwa-linked-field');
+                    guest.readOnly = true;
+                    guest.setAttribute('tabindex', '-1');
+                });
+            });
+        }
+
+        /**
+         * Unlock Pax1 fields (remove overlay + readonly)
+         */
+        function unlockPax1Fields() {
+            Object.keys(fieldMap).forEach(function (billingKey) {
+                var guestKey = fieldMap[billingKey];
+                var guests = getGuestEls(guestKey);
+                guests.forEach(function (guest) {
+                    var formField = guest.closest('.form-field');
+                    if (formField) formField.classList.remove('wiwa-linked-field');
+                    guest.readOnly = false;
+                    guest.removeAttribute('tabindex');
+                });
+            });
+        }
+
+        /**
+         * Clear Pax1 fields
+         */
+        function clearPax1Fields() {
+            Object.keys(fieldMap).forEach(function (billingKey) {
+                var guestKey = fieldMap[billingKey];
+                var guests = getGuestEls(guestKey);
+                guests.forEach(function (guest) {
+                    guest.value = '';
+                    if (guest.tagName === 'SELECT' && window.jQuery) {
+                        jQuery(guest).val('').trigger('change.select2');
+                    }
+                });
+            });
+        }
+
+        /**
+         * Activate the toggle
+         */
+        function activateSync() {
+            syncAllFields();
+            lockPax1Fields();
+            if (toggleCard) toggleCard.classList.add('is-active');
+            sessionStorage.setItem('wiwa_same_as_billing', 'true');
+        }
+
+        /**
+         * Deactivate the toggle
+         */
+        function deactivateSync() {
+            unlockPax1Fields();
+            clearPax1Fields();
+            if (toggleCard) toggleCard.classList.remove('is-active');
+            sessionStorage.setItem('wiwa_same_as_billing', 'false');
+        }
+
+        // Toggle change handler
+        sameAsBillingToggle.addEventListener('change', function () {
+            if (this.checked) {
+                activateSync();
+            } else {
+                deactivateSync();
+            }
+        });
+
+        // Real-time sync: when billing fields change, propagate to pax1
+        Object.keys(fieldMap).forEach(function (billingKey) {
+            var src = getBillingEl(billingKey);
+            if (!src) return;
+
+            var handler = function () {
+                if (!sameAsBillingToggle.checked) return;
+                syncField(billingKey, fieldMap[billingKey]);
+            };
+
+            src.addEventListener('input', handler);
+            src.addEventListener('change', handler);
+
+            // Also listen for Select2 changes
+            if (src.tagName === 'SELECT' && window.jQuery) {
+                jQuery(src).on('change', handler);
+            }
+        });
+
+        // Restore persisted toggle state
+        if (sessionStorage.getItem('wiwa_same_as_billing') === 'true') {
+            sameAsBillingToggle.checked = true;
+            // Delay slightly so Select2 and other controls have initialized
+            setTimeout(function () {
+                activateSync();
+            }, 300);
+        }
+    }
+
     // ==================== FORM VALIDATION ====================
 
     function validateField(field) {

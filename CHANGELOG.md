@@ -1,6 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.0] - 2026-04-14
+
+### Added
+
+- **"I am the main traveler" Toggle:** New iOS-style toggle switch on the checkout Step 1 page, placed between the Contact section and the Travelers section. When activated:
+  - Automatically copies billing/contact data (name, last name, email, phone, nationality, document) into Passenger 1 fields across all tours in the cart.
+  - Fields are locked with a visual overlay (🔗 icon + dimmed background) to indicate they are synced.
+  - Real-time sync: any change to the billing fields is propagated instantly to the linked passenger fields.
+  - Deactivating the toggle clears and unlocks the fields for manual editing.
+  - Toggle state is persisted via `sessionStorage` so it survives page reloads.
+  - Field mapping is data-driven (PHP → JSON data attributes) to work with any custom guest field configuration from Ova Tour Booking.
+  - Responsive design with mobile-optimized sizing.
+
 ## [2.16.29] - 2026-04-14
 
 ### Fixed
