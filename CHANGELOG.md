@@ -1,6 +1,12 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.16.26] - 2026-04-14
+
+### Style
+
+- **Link Aesthetics:** Destroyed aggressive theme underlines on cart item titles and actions by enforcing `border-none shadow-none` alongside `no-underline hover:no-underline`.
+
 ## [2.16.25] - 2026-04-14
 
 ### Style

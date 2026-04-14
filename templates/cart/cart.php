@@ -145,7 +145,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                     if (!$product_permalink) {
                                         echo wp_kses_post(apply_filters('woocommerce_cart_item_name', $product_name, $cart_item, $cart_item_key));
                                     } else {
-                                        echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s" class="text-[#1a3c28] hover:text-[#2b4c3b] no-underline hover:no-underline">%s</a>', esc_url($product_permalink), $product_name), $cart_item, $cart_item_key));
+                                        echo wp_kses_post(apply_filters('woocommerce_cart_item_name', sprintf('<a href="%s" class="text-[#1a3c28] hover:text-[#2b4c3b] no-underline hover:no-underline border-none shadow-none">%s</a>', esc_url($product_permalink), $product_name), $cart_item, $cart_item_key));
                                     }
                                     ?>
                                 </h2>
@@ -181,7 +181,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 echo apply_filters(
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
-                                        '<a href="%s" class="flex items-center gap-1.5 text-red-500 hover:text-red-700 text-[13px] font-medium transition-colors no-underline hover:no-underline" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[16px]" style="color: #ef4444 !important;">delete</span> %s</a>',
+                                        '<a href="%s" class="flex items-center gap-1.5 text-red-500 hover:text-red-700 text-[13px] font-medium transition-colors no-underline hover:no-underline border-none shadow-none" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[16px]" style="color: #ef4444 !important;">delete</span> %s</a>',
                                         esc_url(wc_get_cart_remove_url($cart_item_key)),
                                         esc_html__('Remove this item', 'woocommerce'),
                                         esc_attr($product_id),
@@ -209,7 +209,7 @@ $wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
                                 echo apply_filters(
                                     'woocommerce_cart_item_remove_link',
                                     sprintf(
-                                        '<a href="%s" class="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:text-red-700 text-[12px] font-medium transition-colors border border-red-100 no-underline hover:no-underline" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[18px]" style="color: #ef4444 !important;">delete</span></a>',
+                                        '<a href="%s" class="flex items-center justify-center p-2 rounded-lg bg-red-50 text-red-500 hover:text-red-700 text-[12px] font-medium transition-colors border border-red-100 no-underline hover:no-underline border-none shadow-none" style="color: #ef4444 !important;" aria-label="%s" data-product_id="%s" data-product_sku="%s"><span class="material-symbols-outlined text-[18px]" style="color: #ef4444 !important;">delete</span></a>',
                                         esc_url(wc_get_cart_remove_url($cart_item_key)),
                                         esc_html__('Remove this item', 'woocommerce'),
                                         esc_attr($product_id),
