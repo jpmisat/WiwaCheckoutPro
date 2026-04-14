@@ -532,6 +532,83 @@
     cursor: not-allowed;
 }
 
+/* Toggle Feedback Message */
+.traveler-toggle-feedback {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    font-size: 13px;
+    font-weight: 500;
+    color: var(--wiwa-brand);
+    padding: 0 8px;
+    transition: max-height 0.3s ease, opacity 0.3s ease, padding 0.3s ease;
+}
+
+.traveler-toggle-feedback.show {
+    max-height: 40px;
+    opacity: 1;
+    padding: 8px 8px 0;
+}
+
+/* Per-Passenger "Use my data" Copy Button */
+.wiwa-copy-billing-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    margin-left: auto;
+    padding: 4px 10px;
+    background: transparent;
+    border: 1px solid var(--wiwa-gray-300);
+    border-radius: 6px;
+    color: var(--wiwa-brand);
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+    line-height: 1.4;
+}
+
+.wiwa-copy-billing-btn:hover {
+    background: var(--wiwa-green-light);
+    border-color: var(--wiwa-brand);
+}
+
+.wiwa-copy-billing-btn:active {
+    transform: scale(0.96);
+}
+
+.wiwa-copy-billing-btn svg {
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+}
+
+/* Feedback states */
+.wiwa-copy-billing-btn .copy-btn-done {
+    display: none;
+}
+
+.wiwa-copy-billing-btn.is-copied {
+    background: var(--wiwa-brand);
+    border-color: var(--wiwa-brand);
+    color: white;
+    pointer-events: none;
+}
+
+.wiwa-copy-billing-btn.is-copied svg {
+    transform: translateY(2px);
+}
+
+.wiwa-copy-billing-btn.is-copied .copy-btn-text {
+    display: none;
+}
+
+.wiwa-copy-billing-btn.is-copied .copy-btn-done {
+    display: inline;
+}
+
+
+
 /* Responsive toggle */
 @media (max-width: 640px) {
     .wiwa-traveler-toggle {
@@ -568,6 +645,16 @@
     
     .wiwa-toggle-switch input:checked + .toggle-slider::before {
         transform: translateX(22px);
+    }
+
+    .wiwa-copy-billing-btn {
+        padding: 3px 8px;
+        font-size: 11px;
+    }
+
+    .wiwa-copy-billing-btn svg {
+        width: 12px;
+        height: 12px;
     }
 }
 

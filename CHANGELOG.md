@@ -1,6 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.1] - 2026-04-14
+
+### Fixed
+
+- **Document & Phone compound field mapping:** Fixed critical bug where document type (`_type`) and phone code (`_code`) suffixes were placed before the guest index instead of after (e.g., `guest_passport_101_type` was incorrectly searched as `guest_passport_type_101`). Now uses a DOM-based smart parser (`parseGuestFieldName`) that correctly identifies compound suffixes.
+
+### Changed
+
+- **Global toggle is now non-destructive:** Activating the toggle pre-fills Passenger 1 fields across all tours without locking them. Users remain free to edit any pre-filled field. Turning the toggle OFF does NOT clear the fields — it simply disables future auto-sync.
+- **Removed static PHP field map:** Replaced the `$effective_map` / `$compound_map` PHP-side approach with a dynamic JS-side parser that works with any guest field naming convention (OVA Tour Booking or default fields), including compound fields with `_type` / `_code` suffixes.
+
+### Added
+
+- **Per-passenger "Use my data" button:** Each passenger header (Passenger 1, 2, 3…) in every tour now has a small copy button that one-click copies billing/contact data to that specific passenger. This gives granular control for mixed-party bookings (e.g., user is Pax 1 in Tour A but not in Tour B).
+- **Copy feedback animation:** The per-passenger button shows a brief "✓ Copied!" green animation after copying.
+- **Global toggle feedback:** Displays a "✓ X fields pre-filled" animated message below the toggle when activated.
+- **Mobile-responsive copy button:** Smaller sizing on screens ≤640px.
+
 ## [2.17.0] - 2026-04-14
 
 ### Added

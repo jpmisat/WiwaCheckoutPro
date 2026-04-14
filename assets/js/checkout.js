@@ -42,175 +42,204 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // ==================== "I AM THE MAIN TRAVELER" TOGGLE ====================
+    // ==================== BILLING → PASSENGER COPY SYSTEM ====================
 
-    const sameAsBillingToggle = document.getElementById('wiwa_same_as_billing');
+    /**
+     * Core mapping: guest field key fragments → billing field name
+     * Handles both default keys (guest_first_name) and OVA keys (first_name)
+     */
+    var GUEST_TO_BILLING = {
+        'first_name':   'billing_first_name',
+        'last_name':    'billing_last_name',
+        'email':        'billing_email',
+        'phone':        'billing_phone',
+        'nationality':  'billing_country',
+        'country':      'billing_country',
+        'passport':     'billing_document',
+        'document':     'billing_document',
+        'nombre':       'billing_first_name',
+        'apellido':     'billing_last_name',
+        'apellidos':    'billing_last_name',
+        'correo':       'billing_email',
+        'telefono':     'billing_phone',
+        'nacionalidad': 'billing_country',
+        'documento':    'billing_document',
+        'id':           'billing_document'
+    };
+
+    /**
+     * Parse a guest field name to extract its core key, index, and suffix.
+     * Handles patterns:
+     *   guest_first_name_101          → { key: 'first_name', idx: '101', suffix: '' }
+     *   guest_guest_passport_101      → { key: 'passport', idx: '101', suffix: '' }
+     *   guest_guest_passport_101_type → { key: 'passport', idx: '101', suffix: '_type' }
+     *   guest_guest_phone_101_code    → { key: 'phone', idx: '101', suffix: '_code' }
+     */
+    function parseGuestFieldName(name) {
+        if (!name || !name.startsWith('guest_')) return null;
+
+        // Known suffixes that come AFTER the index
+        var suffixes = ['_type', '_code'];
+        var suffix = '';
+
+        for (var i = 0; i < suffixes.length; i++) {
+            if (name.endsWith(suffixes[i])) {
+                suffix = suffixes[i];
+                name = name.slice(0, -suffix.length);
+                break;
+            }
+        }
+
+        // Extract the index (last numeric segment after the last underscore)
+        var lastUnderscore = name.lastIndexOf('_');
+        if (lastUnderscore === -1) return null;
+
+        var idx = name.substring(lastUnderscore + 1);
+        if (!/^\d+$/.test(idx)) return null;
+
+        // Everything between 'guest_' and '_{idx}' is the field key
+        var keyPart = name.substring(6, lastUnderscore); // 6 = 'guest_'.length
+
+        // Strip a second 'guest_' prefix if present (default fields: guest_guest_first_name)
+        if (keyPart.startsWith('guest_')) {
+            keyPart = keyPart.substring(6);
+        }
+
+        return { key: keyPart, idx: idx, suffix: suffix };
+    }
+
+    /**
+     * Copy billing data → a specific passenger block (by DOM element).
+     * Returns the count of fields successfully copied.
+     */
+    function copyBillingToBlock(passengerBlock) {
+        var fields = passengerBlock.querySelectorAll('input, select, textarea');
+        var copied = 0;
+
+        fields.forEach(function (field) {
+            if (!field.name || field.type === 'hidden') return;
+
+            var parsed = parseGuestFieldName(field.name);
+            if (!parsed) return;
+
+            // Determine the billing source field name
+            var billingKey = GUEST_TO_BILLING[parsed.key];
+            if (!billingKey) return;
+
+            // For compound fields, append the suffix to billing key
+            var billingName = billingKey + parsed.suffix;
+            var src = document.querySelector('[name="' + billingName + '"]');
+            if (!src || !src.value) return;
+
+            // Copy value
+            field.value = src.value;
+
+            // Trigger Select2 update for selects
+            if (field.tagName === 'SELECT' && window.jQuery) {
+                jQuery(field).val(src.value).trigger('change.select2');
+            }
+
+            // Clear validation errors
+            field.classList.remove('error');
+            var formField = field.closest('.form-field');
+            if (formField) formField.classList.remove('has-error');
+
+            copied++;
+        });
+
+        return copied;
+    }
+
+    /**
+     * Show a brief "✓ Copied!" feedback animation on a copy button
+     */
+    function showCopyFeedback(btn) {
+        btn.classList.add('is-copied');
+        setTimeout(function () {
+            btn.classList.remove('is-copied');
+        }, 2000);
+    }
+
+    // ── Per-Passenger "Use my data" buttons ──
+    var copyButtons = $$('.wiwa-copy-billing-btn');
+    copyButtons.forEach(function (btn) {
+        btn.addEventListener('click', function (e) {
+            e.preventDefault();
+            var block = btn.closest('.passenger-block');
+            if (!block) return;
+
+            var count = copyBillingToBlock(block);
+            if (count > 0) {
+                showCopyFeedback(btn);
+            }
+        });
+    });
+
+    // ── Global "I am the main traveler" Toggle ──
+    var sameAsBillingToggle = document.getElementById('wiwa_same_as_billing');
     if (sameAsBillingToggle) {
-        const toggleCard = document.getElementById('wiwa-traveler-toggle');
-        const fieldMap = JSON.parse(sameAsBillingToggle.dataset.fieldMap || '{}');
-        const pax1Indices = JSON.parse(sameAsBillingToggle.dataset.pax1Indices || '[]');
+        var toggleCard = document.getElementById('wiwa-traveler-toggle');
+        var feedbackEl = document.getElementById('traveler-toggle-feedback');
 
-        /**
-         * Find the billing source element by field key.
-         * Handles regular inputs, selects, and compound sub-selects (_code, _type).
-         */
-        function getBillingEl(billingKey) {
-            // Direct match by name or id
-            return document.querySelector(
-                '[name="' + billingKey + '"], #' + billingKey
-            );
-        }
+        function applyGlobalPreFill() {
+            // Find all passenger blocks that are Passenger 1 (pax index ends in 1)
+            var allBlocks = $$('.passenger-block[data-guest-index]');
+            var totalFilled = 0;
 
-        /**
-         * Find guest target element(s) for Passenger 1 across all tours.
-         * guestKey = e.g. "guest_first_name", pax1Indices = [101, 201...]
-         * Names in DOM: "guest_first_name_101", "guest_first_name_201", …
-         */
-        function getGuestEls(guestKey) {
-            const targets = [];
-            pax1Indices.forEach(function (idx) {
-                const el = document.querySelector('[name="guest_' + guestKey + '_' + idx + '"]')
-                        || document.querySelector('[name="' + guestKey + '_' + idx + '"]');
-                if (el) targets.push(el);
-            });
-            return targets;
-        }
-
-        /**
-         * Copy value from billing field → all Pax1 guest fields
-         */
-        function syncField(billingKey, guestKey) {
-            const src = getBillingEl(billingKey);
-            if (!src) return;
-
-            const guests = getGuestEls(guestKey);
-            guests.forEach(function (guest) {
-                guest.value = src.value;
-                // Trigger Select2 update if it's a select
-                if (guest.tagName === 'SELECT' && window.jQuery) {
-                    jQuery(guest).val(src.value).trigger('change.select2');
+            allBlocks.forEach(function (block) {
+                var idx = block.dataset.guestIndex;
+                // Pax 1 indices end in 01: 1, 101, 201, etc.
+                if (parseInt(idx) % 100 === 1) {
+                    totalFilled += copyBillingToBlock(block);
                 }
-                // Clear any validation error
-                guest.classList.remove('error');
-                var formField = guest.closest('.form-field');
-                if (formField) formField.classList.remove('has-error');
             });
+
+            // Show feedback
+            if (feedbackEl && totalFilled > 0) {
+                feedbackEl.textContent = '✓ ' + totalFilled + ' fields pre-filled';
+                feedbackEl.classList.add('show');
+                setTimeout(function () {
+                    feedbackEl.classList.remove('show');
+                }, 3000);
+            }
         }
 
-        /**
-         * Sync ALL mapped fields
-         */
-        function syncAllFields() {
-            Object.keys(fieldMap).forEach(function (billingKey) {
-                syncField(billingKey, fieldMap[billingKey]);
-            });
-        }
-
-        /**
-         * Lock Pax1 fields (add overlay + readonly)
-         */
-        function lockPax1Fields() {
-            Object.keys(fieldMap).forEach(function (billingKey) {
-                var guestKey = fieldMap[billingKey];
-                var guests = getGuestEls(guestKey);
-                guests.forEach(function (guest) {
-                    var formField = guest.closest('.form-field');
-                    if (formField) formField.classList.add('wiwa-linked-field');
-                    guest.readOnly = true;
-                    guest.setAttribute('tabindex', '-1');
-                });
-            });
-        }
-
-        /**
-         * Unlock Pax1 fields (remove overlay + readonly)
-         */
-        function unlockPax1Fields() {
-            Object.keys(fieldMap).forEach(function (billingKey) {
-                var guestKey = fieldMap[billingKey];
-                var guests = getGuestEls(guestKey);
-                guests.forEach(function (guest) {
-                    var formField = guest.closest('.form-field');
-                    if (formField) formField.classList.remove('wiwa-linked-field');
-                    guest.readOnly = false;
-                    guest.removeAttribute('tabindex');
-                });
-            });
-        }
-
-        /**
-         * Clear Pax1 fields
-         */
-        function clearPax1Fields() {
-            Object.keys(fieldMap).forEach(function (billingKey) {
-                var guestKey = fieldMap[billingKey];
-                var guests = getGuestEls(guestKey);
-                guests.forEach(function (guest) {
-                    guest.value = '';
-                    if (guest.tagName === 'SELECT' && window.jQuery) {
-                        jQuery(guest).val('').trigger('change.select2');
-                    }
-                });
-            });
-        }
-
-        /**
-         * Activate the toggle
-         */
-        function activateSync() {
-            syncAllFields();
-            lockPax1Fields();
-            if (toggleCard) toggleCard.classList.add('is-active');
-            sessionStorage.setItem('wiwa_same_as_billing', 'true');
-        }
-
-        /**
-         * Deactivate the toggle
-         */
-        function deactivateSync() {
-            unlockPax1Fields();
-            clearPax1Fields();
-            if (toggleCard) toggleCard.classList.remove('is-active');
-            sessionStorage.setItem('wiwa_same_as_billing', 'false');
-        }
-
-        // Toggle change handler
         sameAsBillingToggle.addEventListener('change', function () {
             if (this.checked) {
-                activateSync();
+                applyGlobalPreFill();
+                if (toggleCard) toggleCard.classList.add('is-active');
+                sessionStorage.setItem('wiwa_same_as_billing', 'true');
             } else {
-                deactivateSync();
+                if (toggleCard) toggleCard.classList.remove('is-active');
+                sessionStorage.setItem('wiwa_same_as_billing', 'false');
+                // Do NOT clear fields — non-destructive OFF
             }
         });
 
-        // Real-time sync: when billing fields change, propagate to pax1
-        Object.keys(fieldMap).forEach(function (billingKey) {
-            var src = getBillingEl(billingKey);
-            if (!src) return;
-
+        // Real-time sync: when billing fields change while toggle is ON, re-fill Pax 1
+        var billingInputs = $$('[name^="billing_"]');
+        billingInputs.forEach(function (input) {
             var handler = function () {
                 if (!sameAsBillingToggle.checked) return;
-                syncField(billingKey, fieldMap[billingKey]);
+                applyGlobalPreFill();
             };
-
-            src.addEventListener('input', handler);
-            src.addEventListener('change', handler);
-
-            // Also listen for Select2 changes
-            if (src.tagName === 'SELECT' && window.jQuery) {
-                jQuery(src).on('change', handler);
+            input.addEventListener('input', handler);
+            input.addEventListener('change', handler);
+            if (input.tagName === 'SELECT' && window.jQuery) {
+                jQuery(input).on('change', handler);
             }
         });
 
         // Restore persisted toggle state
         if (sessionStorage.getItem('wiwa_same_as_billing') === 'true') {
             sameAsBillingToggle.checked = true;
-            // Delay slightly so Select2 and other controls have initialized
+            if (toggleCard) toggleCard.classList.add('is-active');
             setTimeout(function () {
-                activateSync();
-            }, 300);
+                applyGlobalPreFill();
+            }, 400);
         }
     }
+
 
     // ==================== FORM VALIDATION ====================
 

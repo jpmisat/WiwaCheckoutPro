@@ -234,50 +234,7 @@ endforeach; ?>
     <!-- Passengers Section Divider -->
     <div class="section-divider-text"><span><?php _e('Travelers\' details', 'wiwa-checkout'); ?></span></div>
 
-    <!-- "I am the main traveler" Toggle -->
-    <?php
-    // Build the mapping: billing field key → guest field key (without index suffix)
-    // This maps which billing field should populate which guest field
-    $billing_to_guest_map = [
-        'billing_first_name'  => ['guest_first_name', 'first_name', 'nombre', 'name'],
-        'billing_last_name'   => ['guest_last_name', 'last_name', 'apellido', 'apellidos', 'surname'],
-        'billing_email'       => ['guest_email', 'email', 'correo'],
-        'billing_phone'       => ['guest_phone', 'phone', 'telefono', 'tel'],
-        'billing_country'     => ['guest_nationality', 'nationality', 'nacionalidad', 'country', 'guest_country'],
-        'billing_document'    => ['guest_passport', 'passport', 'documento', 'document', 'guest_document', 'guest_id'],
-    ];
-
-    // Also map compound fields (the _code / _type sub-selects)
-    $compound_map = [
-        'billing_phone_code'         => ['guest_phone_code'],
-        'billing_document_type'      => ['guest_passport_type', 'guest_document_type'],
-    ];
-
-    // Build the effective map by checking which guest fields are actually present
-    $effective_map = [];
-    foreach ($billing_to_guest_map as $billing_key => $possible_guest_keys) {
-        foreach ($possible_guest_keys as $gk) {
-            if (isset($guest_fields[$gk])) {
-                $effective_map[$billing_key] = $gk;
-                break;
-            }
-        }
-    }
-    foreach ($compound_map as $billing_key => $possible_guest_keys) {
-        foreach ($possible_guest_keys as $gk) {
-            // Compound selects don't live in $guest_fields; we'll output the mapping
-            // and let JS find them by name attribute if they exist in the DOM
-            $effective_map[$billing_key] = $gk;
-            break;
-        }
-    }
-
-    // Collect Passenger 1 guest indices (tour_index * 100 + 1)
-    $pax1_indices = [];
-    foreach ($tours as $tour_index => $tour) {
-        $pax1_indices[] = ($tour_index * 100) + 1;
-    }
-    ?>
+    <!-- "I am the main traveler" Global Toggle -->
     <div class="wiwa-traveler-toggle" id="wiwa-traveler-toggle">
         <div class="traveler-toggle-inner">
             <div class="traveler-toggle-info">
@@ -289,19 +246,18 @@ endforeach; ?>
                 </div>
                 <div class="traveler-toggle-text">
                     <span class="traveler-toggle-label"><?php _e('I am the main traveler', 'wiwa-checkout'); ?></span>
-                    <span class="traveler-toggle-desc"><?php _e('Copy my contact details to Passenger 1 in all tours', 'wiwa-checkout'); ?></span>
+                    <span class="traveler-toggle-desc"><?php _e('Pre-fill Passenger 1 in all tours with my contact details', 'wiwa-checkout'); ?></span>
                 </div>
             </div>
             <label class="wiwa-toggle-switch" for="wiwa_same_as_billing">
                 <input type="checkbox"
                        id="wiwa_same_as_billing"
                        name="wiwa_same_as_billing"
-                       value="1"
-                       data-field-map='<?php echo esc_attr(wp_json_encode($effective_map)); ?>'
-                       data-pax1-indices='<?php echo esc_attr(wp_json_encode($pax1_indices)); ?>'>
+                       value="1">
                 <span class="toggle-slider"></span>
             </label>
         </div>
+        <div class="traveler-toggle-feedback" id="traveler-toggle-feedback"></div>
     </div>
     
     <!-- Tours Passengers Section -->
@@ -353,12 +309,17 @@ endforeach; ?>
                     <?php for ($pax = 1; $pax <= $tour['total_pax']; $pax++):
         $guest_index = ($tour_index * 100) + $pax;
 ?>
-                    <div class="passenger-block compact">
+                    <div class="passenger-block compact" data-guest-index="<?php echo $guest_index; ?>">
                         <div class="passenger-header">
                             <span class="passenger-icon">
                                 <svg width="20" height="20" fill="currentColor" viewBox="0 0 16 16"><path d="M11 6a3 3 0 1 1-6 0 3 3 0 0 1 6 0z"/><path d="M2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2zm12 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1v-1c0-1-1-4-6-4s-6 3-6 4v1a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12z"/></svg>
                             </span>
                             <h5><?php printf(__('Passenger %d', 'wiwa-checkout'), $pax); ?></h5>
+                            <button type="button" class="wiwa-copy-billing-btn" data-guest-index="<?php echo $guest_index; ?>" title="<?php esc_attr_e('Copy my contact details to this passenger', 'wiwa-checkout'); ?>">
+                                <svg width="14" height="14" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 17l-4 4m0 0l-4-4m4 4V3"/></svg>
+                                <span class="copy-btn-text"><?php _e('Use my data', 'wiwa-checkout'); ?></span>
+                                <span class="copy-btn-done"><?php _e('Copied!', 'wiwa-checkout'); ?></span>
+                            </button>
                         </div>
                         
                         <div class="form-grid form-grid-2">
