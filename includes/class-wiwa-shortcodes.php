@@ -12,6 +12,7 @@ class Wiwa_Shortcodes {
 
     public static function init() {
         add_shortcode('dynamic_deposit_currency', [__CLASS__, 'render_dynamic_deposit']);
+        add_shortcode('wiwa_google_rating', [__CLASS__, 'render_google_rating']);
     }
 
     /**
@@ -149,6 +150,67 @@ class Wiwa_Shortcodes {
             <?php printf(esc_html__('Book from %s', 'wiwa-checkout'), $formatted_deposit); ?>
             <span class="wiwa-dynamic-deposit-currency"><?php echo esc_html($currency_code); ?></span>
         </span>
+        <?php
+        return ob_get_clean();
+    }
+
+    /**
+     * Renders the dynamic Google Rating shortcode.
+     * [wiwa_google_rating]
+     */
+    public static function render_google_rating() {
+        if (!class_exists('Wiwa_Google_Reviews')) {
+            return '';
+        }
+
+        $rating_data = Wiwa_Google_Reviews::get_rating_data();
+        
+        // Fallback defaults if API fails or is not configured
+        $rating = $rating_data ? $rating_data['rating'] : 5.0;
+        $count = $rating_data ? $rating_data['count'] : 0;
+        
+        // Ensure valid ranges
+        $rating = max(0, min(5, (float)$rating));
+        
+        ob_start();
+        ?>
+        <div class="wiwa-google-reviews-widget">
+            <div class="wiwa-stars-container">
+                <?php
+                for ($i = 1; $i <= 5; $i++) {
+                    $fill = 0;
+                    if ($rating >= $i) {
+                        $fill = 100;
+                    } elseif ($rating > ($i - 1) && $rating < $i) {
+                        $fill = ($rating - ($i - 1)) * 100;
+                    }
+
+                    // Render SVG star with gradient stop for fractional fill
+                    $uuid = uniqid('star_');
+                    ?>
+                    <svg class="wiwa-star" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                        <defs>
+                            <linearGradient id="grad_<?php echo $uuid; ?>" x1="0%" y1="0%" x2="100%" y2="0%">
+                                <stop offset="<?php echo $fill; ?>%" stop-color="#FFB900" />
+                                <stop offset="<?php echo $fill; ?>%" stop-color="#E0E0E0" />
+                            </linearGradient>
+                        </defs>
+                        <path fill="url(#grad_<?php echo $uuid; ?>)" d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+                    </svg>
+                    <?php
+                }
+                ?>
+            </div>
+            <div class="wiwa-reviews-text">
+                <span class="wiwa-rating-score"><?php echo number_format($rating, 1, '.', ''); ?></span>
+                <span class="wiwa-separator">&bull;</span>
+                <span class="wiwa-reviews-link">
+                    <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer">
+                        <u><?php echo number_format_i18n($count); ?> reseñas</u>
+                    </a>
+                </span>
+            </div>
+        </div>
         <?php
         return ob_get_clean();
     }

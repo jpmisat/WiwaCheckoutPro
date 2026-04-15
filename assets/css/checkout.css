@@ -3786,3 +3786,46 @@ body .elementor-menu-cart__container .elementor-button--checkout {
     background: var(--wiwa-brand) !important;
 }
 
+
+/* Google Reviews Widget */
+.wiwa-google-reviews-widget {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    font-size: 15px;
+    color: #202124;
+    margin-bottom: 12px;
+}
+.wiwa-stars-container {
+    display: inline-flex;
+    align-items: center;
+}
+.wiwa-star {
+    margin-right: 2px;
+}
+.wiwa-reviews-text {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+.wiwa-rating-score {
+    font-weight: 400;
+}
+.wiwa-separator {
+    color: #202124;
+    font-size: 16px;
+    line-height: 1;
+}
+.wiwa-reviews-link a {
+    color: #202124;
+    text-decoration: none;
+}
+.wiwa-reviews-link a u {
+    text-decoration: underline;
+    text-decoration-color: #202124;
+    text-underline-offset: 2px;
+}
+.wiwa-reviews-link a:hover u {
+    text-decoration-color: transparent;
+}

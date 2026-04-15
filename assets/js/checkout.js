@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    console.log('%c[Wiwa Checkout] v2.17.5 loaded', 'color: #00d4aa; font-weight: bold;');
+    console.log('%c[Wiwa Checkout] v2.18.0 loaded', 'color: #00d4aa; font-weight: bold;');
 
     // Helper: Select elements safely
     const $ = (selector, parent = document) => parent.querySelector(selector);
