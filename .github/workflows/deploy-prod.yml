@@ -5,25 +5,17 @@ on:
     branches:
       - main
 
+permissions:
+  contents: write
+
 jobs:
-  release-and-deploy:
+  deploy-prod:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v4
 
-      # 1. Create Release with Changelog
-      - name: Create Release
-        id: create_release
-        uses: softprops/action-gh-release@v1
-        with:
-          tag_name: v${{ github.run_number }}
-          name: Release v${{ github.run_number }}
-          generate_release_notes: true
-          draft: false
-          prerelease: false
-
-      # 2. Deploy to Hostinger Prod
+      # 1. Deploy to Hostinger Prod (runs FIRST, independently)
       - name: Deploy to Hostinger Prod
         uses: easingthemes/ssh-deploy@v5.1.0
         env:
@@ -35,3 +27,21 @@ jobs:
           REMOTE_PORT: ${{ secrets.SSH_PORT || 22 }}
           TARGET: "/home/wiwatour-ssh/htdocs/wiwatour.com/wp-content/plugins/wiwa-tour-checkout-pro"
           EXCLUDE: "/.git/, /.github/, /.vscode/, /.gitignore, /README.md, /node_modules/, /tests/, /*.zip, /ova-tour-booking-2026/, /woocommerce-currency-switcher/, /_original_backup/, /Wiwa_Manual_de_marca.pdf, /force-reload.ps1"
+
+      # 2. Create Release (best-effort, won't block deploy)
+      - name: Extract Version
+        id: version
+        run: |
+          VERSION=$(grep "define('WIWA_CHECKOUT_VERSION'" wiwa-tour-checkout-pro.php | grep -oP "'[0-9]+\.[0-9]+\.[0-9]+'" | tr -d "'")
+          echo "version=$VERSION" >> $GITHUB_OUTPUT
+
+      - name: Create Release
+        uses: softprops/action-gh-release@v2
+        if: success()
+        with:
+          tag_name: v${{ steps.version.outputs.version }}
+          name: Release v${{ steps.version.outputs.version }}
+          generate_release_notes: true
+          draft: false
+          prerelease: false
+        continue-on-error: true
