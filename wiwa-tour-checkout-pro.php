@@ -110,7 +110,6 @@ final class Wiwa_Tour_Checkout
             add_shortcode('wiwa_checkout_cart', ['Wiwa_Shortcodes', 'checkout_cart']);
             add_shortcode('wiwa_checkout_thankyou', ['Wiwa_Shortcodes', 'checkout_thankyou']);
             
-            Wiwa_Cart_Handler::init();
             Wiwa_Shortcodes::init();
             Wiwa_SEO_Schema::init();
             
