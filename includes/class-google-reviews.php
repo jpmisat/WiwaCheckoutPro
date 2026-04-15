@@ -9,6 +9,12 @@ class Wiwa_Google_Reviews {
     const TRANSIENT_RATING_DATA = 'wiwa_google_rating_data';
     const CACHE_TIME = DAY_IN_SECONDS; // 24 hours
 
+    public static function init() {
+        // Clear cache if API or Place ID is saved
+        add_action('update_option_wiwa_google_places_api_key', [__CLASS__, 'clear_cache']);
+        add_action('update_option_wiwa_google_place_id', [__CLASS__, 'clear_cache']);
+    }
+
     /**
      * Get the dynamic rating data from Google Places.
      * Caches the result using transients.

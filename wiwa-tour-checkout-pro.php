@@ -112,6 +112,7 @@ final class Wiwa_Tour_Checkout
             
             Wiwa_Shortcodes::init();
             Wiwa_SEO_Schema::init();
+            Wiwa_Google_Reviews::init();
             
             // Register fields with WPML String Translation
             if (class_exists('Wiwa_Fields_Manager')) {
