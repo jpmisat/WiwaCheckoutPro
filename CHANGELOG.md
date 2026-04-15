@@ -1,6 +1,15 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.17.5] - 2026-04-15
+
+### Fixed
+
+- **Document type and number not copying to passenger fields:** Root cause identified — billing document fields use `documento` and `documento_type` as name attributes (Spanish, no `billing_` prefix), but the JS mapping was looking for `billing_document` and `billing_document_type` which don't exist in the DOM. Added multi-pattern `findBillingSource()` fallback that tries: (1) exact name, (2) without `billing_` prefix, (3) Spanish translation equivalents via `FIELD_TRANSLATIONS` map.
+- **Production deploy workflow previously broken:** Fixed in v2.17.4 — the GitHub Actions workflow was failing at the "Create Release" step, causing the deploy to be skipped entirely. Production now deploys correctly.
+
+---
+
 ## [2.17.4] - 2026-04-14
 
 ### Fixed

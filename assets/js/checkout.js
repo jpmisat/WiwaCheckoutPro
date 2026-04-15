@@ -6,7 +6,7 @@
 document.addEventListener('DOMContentLoaded', function () {
     'use strict';
 
-    console.log('%c[Wiwa Checkout] v2.17.4 loaded', 'color: #00d4aa; font-weight: bold;');
+    console.log('%c[Wiwa Checkout] v2.17.5 loaded', 'color: #00d4aa; font-weight: bold;');
 
     // Helper: Select elements safely
     const $ = (selector, parent = document) => parent.querySelector(selector);
@@ -112,14 +112,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     /**
      * Find the billing source element for a given billing field name.
-     * Handles both compound (inside combined-input-group) and standalone fields.
+     * Tries multiple naming conventions since billing fields may be configured
+     * with or without the "billing_" prefix and in different languages.
+     *
+     * Resolution order:
+     *   1. Exact match: "billing_document_type"
+     *   2. Without prefix: "document_type"
+     *   3. Spanish equivalent: "documento_type"
      */
+    var FIELD_TRANSLATIONS = {
+        'document':      'documento',
+        'document_type': 'documento_type'
+    };
+
     function findBillingSource(billingName) {
-        // Direct match by name attribute
+        // 1. Direct match by name attribute
         var el = document.querySelector('[name="' + billingName + '"]');
         if (el) return el;
 
-        // Fallback: try without "billing_" prefix variations
+        // 2. Try without "billing_" prefix
+        if (billingName.startsWith('billing_')) {
+            var stripped = billingName.substring(8); // 'billing_'.length === 8
+            el = document.querySelector('[name="' + stripped + '"]');
+            if (el) return el;
+
+            // 3. Try Spanish translation equivalents
+            if (FIELD_TRANSLATIONS[stripped]) {
+                el = document.querySelector('[name="' + FIELD_TRANSLATIONS[stripped] + '"]');
+                if (el) return el;
+            }
+        }
+
+        console.debug('[WiwaCopy]   findBillingSource: exhausted all patterns for "' + billingName + '"');
         return null;
     }
 
