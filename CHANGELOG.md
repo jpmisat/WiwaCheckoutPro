@@ -1,5 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.0] - 2026-04-15
+
+### Added
+
+- **Google Reviews Integration**: Added real-time Google Reviews fetcher using Places API with 24h transient caching.
+- **Dynamic Rating Shortcode**: New `[wiwa_google_rating]` shortcode that renders exact fractional visual star components without interfering with WordPress caching mechanisms.
+- **SEO Enhancements (JSON-LD)**: Injected `Product`/`TouristTrip` schema dynamically via `wp_head` strictly for Tour pages. Supports price output, dynamic currency integration, active stock status, and aggregated reviews count.
+
+---
 
 ## [2.17.5] - 2026-04-15
 

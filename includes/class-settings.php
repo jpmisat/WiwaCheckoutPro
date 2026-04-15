@@ -46,5 +46,9 @@ class Wiwa_Settings
         register_setting('wiwa_checkout_integrations', 'wiwa_show_currency_selector');
         register_setting('wiwa_checkout_integrations', 'wiwa_currency_selector_style');
         register_setting('wiwa_checkout_integrations', 'wiwa_currency_auto_update');
+
+        // Tab: SEO & Reviews
+        register_setting('wiwa_checkout_integrations', 'wiwa_google_places_api_key');
+        register_setting('wiwa_checkout_integrations', 'wiwa_google_place_id');
     }
 }

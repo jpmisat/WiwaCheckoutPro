@@ -210,6 +210,35 @@ else: ?>
 endif; ?>
     </div>
     
+    <!-- SEO & Reviews Section -->
+    <div class="wiwa-settings-section">
+        <h4><?php _e('SEO & Google Reviews', 'wiwa-checkout'); ?></h4>
+        
+        <div class="wiwa-setting-row">
+            <div class="wiwa-setting-label">
+                <?php _e('Google Places API Key', 'wiwa-checkout'); ?>
+            </div>
+            <div class="wiwa-setting-control">
+                <input type="password" name="wiwa_google_places_api_key" class="wiwa-field-input" style="max-width: 300px;" value="<?php echo esc_attr(get_option('wiwa_google_places_api_key')); ?>" placeholder="AIza...">
+                <p class="description">
+                    <?php _e('Key for Google Places API (New).', 'wiwa-checkout'); ?>
+                </p>
+            </div>
+        </div>
+        
+        <div class="wiwa-setting-row">
+            <div class="wiwa-setting-label">
+                <?php _e('Google Place ID', 'wiwa-checkout'); ?>
+            </div>
+            <div class="wiwa-setting-control">
+                <input type="text" name="wiwa_google_place_id" class="wiwa-field-input" style="max-width: 300px;" value="<?php echo esc_attr(get_option('wiwa_google_place_id')); ?>" placeholder="ChIJ...">
+                <p class="description">
+                    <?php _e('The Place ID of Wiwa Tours location.', 'wiwa-checkout'); ?>
+                </p>
+            </div>
+        </div>
+    </div>
+    
     <p class="submit">
         <button type="submit" class="wiwa-submit-btn">
             <span class="dashicons dashicons-saved"></span>

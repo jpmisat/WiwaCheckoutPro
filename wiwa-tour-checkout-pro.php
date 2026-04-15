@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.17.5
+ * Version: 2.18.0
  * Author: Wiwa Tours (Javier)
  * Author URI: https://wiwatour.com
  * Text Domain: wiwa-checkout
@@ -30,7 +30,7 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Constantes del Plugin
-define('WIWA_CHECKOUT_VERSION', '2.17.5');
+define('WIWA_CHECKOUT_VERSION', '2.18.0');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -78,6 +78,8 @@ final class Wiwa_Tour_Checkout
         require_once WIWA_CHECKOUT_PATH . 'includes/class-fox-integration.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-typeahead-data.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-tour-booking-integration.php';
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-google-reviews.php';
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-seo-schema.php';
 
         // Handlers
         require_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-assets.php'; // Asset Manager
@@ -107,8 +109,10 @@ final class Wiwa_Tour_Checkout
             add_shortcode('wiwa_checkout_form', ['Wiwa_Shortcodes', 'checkout_form']);
             add_shortcode('wiwa_checkout_cart', ['Wiwa_Shortcodes', 'checkout_cart']);
             add_shortcode('wiwa_checkout_thankyou', ['Wiwa_Shortcodes', 'checkout_thankyou']);
-            // Register dynamic_deposit_currency shortcode
+            
+            Wiwa_Cart_Handler::init();
             Wiwa_Shortcodes::init();
+            Wiwa_SEO_Schema::init();
             
             // Register fields with WPML String Translation
             if (class_exists('Wiwa_Fields_Manager')) {
