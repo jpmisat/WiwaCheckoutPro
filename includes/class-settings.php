@@ -12,6 +12,15 @@ class Wiwa_Settings
         add_action('admin_menu', [__CLASS__, 'add_admin_menu']);
         add_action('admin_init', [__CLASS__, 'register_settings']);
         add_action('admin_enqueue_scripts', ['Wiwa_Admin_Page', 'enqueue_assets']);
+
+        // Forcefully clear Google Reviews transient when settings are saved
+        add_action('admin_init', function() {
+            if (isset($_GET['page']) && strpos($_GET['page'], 'wiwa-checkout-settings') !== false && isset($_GET['settings-updated'])) {
+                if (class_exists('Wiwa_Google_Reviews')) {
+                    delete_transient(Wiwa_Google_Reviews::TRANSIENT_RATING_DATA);
+                }
+            }
+        });
     }
 
     public static function add_admin_menu()
