@@ -11,16 +11,16 @@ class Wiwa_SEO_Schema {
 
     public static function render_tour_schema() {
         // Only output on single product pages
-        if (!is_product()) {
+        if (!is_singular('product')) {
             return;
         }
 
-        global $post;
-        if (!$post || $post->post_type !== 'product') {
+        $post_id = get_queried_object_id();
+        if (!$post_id) {
             return;
         }
 
-        $product = wc_get_product($post->ID);
+        $product = wc_get_product($post_id);
         if (!$product || $product->get_type() !== 'ovatb_tour') {
             return;
         }
@@ -36,9 +36,9 @@ class Wiwa_SEO_Schema {
             '@context'    => 'https://schema.org/',
             '@type'       => ['Product', 'TouristTrip'],
             'name'        => $product->get_name(),
-            'description' => wp_strip_all_tags($post->post_excerpt ?: $post->post_content),
+            'description' => wp_strip_all_tags(has_excerpt($post_id) ? get_the_excerpt($post_id) : get_post_field('post_content', $post_id)),
             'image'       => wp_get_attachment_url($product->get_image_id()),
-            'url'         => get_permalink($post->ID),
+            'url'         => get_permalink($post_id),
         ];
 
         // Ensure we always have some description
@@ -47,9 +47,9 @@ class Wiwa_SEO_Schema {
         }
 
         // Offers / Price
-        $price = get_post_meta($post->ID, '_regular_price', true);
+        $price = get_post_meta($post_id, '_regular_price', true);
         if (empty($price)) {
-            $price = get_post_meta($post->ID, 'ovatb_deposit_amount', true); // Fallback to deposit if regular not set
+            $price = get_post_meta($post_id, 'ovatb_deposit_amount', true); // Fallback to deposit if regular not set
         }
 
         if ($price) {
@@ -63,7 +63,7 @@ class Wiwa_SEO_Schema {
                 'priceCurrency' => $currency,
                 'price'         => floatval($price),
                 'availability'  => $product->is_in_stock() ? 'https://schema.org/InStock' : 'https://schema.org/OutOfStock',
-                'url'           => get_permalink($post->ID),
+                'url'           => get_permalink($post_id),
                 'seller'        => [
                     '@type' => 'Organization',
                     'name'  => 'Wiwa Tours'
