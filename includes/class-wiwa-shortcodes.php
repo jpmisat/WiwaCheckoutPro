@@ -174,8 +174,8 @@ class Wiwa_Shortcodes {
         
         ob_start();
         ?>
-        <div class="wiwa-google-reviews-widget">
-            <div class="wiwa-stars-container">
+        <div class="wiwa-google-reviews-widget" style="display: flex !important; align-items: center !important; flex-wrap: nowrap !important; gap: 8px !important; flex-direction: row !important; white-space: nowrap !important;">
+            <div class="wiwa-stars-container" style="display: inline-flex !important; align-items: center !important; flex-wrap: nowrap !important;">
                 <?php
                 for ($i = 1; $i <= 5; $i++) {
                     $fill = 0;
@@ -188,7 +188,7 @@ class Wiwa_Shortcodes {
                     // Render SVG star with gradient stop for fractional fill
                     $uuid = uniqid('star_');
                     ?>
-                    <svg class="wiwa-star" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="wiwa-star" style="display: inline-block !important; vertical-align: middle !important; margin-right: 2px !important;" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="grad_<?php echo $uuid; ?>" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="<?php echo $fill; ?>%" stop-color="#FFB900" />
@@ -201,11 +201,11 @@ class Wiwa_Shortcodes {
                 }
                 ?>
             </div>
-            <div class="wiwa-reviews-text">
-                <span class="wiwa-rating-score"><?php echo number_format($rating, 1, '.', ''); ?></span>
-                <span class="wiwa-separator">&bull;</span>
-                <span class="wiwa-reviews-link">
-                    <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer">
+            <div class="wiwa-reviews-text" style="display: inline-flex !important; align-items: center !important; white-space: nowrap !important; gap: 6px !important; flex-wrap: nowrap !important;">
+                <span class="wiwa-rating-score" style="display: inline-block !important;"><?php echo number_format($rating, 1, '.', ''); ?></span>
+                <span class="wiwa-separator" style="display: inline-block !important;">&bull;</span>
+                <span class="wiwa-reviews-link" style="display: inline-block !important; white-space: nowrap !important;">
+                    <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer" style="white-space: nowrap !important; display: inline-block !important;">
                         <u><?php echo number_format_i18n($count); ?> reseñas</u>
                     </a>
                 </span>
