@@ -26,19 +26,39 @@
             </div>
         </div>
         
-        <!-- Shortcode Section -->
+        <!-- Shortcodes Section -->
         <div class="wiwa-settings-section">
-            <h4><?php _e('Shortcode', 'wiwa-checkout'); ?></h4>
+            <h4><?php _e('Shortcodes Disponibles', 'wiwa-checkout'); ?></h4>
             
-            <div class="wiwa-shortcode-card">
-                <code id="wiwa-shortcode">[wiwa_checkout]</code>
-                <button type="button" class="wiwa-copy-btn" id="copy-shortcode" title="<?php esc_attr_e('Copy', 'wiwa-checkout'); ?>">
-                    <span class="dashicons dashicons-clipboard"></span>
-                </button>
+            <div class="wiwa-shortcodes-grid" style="display: grid; gap: 20px;">
+                
+                <!-- Main Checkout -->
+                <div>
+                    <div class="wiwa-shortcode-card" style="margin-bottom: 8px;">
+                        <code id="wiwa-shortcode">[wiwa_checkout]</code>
+                        <button type="button" class="wiwa-copy-btn copy-generic" data-target="[wiwa_checkout]" title="<?php esc_attr_e('Copy', 'wiwa-checkout'); ?>">
+                            <span class="dashicons dashicons-clipboard"></span>
+                        </button>
+                    </div>
+                    <p class="description" style="margin-top: 0;">
+                        <?php _e('Usa este shortcode para insertar todo el sistema de pago y carrito en cualquier página.', 'wiwa-checkout'); ?>
+                    </p>
+                </div>
+
+                <!-- Google Reviews -->
+                <div>
+                    <div class="wiwa-shortcode-card" style="margin-bottom: 8px;">
+                        <code id="wiwa-shortcode-rating">[wiwa_google_rating]</code>
+                        <button type="button" class="wiwa-copy-btn copy-generic" data-target="[wiwa_google_rating]" title="<?php esc_attr_e('Copy', 'wiwa-checkout'); ?>">
+                            <span class="dashicons dashicons-clipboard"></span>
+                        </button>
+                    </div>
+                    <p class="description" style="margin-top: 0;">
+                        <?php _e('Imprime dinámicamente las estrellas (ej. 4.7) y el conteo total de Google reseñas de tu ficha. (Requiere configurar API en la pestaña Integraciones).', 'wiwa-checkout'); ?>
+                    </p>
+                </div>
+
             </div>
-            <p class="description" style="margin-top: 12px;">
-                <?php _e('Use this shortcode to show the checkout on any page.', 'wiwa-checkout'); ?>
-            </p>
         </div>
         
         <!-- Página de Checkout Section -->
@@ -78,10 +98,12 @@ wp_dropdown_pages([
 
 <script>
 jQuery(document).ready(function($) {
-    // Copy shortcode
-    $('#copy-shortcode').on('click', function() {
-        navigator.clipboard.writeText('[wiwa_checkout]').then(function() {
-            var $btn = $('#copy-shortcode');
+    // Copy shortcodes
+    $('.copy-generic').on('click', function() {
+        var $btn = $(this);
+        var textToCopy = $btn.data('target');
+        
+        navigator.clipboard.writeText(textToCopy).then(function() {
             $btn.find('.dashicons').removeClass('dashicons-clipboard').addClass('dashicons-yes');
             setTimeout(function() {
                 $btn.find('.dashicons').removeClass('dashicons-yes').addClass('dashicons-clipboard');
