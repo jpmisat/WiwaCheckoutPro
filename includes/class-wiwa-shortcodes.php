@@ -173,9 +173,27 @@ class Wiwa_Shortcodes {
         $rating = max(0, min(5, (float)$rating));
         
         ob_start();
+        
+        // Detect current language for anchor and text
+        $lang = substr(get_locale(), 0, 2);
+        switch ($lang) {
+            case 'en':
+                $anchor = '#reviews';
+                $reviews_text = 'reviews';
+                break;
+            case 'fr':
+                $anchor = '#avis';
+                $reviews_text = 'avis';
+                break;
+            case 'es':
+            default:
+                $anchor = '#opiniones';
+                $reviews_text = 'reseñas';
+                break;
+        }
         ?>
         <div class="wiwa-google-reviews-widget" style="display: flex !important; align-items: center !important; flex-wrap: nowrap !important; gap: 8px !important; flex-direction: row !important; white-space: nowrap !important; width: max-content !important; min-width: fit-content !important;">
-            <div class="wiwa-stars-container" style="display: inline-flex !important; align-items: center !important; flex-wrap: nowrap !important; flex-shrink: 0 !important;">
+            <a href="<?php echo esc_attr($anchor); ?>" class="wiwa-stars-container" style="display: inline-flex !important; align-items: center !important; flex-wrap: nowrap !important; flex-shrink: 0 !important; cursor: pointer !important; text-decoration: none !important;">
                 <?php
                 for ($i = 1; $i <= 5; $i++) {
                     $fill = 0;
@@ -200,13 +218,13 @@ class Wiwa_Shortcodes {
                     <?php
                 }
                 ?>
-            </div>
+            </a>
             <div class="wiwa-reviews-text" style="display: inline-flex !important; align-items: center !important; white-space: nowrap !important; gap: 4px !important; flex-wrap: nowrap !important; flex-shrink: 0 !important; color: #4b5563 !important;">
                 <span class="wiwa-rating-score" style="display: inline-block !important; font-weight: 600 !important;"><?php echo number_format($rating, 1, '.', ''); ?></span>
                 <span class="wiwa-separator" style="display: inline-block !important;">&bull;</span>
                 <span class="wiwa-reviews-link" style="display: inline-block !important; white-space: nowrap !important;">
                     <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer" style="white-space: nowrap !important; display: inline-block !important; text-decoration: none !important; color: inherit !important;">
-                        <u style="text-decoration: underline !important; text-underline-offset: 2px !important;"><?php echo number_format_i18n($count); ?> reseñas</u>
+                        <u style="text-decoration: underline !important; text-underline-offset: 2px !important;"><?php echo number_format_i18n($count); ?> <?php echo esc_html($reviews_text); ?></u>
                     </a>
                 </span>
             </div>
