@@ -1,7 +1,14 @@
 # Changelog
 All notable changes to this project will be documented in this file.
-## [2.18.0] - 2026-04-15
+## [2.18.1] - 2026-04-17
 
+### Changed
+
+- **Reviews Layout Override**: Enforced aggressive inline flex layouts (`width: max-content`, `min-width: fit-content`, `flex-shrink: 0`) within the `[wiwa_google_rating]` shortcode HTML structure to permanently prevent theme or Elementor wrappers from force-wrapping the content onto multiple lines.
+
+---
+
+## [2.18.0] - 2026-04-15
 ### Added
 
 - **Google Reviews Integration**: Added real-time Google Reviews fetcher using Places API with 24h transient caching.
