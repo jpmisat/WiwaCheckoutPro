@@ -165,17 +165,17 @@ class Wiwa_Shortcodes {
 
         $rating_data = Wiwa_Google_Reviews::get_rating_data();
         
-        // Fallback defaults if API fails or is not configured
-        $rating = $rating_data ? $rating_data['rating'] : 5.0;
-        $count = $rating_data ? $rating_data['count'] : 0;
+        // Fallback defaults if API fails or is not configured (Current valid data for Wiwa Tour)
+        $rating = !empty($rating_data['rating']) ? $rating_data['rating'] : 4.8;
+        $count = !empty($rating_data['count']) ? $rating_data['count'] : 1854;
         
         // Ensure valid ranges
         $rating = max(0, min(5, (float)$rating));
         
         ob_start();
         ?>
-        <div class="wiwa-google-reviews-widget" style="display: flex !important; align-items: center !important; flex-wrap: nowrap !important; gap: 8px !important; flex-direction: row !important; white-space: nowrap !important;">
-            <div class="wiwa-stars-container" style="display: inline-flex !important; align-items: center !important; flex-wrap: nowrap !important;">
+        <div class="wiwa-google-reviews-widget" style="display: flex !important; align-items: center !important; flex-wrap: nowrap !important; gap: 8px !important; flex-direction: row !important; white-space: nowrap !important; width: max-content !important; min-width: fit-content !important;">
+            <div class="wiwa-stars-container" style="display: inline-flex !important; align-items: center !important; flex-wrap: nowrap !important; flex-shrink: 0 !important;">
                 <?php
                 for ($i = 1; $i <= 5; $i++) {
                     $fill = 0;
@@ -188,7 +188,7 @@ class Wiwa_Shortcodes {
                     // Render SVG star with gradient stop for fractional fill
                     $uuid = uniqid('star_');
                     ?>
-                    <svg class="wiwa-star" style="display: inline-block !important; vertical-align: middle !important; margin-right: 2px !important;" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
+                    <svg class="wiwa-star" style="display: inline-block !important; vertical-align: middle !important; margin-right: 2px !important; flex-shrink: 0 !important;" viewBox="0 0 24 24" width="20" height="20" xmlns="http://www.w3.org/2000/svg">
                         <defs>
                             <linearGradient id="grad_<?php echo $uuid; ?>" x1="0%" y1="0%" x2="100%" y2="0%">
                                 <stop offset="<?php echo $fill; ?>%" stop-color="#FFB900" />
@@ -201,12 +201,12 @@ class Wiwa_Shortcodes {
                 }
                 ?>
             </div>
-            <div class="wiwa-reviews-text" style="display: inline-flex !important; align-items: center !important; white-space: nowrap !important; gap: 6px !important; flex-wrap: nowrap !important;">
-                <span class="wiwa-rating-score" style="display: inline-block !important;"><?php echo number_format($rating, 1, '.', ''); ?></span>
+            <div class="wiwa-reviews-text" style="display: inline-flex !important; align-items: center !important; white-space: nowrap !important; gap: 4px !important; flex-wrap: nowrap !important; flex-shrink: 0 !important; color: #4b5563 !important;">
+                <span class="wiwa-rating-score" style="display: inline-block !important; font-weight: 600 !important;"><?php echo number_format($rating, 1, '.', ''); ?></span>
                 <span class="wiwa-separator" style="display: inline-block !important;">&bull;</span>
                 <span class="wiwa-reviews-link" style="display: inline-block !important; white-space: nowrap !important;">
-                    <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer" style="white-space: nowrap !important; display: inline-block !important;">
-                        <u><?php echo number_format_i18n($count); ?> reseñas</u>
+                    <a href="https://maps.app.goo.gl/sAR8Qj8RStF8uPQeA" target="_blank" rel="noopener noreferrer" style="white-space: nowrap !important; display: inline-block !important; text-decoration: none !important; color: inherit !important;">
+                        <u style="text-decoration: underline !important; text-underline-offset: 2px !important;"><?php echo number_format_i18n($count); ?> reseñas</u>
                     </a>
                 </span>
             </div>
