@@ -1,5 +1,24 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.5] - 2026-04-21
+
+### Added
+
+- **Currency Link Propagator** (`assets/js/currency-links.js`): New client-side script that automatically appends `?currency=XXX` to ALL internal links when a non-default currency is active. Fixes the issue where FOX Currency Switcher redraws prices via AJAX on the homepage but does NOT update the `href` attributes on tour cards, sliders, and navigation links.
+
+### How it works
+
+1. **On page load**: Detects active currency from URL params, FOX global, or cookie. If non-default, updates all `<a>` links with `?currency=XXX`.
+2. **On currency change**: Listens to FOX `woocs_currency_changed` event and re-processes all links.
+3. **Dynamic content**: Uses `MutationObserver` to catch links added by sliders, lazy-loaded grids, and AJAX pagination.
+4. **Click safety net**: Intercepts clicks on internal links in capture phase to ensure the currency param is always present.
+
+### Fixed
+
+- **Currency lost when navigating from homepage**: Selecting EUR on the homepage correctly showed EUR prices on cards, but clicking a tour card navigated to `/tours/tour-x/` (without `?currency=EUR`), causing Varnish to serve the cached COP version.
+
+---
+
 ## [2.18.4] - 2026-04-21
 
 ### Changed
