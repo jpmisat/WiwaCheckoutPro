@@ -1,0 +1,117 @@
+name: Fix Varnish Cache for Currency Switcher
+
+on:
+  workflow_dispatch:  # Manual trigger only
+
+jobs:
+  fix-varnish:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Fix Varnish Cache Configuration
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.HOSTINGER_HOST }}
+          username: ${{ secrets.SSH_USER_PROD }}
+          key: ${{ secrets.SSH_KEY_PROD }}
+          port: ${{ secrets.SSH_PORT || 22 }}
+          script: |
+            echo "=== Starting Varnish Cache Fix for FOX Currency Switcher ==="
+            
+            # --------------------------------------------------------
+            # 1. Patch the CloudPanel Varnish PHP Controller
+            # --------------------------------------------------------
+            CONTROLLER="/home/wiwatour-ssh/.varnish-cache/controller.php"
+            
+            if [ -f "$CONTROLLER" ]; then
+              echo "✅ Found controller.php at $CONTROLLER"
+              
+              # Check if already patched
+              if grep -q "woocs_current_currency" "$CONTROLLER"; then
+                echo "⚠️ Controller already patched, skipping..."
+              else
+                echo "📝 Patching controller.php..."
+                # Backup the original
+                cp "$CONTROLLER" "${CONTROLLER}.backup.$(date +%Y%m%d_%H%M%S)"
+                
+                # Create the prepend code
+                cat > /tmp/varnish_currency_fix.php << 'PHPCODE'
+            // =============================================
+            // FOX Currency Switcher — Varnish Cache Bypass
+            // Added by Wiwa Tour Checkout Pro v2.18.3
+            // If user has non-default currency, disable Varnish cache
+            // =============================================
+            if (isset($_COOKIE['woocs_current_currency']) && $_COOKIE['woocs_current_currency'] !== 'COP') {
+                header('X-Cache-Lifetime: 0');
+                header('Cache-Control: private, no-cache, no-store, must-revalidate');
+                header('Pragma: no-cache');
+            }
+            // Ensure admin-ajax.php is NEVER cached
+            if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'admin-ajax.php') !== false) {
+                header('X-Cache-Lifetime: 0');
+                header('Cache-Control: private, no-cache, no-store, must-revalidate');
+            }
+            // Ensure wc-ajax requests bypass cache (WooCommerce cart fragments etc.)
+            if (isset($_SERVER['REQUEST_URI']) && strpos($_SERVER['REQUEST_URI'], 'wc-ajax=') !== false) {
+                header('X-Cache-Lifetime: 0');
+                header('Cache-Control: private, no-cache, no-store, must-revalidate');
+            }
+            PHPCODE
+                
+                # Inject after the opening <?php tag
+                # Read the controller, and inject our code right after <?php
+                python3 -c "
+            import sys
+            with open('$CONTROLLER', 'r') as f:
+                content = f.read()
+            
+            patch = open('/tmp/varnish_currency_fix.php', 'r').read()
+            
+            # Insert after first <?php
+            if '<?php' in content:
+                content = content.replace('<?php', '<?php\n' + patch, 1)
+            else:
+                content = '<?php\n' + patch + '\n?>\n' + content
+            
+            with open('$CONTROLLER', 'w') as f:
+                f.write(content)
+            print('✅ Controller patched successfully')
+            "
+              fi
+            else
+              echo "⚠️ Controller not found at $CONTROLLER"
+              echo "Trying alternative paths..."
+              
+              # Try to find the controller
+              find /home/ -name "controller.php" -path "*varnish*" 2>/dev/null | head -5
+            fi
+            
+            # --------------------------------------------------------
+            # 2. Also patch dev site if present
+            # --------------------------------------------------------
+            DEV_CONTROLLER="/home/wiwatour-ssh/.varnish-cache/controller.php"
+            # Dev site may use same user, already handled above
+            
+            # --------------------------------------------------------
+            # 3. Try to purge Varnish cache
+            # --------------------------------------------------------
+            echo ""
+            echo "🔄 Purging Varnish cache..."
+            if command -v clpctl &> /dev/null; then
+              clpctl varnish:cache:purge --siteName=wiwatour.com 2>/dev/null && echo "✅ Purged wiwatour.com" || echo "⚠️ clpctl purge failed"
+              clpctl varnish:cache:purge --siteName=dev.wiwatour.com 2>/dev/null && echo "✅ Purged dev.wiwatour.com" || echo "⚠️ dev purge failed (may not exist)"
+            elif command -v varnishadm &> /dev/null; then
+              sudo varnishadm "ban req.http.host ~ wiwatour" 2>/dev/null && echo "✅ Banned via varnishadm" || echo "⚠️ varnishadm ban failed"
+            else
+              echo "⚠️ Neither clpctl nor varnishadm found. Manual cache purge needed."
+            fi
+            
+            # --------------------------------------------------------
+            # 4. Verify the fix
+            # --------------------------------------------------------
+            echo ""
+            echo "🔍 Verifying fix..."
+            echo "Controller contents (first 30 lines):"
+            head -30 "$CONTROLLER" 2>/dev/null
+            
+            echo ""
+            echo "=== Varnish Cache Fix Complete ==="
