@@ -1,5 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.4] - 2026-04-21
+
+### Changed
+
+- **Agressive Varnish cache bypass for all price pages**: Rewrote `Wiwa_Cache_Compat` class to send `X-Cache-Lifetime: 0` on ALL pages that display prices or currency-dependent content (WooCommerce products, tours, cart, checkout, my-account, shortcodes).
+- **New detection coverage**: Now detects and bypasses cache for `ovatb_tour` single pages, `[dynamic_deposit_currency]` shortcode pages, `[wiwa_checkout_cart]` and `[wiwa_checkout_form]` shortcode pages.
+- **wc-ajax protection**: Added explicit cache bypass for WooCommerce AJAX requests (`?wc-ajax=`) which run through `/?wc-ajax=action` instead of `admin-ajax.php`.
+
+### Fixed
+
+- **Intermittent currency switching failures**: Navigation between pages could lose currency selection because cached HTML links didn't include `?currency=` parameter. Now all WooCommerce pages bypass Varnish entirely, ensuring FOX Currency Switcher always works regardless of URL parameters.
+
+---
+
 ## [2.18.3] - 2026-04-21
 
 ### Added
