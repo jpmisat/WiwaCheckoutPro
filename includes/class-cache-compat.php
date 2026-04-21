@@ -8,14 +8,26 @@ if (!defined('ABSPATH')) {
  * Class Wiwa_Cache_Compat
  *
  * Ensures compatibility between FOX Currency Switcher (WOOCS) and
- * CloudPanel's Varnish Cache. By default Varnish caches all pages for 24h
- * and strips cookies, so currency changes are never reflected.
+ * CloudPanel's Varnish Cache.
  *
- * This class:
- * 1. Detects when the user has a non-default currency selected
- * 2. Sends X-Cache-Lifetime: 0 header so Varnish bypasses its cache
- * 3. Adds proper Cache-Control headers for CDNs/proxies
- * 4. Ensures admin-ajax.php is never cached (breaks WooCommerce + FOX AJAX)
+ * Strategy:
+ * ------------------------------------------------------------------
+ * FOX in QUERY STRING mode (?currency=USD) is the recommended setup.
+ * Varnish treats each unique URL as a separate cache entry, so:
+ *
+ *   /tour-x/              → cached (COP)    ← 95% of traffic
+ *   /tour-x/?currency=USD → cached (USD)    ← separate cache entry
+ *   /tour-x/?currency=EUR → cached (EUR)    ← separate cache entry
+ *
+ * Varnish stays FULLY ENABLED for ALL visitors. Each currency gets
+ * its own fast cached response. No performance penalty.
+ * ------------------------------------------------------------------
+ *
+ * This class only bypasses cache when:
+ * 1. A cookie indicates non-default currency WITHOUT query string
+ *    (legacy fallback — only while FOX transitions to query mode)
+ * 2. admin-ajax.php requests (must always be dynamic)
+ * 3. WooCommerce wc-ajax requests (cart fragments, etc.)
  *
  * @since 2.18.3
  */
@@ -23,35 +35,48 @@ class Wiwa_Cache_Compat
 {
     /**
      * Initialize cache compatibility hooks.
-     * Must run very early before any output is sent.
      */
     public static function init()
     {
-        // Run before any output — priority 1 on 'send_headers'
-        add_action('send_headers', [__CLASS__, 'maybe_bypass_cache_for_currency'], 1);
+        // Send headers before output — priority 1
+        add_action('send_headers', [__CLASS__, 'handle_cache_headers'], 1);
 
         // Ensure AJAX requests are never cached
         add_action('admin_init', [__CLASS__, 'protect_ajax_from_cache']);
 
-        // Also hook into 'init' as a fallback for pages where send_headers fires too late
+        // Early check on 'init' for cookie-only detection (before WOOCS loads)
         add_action('init', [__CLASS__, 'early_currency_cache_check'], 1);
     }
 
+    // -----------------------------------------------------------------
+    // Detection methods
+    // -----------------------------------------------------------------
+
     /**
-     * Check if the current user has a non-default currency selected.
+     * Check if a currency query string is present.
+     * When ?currency=XXX is in the URL, Varnish will cache this as a
+     * SEPARATE entry — so we DO NOT need to bypass cache.
      *
-     * @return bool True if currency is non-default and cache should be bypassed.
+     * @return bool True if ?currency= param is present (any value)
      */
-    private static function is_non_default_currency()
+    private static function has_currency_query_string()
+    {
+        return isset($_GET['currency']) && !empty($_GET['currency']);
+    }
+
+    /**
+     * Check WOOCS global for non-default currency.
+     *
+     * @return bool
+     */
+    private static function is_non_default_currency_from_woocs()
     {
         global $WOOCS;
 
-        // FOX not active — nothing to do
         if (!isset($WOOCS) || !is_object($WOOCS)) {
             return false;
         }
 
-        // Compare current currency with the default
         $current = $WOOCS->current_currency ?? '';
         $default = $WOOCS->default_currency ?? '';
 
@@ -63,14 +88,14 @@ class Wiwa_Cache_Compat
     }
 
     /**
-     * Also check the raw cookie before WOOCS initializes.
-     * This catches cases where WOOCS hasn't set $current_currency yet.
+     * Check raw cookie for non-default currency (before WOOCS loads).
      *
      * @return bool
      */
     private static function is_non_default_currency_from_cookie()
     {
-        // FOX stores the selected currency in this cookie
+        $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
+
         $cookie_names = [
             'woocs_current_currency',
             'woocommerce_currency',
@@ -78,9 +103,6 @@ class Wiwa_Cache_Compat
 
         foreach ($cookie_names as $name) {
             if (isset($_COOKIE[$name]) && !empty($_COOKIE[$name])) {
-                // We need to know the default currency to compare
-                // COP is the known default for wiwatour.com
-                $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
                 if ($_COOKIE[$name] !== $default) {
                     return true;
                 }
@@ -90,100 +112,95 @@ class Wiwa_Cache_Compat
         return false;
     }
 
+    // -----------------------------------------------------------------
+    // Cache control hooks
+    // -----------------------------------------------------------------
+
     /**
-     * Check if a non-default currency is requested via query string.
-     * FOX can use ?currency=USD mode which is Varnish-friendly since
-     * each query string creates a separate cache entry.
+     * Early check on 'init'.
      *
-     * @return bool
-     */
-    private static function is_non_default_currency_from_query()
-    {
-        $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
-
-        // FOX uses 'currency' as the query string parameter
-        if (isset($_GET['currency']) && !empty($_GET['currency'])) {
-            return ($_GET['currency'] !== $default);
-        }
-
-        return false;
-    }
-
-    /**
-     * Early check on 'init' — runs before WOOCS might fully initialize.
-     * Uses cookie-based and query-string-based detection as fallbacks.
+     * If query string is present → let Varnish cache normally (each URL is unique).
+     * If only cookie is present → bypass cache (Varnish can't distinguish by cookie).
      */
     public static function early_currency_cache_check()
     {
-        // Skip admin, AJAX, and REST API (they have their own cache rules)
         if (is_admin() || wp_doing_ajax() || (defined('REST_REQUEST') && REST_REQUEST)) {
             return;
         }
 
-        if (
-            self::is_non_default_currency_from_query() ||
-            self::is_non_default_currency_from_cookie()
-        ) {
+        // Query string mode: Varnish handles this automatically via unique URLs.
+        // DO NOT send no-cache headers — let Varnish cache each variant.
+        if (self::has_currency_query_string()) {
+            return;
+        }
+
+        // Cookie-only mode (legacy): Varnish ignores cookies, so bypass cache.
+        if (self::is_non_default_currency_from_cookie()) {
             self::send_no_cache_headers();
         }
     }
 
     /**
-     * On 'send_headers', check WOOCS state and bypass cache if needed.
+     * On 'send_headers': same logic as early check, plus WOOCS state.
      */
-    public static function maybe_bypass_cache_for_currency()
+    public static function handle_cache_headers()
     {
-        // Skip admin pages
         if (is_admin()) {
             return;
         }
 
-        if (
-            self::is_non_default_currency() ||
-            self::is_non_default_currency_from_query() ||
-            self::is_non_default_currency_from_cookie()
-        ) {
+        // Query string mode → Varnish caches each URL variant separately.
+        // No need to bypass cache.
+        if (self::has_currency_query_string()) {
+            return;
+        }
+
+        // Cookie-only fallback: bypass cache for non-default currencies
+        if (self::is_non_default_currency_from_woocs() || self::is_non_default_currency_from_cookie()) {
             self::send_no_cache_headers();
         }
     }
 
+    // -----------------------------------------------------------------
+    // Header management
+    // -----------------------------------------------------------------
+
     /**
-     * Send headers that tell Varnish (CloudPanel) and CDNs to NOT cache this response.
+     * Send headers that tell Varnish (CloudPanel) to NOT cache this response.
+     * Only called when the request has a non-default currency via cookie
+     * (not via query string — query string caching is handled by Varnish).
      */
     private static function send_no_cache_headers()
     {
-        // Prevent duplicate header sending
         static $sent = false;
         if ($sent) {
             return;
         }
         $sent = true;
 
-        // Don't send headers if they've already been sent (too late)
         if (headers_sent()) {
             return;
         }
 
-        // CloudPanel's Varnish respects this header — setting to 0 bypasses cache
+        // CloudPanel's Varnish respects this header — 0 bypasses cache
         header('X-Cache-Lifetime: 0', true);
 
-        // Standard cache-control headers for browsers and CDN proxies
+        // Standard no-cache headers for browsers and CDN proxies
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0, private', true);
         header('Pragma: no-cache', true);
         header('Expires: Wed, 11 Jan 1984 05:00:00 GMT', true);
 
         // Tell proxies that response varies by cookie
-        header('Vary: Cookie', false); // false = append, don't replace
+        header('Vary: Cookie', false);
     }
 
     /**
-     * Ensure admin-ajax.php requests are never cached.
-     * Varnish was caching GET requests to admin-ajax.php with max-age=86400.
+     * Ensure admin-ajax.php and wc-ajax requests are never cached.
+     * These MUST be dynamic for WooCommerce cart fragments and FOX AJAX redraw.
      */
     public static function protect_ajax_from_cache()
     {
         if (wp_doing_ajax()) {
-            // These headers prevent Varnish from caching AJAX responses
             header('X-Cache-Lifetime: 0', true);
             header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0, private', true);
             header('Pragma: no-cache', true);
