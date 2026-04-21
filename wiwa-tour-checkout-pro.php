@@ -3,7 +3,7 @@
  * Plugin Name: Wiwa Tour Checkout Pro
  * Plugin URI: http://connexis.co/
  * Description: Sistema enterprise de checkout personalizado para tours con backend visual, integraciones avanzadas (GeoIP, WOOCS) y soporte multi-idioma.
- * Version: 2.18.2
+ * Version: 2.18.3
  * Author: Wiwa Tours (Javier)
  * Author URI: https://wiwatour.com
  * Text Domain: wiwa-checkout
@@ -30,7 +30,8 @@ add_action('before_woocommerce_init', function () {
 });
 
 // Constantes del Plugin
-define('WIWA_CHECKOUT_VERSION', '2.18.2');
+define('WIWA_CHECKOUT_VERSION', '2.18.3');
+define('WIWA_DEFAULT_CURRENCY', 'COP');
 define('WIWA_CHECKOUT_FILE', __FILE__);
 define('WIWA_CHECKOUT_PATH', plugin_dir_path(__FILE__));
 define('WIWA_CHECKOUT_URL', plugin_dir_url(__FILE__));
@@ -80,6 +81,7 @@ final class Wiwa_Tour_Checkout
         require_once WIWA_CHECKOUT_PATH . 'includes/class-tour-booking-integration.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-google-reviews.php';
         require_once WIWA_CHECKOUT_PATH . 'includes/class-seo-schema.php';
+        require_once WIWA_CHECKOUT_PATH . 'includes/class-cache-compat.php';
 
         // Handlers
         require_once WIWA_CHECKOUT_PATH . 'includes/class-wiwa-assets.php'; // Asset Manager
@@ -100,6 +102,9 @@ final class Wiwa_Tour_Checkout
     {
         // Load Textdomain
         add_action('plugins_loaded', ['Wiwa_I18n', 'load_plugin_textdomain']);
+
+        // Cache compatibility — must run very early (before any output)
+        Wiwa_Cache_Compat::init();
 
         // Register Shortcodes
         add_action('init', function () {

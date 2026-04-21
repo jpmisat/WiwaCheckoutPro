@@ -1,5 +1,19 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.3] - 2026-04-21
+
+### Added
+
+- **New `Wiwa_Cache_Compat` class** (`includes/class-cache-compat.php`): Ensures compatibility between FOX Currency Switcher (WOOCS) and CloudPanel's Varnish Cache.
+
+### Fixed
+
+- **Currency switching not working**: Varnish Cache was serving the same cached HTML (in COP) to all users regardless of their selected currency. The new cache compat class sends `X-Cache-Lifetime: 0` header when a non-default currency is detected, forcing Varnish to bypass cache.
+- **admin-ajax.php being cached**: GET requests to `wp-admin/admin-ajax.php` were being cached by Varnish with `max-age=86400` (24h), breaking FOX AJAX currency redraw and other WooCommerce functionality. Now sends explicit no-cache headers on all AJAX requests.
+- **Defined `WIWA_DEFAULT_CURRENCY` constant** (`COP`) for reliable cookie-based currency detection before WOOCS fully initializes.
+
+---
+
 ## [2.18.2] - 2026-04-17
 
 ### Fixed
