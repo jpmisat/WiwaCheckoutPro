@@ -91,8 +91,27 @@ class Wiwa_Cache_Compat
     }
 
     /**
+     * Check if a non-default currency is requested via query string.
+     * FOX can use ?currency=USD mode which is Varnish-friendly since
+     * each query string creates a separate cache entry.
+     *
+     * @return bool
+     */
+    private static function is_non_default_currency_from_query()
+    {
+        $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
+
+        // FOX uses 'currency' as the query string parameter
+        if (isset($_GET['currency']) && !empty($_GET['currency'])) {
+            return ($_GET['currency'] !== $default);
+        }
+
+        return false;
+    }
+
+    /**
      * Early check on 'init' — runs before WOOCS might fully initialize.
-     * Uses cookie-based detection as a fallback.
+     * Uses cookie-based and query-string-based detection as fallbacks.
      */
     public static function early_currency_cache_check()
     {
@@ -101,7 +120,10 @@ class Wiwa_Cache_Compat
             return;
         }
 
-        if (self::is_non_default_currency_from_cookie()) {
+        if (
+            self::is_non_default_currency_from_query() ||
+            self::is_non_default_currency_from_cookie()
+        ) {
             self::send_no_cache_headers();
         }
     }
@@ -116,7 +138,11 @@ class Wiwa_Cache_Compat
             return;
         }
 
-        if (self::is_non_default_currency() || self::is_non_default_currency_from_cookie()) {
+        if (
+            self::is_non_default_currency() ||
+            self::is_non_default_currency_from_query() ||
+            self::is_non_default_currency_from_cookie()
+        ) {
             self::send_no_cache_headers();
         }
     }
