@@ -41,6 +41,12 @@ class Wiwa_Assets
                     'moreActivities' => __('Más actividades que te pueden gustar', 'wiwa-checkout'),
                 ]
             ]);
+
+            // Currency Link Propagator — appends ?currency=XXX to all internal links
+            wp_enqueue_script('wiwa-currency-links', WIWA_CHECKOUT_URL . 'assets/js/currency-links.js', ['jquery'], WIWA_CHECKOUT_VERSION, true);
+            wp_localize_script('wiwa-currency-links', 'wiwaCurrencyLinks', [
+                'defaultCurrency' => defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP',
+            ]);
         }
 
         // --- CART PAGE SPECIFIC ASSETS ---
