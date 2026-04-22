@@ -1,5 +1,32 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.7] - 2026-04-21
+
+### Changed
+
+- **Per-Currency Varnish Caching** (`class-cache-compat.php`): Upgraded from "bypass on `?currency=`" to full per-currency caching. Varnish now caches a separate entry for each currency variant, so ALL visitors get cached pages regardless of their selected currency.
+
+### How it works
+
+- `/tour-x/` → cached as COP version (default)
+- `/tour-x/?currency=EUR` → cached as EUR version (separate entry)
+- `/tour-x/?currency=USD` → cached as USD version (separate entry)
+- Cart/Checkout/My Account → always bypass (user-specific data)
+
+### Added
+
+- **Cookie-to-URL redirect**: If a user has a non-default currency cookie but arrives WITHOUT `?currency=` in the URL (e.g., typed URL, external link, bookmark), PHP issues a 302 redirect to append `?currency=XXX`. This ensures Varnish always serves the correct cached version.
+
+### Requires (CloudPanel)
+
+- Remove `currency` from Varnish "Excluded Parameters" so Varnish includes it in the cache hash.
+
+### Rollback
+
+- `git checkout v2.18.6-safe-rollback` + re-add `currency` to CloudPanel Excluded Parameters.
+
+---
+
 ## [2.18.6] - 2026-04-21
 
 ### Changed
