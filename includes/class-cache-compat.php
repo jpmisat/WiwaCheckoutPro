@@ -7,26 +7,45 @@ if (!defined('ABSPATH')) {
 /**
  * Class Wiwa_Cache_Compat
  *
- * Disables Varnish Cache on all pages that display dynamic prices
- * or currency-related content. This ensures FOX Currency Switcher
- * always works correctly regardless of Varnish configuration.
+ * Per-currency Varnish cache strategy for FOX Currency Switcher.
  *
- * Strategy: AGGRESSIVE NO-CACHE for all WooCommerce/price pages.
+ * Strategy: PER-CURRENCY CACHING — Varnish caches a separate entry
+ * for each currency variant, so ALL visitors get fast cached pages.
  * ------------------------------------------------------------------
- * Pages with cache DISABLED (dynamic):
- *   - All WooCommerce product pages (tours, shop, etc.)
- *   - Cart, Checkout, My Account
- *   - Any page with [dynamic_deposit_currency] shortcode
- *   - Any page with ?currency= query string
+ *
+ * PREREQUISITES (CloudPanel Varnish Settings):
+ *   - "currency" must be REMOVED from "Excluded Parameters"
+ *     so Varnish includes ?currency=XXX in the cache hash.
+ *   - This means /tour-x/ and /tour-x/?currency=EUR are cached
+ *     as two separate entries.
+ *
+ * Works together with currency-links.js (v2.18.5+) which injects
+ * ?currency=XXX into all internal links when a non-default currency
+ * is active.
+ *
+ * Pages with cache DISABLED (always dynamic / user-specific):
+ *   - Cart, Checkout, My Account (user-specific data)
  *   - admin-ajax.php and wc-ajax requests
  *
- * Pages with cache ENABLED (static):
- *   - Blog posts, static pages without prices
- *   - Homepage (if no WooCommerce products)
- *   - Contact, About, etc.
+ * Pages with PER-CURRENCY CACHE:
+ *   - Homepage, all tour/product pages, shop, categories
+ *   - /tour-x/              → cached as COP version
+ *   - /tour-x/?currency=EUR → cached as EUR version
+ *   - /tour-x/?currency=USD → cached as USD version
+ *   - Blog, contact, about → cached (single version, no prices)
+ *
+ * Edge case — user with non-default currency cookie but NO ?currency=
+ * param (e.g., typed URL directly, external link):
+ *   → PHP redirects to same URL with ?currency=XXX appended
+ *   → This ensures Varnish serves the correct cached version
+ *
+ * How to rollback:
+ *   git checkout v2.18.6-safe-rollback
+ *   (Re-add "currency" to CloudPanel Excluded Parameters)
  * ------------------------------------------------------------------
  *
  * @since 2.18.3
+ * @updated 2.18.7 — Per-currency Varnish caching
  */
 class Wiwa_Cache_Compat
 {
@@ -35,173 +54,174 @@ class Wiwa_Cache_Compat
      */
     public static function init()
     {
-        // Very early — before any output
-        add_action('init', [__CLASS__, 'early_cache_check'], 1);
+        // Redirect users with currency cookie but missing URL param
+        add_action('template_redirect', [__CLASS__, 'redirect_currency_from_cookie'], 0);
 
-        // After WordPress knows the query — can detect WooCommerce pages
-        add_action('template_redirect', [__CLASS__, 'disable_cache_on_price_pages'], 1);
+        // Disable cache only on truly dynamic pages
+        add_action('template_redirect', [__CLASS__, 'bypass_dynamic_pages'], 1);
 
-        // Ensure AJAX/wc-ajax requests are never cached
+        // Ensure AJAX requests are never cached
         add_action('admin_init', [__CLASS__, 'protect_ajax_from_cache']);
 
         // Intercept wc-ajax before WooCommerce processes it
         add_action('init', [__CLASS__, 'protect_wc_ajax_from_cache'], 0);
+
+        // Protect admin-ajax early
+        add_action('init', [__CLASS__, 'protect_admin_ajax'], 1);
     }
 
     // -----------------------------------------------------------------
-    // Main cache control
+    // Per-currency redirect
     // -----------------------------------------------------------------
 
     /**
-     * Early check on 'init' — catches obvious cases before WordPress
-     * even processes the main query.
+     * If a user has a non-default currency cookie but arrived WITHOUT
+     * ?currency= in the URL, redirect to include it.
+     *
+     * This ensures Varnish serves the correct per-currency cached version
+     * instead of the default COP version.
+     *
+     * Covers edge cases:
+     *   - User types URL directly in browser
+     *   - External link without ?currency=
+     *   - Bookmark without ?currency=
+     *
+     * Does NOT redirect on:
+     *   - Cart, Checkout, My Account (always dynamic, no caching)
+     *   - AJAX requests
+     *   - POST requests
+     *   - Admin pages
      */
-    public static function early_cache_check()
+    public static function redirect_currency_from_cookie()
+    {
+        // Skip if not a GET request
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET') {
+            return;
+        }
+
+        // Skip admin, AJAX, cron
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron()) {
+            return;
+        }
+
+        // Skip if ?currency= is already present
+        if (isset($_GET['currency'])) {
+            return;
+        }
+
+        // Skip wc-ajax
+        if (isset($_GET['wc-ajax'])) {
+            return;
+        }
+
+        // Skip dynamic pages (no point redirecting, they bypass cache)
+        if (self::is_always_dynamic_page()) {
+            return;
+        }
+
+        // Check for non-default currency in cookie
+        $cookie_currency = self::get_currency_from_cookie();
+        if (!$cookie_currency) {
+            return; // Default currency, no redirect needed
+        }
+
+        // Build redirect URL with ?currency= param
+        $redirect_url = add_query_arg('currency', $cookie_currency);
+
+        // Prevent redirect loops
+        if (isset($_GET['_wc_redirect'])) {
+            return;
+        }
+
+        wp_redirect($redirect_url, 302);
+        exit;
+    }
+
+    // -----------------------------------------------------------------
+    // Cache bypass (only truly dynamic pages)
+    // -----------------------------------------------------------------
+
+    /**
+     * Disable cache ONLY on pages that contain user-specific data
+     * and should never be cached regardless of currency.
+     */
+    public static function bypass_dynamic_pages()
     {
         if (is_admin()) {
             return;
         }
 
-        $uri = $_SERVER['REQUEST_URI'] ?? '';
-
-        // Always bypass cache for currency query strings
-        if (isset($_GET['currency']) && !empty($_GET['currency'])) {
-            self::send_no_cache_headers();
+        if (!self::is_always_dynamic_page()) {
             return;
         }
 
-        // Always bypass for admin-ajax.php
-        if (strpos($uri, 'admin-ajax.php') !== false) {
-            self::send_no_cache_headers();
-            return;
-        }
-
-        // Always bypass for wc-ajax requests (cart fragments, add-to-cart, etc.)
-        if (isset($_GET['wc-ajax']) || strpos($uri, 'wc-ajax=') !== false) {
-            self::send_no_cache_headers();
-            return;
-        }
-
-        // Bypass for non-default currency cookie (user already switched)
-        if (self::has_non_default_currency_cookie()) {
-            self::send_no_cache_headers();
-            return;
-        }
-
-        // Bypass for common WooCommerce URL patterns
-        $wc_paths = [
-            '/cart/',
-            '/checkout/',
-            '/finalizar-compra/',
-            '/my-account/',
-            '/mi-cuenta/',
-            '/en/finalize-purchase/',
-            '/fr/finaliser-lachat/',
-        ];
-
-        foreach ($wc_paths as $path) {
-            if (strpos($uri, $path) !== false) {
-                self::send_no_cache_headers();
-                return;
-            }
-        }
+        self::send_no_cache_headers();
     }
 
     /**
-     * On 'template_redirect': WordPress knows what page we're on.
-     * Disable cache on ALL WooCommerce pages and any page that
-     * could display prices or currency-dependent content.
+     * Check if the current page is always dynamic (user-specific).
+     *
+     * @return bool
      */
-    public static function disable_cache_on_price_pages()
+    private static function is_always_dynamic_page()
     {
-        if (is_admin()) {
-            return;
-        }
-
-        $should_bypass = false;
-
-        // 1. WooCommerce product pages (single product, shop, categories)
-        if (function_exists('is_product') && is_product()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_shop') && is_shop()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_product_category') && is_product_category()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_product_tag') && is_product_tag()) {
-            $should_bypass = true;
-        }
-
-        // 2. WooCommerce utility pages
+        // Cart
         if (function_exists('is_cart') && is_cart()) {
-            $should_bypass = true;
+            return true;
         }
 
+        // Checkout
         if (function_exists('is_checkout') && is_checkout()) {
-            $should_bypass = true;
+            return true;
         }
 
+        // My Account
         if (function_exists('is_account_page') && is_account_page()) {
-            $should_bypass = true;
+            return true;
         }
 
-        // 3. OvaTourBooking single tour pages (custom post type)
-        if (is_singular('ovatb_tour')) {
-            $should_bypass = true;
-        }
-
-        // 4. Any page with our dynamic_deposit_currency shortcode
-        if (!$should_bypass) {
-            global $post;
-            if ($post && is_a($post, 'WP_Post')) {
-                if (
-                    has_shortcode($post->post_content, 'dynamic_deposit_currency') ||
-                    has_shortcode($post->post_content, 'wiwa_checkout_cart') ||
-                    has_shortcode($post->post_content, 'wiwa_checkout_form') ||
-                    has_shortcode($post->post_content, 'woocommerce_cart') ||
-                    has_shortcode($post->post_content, 'woocommerce_checkout')
-                ) {
-                    $should_bypass = true;
+        // Pages with cart/checkout shortcodes
+        global $post;
+        if ($post && is_a($post, 'WP_Post')) {
+            $shortcodes = [
+                'wiwa_checkout_cart',
+                'wiwa_checkout_form',
+                'woocommerce_cart',
+                'woocommerce_checkout',
+            ];
+            foreach ($shortcodes as $sc) {
+                if (has_shortcode($post->post_content, $sc)) {
+                    return true;
                 }
             }
         }
 
-        // 5. Any page using Elementor that has WooCommerce widgets
-        // (catch-all for WooCommerce pages built with page builders)
-        if (!$should_bypass && function_exists('is_woocommerce') && is_woocommerce()) {
-            $should_bypass = true;
+        // URL-based detection for cart/checkout paths
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        $dynamic_paths = [
+            '/cart/', '/checkout/', '/finalizar-compra/',
+            '/my-account/', '/mi-cuenta/',
+            '/en/finalize-purchase/', '/fr/finaliser-lachat/',
+        ];
+        foreach ($dynamic_paths as $path) {
+            if (strpos($uri, $path) !== false) {
+                return true;
+            }
         }
 
-        // 6. Any page with ?currency= query string
-        if (isset($_GET['currency']) && !empty($_GET['currency'])) {
-            $should_bypass = true;
-        }
-
-        // 7. User has non-default currency selected (via cookie)
-        if (self::has_non_default_currency_cookie()) {
-            $should_bypass = true;
-        }
-
-        if ($should_bypass) {
-            self::send_no_cache_headers();
-        }
+        return false;
     }
 
     // -----------------------------------------------------------------
-    // Detection helpers
+    // Cookie detection
     // -----------------------------------------------------------------
 
     /**
-     * Check if the user has a non-default currency selected via cookie.
+     * Get the non-default currency from cookies, or null if default.
      *
-     * @return bool
+     * @return string|null Currency code (e.g., "EUR") or null
      */
-    private static function has_non_default_currency_cookie()
+    private static function get_currency_from_cookie()
     {
         $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
 
@@ -212,11 +232,11 @@ class Wiwa_Cache_Compat
 
         foreach ($cookie_names as $name) {
             if (isset($_COOKIE[$name]) && !empty($_COOKIE[$name]) && $_COOKIE[$name] !== $default) {
-                return true;
+                return sanitize_text_field($_COOKIE[$name]);
             }
         }
 
-        return false;
+        return null;
     }
 
     // -----------------------------------------------------------------
@@ -225,7 +245,6 @@ class Wiwa_Cache_Compat
 
     /**
      * Send headers that disable Varnish Cache (CloudPanel).
-     * X-Cache-Lifetime: 0 tells CloudPanel's Varnish to bypass cache.
      */
     private static function send_no_cache_headers()
     {
@@ -235,17 +254,16 @@ class Wiwa_Cache_Compat
         }
         $sent = true;
 
-        // CloudPanel-specific: 0 = bypass Varnish completely
         header('X-Cache-Lifetime: 0', true);
-
-        // Standard no-cache headers
         header('Cache-Control: no-store, no-cache, must-revalidate, max-age=0, private', true);
         header('Pragma: no-cache', true);
         header('Expires: Wed, 11 Jan 1984 05:00:00 GMT', true);
-
-        // Vary by cookie so CDN/proxies know response is user-specific
         header('Vary: Cookie', false);
     }
+
+    // -----------------------------------------------------------------
+    // AJAX protection
+    // -----------------------------------------------------------------
 
     /**
      * Protect admin-ajax.php from Varnish caching.
@@ -258,8 +276,22 @@ class Wiwa_Cache_Compat
     }
 
     /**
+     * Protect admin-ajax.php early (init hook).
+     */
+    public static function protect_admin_ajax()
+    {
+        if (is_admin()) {
+            return;
+        }
+
+        $uri = $_SERVER['REQUEST_URI'] ?? '';
+        if (strpos($uri, 'admin-ajax.php') !== false) {
+            self::send_no_cache_headers();
+        }
+    }
+
+    /**
      * Protect wc-ajax requests from Varnish caching.
-     * These run via /?wc-ajax=action, not through admin-ajax.php.
      */
     public static function protect_wc_ajax_from_cache()
     {
