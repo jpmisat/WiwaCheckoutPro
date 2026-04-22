@@ -7,26 +7,39 @@ if (!defined('ABSPATH')) {
 /**
  * Class Wiwa_Cache_Compat
  *
- * Disables Varnish Cache on all pages that display dynamic prices
- * or currency-related content. This ensures FOX Currency Switcher
- * always works correctly regardless of Varnish configuration.
+ * Smart Varnish cache compatibility for FOX Currency Switcher.
  *
- * Strategy: AGGRESSIVE NO-CACHE for all WooCommerce/price pages.
+ * Strategy: CACHE-FRIENDLY — Let Varnish cache as much as possible,
+ * only bypass when absolutely necessary.
  * ------------------------------------------------------------------
- * Pages with cache DISABLED (dynamic):
- *   - All WooCommerce product pages (tours, shop, etc.)
- *   - Cart, Checkout, My Account
- *   - Any page with [dynamic_deposit_currency] shortcode
- *   - Any page with ?currency= query string
- *   - admin-ajax.php and wc-ajax requests
+ * Works together with currency-links.js (v2.18.5+) which injects
+ * ?currency=XXX into all internal links when a non-default currency
+ * is active. This lets Varnish's "Excluded Parameters" feature
+ * handle the bypass automatically.
  *
- * Pages with cache ENABLED (static):
- *   - Blog posts, static pages without prices
- *   - Homepage (if no WooCommerce products)
- *   - Contact, About, etc.
+ * Pages with cache DISABLED (always dynamic):
+ *   - Cart, Checkout, My Account (user-specific data)
+ *   - admin-ajax.php and wc-ajax requests
+ *   - Requests with ?currency=XXX query string (Varnish excluded param)
+ *   - Fallback: user has non-default currency cookie but no ?currency= param
+ *
+ * Pages with cache ENABLED (Varnish serves from cache):
+ *   - Homepage
+ *   - All tour/product pages (WITHOUT ?currency= param)
+ *   - Blog, contact, about, etc.
+ *   - Shop, product categories, product tags
+ *
+ * How it works end-to-end:
+ *   1. User visits site → COP → Varnish serves cached page (FAST)
+ *   2. User selects EUR → page reloads with ?currency=EUR
+ *   3. Varnish bypasses (excluded param) → PHP renders EUR prices
+ *   4. currency-links.js updates ALL links to include ?currency=EUR
+ *   5. User clicks a tour → navigates with ?currency=EUR → bypass
+ *   6. User returns to COP → no param → Varnish serves cached page
  * ------------------------------------------------------------------
  *
  * @since 2.18.3
+ * @updated 2.18.6 — Switched from aggressive to smart cache strategy
  */
 class Wiwa_Cache_Compat
 {
@@ -35,13 +48,13 @@ class Wiwa_Cache_Compat
      */
     public static function init()
     {
-        // Very early — before any output
+        // Very early — catch AJAX and obvious cases before output
         add_action('init', [__CLASS__, 'early_cache_check'], 1);
 
-        // After WordPress knows the query — can detect WooCommerce pages
-        add_action('template_redirect', [__CLASS__, 'disable_cache_on_price_pages'], 1);
+        // After WordPress knows the query — only bypass truly dynamic pages
+        add_action('template_redirect', [__CLASS__, 'smart_cache_control'], 1);
 
-        // Ensure AJAX/wc-ajax requests are never cached
+        // Ensure AJAX requests are never cached
         add_action('admin_init', [__CLASS__, 'protect_ajax_from_cache']);
 
         // Intercept wc-ajax before WooCommerce processes it
@@ -53,8 +66,8 @@ class Wiwa_Cache_Compat
     // -----------------------------------------------------------------
 
     /**
-     * Early check on 'init' — catches obvious cases before WordPress
-     * even processes the main query.
+     * Early check on 'init' — catches requests that should NEVER be cached
+     * regardless of what page WordPress resolves.
      */
     public static function early_cache_check()
     {
@@ -64,32 +77,28 @@ class Wiwa_Cache_Compat
 
         $uri = $_SERVER['REQUEST_URI'] ?? '';
 
-        // Always bypass cache for currency query strings
+        // 1. Always bypass for ?currency=XXX query string
+        //    (Varnish excluded params should handle this too, but belt + suspenders)
         if (isset($_GET['currency']) && !empty($_GET['currency'])) {
             self::send_no_cache_headers();
             return;
         }
 
-        // Always bypass for admin-ajax.php
+        // 2. Always bypass for admin-ajax.php
         if (strpos($uri, 'admin-ajax.php') !== false) {
             self::send_no_cache_headers();
             return;
         }
 
-        // Always bypass for wc-ajax requests (cart fragments, add-to-cart, etc.)
+        // 3. Always bypass for wc-ajax requests (cart fragments, etc.)
         if (isset($_GET['wc-ajax']) || strpos($uri, 'wc-ajax=') !== false) {
             self::send_no_cache_headers();
             return;
         }
 
-        // Bypass for non-default currency cookie (user already switched)
-        if (self::has_non_default_currency_cookie()) {
-            self::send_no_cache_headers();
-            return;
-        }
-
-        // Bypass for common WooCommerce URL patterns
-        $wc_paths = [
+        // 4. Bypass for WooCommerce checkout/cart URL patterns
+        //    These are always user-specific and should never be cached.
+        $always_dynamic_paths = [
             '/cart/',
             '/checkout/',
             '/finalizar-compra/',
@@ -99,20 +108,32 @@ class Wiwa_Cache_Compat
             '/fr/finaliser-lachat/',
         ];
 
-        foreach ($wc_paths as $path) {
+        foreach ($always_dynamic_paths as $path) {
             if (strpos($uri, $path) !== false) {
                 self::send_no_cache_headers();
                 return;
             }
         }
+
+        // 5. FALLBACK: User has non-default currency cookie but arrived
+        //    WITHOUT ?currency= param (e.g. typed URL directly, or
+        //    a link from external site without the param).
+        //    This is rare but important for consistency.
+        if (self::has_non_default_currency_cookie()) {
+            self::send_no_cache_headers();
+            return;
+        }
     }
 
     /**
-     * On 'template_redirect': WordPress knows what page we're on.
-     * Disable cache on ALL WooCommerce pages and any page that
-     * could display prices or currency-dependent content.
+     * On 'template_redirect': WordPress knows the page type.
+     * Only disable cache for transactional pages that contain
+     * user-specific data (cart contents, checkout forms, account info).
+     *
+     * Tour pages, shop pages, and product pages are NOW CACHEABLE
+     * because currency-links.js handles the ?currency= propagation.
      */
-    public static function disable_cache_on_price_pages()
+    public static function smart_cache_control()
     {
         if (is_admin()) {
             return;
@@ -120,47 +141,26 @@ class Wiwa_Cache_Compat
 
         $should_bypass = false;
 
-        // 1. WooCommerce product pages (single product, shop, categories)
-        if (function_exists('is_product') && is_product()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_shop') && is_shop()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_product_category') && is_product_category()) {
-            $should_bypass = true;
-        }
-
-        if (function_exists('is_product_tag') && is_product_tag()) {
-            $should_bypass = true;
-        }
-
-        // 2. WooCommerce utility pages
+        // 1. Cart — always dynamic (user-specific cart contents)
         if (function_exists('is_cart') && is_cart()) {
             $should_bypass = true;
         }
 
+        // 2. Checkout — always dynamic (user-specific order data)
         if (function_exists('is_checkout') && is_checkout()) {
             $should_bypass = true;
         }
 
+        // 3. My Account — always dynamic (user-specific)
         if (function_exists('is_account_page') && is_account_page()) {
             $should_bypass = true;
         }
 
-        // 3. OvaTourBooking single tour pages (custom post type)
-        if (is_singular('ovatb_tour')) {
-            $should_bypass = true;
-        }
-
-        // 4. Any page with our dynamic_deposit_currency shortcode
+        // 4. Pages with our cart/checkout shortcodes
         if (!$should_bypass) {
             global $post;
             if ($post && is_a($post, 'WP_Post')) {
                 if (
-                    has_shortcode($post->post_content, 'dynamic_deposit_currency') ||
                     has_shortcode($post->post_content, 'wiwa_checkout_cart') ||
                     has_shortcode($post->post_content, 'wiwa_checkout_form') ||
                     has_shortcode($post->post_content, 'woocommerce_cart') ||
@@ -171,21 +171,29 @@ class Wiwa_Cache_Compat
             }
         }
 
-        // 5. Any page using Elementor that has WooCommerce widgets
-        // (catch-all for WooCommerce pages built with page builders)
-        if (!$should_bypass && function_exists('is_woocommerce') && is_woocommerce()) {
-            $should_bypass = true;
-        }
-
-        // 6. Any page with ?currency= query string
+        // 5. ?currency= param (redundant with early_cache_check, but safe)
         if (isset($_GET['currency']) && !empty($_GET['currency'])) {
             $should_bypass = true;
         }
 
-        // 7. User has non-default currency selected (via cookie)
+        // 6. Non-default currency cookie without ?currency= param
         if (self::has_non_default_currency_cookie()) {
             $should_bypass = true;
         }
+
+        // ----------------------------------------------------------------
+        // NOTE: The following are now CACHEABLE (removed from bypass):
+        //   - is_product()           → Tour detail pages
+        //   - is_shop()              → Shop/tours archive
+        //   - is_product_category()  → Tour categories
+        //   - is_product_tag()       → Tour tags
+        //   - is_singular('ovatb_tour') → OvaTourBooking pages
+        //   - is_woocommerce()       → General WooCommerce pages
+        //
+        // These pages show COP prices from Varnish cache by default.
+        // When a user selects EUR, currency-links.js adds ?currency=EUR
+        // to all links, causing Varnish to bypass cache for those requests.
+        // ----------------------------------------------------------------
 
         if ($should_bypass) {
             self::send_no_cache_headers();

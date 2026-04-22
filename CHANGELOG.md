@@ -1,5 +1,29 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.6] - 2026-04-21
+
+### Changed
+
+- **Smart Cache Strategy** (`class-cache-compat.php`): Rewrote from "aggressive bypass" (v2.18.4) to cache-friendly strategy. Tour/product/shop pages are now fully cacheable by Varnish, dramatically improving performance for 95%+ of visitors.
+
+### How the new strategy works
+
+| Scenario | Cache | Reason |
+|---|---|---|
+| Visitor on COP (default) | ✅ CACHED | Varnish serves fast cached page |
+| URL with `?currency=EUR` | ❌ BYPASS | CloudPanel excluded param auto-bypass |
+| Cart / Checkout / My Account | ❌ BYPASS | User-specific data, always dynamic |
+| AJAX / wc-ajax requests | ❌ BYPASS | Always dynamic |
+| Non-default currency cookie | ❌ BYPASS | Fallback for edge cases |
+| Tour pages, Shop, Categories | ✅ CACHED | currency-links.js handles propagation |
+| Homepage, Blog, Contact | ✅ CACHED | Static content |
+
+### Removed
+
+- Aggressive bypass on `is_product()`, `is_shop()`, `is_product_category()`, `is_product_tag()`, `is_singular('ovatb_tour')`, `is_woocommerce()` — these are now cacheable since v2.18.5 `currency-links.js` ensures proper `?currency=` propagation on all internal links.
+
+---
+
 ## [2.18.5] - 2026-04-21
 
 ### Added
