@@ -831,16 +831,55 @@ class Wiwa_Ajax_Handler
         // Also check session data (Step 1 saves to session)
         $step_1_data = WC()->session ? WC()->session->get('wiwa_step_1_data', []) : [];
 
+        // Dynamically find the field keys based on frontend rendering logic
+        $doc_field_key = 'billing_document'; // default fallback
+        $doc_type_key = 'billing_document_type'; // default fallback
+        $city_field_key = 'billing_city'; // default fallback
+
+        if (class_exists('Wiwa_Fields_Manager')) {
+            $fields = Wiwa_Fields_Manager::get_fields();
+            if (!empty($fields['billing'])) {
+                foreach ($fields['billing'] as $key => $field_data) {
+                    $field_type = isset($field_data['type']) ? $field_data['type'] : 'text';
+                    
+                    // Identify document field (matches step-1.php logic)
+                    if ($field_type === 'document' || strpos($key, 'passport') !== false || (strpos($key, 'document') !== false && strpos($key, 'document_type') === false)) {
+                        $doc_field_key = $key;
+                    }
+                    
+                    // Identify document type field explicitly (if set)
+                    if ($field_type === 'document_type') {
+                        $doc_type_key = $key;
+                    }
+                    
+                    // Identify city field
+                    if (strpos($key, 'city') !== false || strpos($key, 'ciudad') !== false) {
+                        $city_field_key = $key;
+                    }
+                }
+            }
+        }
+
+        // If the document type wasn't explicitly found, it's typically $doc_field_key . '_type'
+        // due to the combined input group rendering in step-1.php
+        if (!empty($_POST[$doc_field_key . '_type'])) {
+            $doc_type_key = $doc_field_key . '_type';
+        } elseif (!empty($step_1_data[$doc_field_key . '_type'])) {
+            $doc_type_key = $doc_field_key . '_type';
+        }
+
         // Document Type
         $doc_type = '';
-        if (!empty($_POST['billing_document_type'])) {
-            $doc_type = sanitize_text_field($_POST['billing_document_type']);
-        } elseif (!empty($step_1_data['billing_document_type'])) {
-            $doc_type = sanitize_text_field($step_1_data['billing_document_type']);
+        if (!empty($_POST[$doc_type_key])) {
+            $doc_type = sanitize_text_field($_POST[$doc_type_key]);
+        } elseif (!empty($step_1_data[$doc_type_key])) {
+            $doc_type = sanitize_text_field($step_1_data[$doc_type_key]);
         }
-        // Also check the combined field name from step-1.php (billing_document_type)
+        // Fallback to old hardcoded keys
         if (empty($doc_type) && !empty($_POST['billing_document_type'])) {
             $doc_type = sanitize_text_field($_POST['billing_document_type']);
+        } elseif (empty($doc_type) && !empty($step_1_data['billing_document_type'])) {
+            $doc_type = sanitize_text_field($step_1_data['billing_document_type']);
         }
 
         if ($doc_type) {
@@ -853,11 +892,18 @@ class Wiwa_Ajax_Handler
 
         // Document Number
         $doc_number = '';
-        if (!empty($_POST['billing_document'])) {
+        if (!empty($_POST[$doc_field_key])) {
+            $doc_number = sanitize_text_field($_POST[$doc_field_key]);
+        } elseif (!empty($step_1_data[$doc_field_key])) {
+            $doc_number = sanitize_text_field($step_1_data[$doc_field_key]);
+        }
+        // Fallback to old hardcoded keys
+        if (empty($doc_number) && !empty($_POST['billing_document'])) {
             $doc_number = sanitize_text_field($_POST['billing_document']);
-        } elseif (!empty($step_1_data['billing_document'])) {
+        } elseif (empty($doc_number) && !empty($step_1_data['billing_document'])) {
             $doc_number = sanitize_text_field($step_1_data['billing_document']);
         }
+
         if ($doc_number) {
             $order->update_meta_data('_billing_document', $doc_number);
         }
@@ -866,11 +912,19 @@ class Wiwa_Ajax_Handler
         $city = $order->get_billing_city();
         if (empty($city)) {
             $city_from_post = '';
-            if (!empty($_POST['billing_city'])) {
+            if (!empty($_POST[$city_field_key])) {
+                $city_from_post = sanitize_text_field($_POST[$city_field_key]);
+            } elseif (!empty($step_1_data[$city_field_key])) {
+                $city_from_post = sanitize_text_field($step_1_data[$city_field_key]);
+            }
+            
+            // Fallback to old hardcoded keys
+            if (empty($city_from_post) && !empty($_POST['billing_city'])) {
                 $city_from_post = sanitize_text_field($_POST['billing_city']);
-            } elseif (!empty($step_1_data['billing_city'])) {
+            } elseif (empty($city_from_post) && !empty($step_1_data['billing_city'])) {
                 $city_from_post = sanitize_text_field($step_1_data['billing_city']);
             }
+
             if ($city_from_post) {
                 $order->set_billing_city($city_from_post);
             }

@@ -1,5 +1,16 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+
+## [2.18.10] - 2026-04-23
+
+### Fixed
+- **Order Meta Keys Dynamics:** Ajuste en la detección de las claves de los campos de documento y ciudad al guardar los metadatos de la orden para YayMail. Ahora se utiliza exactamente la misma lógica de los templates (strpos para "document", "document_type" y "city" o "ciudad") lo que garantiza que si el administrador renombra el key del campo (ej. a "documento"), el código lo detecte correctamente y lo guarde usando siempre el formato esperado.
+
+## [2.18.9] - 2026-04-23
+
+### Fixed
+- **Refactorización save_custom_order_meta:** Se intentó hacer la detección de campos custom dinámica, pero se referenciaba una propiedad inexistente (`is_document`). (Fixeado en 2.18.10).
+
 ## [2.18.8] - 2026-04-23
 
 ### Fixed
