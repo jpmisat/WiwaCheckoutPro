@@ -81,6 +81,30 @@ class Wiwa_Checkout_Handler
             }
         }
 
+        // Register custom fields (document type, document number) with WooCommerce
+        // These fields are rendered by our custom template but WC needs to know about them
+        // so it can process and save them during checkout.
+        if (!isset($fields['billing']['billing_document_type'])) {
+            $fields['billing']['billing_document_type'] = [
+                'type'     => 'select',
+                'label'    => __('Document type', 'wiwa-checkout'),
+                'required' => false,
+                'class'    => ['form-row-first'],
+                'priority' => 45,
+                'options'  => class_exists('Wiwa_Fields_Manager') ? Wiwa_Fields_Manager::get_document_types() : [],
+            ];
+        }
+
+        if (!isset($fields['billing']['billing_document'])) {
+            $fields['billing']['billing_document'] = [
+                'type'     => 'text',
+                'label'    => __('Document number', 'wiwa-checkout'),
+                'required' => false,
+                'class'    => ['form-row-last'],
+                'priority' => 46,
+            ];
+        }
+
         return $fields;
     }
 

@@ -1,5 +1,21 @@
 # Changelog
 All notable changes to this project will be documented in this file.
+## [2.18.8] - 2026-04-23
+
+### Fixed
+
+- **Campos vacíos en emails de pedido** (`class-ajax-handler.php`): Los campos "Tipo de documento", "Número de documento" y "Ciudad" aparecían vacíos en los emails de WooCommerce (YayMail) porque nunca se guardaban como order meta. Ahora se persisten correctamente usando el hook `woocommerce_checkout_update_order_meta`.
+- **Ciudad (billing_city) vacía**: Si GeoIP no detectaba la ciudad o WooCommerce no la guardaba, ahora se aplica un fallback desde la sesión del checkout (Step 1 data).
+- **País en texto legible**: Se guarda `_billing_country_name` con el nombre completo del país (ej. "Colombia") en lugar de solo el código ISO ("CO").
+
+### Added
+
+- **Sección "BOOKING DETAILS" en emails** (`class-ajax-handler.php`): Hook `woocommerce_email_order_meta` que inyecta una tabla con tipo de documento, número de documento, país y ciudad en todos los emails de WooCommerce como fallback si YayMail no los renderiza por sí solo.
+- **Campos en Admin de pedidos** (`class-ajax-handler.php`): Hook `woocommerce_admin_order_data_after_billing_address` para mostrar tipo y número de documento en la vista de detalle de la orden en WP Admin.
+- **Registro de campos custom con WC** (`class-checkout-handler.php`): Se registran `billing_document_type` y `billing_document` como campos de checkout reconocidos por WooCommerce via `woocommerce_checkout_fields`, permitiendo que WC los procese durante el checkout estándar.
+
+---
+
 ## [2.18.7] - 2026-04-21
 
 ### Changed
