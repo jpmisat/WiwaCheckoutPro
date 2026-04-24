@@ -43,6 +43,15 @@ class Wiwa_Ajax_Handler
         // Smart Pax Update
         add_action('wp_ajax_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
         add_action('wp_ajax_nopriv_wiwa_update_tour_pax', [$this, 'ajax_update_tour_pax']);
+
+        // Save custom billing fields to order meta on checkout
+        add_action('woocommerce_checkout_update_order_meta', [$this, 'save_custom_order_meta'], 10, 2);
+
+        // Display custom fields in WooCommerce emails (fallback if YayMail doesn't handle them)
+        add_action('woocommerce_email_order_meta', [$this, 'display_custom_fields_in_email'], 20, 3);
+
+        // Display custom fields in admin order details
+        add_action('woocommerce_admin_order_data_after_billing_address', [$this, 'display_custom_fields_in_admin'], 10, 1);
     }
 
     /**
@@ -221,7 +230,7 @@ class Wiwa_Ajax_Handler
         $step_1_data = WC()->session->get('wiwa_step_1_data', []);
         $_POST = array_merge($_POST, $step_1_data);
 
-        // Set up billing fields from POST data
+        // Set up billing fields from POST data (including custom fields)
         $billing_fields = [
             'billing_first_name',
             'billing_last_name',
@@ -231,6 +240,8 @@ class Wiwa_Ajax_Handler
             'billing_city',
             'billing_address_1',
             'billing_postcode',
+            'billing_document_type',
+            'billing_document',
         ];
 
         foreach ($billing_fields as $field) {
@@ -801,5 +812,237 @@ class Wiwa_Ajax_Handler
             'totals_html' => $this->get_cart_totals_html(),
             'message' => 'Pax updated',
         ]);
+    }
+
+    /**
+     * Save custom billing fields (document type, document number, city) as order meta.
+     * This hook fires after WooCommerce creates the order.
+     *
+     * @param int   $order_id The order ID.
+     * @param array $data     Posted checkout data.
+     */
+    public function save_custom_order_meta($order_id, $data)
+    {
+        $order = wc_get_order($order_id);
+        if (!$order) {
+            return;
+        }
+
+        // Also check session data (Step 1 saves to session)
+        $step_1_data = WC()->session ? WC()->session->get('wiwa_step_1_data', []) : [];
+
+        // Dynamically find the field keys based on frontend rendering logic
+        $doc_field_key = 'billing_document'; // default fallback
+        $doc_type_key = 'billing_document_type'; // default fallback
+        $city_field_key = 'billing_city'; // default fallback
+
+        if (class_exists('Wiwa_Fields_Manager')) {
+            $fields = Wiwa_Fields_Manager::get_fields();
+            if (!empty($fields['billing'])) {
+                foreach ($fields['billing'] as $key => $field_data) {
+                    $field_type = isset($field_data['type']) ? $field_data['type'] : 'text';
+                    
+                    // Identify document field (matches step-1.php logic)
+                    if ($field_type === 'document' || strpos($key, 'passport') !== false || (strpos($key, 'document') !== false && strpos($key, 'document_type') === false)) {
+                        $doc_field_key = $key;
+                    }
+                    
+                    // Identify document type field explicitly (if set)
+                    if ($field_type === 'document_type') {
+                        $doc_type_key = $key;
+                    }
+                    
+                    // Identify city field
+                    if (strpos($key, 'city') !== false || strpos($key, 'ciudad') !== false) {
+                        $city_field_key = $key;
+                    }
+                }
+            }
+        }
+
+        // If the document type wasn't explicitly found, it's typically $doc_field_key . '_type'
+        // due to the combined input group rendering in step-1.php
+        if (!empty($_POST[$doc_field_key . '_type'])) {
+            $doc_type_key = $doc_field_key . '_type';
+        } elseif (!empty($step_1_data[$doc_field_key . '_type'])) {
+            $doc_type_key = $doc_field_key . '_type';
+        }
+
+        // Document Type
+        $doc_type = '';
+        if (!empty($_POST[$doc_type_key])) {
+            $doc_type = sanitize_text_field($_POST[$doc_type_key]);
+        } elseif (!empty($step_1_data[$doc_type_key])) {
+            $doc_type = sanitize_text_field($step_1_data[$doc_type_key]);
+        }
+        // Fallback to old hardcoded keys
+        if (empty($doc_type) && !empty($_POST['billing_document_type'])) {
+            $doc_type = sanitize_text_field($_POST['billing_document_type']);
+        } elseif (empty($doc_type) && !empty($step_1_data['billing_document_type'])) {
+            $doc_type = sanitize_text_field($step_1_data['billing_document_type']);
+        }
+
+        if ($doc_type) {
+            // Translate code to human-readable label
+            $doc_types = Wiwa_Fields_Manager::get_document_types();
+            $doc_type_label = isset($doc_types[$doc_type]) ? $doc_types[$doc_type] : $doc_type;
+            $order->update_meta_data('_billing_document_type', $doc_type);
+            $order->update_meta_data('_billing_document_type_label', $doc_type_label);
+        }
+
+        // Document Number
+        $doc_number = '';
+        if (!empty($_POST[$doc_field_key])) {
+            $doc_number = sanitize_text_field($_POST[$doc_field_key]);
+        } elseif (!empty($step_1_data[$doc_field_key])) {
+            $doc_number = sanitize_text_field($step_1_data[$doc_field_key]);
+        }
+        // Fallback to old hardcoded keys
+        if (empty($doc_number) && !empty($_POST['billing_document'])) {
+            $doc_number = sanitize_text_field($_POST['billing_document']);
+        } elseif (empty($doc_number) && !empty($step_1_data['billing_document'])) {
+            $doc_number = sanitize_text_field($step_1_data['billing_document']);
+        }
+
+        if ($doc_number) {
+            $order->update_meta_data('_billing_document', $doc_number);
+        }
+
+        // City — WooCommerce should save this natively, but ensure it's not empty
+        $city = $order->get_billing_city();
+        if (empty($city)) {
+            $city_from_post = '';
+            if (!empty($_POST[$city_field_key])) {
+                $city_from_post = sanitize_text_field($_POST[$city_field_key]);
+            } elseif (!empty($step_1_data[$city_field_key])) {
+                $city_from_post = sanitize_text_field($step_1_data[$city_field_key]);
+            }
+            
+            // Fallback to old hardcoded keys
+            if (empty($city_from_post) && !empty($_POST['billing_city'])) {
+                $city_from_post = sanitize_text_field($_POST['billing_city']);
+            } elseif (empty($city_from_post) && !empty($step_1_data['billing_city'])) {
+                $city_from_post = sanitize_text_field($step_1_data['billing_city']);
+            }
+
+            if ($city_from_post) {
+                $order->set_billing_city($city_from_post);
+            }
+        }
+
+        // Country — ensure human-readable name is saved as meta
+        $country_code = $order->get_billing_country();
+        if ($country_code) {
+            $countries = WC()->countries->get_countries();
+            $country_name = isset($countries[$country_code]) ? $countries[$country_code] : $country_code;
+            $order->update_meta_data('_billing_country_name', $country_name);
+        }
+
+        $order->save();
+    }
+
+    /**
+     * Display custom billing fields in WooCommerce email templates.
+     * Acts as a fallback — YayMail may also display these from order meta.
+     *
+     * @param WC_Order $order         The order object.
+     * @param bool     $sent_to_admin Whether the email is sent to admin.
+     * @param bool     $plain_text    Whether the email is plain text.
+     */
+    public function display_custom_fields_in_email($order, $sent_to_admin = false, $plain_text = false)
+    {
+        $doc_type_label = $order->get_meta('_billing_document_type_label');
+        $doc_number     = $order->get_meta('_billing_document');
+        $city           = $order->get_billing_city();
+        $country_name   = $order->get_meta('_billing_country_name');
+
+        // Only display if we have at least one custom field
+        if (empty($doc_type_label) && empty($doc_number) && empty($city)) {
+            return;
+        }
+
+        if ($plain_text) {
+            echo "\n" . __('BOOKING DETAILS', 'wiwa-checkout') . "\n";
+            echo str_repeat('-', 40) . "\n";
+            if ($doc_type_label) {
+                echo __('Document type:', 'wiwa-checkout') . ' ' . $doc_type_label . "\n";
+            }
+            if ($doc_number) {
+                echo __('Document number:', 'wiwa-checkout') . ' ' . $doc_number . "\n";
+            }
+            if ($country_name) {
+                echo __('Country:', 'wiwa-checkout') . ' ' . $country_name . "\n";
+            }
+            if ($city) {
+                echo __('City:', 'wiwa-checkout') . ' ' . $city . "\n";
+            }
+            return;
+        }
+
+        ?>
+        <h2 style="color: #7a1315; font-size: 16px; margin: 18px 0 10px; padding: 0; text-transform: uppercase; font-weight: bold;">
+            <?php esc_html_e('BOOKING DETAILS', 'wiwa-checkout'); ?>
+        </h2>
+        <table cellspacing="0" cellpadding="6" style="width: 100%; font-family: 'Helvetica Neue', Helvetica, Roboto, Arial, sans-serif; border: 1px solid #e5e5e5; margin-bottom: 20px;" border="1">
+            <?php if ($doc_type_label) : ?>
+            <tr>
+                <th scope="row" style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5; font-weight: bold;">
+                    <?php esc_html_e('Document type:', 'wiwa-checkout'); ?>
+                </th>
+                <td style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5;">
+                    <?php echo esc_html($doc_type_label); ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php if ($doc_number) : ?>
+            <tr>
+                <th scope="row" style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5; font-weight: bold;">
+                    <?php esc_html_e('Document number:', 'wiwa-checkout'); ?>
+                </th>
+                <td style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5;">
+                    <?php echo esc_html($doc_number); ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php if ($country_name) : ?>
+            <tr>
+                <th scope="row" style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5; font-weight: bold;">
+                    <?php esc_html_e('Country:', 'wiwa-checkout'); ?>
+                </th>
+                <td style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5;">
+                    <?php echo esc_html($country_name); ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+            <?php if ($city) : ?>
+            <tr>
+                <th scope="row" style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5; font-weight: bold;">
+                    <?php esc_html_e('City:', 'wiwa-checkout'); ?>
+                </th>
+                <td style="text-align: left; padding: 6px 12px; border: 1px solid #e5e5e5;">
+                    <?php echo esc_html($city); ?>
+                </td>
+            </tr>
+            <?php endif; ?>
+        </table>
+        <?php
+    }
+
+    /**
+     * Display custom billing fields in WP Admin order details (after billing address).
+     *
+     * @param WC_Order $order The order object.
+     */
+    public function display_custom_fields_in_admin($order)
+    {
+        $doc_type_label = $order->get_meta('_billing_document_type_label');
+        $doc_number     = $order->get_meta('_billing_document');
+
+        if ($doc_type_label) {
+            echo '<p><strong>' . esc_html__('Document type:', 'wiwa-checkout') . '</strong> ' . esc_html($doc_type_label) . '</p>';
+        }
+        if ($doc_number) {
+            echo '<p><strong>' . esc_html__('Document number:', 'wiwa-checkout') . '</strong> ' . esc_html($doc_number) . '</p>';
+        }
     }
 }
