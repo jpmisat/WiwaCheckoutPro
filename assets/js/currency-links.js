@@ -11,6 +11,7 @@
  * to serve a cached COP version.
  *
  * @since 2.18.5
+ * @updated 2.18.11 — Elementor menu retry, cookie sync, debounce
  */
 (function () {
     'use strict';
@@ -20,6 +21,9 @@
         : 'COP';
 
     var SITE_HOST = window.location.hostname;
+
+    // Debounce timer for MutationObserver batching
+    var _mutationTimer = null;
 
     /**
      * Get the currently active currency from multiple sources (in priority order).
@@ -59,6 +63,34 @@
         }
 
         return currency;
+    }
+
+    /**
+     * Sync the browser cookie to match the detected active currency.
+     * This ensures server-side redirect_currency_from_cookie() works
+     * even if WOOCS JS didn't set the cookie properly.
+     * @param {string|null} currency
+     */
+    function syncCookieWithCurrency(currency) {
+        var currentCookie = '';
+        var match = document.cookie.match(/(?:^|;\s*)woocs_current_currency=([^;]+)/);
+        if (match && match[1]) {
+            currentCookie = decodeURIComponent(match[1]);
+        }
+
+        if (currency) {
+            // Non-default currency: ensure cookie is set
+            if (currentCookie !== currency) {
+                document.cookie = 'woocs_current_currency=' + encodeURIComponent(currency)
+                    + ';path=/;max-age=' + (30 * 86400) + ';SameSite=Lax'
+                    + (location.protocol === 'https:' ? ';Secure' : '');
+            }
+        } else {
+            // Default currency: remove cookie if it exists
+            if (currentCookie) {
+                document.cookie = 'woocs_current_currency=;path=/;max-age=0;SameSite=Lax';
+            }
+        }
     }
 
     /**
@@ -145,6 +177,10 @@
      */
     function processAllLinks() {
         var currency = getActiveCurrency();
+
+        // Sync cookie whenever we process links
+        syncCookieWithCurrency(currency);
+
         var links = document.querySelectorAll('a[href]');
 
         for (var i = 0; i < links.length; i++) {
@@ -210,17 +246,21 @@
         // 2. Watch for dynamically added content (sliders, AJAX-loaded content)
         if (typeof MutationObserver !== 'undefined') {
             var observer = new MutationObserver(function (mutations) {
-                for (var i = 0; i < mutations.length; i++) {
-                    var mutation = mutations[i];
-                    if (mutation.type === 'childList' && mutation.addedNodes.length) {
-                        for (var j = 0; j < mutation.addedNodes.length; j++) {
-                            var node = mutation.addedNodes[j];
-                            if (node.nodeType === 1) { // ELEMENT_NODE
-                                processLinksIn(node);
+                // Debounce: batch rapid DOM changes into a single reprocess
+                if (_mutationTimer) clearTimeout(_mutationTimer);
+                _mutationTimer = setTimeout(function () {
+                    for (var i = 0; i < mutations.length; i++) {
+                        var mutation = mutations[i];
+                        if (mutation.type === 'childList' && mutation.addedNodes.length) {
+                            for (var j = 0; j < mutation.addedNodes.length; j++) {
+                                var node = mutation.addedNodes[j];
+                                if (node.nodeType === 1) { // ELEMENT_NODE
+                                    processLinksIn(node);
+                                }
                             }
                         }
                     }
-                }
+                }, 150);
             });
 
             observer.observe(document.body, {
@@ -271,6 +311,21 @@
                 }
             }
         }, true); // Use capture phase to run before other handlers
+
+        // 6. Elementor mega-menus and lazy-rendered widgets
+        //    These often render AFTER DOMContentLoaded, so we re-process
+        //    after a short delay and also on window.load
+        setTimeout(processAllLinks, 1500);
+        window.addEventListener('load', function () {
+            setTimeout(processAllLinks, 500);
+        });
+
+        // 7. Elementor-specific: re-process when frontend:init fires
+        if (typeof jQuery !== 'undefined') {
+            jQuery(window).on('elementor/frontend/init', function () {
+                setTimeout(processAllLinks, 800);
+            });
+        }
     }
 
     // -----------------------------------------------------------------
@@ -284,3 +339,4 @@
     }
 
 })();
+

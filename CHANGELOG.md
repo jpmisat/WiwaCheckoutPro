@@ -1,6 +1,20 @@
 # Changelog
 All notable changes to this project will be documented in this file.
 
+## [2.18.11] - 2026-04-24
+
+### Fixed
+- **Bug crítico: Moneda inconsistente entre páginas (carrito):** `templates/cart/cart.php` usaba `get_woocommerce_currency()` que retorna la moneda base de WooCommerce (COP), no la moneda activa del usuario. Ahora usa `Wiwa_FOX_Integration::get_current_currency()` cuando está disponible.
+- **Sincronización Cookie ↔ WOOCS en PHP:** Nuevo método `sync_currency_cookie_from_woocs()` en `class-cache-compat.php` que asegura que la cookie del navegador (`woocs_current_currency`) siempre refleje la moneda activa de WOOCS. Esto corrige el problema donde Varnish servía versiones cacheadas con moneda incorrecta porque la cookie no estaba sincronizada.
+- **Redirección URL ↔ WOOCS:** Nuevo método `sync_url_param_with_woocs()` que redirige al usuario si la URL tiene `?currency=X` pero WOOCS está configurado en moneda Y, previniendo servir la versión cacheada incorrecta.
+
+### Changed
+- **`currency-links.js` v2.18.11:** Mejoras significativas:
+  - Sincronización bidireccional de cookie desde JavaScript (asegura que `redirect_currency_from_cookie()` funcione incluso si WOOCS JS no estableció la cookie).
+  - MutationObserver con debounce (150ms) para evitar reprocessing excesivo en páginas con muchos cambios DOM.
+  - Retry de procesamiento específico para menús mega de Elementor (1.5s después de DOMContentLoaded + window.load).
+  - Escucha del evento `elementor/frontend/init` para re-procesar links después de que Elementor inicialice sus widgets.
+
 ## [2.18.10] - 2026-04-23
 
 ### Fixed
