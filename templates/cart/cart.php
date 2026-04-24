@@ -19,7 +19,9 @@ do_action('woocommerce_before_cart');
 
 
 // --- Get current currency code (WOOCS compatible) ---
-$wiwa_currency_code = get_woocommerce_currency(); // e.g. "COP", "USD"
+$wiwa_currency_code = (class_exists('Wiwa_FOX_Integration') && Wiwa_FOX_Integration::is_active())
+    ? Wiwa_FOX_Integration::get_current_currency()
+    : get_woocommerce_currency(); // e.g. "COP", "USD"
 ?>
 
 

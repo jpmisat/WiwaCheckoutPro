@@ -54,8 +54,14 @@ class Wiwa_Cache_Compat
      */
     public static function init()
     {
+        // Sync WOOCS currency to cookie (ensures Varnish per-currency redirect works)
+        add_action('init', [__CLASS__, 'sync_currency_cookie_from_woocs'], 5);
+
         // Redirect users with currency cookie but missing URL param
         add_action('template_redirect', [__CLASS__, 'redirect_currency_from_cookie'], 0);
+
+        // Sync URL ?currency= param with actual WOOCS state (prevent mismatch)
+        add_action('template_redirect', [__CLASS__, 'sync_url_param_with_woocs'], 0);
 
         // Disable cache only on truly dynamic pages
         add_action('template_redirect', [__CLASS__, 'bypass_dynamic_pages'], 1);
@@ -297,6 +303,114 @@ class Wiwa_Cache_Compat
     {
         if (isset($_GET['wc-ajax'])) {
             self::send_no_cache_headers();
+        }
+    }
+
+    // -----------------------------------------------------------------
+    // WOOCS ↔ Cookie ↔ URL synchronization
+    // -----------------------------------------------------------------
+
+    /**
+     * Ensure the browser cookie always reflects the WOOCS current currency.
+     *
+     * WOOCS stores the currency in a transient or session on the server,
+     * but Varnish never hits PHP for cached pages. Our per-currency redirect
+     * relies on the COOKIE. This method keeps them in sync on every PHP hit.
+     *
+     * Runs on 'init' priority 5 (before template_redirect).
+     */
+    public static function sync_currency_cookie_from_woocs()
+    {
+        if (is_admin() || wp_doing_ajax() || wp_doing_cron()) {
+            return;
+        }
+
+        global $WOOCS;
+        if (!isset($WOOCS) || !is_object($WOOCS)) {
+            return;
+        }
+
+        $woocs_currency = $WOOCS->current_currency;
+        if (empty($woocs_currency)) {
+            return;
+        }
+
+        $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
+        $cookie_currency = isset($_COOKIE['woocs_current_currency']) ? $_COOKIE['woocs_current_currency'] : '';
+
+        // If WOOCS says one currency but cookie says another (or is empty), fix it
+        if ($woocs_currency !== $cookie_currency) {
+            if ($woocs_currency === $default) {
+                // Default currency → delete the cookie so no redirect happens
+                if (!empty($cookie_currency)) {
+                    setcookie('woocs_current_currency', '', time() - 3600, COOKIEPATH, COOKIE_DOMAIN, is_ssl(), false);
+                    $_COOKIE['woocs_current_currency'] = '';
+                }
+            } else {
+                // Non-default → set cookie for 30 days
+                setcookie('woocs_current_currency', $woocs_currency, time() + (30 * DAY_IN_SECONDS), COOKIEPATH, COOKIE_DOMAIN, is_ssl(), false);
+                $_COOKIE['woocs_current_currency'] = $woocs_currency;
+            }
+        }
+    }
+
+    /**
+     * If the URL has ?currency=X but WOOCS is actually set to Y,
+     * redirect to ?currency=Y to prevent serving the wrong cached version.
+     *
+     * This catches edge cases where:
+     *  - User changed currency via WOOCS widget (cookie updated)
+     *  - Then navigated using a stale link with old ?currency=
+     *
+     * Runs on 'template_redirect' priority 0 (before our cookie redirect).
+     */
+    public static function sync_url_param_with_woocs()
+    {
+        // Skip non-GET, admin, AJAX, cron
+        if ($_SERVER['REQUEST_METHOD'] !== 'GET' || is_admin() || wp_doing_ajax() || wp_doing_cron()) {
+            return;
+        }
+
+        // Skip dynamic pages (they don't use per-currency cache)
+        if (self::is_always_dynamic_page()) {
+            return;
+        }
+
+        // Skip wc-ajax
+        if (isset($_GET['wc-ajax'])) {
+            return;
+        }
+
+        // Only act if ?currency= is present
+        if (!isset($_GET['currency'])) {
+            return;
+        }
+
+        global $WOOCS;
+        if (!isset($WOOCS) || !is_object($WOOCS)) {
+            return;
+        }
+
+        $url_currency = sanitize_text_field($_GET['currency']);
+        $woocs_currency = $WOOCS->current_currency;
+        $default = defined('WIWA_DEFAULT_CURRENCY') ? WIWA_DEFAULT_CURRENCY : 'COP';
+
+        // If URL says EUR but WOOCS says USD → redirect to ?currency=USD
+        if (!empty($woocs_currency) && $url_currency !== $woocs_currency) {
+            if ($woocs_currency === $default) {
+                // Default currency → remove the param entirely
+                $redirect_url = remove_query_arg('currency');
+            } else {
+                $redirect_url = add_query_arg('currency', $woocs_currency);
+            }
+
+            // Prevent redirect loops
+            if (isset($_GET['_wc_redirect'])) {
+                return;
+            }
+
+            wp_redirect($redirect_url, 302);
+            exit;
         }
     }
 }
